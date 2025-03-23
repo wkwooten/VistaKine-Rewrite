@@ -11,7 +11,9 @@
 <section class="hero">
   <div class="hero-content">
     <h1>VistaKine</h1>
-    <p class="tagline">An interactive 3D engineering textbook for learning kinematics and dynamics</p>
+    <p class="tagline">Bringing Physics into a New Dimension <br>
+
+      Explore interactive 3D visualizations that bring kinematics to life.</p>
 
     <div class="hero-buttons">
       <a href="/chapter/chapter1" class="btn primary">Learn Now</a>

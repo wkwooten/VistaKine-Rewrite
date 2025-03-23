@@ -27,6 +27,7 @@
         padding: var(--space-m) var(--space-l);
         border-top: 1px solid var(--border-color);
         text-align: center; // Center align links for now
+        width: 100%;
     }
 
     .nav-links {

@@ -67,7 +67,7 @@ Planning notes 3.22.2025
 
 - [ ] Visualization.svelte: A placeholder or simple Threlte component for the 3D visualization. Initially, this can be a very basic Three.js scene (e.g., a rotating cube) to prove the integration works.
 
-- [ ] Navigation.svelte: Basic navigation links to switch between the home page and the chapter page.
+- [x] Navigation.svelte: Basic navigation links to switch between the home page and the chapter page.
 
 ## Content and Styling (Medium Priority):
 
