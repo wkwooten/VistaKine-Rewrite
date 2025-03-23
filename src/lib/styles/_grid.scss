@@ -1,0 +1,100 @@
+// Utopia Fluid Grid System
+// Based on: https://utopia.fyi/grid/calculator
+
+@use 'utopia-core-scss/src/utopia' as utopia;
+
+// Breakpoints from typography
+$min-viewport: 300px;
+$max-viewport: 1240px;
+
+// Breakpoints for responsive design
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// Base grid values
+$grid-min-columns: 4;   // Number of columns at min viewport
+$grid-max-columns: 12;  // Number of columns at max viewport
+
+// Create fluid grid variables
+:root {
+  // Fluid gutter calculation using Utopia space variable
+  --grid-gutter: var(--space-m);
+
+  // Grid container with fluid max-width and auto margins
+  --grid-max-width: 1400px;
+  --grid-padding: var(--space-s);
+}
+
+// Container for grid components
+.container {
+  width: 100%;
+  max-width: var(--grid-max-width);
+  margin-inline: auto;
+  padding-inline: var(--grid-padding);
+}
+
+// Fluid grid
+.grid {
+  display: grid;
+  gap: var(--grid-gutter);
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (min-width: $breakpoint-sm) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+// Auto-fit grid for responsive card layouts
+.auto-grid {
+  display: grid;
+  gap: var(--grid-gutter);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+
+// Column span utility classes
+@media (min-width: $breakpoint-sm) {
+  @for $i from 1 through 12 {
+    .col-span-#{$i} {
+      grid-column: span $i;
+    }
+  }
+}
+
+// Helper classes for columns positioning
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+
+.col-end-1 { grid-column-end: 1; }
+.col-end-2 { grid-column-end: 2; }
+.col-end-3 { grid-column-end: 3; }
+.col-end-4 { grid-column-end: 4; }
+.col-end-5 { grid-column-end: 5; }
+.col-end-6 { grid-column-end: 6; }
+.col-end-7 { grid-column-end: 7; }
+.col-end-8 { grid-column-end: 8; }
+.col-end-9 { grid-column-end: 9; }
+.col-end-10 { grid-column-end: 10; }
+.col-end-11 { grid-column-end: 11; }
+.col-end-12 { grid-column-end: 12; }
+.col-end-13 { grid-column-end: 13; }

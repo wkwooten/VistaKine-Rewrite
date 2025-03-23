@@ -1,0 +1,119 @@
+// Animation utilities for VistaKine
+// These values are now defined in _variables.scss
+// $transition-fast: 150ms;
+// $transition-normal: 250ms;
+// $transition-slow: 350ms;
+// $transition-slower: 500ms;
+// $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Animation keyframes
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slide-out-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@keyframes slide-in-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slide-out-up {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+
+@keyframes slide-in-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slide-out-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// Animation utilities
+.transition-all {
+  transition-property: all;
+  transition-timing-function: $transition-bezier;
+  transition-duration: $transition-normal;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: $transition-bezier;
+  transition-duration: $transition-normal;
+}
+
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: $transition-bezier;
+  transition-duration: $transition-normal;
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: $transition-bezier;
+  transition-duration: $transition-normal;
+}
+
+// Duration utilities
+.duration-fast { transition-duration: $transition-fast; }
+.duration-normal { transition-duration: $transition-normal; }
+.duration-slow { transition-duration: $transition-slow; }
+.duration-slower { transition-duration: $transition-slower; }
+
+// Animation utilities
+.animate-fade-in { animation: fade-in $transition-normal forwards; }
+.animate-fade-out { animation: fade-out $transition-normal forwards; }
+.animate-slide-in-right { animation: slide-in-right $transition-normal forwards; }
+.animate-slide-out-right { animation: slide-out-right $transition-normal forwards; }
+.animate-slide-in-left { animation: slide-in-left $transition-normal forwards; }
+.animate-slide-out-left { animation: slide-out-left $transition-normal forwards; }
+.animate-slide-in-up { animation: slide-in-up $transition-normal forwards; }
+.animate-slide-out-up { animation: slide-out-up $transition-normal forwards; }
+.animate-slide-in-down { animation: slide-in-down $transition-normal forwards; }
+.animate-slide-out-down { animation: slide-out-down $transition-normal forwards; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+// Easing functions
+.ease-linear { transition-timing-function: linear; }
+.ease-in { transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+.ease-out { transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+.ease-in-out { transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }

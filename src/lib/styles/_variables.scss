@@ -1,0 +1,172 @@
+// Color Variables - Core
+$primary-color: #3b82f6;
+$text-color: #1f2937;
+$background-color: #F0F8FF;
+$sidebar-background: #f9fafb;
+$border-color: #1565C0;
+
+// Color Variables - Brand/Accent
+$brand-primary: #1E88E5;
+$brand-accent: #64B5F6;
+$brand-accent-dark: #1565C0;
+$brand-text-dark: #212121;
+$brand-text-light: #37474F;
+$brand-border: #64B5F6;
+$brand-hover-bg: rgba($brand-accent, 0.15);
+$brand-hover-color: #90CAF9;
+$brand-active-bg: rgba($brand-primary, 0.08);
+$brand-text-on-dark: #F0F8FF;
+$brand-text-error: #d32f2f;
+$brand-bg-error: rgba($brand-text-error, 0.1);
+$brand-border-error: rgba($brand-text-error, 0.3);
+
+// Link Colors
+$brand-link-color: #1976D2;
+$brand-link-color-hover: #1565C0;
+$brand-link-color-visited: #5E35B1;
+$brand-link-color-active: #0D47A1;
+
+
+// Typography
+$font-family-base: 'Inter', sans-serif;
+$font-family-heading: 'Instrument Sans', 'Inter', system-ui, sans-serif;
+
+// Breakpoints (matching Utopia setup)
+$min-viewport: 300px;
+$max-viewport: 1240px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// Transitions - Match with _animations.scss
+$transition-fast: 150ms;
+$transition-normal: 250ms;
+$transition-slow: 350ms;
+$transition-slower: 500ms;
+$transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Dimensions
+$max-content-width: 1000px;
+$wide-content-width: 1400px;
+$sidebar-width: 300px;
+$sidebar-collapsed-width: 10px;
+$sidebar-width-full: 300px; // Consider consolidating with $sidebar-width
+$sidebar-width-mini: 100px;
+$sidebar-transition-duration: $transition-normal;
+$sidebar-transition-timing: $transition-bezier;
+
+// Shadows
+$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 2px 10px rgba(0, 0, 0, 0.05);
+$shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+// UI States
+$state-selected-color: #007bff;
+
+// Cover-Specific
+$cover-gradient-start: $brand-accent-dark;
+$cover-gradient-end: $brand-primary;
+$cover-text: $brand-text-on-dark;
+$cover-text-secondary: rgba(255, 255, 255, 0.85);
+$cover-accent: $brand-accent;
+$cover-accent-glow: rgba($brand-accent, 0.7);
+$cover-heading-gradient-start: #ffffff;
+$cover-heading-gradient-end: rgba(255, 255, 255, 0.8);
+$cover-button-primary: $brand-primary;
+$cover-button-primary-hover: $brand-accent-dark;
+
+// Border radius - Migrated from old variables
+$radius-xs: 2px;
+$radius-sm: 4px;
+$radius-md: 6px;
+$radius-lg: 8px;
+$radius-xl: 12px;
+$radius-round: 50%;
+$radius-pill: 9999px;
+
+// Export as CSS variables
+:root {
+  --grid-line-color: #cce0ff; /* Light blue - adjust to your preference */
+  --background-color: #f8f9fa; /* Example light background */
+  --text-color: #333;        /* Example text color */
+  --font-family-base: 'Inter', sans-serif; /* Example font */
+
+  // Core colors
+  --primary-color: #{$primary-color};
+  --text-color: #{$text-color};
+  --background-color: #{$background-color};
+  --sidebar-background: #{$sidebar-background};
+  --border-color: #{$border-color};
+
+  // Typography
+  --font-family-base: #{$font-family-base};
+  --font-family-heading: #{$font-family-heading};
+
+  // Brand colors
+  --brand-primary: #{$brand-primary};
+  --brand-accent: #{$brand-accent};
+  --brand-accent-dark: #{$brand-accent-dark};
+  --brand-text-dark: #{$brand-text-dark};
+  --brand-text-light: #{$brand-text-light};
+  --brand-border: #{$brand-border};
+  --brand-hover-bg: #{$brand-hover-bg};
+  --brand-hover-color: #{$brand-hover-color};
+  --brand-active-bg: #{$brand-active-bg};
+  --brand-text-on-dark: #{$brand-text-on-dark};
+  --brand-text-error: #{$brand-text-error};
+  --brand-bg-error: #{$brand-bg-error};
+  --brand-border-error: #{$brand-border-error};
+
+  // Link colors
+  --link-color: #{$brand-link-color};
+  --link-color-hover: #{$brand-link-color-hover};
+  --link-color-visited: #{$brand-link-color-visited};
+  --link-color-active: #{$brand-link-color-active};
+
+
+  // Transitions
+  --transition-fast: #{$transition-fast};
+  --transition-normal: #{$transition-normal};
+  --transition-slow: #{$transition-slow};
+  --transition-slower: #{$transition-slower};
+  --transition-bezier: #{$transition-bezier};
+
+  // Dimensions
+  --max-content-width: #{$max-content-width};
+  --wide-content-width: #{$wide-content-width};
+  --sidebar-width: #{$sidebar-width};
+  --sidebar-collapsed-width: #{$sidebar-collapsed-width};
+  --sidebar-width-full: #{$sidebar-width-full};
+  --sidebar-width-mini: #{$sidebar-width-mini};
+  --sidebar-transition-duration: #{$sidebar-transition-duration};
+  --sidebar-transition-timing: #{$sidebar-transition-timing};
+
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+
+  // UI States
+  --state-selected-color: #{$state-selected-color};
+
+  // Cover specific
+  --cover-gradient: linear-gradient(135deg, #{$cover-gradient-start}, #{$cover-gradient-end});
+  --cover-text: #{$cover-text};
+  --cover-text-secondary: #{$cover-text-secondary};
+  --cover-accent: #{$cover-accent};
+  --cover-accent-glow: #{$cover-accent-glow};
+  --cover-heading-gradient: linear-gradient(90deg, #{$cover-heading-gradient-start}, #{$cover-heading-gradient-end});
+  --cover-button-primary: #{$cover-button-primary};
+  --cover-button-primary-hover: #{$cover-button-primary-hover};
+
+  // Border radius
+  --radius-xs: #{$radius-xs};
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --radius-round: #{$radius-round};
+  --radius-pill: #{$radius-pill};
+}
