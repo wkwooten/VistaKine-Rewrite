@@ -1,7 +1,7 @@
 <script>
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  import '$lib/styles/app.scss';
+  import '../app.scss';
   import Navigation from '$lib/components/Navigation.svelte';
   import { sidebarExpanded } from '$lib/stores/appState';
   import { parallaxBackground } from '$lib/scripts/parallax';
