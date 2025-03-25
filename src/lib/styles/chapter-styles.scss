@@ -1,3 +1,5 @@
+@import 'app';
+
 // Chapter 1 Styles
 .chapter.chapter-1-theme {
   --chapter-color: #10b981; // Teal/Green
@@ -79,13 +81,34 @@
     }
 }
 
-.content-section {
-    background-color: var(--chapter-section-bg); // Lighter background
-    h2 {
-        color: var(--chapter-section-bg);
-    }
+.chapter-section {
+	background-color: var(--chapter-section-bg); // Lighter background
 }
 
+.content-section {
+	scroll-margin-top: 2rem;
+	padding: var(--space-l);
+	border-bottom: none;
+	margin-bottom: var(--space-3xl);
+	box-shadow: var(--shadow-md);
+	background-image: linear-gradient(rgba(30, 100, 200, 0.05) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(30, 100, 200, 0.05) 1px, transparent 1px) !important;
+	border-radius: var(--radius-lg);
+	-webkit-border-radius: var(--radius-lg);
+	-moz-border-radius: var(--radius-lg);
+	-ms-border-radius: var(--radius-lg);
+	-o-border-radius: var(--radius-lg);
+
+	&:last-child {
+		border-bottom: none;
+	}
+
+	h2 {
+		font-size: var(--step-2);
+		margin-bottom: var(--space-m);
+		font-weight: bold;
+	}
+}
 
 .chapter {
 	display: grid;
@@ -143,25 +166,6 @@
 			content: "+ ";
 			margin-right: var(--space-xs);
 		}
-	}
-}
-
-.content-section {
-	scroll-margin-top: 2rem;
-	padding: var(--space-l);
-	border-bottom: none;
-	margin-bottom: var(--space-3xl); // Increased section spacing
-	border-radius: var(--radius-lg);
-	box-shadow: var(--shadow-md);
-
-	&:last-child {
-		border-bottom: none;
-	}
-
-	h2 {
-		font-size: var(--step-2);
-		margin-bottom: var(--space-m);
-		font-weight: bold;
 	}
 }
 

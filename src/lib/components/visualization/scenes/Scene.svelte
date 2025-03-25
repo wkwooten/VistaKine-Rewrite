@@ -11,6 +11,7 @@
   position={[10, 10, 10]}
 >
   <AudioListener />
+	<OrbitControls enableZoom={true} />
 </T.PerspectiveCamera>
 
 <T.DirectionalLight
@@ -22,5 +23,3 @@
 
 <Ground />
 <Box />
-
-<OrbitControls enableZoom={false} />

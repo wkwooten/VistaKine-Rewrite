@@ -12,9 +12,9 @@
     useCursor('grab')
   }}
   <AutoColliders shape={'cuboid'}>
-    <T.Mesh receiveShadow >
-      <T.BoxGeometry args={[10, 1, 10]} />
-      <T.MeshStandardMaterial />
+    <T.Mesh receiveShadow receiveLight>
+      <T.BoxGeometry args={[50, 1, 50]} />
+      <T.MeshStandardMaterial color={'#ffffff'} />
     </T.Mesh>
   </AutoColliders>
 </T.Group>

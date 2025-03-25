@@ -11,6 +11,7 @@
   import Footer from '$lib/components/Footer.svelte';
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
   import ChapterTemplate from '$lib/components/ChapterTemplate.svelte';
+  import { browser } from '$app/environment';
 
   // Import new components
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
@@ -21,10 +22,13 @@
 
   // Set the current chapter in the store
   onMount(() => {
-    currentChapter.set('understanding-3d-space');
-    return () => {
-      // Cleanup when component unmounts
-    };
+    if (browser) { // Only run on the client-side
+      const chapterSlug = 'understanding-3d-space';
+      currentChapter.set(chapterSlug);
+      return () => {
+        currentChapter.set(''); // Reset to a default/empty value.  Important!
+      }
+    }
   });
 
   // Handle section intersection
