@@ -14,6 +14,7 @@
     p {
       margin-bottom: var(--space-xs);
       font-style: italic;
+      color: var(--text-light);
 
       strong {
         font-weight: 600;

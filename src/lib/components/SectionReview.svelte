@@ -21,15 +21,25 @@
   }
 
   details {
+    margin-block: var(--space-m);
+    padding: var(--space-m);
     margin-bottom: var(--space-m);
   }
 
   summary {
     cursor: pointer;
     font-weight: 600;
+    margin-bottom: var(--space-s);
+    font-size: var(--step-1);
+    color: var(--primary-color);
 
     &:hover {
       color: var(--primary-color);
+    }
+
+    &::before {
+      content: "+ ";
+      margin-right: var(--space-xs);
     }
   }
 

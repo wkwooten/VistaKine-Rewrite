@@ -32,7 +32,7 @@
 <style lang="scss">
 
 	.visualization-container {
-		/* background-color: white; */
+		background-color: var(--background-color);
 		border-radius: var(--radius-lg);
 		max-height: 400px;
 		display: flex;

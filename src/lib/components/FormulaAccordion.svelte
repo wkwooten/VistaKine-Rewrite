@@ -14,14 +14,15 @@
   /* Styles for the formula accordion */
   .formula-accordion {
     margin-bottom: var(--space-m);
-    border-left: 3px solid var(--primary-color);
+    border-left: 3px solid var(--chapter-color, var(--primary-color));
     padding-left: var(--space-s);
   }
 
   .formula-content {
-    padding: var(--space-s);
+    padding: var(--space-m);
     margin-top: var(--space-xs);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
   }
 </style>

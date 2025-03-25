@@ -86,10 +86,10 @@
     }
   }
 
-  .chapter-header-separator {  /* CHAPTER HEADER SEPARATOR STYLES */
+  /* .chapter-header-separator {
     height: 4px;
-    background-color: var(--chapter-color-dark); /* Use chapter's dark color */
-    margin-bottom: var(--space-s); /* Add some space below */
-    border-radius: 2px; /* Rounded edges */
-  }
+    background-color: var(--chapter-color-dark);
+    margin-bottom: var(--space-s);
+    border-radius: 2px;
+  } */
 </style>

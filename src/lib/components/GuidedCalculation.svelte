@@ -18,6 +18,10 @@
     border-radius: var(--radius-sm);
     background-color: var(--bg-secondary);
 
+    p {
+      margin-bottom: var(--space-xs);
+    }
+
     form {
       margin-top: var(--space-s);
     }
