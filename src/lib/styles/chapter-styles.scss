@@ -1,19 +1,42 @@
-:root {
-	--chapter1-color: #10b981; // Teal/Green
-  --chapter1-color-light: #6ee7b7; // Lighter Teal
-  --chapter1-color-dark: #047857; // Darker Teal
-  --chapter1-bg: rgba(0, 255, 0, 0.05);
-	--chapter1-section-bg: white;
-
-  --chapter1-header-bg: color-mix(in srgb, var(--chapter1-color) 80%, black); // Darker mix
+// Chapter 1 Styles
+.chapter.chapter-1-theme {
+  --chapter-color: #10b981; // Teal/Green
+  --chapter-color-light: #6ee7b7; // Lighter Teal
+  --chapter-color-dark: #047857; // Darker Teal
+  --chapter-bg: rgba(0, 255, 0, 0.05);
+  --chapter-section-bg: white;
+  --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
 }
 
+// Chapter 2 Styles
+.chapter.chapter-2-theme {
+  --chapter-color: #007bff; // Blue
+  --chapter-color-light: #67b3ff; // Lighter Blue
+  --chapter-color-dark: #0056b3; // Darker Blue
+  --chapter-bg: rgba(0, 123, 255, 0.05); // Transparent Blue
+  --chapter-section-bg: white;
+  --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
+}
+
+// .chapter-1-theme {
+// 	--chapter-color: red;
+// 	--chapter-header-bg: lightcoral;
+// }
+
+// .chapter-2-theme {
+// 	--chapter-color: blue;
+// 	--chapter-header-bg: lightskyblue;
+// }
+
+// ... Add similar blocks for Chapter 3, Chapter 4, etc. ...
+
+// General Chapter Styles (styles that apply to all chapters, if any)
 .chapter-wrapper {
 	display: flex;
 	flex-direction: column;
-  border: 2px dashed var(--chapter1-color);
+  border: 2px dashed var(--chapter-color);
   border-width: 0 2px 2px 2px;
-  background-color: var(--chapter1-bg);
+  background-color: var(--chapter-bg);
   padding: var(--space-2xl) var(--space-l);
   border-radius: 0 0 var(--radius-lg);
   gap: var(--space-3xl);
@@ -26,7 +49,7 @@
 }
 
 .chapter-header {
-	background-color: var(--chapter1-header-bg); // Darker background
+	background-color: var(--chapter-header-bg); // Darker background
 	width: 100%; // Ensure it spans the full width
 	padding: var(--space-s) var(--space-s); // Padding
 	margin-top: var(--space-l); //Consistent margin
@@ -36,8 +59,8 @@
       font-size: var(--step-4);
       width: 100%;
       margin-bottom: 0;
-      color: white; // White text
-      // background-color: var(--chapter1-color); // Removed background from h1
+      color: var(--chapter-section-bg); // White text
+      // background-color: var(--chapter-color); // Removed background from h1
       padding: var(--space-l) var(--space-s);
       display: inline-block;
       border-radius: var(--radius-md) var(--radius-md) 0 0; // Rounded top corners only
@@ -45,10 +68,10 @@
       -moz-border-radius: var(--radius-md) var(--radius-md) 0 0;
       -ms-border-radius: var(--radius-md) var(--radius-md) 0 0;
       -o-border-radius: var(--radius-md) var(--radius-md) 0 0;
-      border-bottom: 2px solid white; // White line separator
+      border-bottom: 2px solid var(--chapter-section-bg); // White line separator
 }
      .chapter-intro {
-			color: white;
+			color: var(--chapter-section-bg);
       margin-block: var(--space-s);
 			font-size: var(--step-1); // Increased font size
 			padding-inline: var(--space-s);
@@ -57,9 +80,9 @@
 }
 
 .content-section {
-    background-color: var(--chapter1-section-bg); // Lighter background
+    background-color: var(--chapter-section-bg); // Lighter background
     h2 {
-        color: white;
+        color: var(--chapter-section-bg);
     }
 }
 
@@ -74,8 +97,8 @@
 }
 
 .section-title {
-	background-color: var(--chapter1-color);
-	color: white;
+	background-color: var(--chapter-color);
+	color: var(--chapter-section-bg);
 	padding: var(--space-xs) var(--space-s);
 	border-radius: var(--radius-md);
 }
@@ -231,7 +254,7 @@ form label {
 }
 
 .formula-accordion {
-	border-left: 3px solid var(--chapter1-color);
+	border-left: 3px solid var(--chapter-color);
 }
 
 .formula-content {

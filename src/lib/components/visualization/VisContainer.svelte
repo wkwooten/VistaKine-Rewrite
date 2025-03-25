@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Canvas } from '@threlte/core';
+	import { World } from '@threlte/rapier';
 	import type { Writable } from 'svelte/store';
-    export let currentSection : Writable<string>;
+  export let currentSection : Writable<string>;
 
 	let width: number;
 	let height: number;

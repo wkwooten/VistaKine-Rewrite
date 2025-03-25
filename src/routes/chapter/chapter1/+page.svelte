@@ -1,14 +1,23 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import { currentChapter, currentSection } from '$lib/stores/appState';
   import { intersect } from '$lib/utils/intersection';
   import { Canvas } from '@threlte/core';
-  import ThrelteTest from '$lib/components/visualization/ThrelteTest.svelte';
+  import Scene from '$lib/components/visualization/scenes/Scene.svelte';
   import VisContainer from '$lib/components/visualization/VisContainer.svelte';
   import { slide } from 'svelte/transition';
-  import '$lib/styles/chapter1.scss';
+  import '$lib/styles/chapter-styles.scss';
   import PageNav from '$lib/components/PageNav.svelte';
   import Footer from '$lib/components/Footer.svelte';
+  import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
+  import ChapterTemplate from '$lib/components/ChapterTemplate.svelte';
+
+  // Import new components
+  import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
+  import GuidedCalculation from '$lib/components/GuidedCalculation.svelte';
+  import SectionReview from '$lib/components/SectionReview.svelte';
+  import Quiz from '$lib/components/Quiz.svelte';
+  import Scenario from '$lib/components/Scenario.svelte';
 
   // Set the current chapter in the store
   onMount(() => {
@@ -19,26 +28,23 @@
   });
 
   // Handle section intersection
-  function handleSectionIntersect(event, sectionId) {
+  function handleSectionIntersect(event: any, sectionId: string) {
     if (event.detail.isIntersecting && event.detail.intersectionRatio > 0.3) {
       currentSection.set(sectionId);
     }
   }
 
-  // Use a type assertion for sections to silence TypeScript errors
-  const chapter1Sections = [
+  // Chapter 1 Sections Data
+  const chapterSections = [
     { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
     { id: "vectors-in-space", title: "1.2 Vectors in 3D Space" },
     { id: "reference-frames", title: "1.3 Reference Frames" }
   ];
 
-  // State for formula accordion
-  let showFormulas = false;
+  // Navigation Data
+  const prevChapter = '/chapter/toc';
+  const nextChapter = { slug: 'chapter2', title: 'Kinematics' };
 
-  const currentSectionIndex = 0;
-
-  const prevSection = currentSectionIndex > 0 ? chapter1Sections[currentSectionIndex - 1] : null;
-  const nextSection = currentSectionIndex < chapter1Sections.length - 1 ? chapter1Sections[currentSectionIndex + 1] : null;
 </script>
 
 <svelte:options namespace="html" />
@@ -47,15 +53,33 @@
   <title>Understanding 3D Space | VistaKine</title>
 </svelte:head>
 
-<PageNav {prevSection} {nextSection} />
+<ChapterTemplate
+  themeClass="chapter-1-theme"
+  chapterTitle="Chapter 1: Understanding 3D Space"
+  {chapterSections}
+  {prevChapter}
+  {nextChapter}
+  currentChapterSlug="understanding-3d-space"
 
-<div class="chapter">
+>
+
+<!--
+{chapterColor}
+{chapterColorLight}
+{chapterColorDark}
+{chapterSectionBg}
+{chapterHeaderBg}
+{chapterBg} -->
+
   <header class="chapter-header">
     <h1>Chapter 1: <br> Understanding 3D Space</h1>
     <p class="chapter-intro">
       This chapter introduces the fundamental concepts of three-dimensional space and
       coordinate systems, essential for understanding kinematics and dynamics.
     </p>
+
+    <!-- Add the optional header navigation -->
+    <ChapterHeaderNav chapterSections={chapterSections} />
   </header>
   <div class="chapter-wrapper">
     <div class="sections-content">
@@ -70,10 +94,10 @@
           <h2 class="section-title">1.1 Coordinate Systems</h2>
 
           <div class="section-intro">
-            <div class="scenario">
+            <Scenario>
               <p><strong>Ava:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>
               <p><strong>Leo:</strong> That's where coordinate systems come in! They're like a map for 3D space.</p>
-            </div>
+            </Scenario>
 
             <p>
               Coordinate systems are essential tools that allow us to precisely define the position of objects in space.  They provide a framework for describing locations using numerical coordinates.
@@ -87,16 +111,12 @@
           </div>
 
           <div class="section-core">
-            <details class="formula-accordion" open on:toggle={() => showFormulas = !showFormulas}>
-              <summary>Key Formulas</summary>
-              <div class="formula-content" transition:slide>
-                /* Placeholder for LaTeX formulas */
-                <p>Formulas will go here.</p>
-              </div>
-            </details>
+            <FormulaAccordion>
+              <p>Formulas will go here.</p>
+            </FormulaAccordion>
 
             <VisContainer {currentSection}>
-              <ThrelteTest />
+              <Scene />
             </VisContainer>
 
             <p>
@@ -106,29 +126,26 @@
               The x-axis usually represents horizontal movement, the y-axis represents vertical movement, and the z-axis represents depth, forming a right-handed coordinate system.
             </p>
             <p>
-              By combining coordinates along these axes – positive or negative distances from the origin – we can specify any point in 3D space, giving us a powerful way to describe and manipulate objects.
+              By combining coordinates along these axes – positive or negative distances from the origin – we can specify any point in 3D space, giving us a powerful way to describe and manipulate objects.
             </p>
           </div>
 
-          <div class="section-review">
-            <details>
-              <summary>Test Your Knowledge</summary>
-              <div class="quiz">
-                <p>Which axis represents depth in a 3D Cartesian coordinate system?</p>
-                <form>
-                  <label><input type="radio" name="q1" value="a"> x</label>
-                  <label><input type="radio" name="q1" value="b"> y</label>
-                  <label><input type="radio" name="q1" value="c"> z</label>
-                </form>
-                <p>If you move a point only along the y-axis, what changes?</p>
-                <form>
-                  <label><input type="radio" name="q2" value="a"> Its horizontal position</label>
-                  <label><input type="radio" name="q2" value="b"> Its vertical position</label>
-                  <label><input type="radio" name="q2" value="c"> Its depth</label>
-                </form>
-              </div>
-            </details>
-          </div>
+          <SectionReview>
+            <Quiz>
+              <p>Which axis represents depth in a 3D Cartesian coordinate system?</p>
+              <form>
+                <label><input type="radio" name="q1" value="a"> x</label>
+                <label><input type="radio" name="q1" value="b"> y</label>
+                <label><input type="radio" name="q1" value="c"> z</label>
+              </form>
+              <p>If you move a point only along the y-axis, what changes?</p>
+              <form>
+                <label><input type="radio" name="q2" value="a"> Its horizontal position</label>
+                <label><input type="radio" name="q2" value="b"> Its vertical position</label>
+                <label><input type="radio" name="q2" value="c"> Its depth</label>
+              </form>
+            </Quiz>
+          </SectionReview>
         </div>
       </section>
 
@@ -143,10 +160,10 @@
           <h2 class="section-title">1.2 Vectors in 3D Space</h2>
 
           <div class="section-intro">
-            <div class="scenario">
+            <Scenario>
               <p><strong>Ava:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of vectors.</p>
               <p><strong>Leo:</strong> Vectors are perfect for that! They tell the arm both how far to move and in what direction.</p>
-            </div>
+            </Scenario>
 
             <div class="section-content">
               <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
@@ -155,16 +172,12 @@
           </div>
 
           <div class="section-core">
-            <details open on:toggle={() => showFormulas = !showFormulas}>
-              <summary>Key Formulas</summary>
-              <div class="formula-content" transition:slide>
-                /* Placeholder for LaTeX formulas */
-                <p>Formulas will go here.</p>
-              </div>
-            </details>
+            <FormulaAccordion>
+              <p>Formulas will go here.</p>
+            </FormulaAccordion>
 
             <VisContainer {currentSection}>
-              <ThrelteTest />
+              <Scene />
             </VisContainer>
 
             <div class="section-content">
@@ -179,51 +192,45 @@
               </p>
             </div>
 
-            <details>
-              <summary>Guided Calculation</summary>
-              <div class="calculation">
-                <p>The initial velocity of the soccer ball is 50 m/s at an angle of 30 degrees above the horizontal.</p>
-                <form>
-                  <label>
-                    1. What is the horizontal component of the velocity? (Vx = V * cos(θ))<br>
-                    Vx = <input type="number" name="vx"> m/s
-                  </label>
-                  <label>
-                    2. What is the vertical component of the velocity? (Vy = V * sin(θ))<br>
-                    Vy = <input type="number" name="vy"> m/s
-                  </label>
-                  <label>
-                    3. Assuming no air resistance, how long will the ball be in the air? (t = 2 * Vy / g, where g = 9.8 m/s²)<br>
-                    t = <input type="number" name="t"> s
-                  </label>
-                  <label>
-                    4. How far will the ball travel horizontally? (Range = Vx * t)<br>
-                    Range = <input type="number" name="range"> m
-                  </label>
-                </form>
-              </div>
-            </details>
+            <GuidedCalculation>
+              <p>The initial velocity of the soccer ball is 50 m/s at an angle of 30 degrees above the horizontal.</p>
+              <form>
+                <label>
+                  1. What is the horizontal component of the velocity? (Vx = V * cos(θ))<br>
+                  Vx = <input type="number" name="vx"> m/s
+                </label>
+                <label>
+                  2. What is the vertical component of the velocity? (Vy = V * sin(θ))<br>
+                  Vy = <input type="number" name="vy"> m/s
+                </label>
+                <label>
+                  3. Assuming no air resistance, how long will the ball be in the air? (t = 2 * Vy / g, where g = 9.8 m/s²)<br>
+                  t = <input type="number" name="t"> s
+                </label>
+                <label>
+                  4. How far will the ball travel horizontally? (Range = Vx * t)<br>
+                  Range = <input type="number" name="range"> m
+                </label>
+              </form>
+            </GuidedCalculation>
           </div>
 
-          <div class="section-review">
-            <details>
-              <summary>Test Your Knowledge</summary>
-              <div class="quiz">
-                <p>A vector pointing directly upwards has:</p>
-                <form>
-                  <label><input type="radio" name="q3" value="a"> Only magnitude</label>
-                  <label><input type="radio" name="q3" value="b"> Only direction</label>
-                  <label><input type="radio" name="q3" value="c"> Both magnitude and direction</label>
-                </form>
-                <p>If you double the magnitude of a vector, what happens to its length?</p>
-                <form>
-                  <label><input type="radio" name="q4" value="a"> It halves</label>
-                  <label><input type="radio" name="q4" value="b"> It doubles</label>
-                  <label><input type="radio" name="q4" value="c"> It stays the same</label>
-                </form>
-              </div>
-            </details>
-          </div>
+          <SectionReview>
+            <Quiz>
+              <p>A vector pointing directly upwards has:</p>
+              <form>
+                <label><input type="radio" name="q3" value="a"> Only magnitude</label>
+                <label><input type="radio" name="q3" value="b"> Only direction</label>
+                <label><input type="radio" name="q3" value="c"> Both magnitude and direction</label>
+              </form>
+              <p>If you double the magnitude of a vector, what happens to its length?</p>
+              <form>
+                <label><input type="radio" name="q4" value="a"> It halves</label>
+                <label><input type="radio" name="q4" value="b"> It doubles</label>
+                <label><input type="radio" name="q4" value="c"> It stays the same</label>
+              </form>
+            </Quiz>
+          </SectionReview>
         </div>
       </section>
 
@@ -238,17 +245,14 @@
           <h2 class="section-title">1.3 Reference Frames</h2>
 
           <div class="section-intro">
-            <div class="scenario">
+            <Scenario>
               <p><strong>Ava:</strong> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
               <p><strong>Leo:</strong> That's because you're seeing it from a different reference frame! It's like watching someone walk on a moving train.</p>
-            </div>
-            <details open on:toggle={() => showFormulas = !showFormulas}>
-              <summary>Key Formulas</summary>
-              <div class="formula-content" transition:slide>
-                /* Placeholder for LaTeX formulas */
-                <p>Formulas will go here.</p>
-              </div>
-            </details>
+            </Scenario>
+
+            <FormulaAccordion>
+              <p>Formulas will go here.</p>
+            </FormulaAccordion>
           </div>
 
           <div class="section-core">
@@ -264,7 +268,7 @@
             </div>
 
             <VisContainer {currentSection}>
-              <ThrelteTest/>
+              <Scene/>
             </VisContainer>
 
             <div class="section-content">
@@ -280,12 +284,13 @@
             </div>
           </div>
 
-          <div class="section-review">
-          </div>
+          <SectionReview>
+            <!-- Empty for now, will be filled in later -->
+          </SectionReview>
         </div>
       </section>
     </div>
   </div>
-  <PageNav {prevSection} {nextSection} />
+  <PageNav {prevChapter} {nextChapter} />
   <Footer />
-</div>
+</ChapterTemplate>

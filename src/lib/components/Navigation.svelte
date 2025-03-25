@@ -7,6 +7,11 @@
     { title: 'Introduction', slug: 'chapter1' },
     { title: 'Kinematics', slug: 'chapter2' },
     { title: 'Dynamics', slug: 'chapter3' },
+    { title: 'Advanced Topics', slug: 'chapter4' },
+    { title: 'Motion Analysis', slug: 'chapter5' },
+    { title: 'Biomechanics', slug: 'chapter6' },
+    { title: 'Clinical Applications', slug: 'chapter7' },
+    { title: 'Research Methods', slug: 'chapter8' },
     // Add more chapters as needed
   ];
 
@@ -35,7 +40,30 @@
       { id: "dynamics-section1", title: "3.1 Dynamics Section 1" },
       // ... more sections for Dynamics
     ],
-    // ... sections for other chapters
+    'chapter4': [ // Advanced Topics chapter
+      { id: "advanced-section1", title: "4.1 Advanced Topic 1 - Placeholder" },
+      { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" },
+      // ... more sections for Advanced Topics
+    ],
+    'chapter5': [ // Motion Analysis chapter
+      { id: "motion-analysis-section1", title: "5.1 Motion Analysis 1 - Placeholder" },
+      { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" },
+      // ... more sections for Motion Analysis
+    ],
+    'chapter6': [ // Biomechanics chapter
+      { id: "biomechanics-section1", title: "6.1 Biomechanics 1 - Placeholder" },
+      { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" },
+      // ... more sections for Biomechanics
+    ],
+    'chapter7': [ // Clinical Applications chapter
+      { id: "clinical-section1", title: "7.1 Clinical Applications 1 - Placeholder" },
+      { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" },
+      // ... more sections for Clinical Applications
+    ],
+    'chapter8': [ // Research Methods chapter
+      { id: "research-section1", title: "8.1 Research Methods 1 - Placeholder" },
+      { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
+    ]
   };
 
   // Common size for all icons
@@ -104,79 +132,84 @@
       </div>
     {/if}
   </div>
-  <ul class="nav-items">
-    <li>
-      <a href="/chapter/toc" class="nav-item">
-        <div class="icon">
-          <BookOpen size={iconSize} />
-        </div>
-        {#if $sidebarExpanded}
-          <span>Chapters</span>
-        {/if}
-      </a>
-    </li>
 
-    {#each chapters as chapter, index}
+  <div class="nav-content">
+    <ul class="nav-items">
       <li>
-        <div class="nav-item chapter-item">
-          <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(!$sidebarExpanded) {toggleSidebar()}}}">{index + 1}</a>
+        <a href="/chapter/toc" class="nav-item">
+          <div class="icon">
+            <BookOpen size={iconSize} />
+          </div>
           {#if $sidebarExpanded}
-            <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
-            <div class="chevron" class:expanded={expandedChapter === chapter.slug} on:click={() => toggleChapterSections(chapter.slug)}>
-              <ChevronRight size={iconSize} />
-            </div>
+            <span>Chapters</span>
           {/if}
-        </div>
-        {#if $sidebarExpanded && expandedChapter === chapter.slug}
-          <ul class="chapter-sections">
-            {#each chapterSections[chapter.slug] || [] as section}
-              <li class="section-item">
-                <a
-                  href={`/chapter/${chapter.slug}#${section.id}`}
-                  class="nav-item section-link"
-                  on:click|preventDefault={() => handleSectionClick(chapter.slug, section.id)}
-                >
-                  {#if $sidebarExpanded}
-                    <span>{section.title}</span>
-                  {/if}
-                </a>
-              </li>
-            {/each}
-          </ul>
-        {/if}
+        </a>
       </li>
-    {/each}
 
-    <li class="bottom-item">
-      <a href="/settings" class="nav-item">
-        <div class="icon">
-          <Settings size={iconSize} />
-        </div>
-        {#if $sidebarExpanded}
-          <span>Settings</span>
-        {/if}
-      </a>
-    </li>
-  </ul>
-  <button class="toggle-btn" on:click={toggleSidebar}>
-    {#if $sidebarExpanded}
-      «
-    {:else}
-      »
-    {/if}
-  </button>
+      {#each chapters as chapter, index}
+        <li>
+          <div class="nav-item chapter-item">
+            <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(!$sidebarExpanded) {toggleSidebar()}}}">{index + 1}</a>
+            {#if $sidebarExpanded}
+              <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
+              <div class="chevron" class:expanded={expandedChapter === chapter.slug} on:click={() => toggleChapterSections(chapter.slug)}>
+                <ChevronRight size={iconSize} />
+              </div>
+            {/if}
+          </div>
+          {#if $sidebarExpanded && expandedChapter === chapter.slug}
+            <ul class="chapter-sections">
+              {#each chapterSections[chapter.slug] || [] as section}
+                <li class="section-item">
+                  <a
+                    href={`/chapter/${chapter.slug}#${section.id}`}
+                    class="nav-item section-link"
+                    on:click|preventDefault={() => handleSectionClick(chapter.slug, section.id)}
+                  >
+                    {#if $sidebarExpanded}
+                      <span>{section.title}</span>
+                    {/if}
+                  </a>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </li>
+      {/each}
+
+    </ul>
+  </div>
+
+  <li class="bottom-item">
+    <a href="/settings" class="nav-item">
+      <div class="icon">
+        <Settings size={iconSize} />
+      </div>
+      {#if $sidebarExpanded}
+        <span>Settings</span>
+      {/if}
+    </a>
+  </li>
 </nav>
+<button class="toggle-btn" on:click={toggleSidebar}>
+  {#if $sidebarExpanded}
+    «
+  {:else}
+    »
+  {/if}
+</button>
 
 
 <style lang="scss">
   nav {
-    height: 100%;
+    height: 100vh;
     background-color: var(--sidebar-background);
     transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
     position: relative;
+    overflow: hidden;
 
     &.collapsed {
       .nav-item {
@@ -279,7 +312,7 @@
     border-bottom: 2px solid var(--border-color);
     display: flex;
     justify-content: center;
-    margin-bottom: var(--space-m);
+    /* margin-bottom: var(--space-m); */
   }
 
   .search-input-container {
@@ -313,13 +346,19 @@
     align-items: center;
   }
 
+  .nav-content {
+    overflow-y: auto;
+    height: 100%;
+  }
+
   .nav-items {
     list-style: none;
     padding: 0;
     margin: 0;
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    gap: var(--space-s);
+    padding-bottom: var(--space-l);
   }
 
   .nav-items li {

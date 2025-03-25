@@ -1,20 +1,35 @@
 <script>
-    // You can add logic here later to dynamically determine previous/next sections
-    export let prevSection = null;
-    export let nextSection = null;
+    // Changed to accept chapter data instead of section data
+    export let prevChapter = null;
+    export let nextChapter = null;
 </script>
 
 <nav class="page-nav">
     <div class="nav-links">
-        {#if prevSection}
-            <a href={`#{prevSection.id}`} class="nav-link prev">
-                <span class="arrow">&larr;</span>
-                Previous: {prevSection.title}
-            </a>
+        {#if prevChapter}
+            {#if typeof prevChapter === 'string'}
+                <!-- If prevChapter is a string (URL), link directly -->
+                <a href={prevChapter} class="nav-link prev">
+                    <span class="arrow">&larr;</span>
+                    Table of Contents
+                </a>
+            {:else}
+                <!-- Default: prevChapter is a chapter object -->
+                <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
+                    <span class="arrow">&larr;</span>
+                    Previous Chapter: {prevChapter.title}
+                </a>
+            {/if}
         {/if}
-        {#if nextSection}
-            <a href={`#{nextSection.id}`} class="nav-link next">
-                Next: {nextSection.title}
+
+        <!-- Table of Contents link in the middle -->
+        <a href="/chapter/toc" class="nav-link toc">
+            Table of Contents
+        </a>
+
+        {#if nextChapter}
+            <a href={`/chapter/${nextChapter.slug}`} class="nav-link next">
+                Next Chapter: {nextChapter.title}
                 <span class="arrow">&rarr;</span>
             </a>
         {/if}
@@ -56,6 +71,10 @@
 
         &.next {
             justify-content: flex-end;
+        }
+
+        &.toc {
+            justify-content: center;
         }
 
         .arrow {

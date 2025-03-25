@@ -1,0 +1,1 @@
+<h1>Placeholder Content for Chapter 7</h1>

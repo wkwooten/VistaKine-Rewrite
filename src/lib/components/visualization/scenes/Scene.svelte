@@ -1,16 +1,15 @@
 <script lang="ts">
   import { T } from '@threlte/core'
   import { OrbitControls, AudioListener } from '@threlte/extras'
-  import { Debug } from '@threlte/rapier'
-  import Ground from './Ground.svelte'
-	import Box from './Box.svelte'
+  // import { Debug } from '@threlte/rapier'
+  import Ground from '../elements/constructs/Ground.svelte'
+	import Box from '../elements/constructs/Box.svelte'
 </script>
 
 <T.PerspectiveCamera
   makeDefault
   position={[10, 10, 10]}
 >
-  <OrbitControls enableZoom={false} />
   <AudioListener />
 </T.PerspectiveCamera>
 
@@ -23,3 +22,5 @@
 
 <Ground />
 <Box />
+
+<OrbitControls enableZoom={false} />

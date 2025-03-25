@@ -21,9 +21,9 @@
 
   // Available themes (you can expand this)
   const themes = [
-    { name: 'Default', value: null },
+    { name: 'Blueprint (light)', value: 'blueprint (light)' },
+    { name: 'Chalkboard (dark)', value: 'chalkboard' },
     { name: 'Blueprint', value: 'blueprint' },
-    { name: 'Chalkboard', value: 'chalkboard' },
     // Add more themes here
   ];
 </script>

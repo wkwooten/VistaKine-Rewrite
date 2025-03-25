@@ -1,5 +1,5 @@
 <script>
-  import { page } from '$app/stores';
+  // import { page } from '$app/stores';
 
   // This matches the structure from Navigation.svelte
   const chapters = [
@@ -25,6 +25,46 @@
       slug: 'chapter3',
       sections: [
         { id: "dynamics-section1", title: "3.1 Dynamics Section 1" }
+      ]
+    },
+    {
+      title: 'Advanced Topics',
+      slug: 'chapter4',
+      sections: [
+        { id: "advanced-section1", title: "4.1 Advanced Topic 1 - Placeholder" },
+        { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" }
+      ]
+    },
+    {
+      title: 'Motion Analysis',
+      slug: 'chapter5',
+      sections: [
+        { id: "motion-analysis-section1", title: "5.1 Motion Analysis 1 - Placeholder" },
+        { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" }
+      ]
+    },
+    {
+      title: 'Biomechanics',
+      slug: 'chapter6',
+      sections: [
+        { id: "biomechanics-section1", title: "6.1 Biomechanics 1 - Placeholder" },
+        { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" }
+      ]
+    },
+    {
+      title: 'Clinical Applications',
+      slug: 'chapter7',
+      sections: [
+        { id: "clinical-section1", title: "7.1 Clinical Applications 1 - Placeholder" },
+        { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" }
+      ]
+    },
+    {
+      title: 'Research Methods',
+      slug: 'chapter8',
+      sections: [
+        { id: "research-section1", title: "8.1 Research Methods 1 - Placeholder" },
+        { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
       ]
     }
   ];
