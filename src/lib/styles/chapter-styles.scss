@@ -91,6 +91,7 @@
 	border-bottom: none;
 	margin-bottom: var(--space-3xl);
 	box-shadow: var(--shadow-md);
+	background-color: var(--background-color);
 	background-image: linear-gradient(rgba(30, 100, 200, 0.05) 1px, transparent 1px),
 		linear-gradient(90deg, rgba(30, 100, 200, 0.05) 1px, transparent 1px) !important;
 	border-radius: var(--radius-lg);
