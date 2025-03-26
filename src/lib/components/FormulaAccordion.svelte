@@ -4,7 +4,7 @@
 </script>
 
 <details class="formula-accordion" open on:toggle={() => showFormulas = !showFormulas}>
-  <summary>Key Formulas</summary>
+  <summary class="formula-header">Key Formulas</summary>
   <div class="formula-content" transition:slide>
     <slot />
   </div>
@@ -24,5 +24,10 @@
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
+  }
+
+  .formula-header {
+    font-size: var(--step-1);
+    font-weight: 600;
   }
 </style>

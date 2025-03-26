@@ -173,6 +173,12 @@ $radius-pill: 9999px;
   --cover-button-primary: #{$cover-button-primary};
   --cover-button-primary-hover: #{$cover-button-primary-hover};
 
+  // Glassmorphism
+  --glass-bg-color: rgba(255, 255, 255, 0.25); /* Increased opacity */
+  --glass-backdrop-blur: blur(8px);
+  --glass-border-color: rgba(255, 255, 255, 0.3); /* Increased opacity */
+  --glass-border: 1px solid var(--glass-border-color);
+
   // Border radius
   --radius-xs: #{$radius-xs};
   --radius-sm: #{$radius-sm};

@@ -33,7 +33,9 @@
 
 	.visualization-container {
 		background-color: var(--background-color);
-		border-radius: var(--radius-lg);
+		/* border-radius: var(--radius-lg); */
+		margin-block: var(--space-xl);
+		border: 1px solid var(--border-color);
 		max-height: 400px;
 		display: flex;
 		align-items: center;
@@ -52,7 +54,7 @@
 			width: 100vw;
 			height: 100vh;
 			max-height: none;
-			z-index: 1000; /* Ensure it's on top */
+			z-index: 1002; /* Ensure it's on top */
 		}
 	}
 
@@ -75,7 +77,8 @@
 	}
 
 	:global(.ui-container .toolbar-main) {
-		margin-bottom: 1rem; /* Add some margin at the bottom */
+		margin-top: auto; /* Push toolbar to bottom */
+		margin-bottom: 1rem; /* Keep some spacing from bottom edge */
 		align-self: center;
 	}
 	:global(.ui-container .fullscreen-button) {

@@ -273,7 +273,7 @@
 
   nav {
     height: 100vh;
-    background-color: var(--sidebar-background);
+    background-color: var(--background-color);
     /* Define transitions for relevant properties */
     /* Remove width and transform transitions here, handled by parent grid */
     /* transition: width 0.3s ease, transform 0.4s ease; */

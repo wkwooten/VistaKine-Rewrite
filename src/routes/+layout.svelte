@@ -156,7 +156,7 @@
   .content {
     height: 100%;
     overflow-y: auto;
-    padding: var(--space-m);
+    padding-inline: var(--space-m);
   }
 
   @media (max-width: 768px) {

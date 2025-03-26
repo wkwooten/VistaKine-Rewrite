@@ -39,18 +39,26 @@
 <style>
 	.fullscreen-button {
 		padding: var(--space-xs-s); /* Use Utopia fluid spacing */
-		border: none;
+		/* border: none; */ /* Remove or adjust border */
 		border-radius: var(--radius-sm); /* Use variable for radius */
-		background-color: var(--brand-primary); /* Use brand color */
-		color: var(--brand-text-on-dark); /* Use appropriate text color */
+		/* background-color: var(--brand-primary); */ /* Original background */
+		color: var(--primary-color); /* Use appropriate text color */
 		cursor: pointer;
-		transition: background-color var(--transition-normal) var(--transition-bezier); /* Smooth transition */
+		transition: background-color var(--transition-normal) var(--transition-bezier), border-color var(--transition-normal) var(--transition-bezier); /* Smooth transition - Added border-color */
 		display: flex; /* Use flex to center the icon */
 		align-items: center;
 		justify-content: center;
 
+		/* Glassmorphism */
+		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
+		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
+		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
+		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
+
+
 		&:hover {
-			background-color: var(--brand-hover-bg); /* Hover effect */
+			/* Adjust hover if needed - maybe slightly less transparent */
+			background-color: var(--brand-hover-bg); /* Revert to original hover or adjust */
 			color: var(--brand-hover-color)
 		}
 

@@ -78,6 +78,7 @@
   margin-bottom: var(--space-3xl);
   box-shadow: var(--shadow-md);
   background-color: var(--background-color);
+  background-size: 20px 20px;
   background-image: linear-gradient(rgba(30, 100, 200, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(30, 100, 200, 0.05) 1px, transparent 1px) !important;
   border-radius: var(--radius-lg);
@@ -155,24 +156,6 @@
     margin-bottom: var(--space-m);
     line-height: 1.7;
   }
-}
-
-.visualization-container {
-  background-color: transparent;
-  border-radius: var(--radius-lg);
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-md);
-}
-
-.placeholder-viz {
-  color: var(--text-color);
-  opacity: 0.5;
-  font-style: italic;
-  padding: var(--space-xl);
-  text-align: center;
 }
 
 /* Media Queries */
