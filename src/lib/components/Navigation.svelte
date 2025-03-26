@@ -306,6 +306,7 @@
     padding: var(--space-xs) 0;
     position: fixed; /* Fixed position */
     top: 0;
+    border-right: 1.5px solid var(--border-color);
     left: 0;
     z-index: 1001; /* Ensure it's above other content */
     overflow: hidden;
@@ -355,7 +356,6 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-xs) var(--space-s);
-    border-bottom: 1px solid var(--border-color);
     position: relative; /* Make the nav-header a positioning context */
   }
   .nav-header:hover {
@@ -429,7 +429,7 @@
 
   .search {
     padding: var(--space-xs);
-    border-bottom: 2px solid var(--border-color);
+    border-block: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
     /* margin-bottom: var(--space-m); */
