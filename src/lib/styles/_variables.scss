@@ -4,6 +4,8 @@ $text-color: #1f2937;
 $background-color: #F0F8FF;
 $sidebar-background: #f9fafb;
 $border-color: #1565C0;
+// Add a lighter border color, e.g., a semi-transparent version of text color
+$border-color-light: rgba($text-color, 0.2);
 
 // Color Variables - Brand/Accent
 $brand-primary: #1E88E5;
@@ -60,7 +62,7 @@ $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 $max-content-width: 1000px;
 $wide-content-width: 1400px;
 $sidebar-width: 300px;
-$sidebar-collapsed-width: 10px;
+$sidebar-collapsed-width: 80px;
 $sidebar-width-full: 300px; // Consider consolidating with $sidebar-width
 $sidebar-width-mini: 100px;
 $sidebar-transition-duration: $transition-normal;
@@ -108,6 +110,7 @@ $radius-pill: 9999px;
   --background-color: #{$background-color};
   --sidebar-background: #{$sidebar-background};
   --border-color: #{$border-color};
+  --border-color-light: #{$border-color-light};
 
   // Typography
   --font-family-base: #{$font-family-base};

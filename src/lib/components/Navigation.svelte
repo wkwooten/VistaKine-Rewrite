@@ -275,24 +275,28 @@
     height: 100vh;
     background-color: var(--sidebar-background);
     /* Define transitions for relevant properties */
-    transition: width 0.3s ease, transform 0.4s ease; /* Add transform transition */
+    /* Remove width and transform transitions here, handled by parent grid */
+    /* transition: width 0.3s ease, transform 0.4s ease; */
+    transition: transform 0.4s ease; /* Keep only transform for mobile */
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
-    position: fixed; /* Fixed position */
+    /* Remove position: fixed, handled by parent */
+    /* position: fixed; */
     top: 0;
     border-right: 1.5px solid var(--border-color);
     left: 0;
     z-index: 1001; /* Ensure it's above other content */
     overflow: hidden; /* Keep this */
-    /* Set default width for desktop */
+    /* Remove explicit width, let grid control it */
     /* width: var(--sidebar-width); */
-    width: 300px;
+    /* width: 300px; */
+    width: 100%; /* Fill the grid cell */
     box-sizing: border-box;
 
     &.collapsed {
-      /* Apply desktop collapsed width */
-      width: var(--sidebar-width-collapsed);
+      /* Remove desktop collapsed width, grid handles this */
+      /* width: var(--sidebar-width-collapsed); */
 
       .nav-item {
         justify-content: center;
@@ -323,11 +327,18 @@
     /* &.mobile-open { ... } */
 
     @media (max-width: 768px) {
+      /* --- Add mobile positioning back --- */
+      position: fixed; /* Position fixed for slide-out */
+      top: 0;
+      left: 0;
+      height: 100vh; /* Ensure it takes full height */
+      z-index: 1001; /* Ensure it's above other content */
+      /* --- End additions --- */
+
       /* Mobile base state: Full width but off-screen */
       width: 100vw;
       max-width: none;
       transform: translateX(-100%);
-      /* Ensure mobile transition overrides desktop if needed, though base should be fine */
       transition: transform 0.4s ease; /* Focus on transform */
 
 
@@ -338,7 +349,8 @@
 
       /* Prevent desktop collapsed styles from breaking mobile */
       &.collapsed {
-         width: 100vw; /* Keep full width */
+         /* Ensure full width even if desktop is collapsed */
+         width: 100vw;
          /* Reset specific desktop collapsed styles */
          .nav-item {
             justify-content: flex-start; /* Or initial value */
@@ -462,7 +474,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-s);
-    padding-bottom: var(--space-l);
+    padding-block: var(--space-l);
   }
 
   .nav-items li {

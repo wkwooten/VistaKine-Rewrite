@@ -1,14 +1,47 @@
-<script>
+<script lang="ts">
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import '../app.scss';
   import Navigation from '$lib/components/Navigation.svelte';
   import { sidebarExpanded } from '$lib/stores/appState';
   import { parallaxBackground } from '$lib/scripts/parallax';
 
+  let toggleButtonElement: HTMLButtonElement;
+  let highlightTimeout: number | null = null;
+
   onMount(() => {
     parallaxBackground();
+    return () => {
+      if (highlightTimeout) {
+        clearTimeout(highlightTimeout);
+      }
+    };
   });
+
+  function handleClick() {
+    $sidebarExpanded = !$sidebarExpanded;
+    if (toggleButtonElement) {
+      if (highlightTimeout) {
+        clearTimeout(highlightTimeout);
+        console.log('handleClick: Cleared previous timeout');
+      }
+      toggleButtonElement.classList.remove('fade-out-highlight');
+
+      console.log('handleClick: Adding click-highlighted');
+      toggleButtonElement.classList.add('click-highlighted');
+
+      highlightTimeout = window.setTimeout(() => {
+        console.log('Timeout: Attempting to remove click-highlighted');
+        if (toggleButtonElement) {
+          toggleButtonElement.classList.remove('click-highlighted');
+          console.log('Timeout: Class removed. Current classes:', toggleButtonElement.classList.toString());
+        } else {
+          console.log('Timeout: toggleButtonElement gone?');
+        }
+        highlightTimeout = null;
+      }, 600);
+    }
+  }
 </script>
 
 <div class="parallax-background">
@@ -23,12 +56,13 @@
   </svg>
 </div>
 
-<div class="app-container" class:sidebar-collapsed={!$sidebarExpanded}>
-  <aside class="navigation">
+<div class="app-container">
+  <aside class="navigation" class:collapsed={!$sidebarExpanded}>
     <Navigation />
     <button
+      bind:this={toggleButtonElement}
       class="sidebar-toggle-bar"
-      on:click={() => ($sidebarExpanded = !$sidebarExpanded)}
+      on:click={handleClick}
       aria-label="Toggle Sidebar"
       title="Toggle Sidebar"
     ></button>
@@ -41,46 +75,77 @@
 
 <style lang="scss">
   .app-container {
-    display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr;
     height: 100vh;
     width: 100%;
-    transition: grid-template-columns 0.3s ease;
     position: relative;
     z-index: 2;
-
-    &.sidebar-collapsed {
-      grid-template-columns: var(--sidebar-width-collapsed) 1fr;
-    }
   }
 
   .navigation {
-    height: 100%;
-    position: relative;
-    border-right: 1px solid var(--border-color);
-    transition: width 0.3s ease;
-    width: var(--sidebar-width);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 300px 10px;
+    transition: grid-template-columns 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+    z-index: 1001;
 
-    .sidebar-collapsed & {
-      width: var(--sidebar-width-collapsed);
+    &.collapsed {
+      grid-template-columns: 80px 10px;
+
+      .sidebar-toggle-bar::before {
+        background-color: var(--border-color-light);
+      }
+
+      .sidebar-toggle-bar:hover::before {
+        background-color: var(--primary-color);
+      }
+
+      .sidebar-toggle-bar.click-highlighted::before {
+        background-color: var(--primary-color);
+      }
+    }
+
+    @media (max-width: 768px) {
+      display: block;
+      position: static;
+      height: auto;
+      width: auto;
+      z-index: auto;
+      grid-template-columns: none;
+      transition: none;
     }
   }
 
   .sidebar-toggle-bar {
-    position: fixed;
-    top: 0;
-    height: 100vh;
-    left: var(--sidebar-width);
-    z-index: 1002;
-    width: 10px;
-    background-color: var(--border-color);
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
     border: none;
     cursor: pointer;
     padding: 0;
-    transition: left 0.3s ease, background-color 0.2s ease;
+    position: relative;
 
-    &:hover {
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      left: 0;
+      background-color: var(--border-color-light);
+      transition: background-color 0.3s ease-out;
+      pointer-events: none;
+    }
+
+    &:hover::before {
       background-color: var(--primary-color);
+    }
+
+    &.click-highlighted::before {
+      background-color: var(--primary-color);
+      transition-duration: 0s;
     }
 
     @media (max-width: 768px) {
@@ -88,41 +153,14 @@
     }
   }
 
-  .app-container.sidebar-collapsed .sidebar-toggle-bar {
-    left: var(--sidebar-width-collapsed);
-  }
-
   .content {
     height: 100%;
     overflow-y: auto;
     padding: var(--space-m);
-    margin-left: calc(var(--sidebar-width) + 10px);
-    transition: margin-left 0.3s ease;
-  }
-
-  .app-container.sidebar-collapsed .content {
-    margin-left: calc(var(--sidebar-width-collapsed) + 10px);
   }
 
   @media (max-width: 768px) {
-    .app-container {
-      display: block;
-
-      &.sidebar-collapsed {
-        display: block;
-      }
-    }
-
-    .navigation {
-      /* Navigation styles are handled within Navigation.svelte for mobile */
-      /* Remove layout-specific overrides */
-       /* border-right: none; */
-       /* width: auto; */
-    }
-
-    .content {
-      margin-left: 0;
-      padding: var(--space-m);
-    }
+    .app-container { display: block; }
+    .content { margin-left: 0; padding: var(--space-m); }
   }
 </style>
