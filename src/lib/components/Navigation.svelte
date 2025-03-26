@@ -147,40 +147,39 @@
 </script>
 
 <!-- Mobile Menu Button (Hamburger) -->
-<button class="mobile-menu-button" on:click={toggleSidebar} aria-label="Open Menu">
+<button class="mobile-menu-button" on:click={toggleSidebar} aria-label="Open Menu" type="button">
   <Menu size={24} />
 </button>
 
-<!-- Overlay (Backdrop) -->
-{#if mobileSidebarOpen}
-  <div class="sidebar-overlay" on:click={closeMobileSidebar} transition:slide={{ duration: 200 }}></div>
-{/if}
 
 <!-- Navigation -->
-<nav class:collapsed={!combinedSidebarExpanded} class:mobile-open={mobileSidebarOpen} style="--sidebar-width: {desktopSidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}" transition:slide>
-  <a href="/" class="nav-header">
-    <div class="logo">
-      {#if combinedSidebarExpanded}
-        <div class="logo-with-text">
+
+<nav class:collapsed={!combinedSidebarExpanded} class:mobile-open={mobileSidebarOpen} style="--sidebar-width: {desktopSidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
+  <div class="nav-header-container">
+    <a href="/" class="nav-header-link">
+      <div class="logo">
+        {#if combinedSidebarExpanded}
+          <div class="logo-with-text">
+            <div class="icon-logo">
+              <Hexagon size={iconSize} color="var(--primary-color)" />
+            </div>
+            <h1>VistaKine</h1>
+          </div>
+        {:else}
           <div class="icon-logo">
             <Hexagon size={iconSize} color="var(--primary-color)" />
           </div>
-          <h1>VistaKine</h1>
-        </div>
-      {:else}
-        <div class="icon-logo">
-          <Hexagon size={iconSize} color="var(--primary-color)" />
-        </div>
-      {/if}
-    </div>
+        {/if}
+      </div>
+    </a>
 
-    <!-- Mobile Close Button -->
+    <!-- Mobile Close Button (Moved outside the link) -->
     {#if mobileSidebarOpen}
-      <button class="mobile-close-button" on:click={closeMobileSidebar} aria-label="Close Menu">
+      <button class="mobile-close-button" on:click={closeMobileSidebar} aria-label="Close Menu" type="button">
         <X size={24} />
       </button>
     {/if}
-  </a>
+  </div>
 
   <div class="search">
     {#if combinedSidebarExpanded}
@@ -220,7 +219,7 @@
             {/if}
           </div>
           {#if combinedSidebarExpanded && expandedChapter === chapter.slug}
-            <ul class="chapter-sections">
+            <ul class="chapter-sections" transition:slide>
               {#each chapterSections[chapter.slug] || [] as section}
                 <li class="section-item">
                   <a
@@ -254,16 +253,6 @@
   </li>
 </nav>
 
-<!-- Desktop Toggle Button -->
-<button class="toggle-btn" on:click="{() => {$sidebarExpanded = !$sidebarExpanded}}" aria-label="Toggle Sidebar">
-  {#if desktopSidebarExpanded}
-    «
-  {:else}
-    »
-  {/if}
-</button>
-
-
 <style lang="scss">
   .mobile-menu-button {
     display: none; /* Hidden by default */
@@ -282,25 +271,11 @@
     }
   }
 
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-    z-index: 1000; /* High z-index to be on top */
-    display: none;
-
-    @media (max-width: 768px) {
-      display: block;
-    }
-  }
-
   nav {
     height: 100vh;
     background-color: var(--sidebar-background);
-    transition: width 0.3s ease;
+    /* Define transitions for relevant properties */
+    transition: width 0.3s ease, transform 0.4s ease; /* Add transform transition */
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
@@ -309,9 +284,16 @@
     border-right: 1.5px solid var(--border-color);
     left: 0;
     z-index: 1001; /* Ensure it's above other content */
-    overflow: hidden;
+    overflow: hidden; /* Keep this */
+    /* Set default width for desktop */
+    /* width: var(--sidebar-width); */
+    width: 300px;
+    box-sizing: border-box;
 
     &.collapsed {
+      /* Apply desktop collapsed width */
+      width: var(--sidebar-width-collapsed);
+
       .nav-item {
         justify-content: center;
         padding: var(--space-xs);
@@ -333,34 +315,65 @@
         margin: 0 auto;
       }
 
-      .toggle-btn {
-        right: calc(-40px + var(--sidebar-width-collapsed)); /* Adjust for collapsed width */
-      }
+      /* Remove toggle-btn adjustment here, it's handled by fixed positioning */
+      /* .toggle-btn { ... } */
     }
 
-    &.mobile-open {
-      width: 100vw; /* Full width on mobile */
-      max-width: none; /* Remove max-width */
-    }
+    /* Remove the base .mobile-open rule, handle in media query */
+    /* &.mobile-open { ... } */
 
     @media (max-width: 768px) {
-      width: 0; /* Initially hidden on mobile */
+      /* Mobile base state: Full width but off-screen */
+      width: 100vw;
+      max-width: none;
+      transform: translateX(-100%);
+      /* Ensure mobile transition overrides desktop if needed, though base should be fine */
+      transition: transform 0.4s ease; /* Focus on transform */
+
+
       &.mobile-open {
-        width: 100vw; /* Full width when open */
+        /* Slide in by changing transform */
+        transform: translateX(0);
+      }
+
+      /* Prevent desktop collapsed styles from breaking mobile */
+      &.collapsed {
+         width: 100vw; /* Keep full width */
+         /* Reset specific desktop collapsed styles */
+         .nav-item {
+            justify-content: flex-start; /* Or initial value */
+            padding: var(--space-xs) var(--space-s); /* Or initial value */
+         }
+         .icon, .chapter-number {
+            margin-right: var(--space-xs); /* Restore margin */
+         }
+         .logo {
+            justify-content: flex-start; /* Restore alignment */
+         }
+         .icon-search {
+            margin: 0; /* Reset margin */
+            /* Adjust justification if needed */
+         }
       }
     }
   }
 
-  .nav-header {
+  .nav-header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--space-xs) var(--space-s);
-    position: relative; /* Make the nav-header a positioning context */
+    position: relative; /* Positioning context for the close button */
+    &:hover { /* Apply hover effect to the container */
+       background-color: rgba(59, 130, 246, 0.1);
+    }
   }
-  .nav-header:hover {
+
+  .nav-header-link {
     text-decoration: none;
-    background-color: rgba(59, 130, 246, 0.1);
+    color: inherit; /* Ensure link inherits text color */
+    display: flex; /* Ensure it takes up space correctly */
+    align-items: center;
   }
 
   .logo {
@@ -392,39 +405,10 @@
     justify-content: center;
   }
 
-  .toggle-btn {
-    position: absolute;
-    top: 50%;
-    right: calc(-40px + var(--sidebar-width)); /* Position relative to sidebar */
-    transform: translateY(-50%); /* Center vertically */
-    border: none;
-    background-color: #ccc;
-    cursor: pointer;
-    color: transparent;
-    font-size: var(--step-1);
-    z-index: 1000;
-    transition: background-color 0.3s ease, color 0.3s ease, width 0.3s ease, padding 0.3s ease;
-    width: 8px;
-    padding: var(--space-xs) 0px;
-    border-radius: var(--radius-sm);
-    opacity: 0.6;
-    height: 40px;
+  .navigation-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    &:hover {
-      background-color: var(--primary-color);
-      color: var(--text-color);
-      width: 40px;
-      opacity: 1;
-      padding: var(--space-xs) var(--space-s);
-    }
-
-    @media (max-width: 768px) {
-      display: none; /* Hide on mobile */
-    }
+    flex-direction: column;
+    height: 100vh;
   }
 
   .search {
@@ -494,6 +478,10 @@
     border-radius: 4px;
     margin: 0 var(--space-2xs);
     position: relative;
+    /* Ensure box-sizing is correct */
+    box-sizing: border-box;
+    /* Prevent flex items from causing overflow if not wrapping */
+    min-width: 0;
 
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
@@ -503,6 +491,14 @@
   .chapter-title {
     text-decoration: none;
     color: inherit;
+    /* Allow wrapping */
+    white-space: normal;
+    word-break: break-word; /* Or break-all */
+    /* Remove max-width, let parent width control wrapping */
+    /* max-width: calc(100% - 40px); */
+    /* Ensure it takes space correctly */
+    display: inline-block; /* Or block if needed */
+
     &:hover {
       text-decoration: underline;
       color: var(--primary-color);
@@ -558,18 +554,57 @@
     @extend .nav-item;
     padding-left: calc(var(--space-s) + var(--space-xs));
     font-size: 0.9em;
+    /* Allow link height to adjust */
+    height: auto;
+    /* Remove any truncation styles */
+    /* overflow: hidden; */
+    /* white-space: nowrap; */
+    /* Ensure box-sizing */
+    box-sizing: border-box;
+
     &:hover {
       text-decoration: underline;
       color: var(--primary-color);
+    }
+
+    span {
+      /* Allow wrapping */
+      white-space: normal;
+      word-break: break-word; /* Or break-all */
+      /* Remove any truncation styles */
+      /* overflow: hidden; */
+      /* text-overflow: ellipsis; */
+      /* Remove max-width */
+      /* max-width: calc(100% - 20px); */
+      /* Ensure it takes space correctly */
+      display: inline-block; /* Or block if needed */
     }
   }
 
   .chevron {
     margin-left: auto;
-    transition: transform 0.3s ease;
+    /* Remove transition from the container */
+    /* transition: transform 0.3s ease; */
+    /* Add padding or dimensions if needed to maintain clickable area */
+    padding: var(--space-2xs); /* Example padding */
+    cursor: pointer; /* Ensure cursor indicates interactivity */
+    display: flex; /* Helps align the SVG if needed */
+    align-items: center; /* Center SVG vertically */
+    justify-content: center; /* Center SVG horizontally */
+
+    /* Target the SVG directly for transition */
+    :global(svg) {
+      transition: transform 0.3s ease;
+    }
 
     &.expanded {
-      transform: rotate(90deg);
+      /* Remove transform from the container */
+      /* transform: rotate(90deg); */
+
+      /* Apply transform to the SVG when expanded */
+      :global(svg) {
+        transform: rotate(90deg);
+      }
     }
 
     &:hover {
@@ -579,13 +614,18 @@
 
   .mobile-close-button {
     position: absolute;
-    top: var(--space-xs);
+    top: 50%;          /* Vertically center */
     right: var(--space-s);
+    transform: translateY(-50%); /* Adjust for vertical centering */
     background: none;
     border: none;
     cursor: pointer;
     color: var(--text-color);
     padding: var(--space-xs);
     z-index: 1002; /* Ensure it's above the overlay */
+    /* Ensure it doesn't get hover effect from container */
+    &:hover {
+        background-color: transparent;
+    }
   }
 </style>
