@@ -39,8 +39,8 @@ $brand-link-color-active: #0D47A1;
 
 
 // Typography
-$font-family-base: 'Inter', sans-serif;
-$font-family-heading: 'Instrument Sans', 'Inter', system-ui, sans-serif;
+$font-family-base: 'IBM Plex Sans', sans-serif;
+$font-family-heading: 'Titillium Web', sans-serif;
 
 // Breakpoints (matching Utopia setup)
 $min-viewport: 300px;
@@ -102,7 +102,7 @@ $radius-pill: 9999px;
   --grid-line-color: #cce0ff; /* Light blue - adjust to your preference */
   --background-color: #f8f9fa; /* Example light background */
   --text-color: #333;        /* Example text color */
-  --font-family-base: 'Inter', sans-serif; /* Example font */
+  --font-family-base: 'IBM Plex Sans', sans-serif; /* Updated font */
 
   // Core colors
   --primary-color: #{$primary-color};

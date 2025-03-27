@@ -56,7 +56,7 @@
   </svg>
 </div>
 
-<div class="app-container">
+<div class="app-container" class:sidebar-collapsed={!$sidebarExpanded}>
   <aside class="navigation" class:collapsed={!$sidebarExpanded}>
     <Navigation />
     <button
@@ -79,10 +79,12 @@
     width: 100%;
     position: relative;
     z-index: 2;
+    display: grid;
+    grid-template-columns: 310px 1fr;
   }
 
   .navigation {
-    position: fixed;
+    position: static;
     top: 0;
     left: 0;
     height: 100vh;
@@ -161,6 +163,6 @@
 
   @media (max-width: 768px) {
     .app-container { display: block; }
-    .content { margin-left: 0; padding: var(--space-m); }
+    .content { margin-left: 0; padding: var(--space-s); }
   }
 </style>

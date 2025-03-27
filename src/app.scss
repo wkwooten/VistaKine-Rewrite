@@ -1,14 +1,11 @@
+@use '$lib/styles/typography';
+@use '$lib/styles/main'; // Ensure this imports variables, typography, etc.
 // Import Google Fonts
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700&display=swap'); // Added for Headers
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap'); // Added for Body
 
 // Import SCSS partials - order matters
-@import '$lib/styles/reset';
-@import '$lib/styles/variables';
-@import '$lib/styles/typography';
-@import '$lib/styles/spacing';
-@import '$lib/styles/grid';
-@import '$lib/styles/animations';
-@import '$lib/styles/utilities';
 
 // Global base styles
 body {
@@ -35,22 +32,22 @@ body {
   will-change: transform;
 }
 
-// Default heading styles
+// Default heading styles (Assuming heading includes are in typography or main)
 h1 {
-  @include heading-1;
+  @include typography.heading-1;
   color: var(--primary-color);
 }
 
 h2 {
-  @include heading-2;
+  @include typography.heading-2;
 }
 
 h3 {
-  @include heading-3;
+  @include typography.heading-3;
 }
 
 h4 {
-  @include heading-4;
+  @include typography.heading-4;
 }
 
 p {
@@ -70,4 +67,85 @@ a {
 :focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+// Main App Layout Container
+.app-container {
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  // Define the default (expanded) state
+  grid-template-columns: 310px 1fr; // 300px nav + 10px toggle bar
+  // Add transition for smooth resizing
+  transition: grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+
+  // Define the collapsed state
+  &.sidebar-collapsed {
+    grid-template-columns: 90px 1fr; // 80px collapsed nav + 10px toggle bar
+  }
+}
+
+// Navigation Sidebar Area
+.navigation {
+  position: static; // Part of the grid layout
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: grid;
+  // Internal grid columns for nav content + toggle bar
+  grid-template-columns: 300px 10px; // This changes via .collapsed class in +layout.svelte style
+  // Transition for the internal grid change (when .collapsed is applied)
+  transition: grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+  z-index: 1001; // Keep high z-index if needed for potential future overlaps
+}
+
+// Main Content Area
+.content {
+  /* display: grid; */ /* Removed grid display */
+  /* justify-content: center; */ /* Removed grid centering */
+  height: 100%; // Needed for overflow-y to work correctly
+  overflow-y: auto; // Allow content scrolling
+  padding-inline: var(--space-m);
+  width: 100%; // Takes full width of its grid column
+}
+
+// Responsive adjustments for smaller screens
+@media (max-width: 768px) {
+  .app-container {
+    display: block; // Revert to block layout
+    // Reset grid columns for mobile
+    grid-template-columns: none;
+    transition: none; // Remove transition for mobile block layout
+
+    // Ensure collapsed state doesn't apply grid on mobile
+    &.sidebar-collapsed {
+      grid-template-columns: none;
+    }
+  }
+
+  .navigation {
+    // Mobile navigation styles (likely fixed/absolute for slide-out)
+    // These should be defined within Navigation.svelte's style block
+    // or potentially here if globally managed.
+    // Resetting desktop grid-related styles:
+    display: block; // Or whatever display is needed for mobile nav
+    position: fixed; // Example: Assuming fixed for mobile slide-out
+    height: 100vh; // Example
+    width: 300px; // Example width for mobile slide-out
+    max-width: 80%; // Example
+    transform: translateX(-100%); // Example: Off-screen by default
+    // Ensure transitions are appropriate for mobile slide-in/out
+    transition: transform 0.3s ease; // Example
+    grid-template-columns: none; // Ensure no grid columns apply
+  }
+
+  .content {
+    margin-left: 0; // Ensure no margin from desktop layout
+    padding: var(--space-3xs);
+    width: auto; // Allow content to take full width
+    height: auto; // Allow content height to be determined by content
+    overflow-y: visible; // Or 'auto' if scrolling is desired within content on mobile
+  }
 }

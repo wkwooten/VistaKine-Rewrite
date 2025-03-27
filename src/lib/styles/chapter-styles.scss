@@ -1,10 +1,18 @@
+@use 'sass:color'; // Import the sass:color module
+@use 'variables'; // Revert to this, without "as *"
+
 // --- Define Chapter Theme Mixin ---
 @mixin chapter-theme-vars($color, $color-light, $color-dark, $bg-alpha: 0.05) {
   --chapter-color: #{$color};
   --chapter-color-light: #{$color-light};
   --chapter-color-dark: #{$color-dark};
   // Use rgba() for background with the provided alpha
-  --chapter-bg: rgba(#{red($color)}, #{green($color)}, #{blue($color)}, $bg-alpha);
+  --chapter-bg: rgba(
+    #{color.channel($color, 'red')},
+    #{color.channel($color, 'green')},
+    #{color.channel($color, 'blue')},
+    $bg-alpha
+  );
   // Keep these consistent for now, could be arguments later if needed
   --chapter-section-bg: white;
   --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
@@ -30,16 +38,6 @@
     $color-dark: #0056b3
   );
 }
-
-// --- Remove Duplicated Variable Definitions for Sidebar ---
-// The following blocks defining variables specifically for the sidebar are no longer needed.
-/*
-nav .nav-items li.nav-chapter-group.chapter-1-theme { ... }
-nav .nav-items li.nav-chapter-group.chapter-2-theme { ... }
-... etc for chapters 3-10 ...
-*/
-// --- End Removal ---
-
 
 // --- Apply Mixin to Sidebar Elements ---
 
@@ -152,7 +150,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   flex-direction: column;
   border: 2px dashed var(--chapter-color);
   border-width: 0 2px 2px 2px;
-  background-color: var(--chapter-bg);
+  background-color: var(--background-color);
   padding: var(--space-2xl) var(--space-l);
   border-radius: 0 0 var(--radius-lg);
   gap: var(--space-3xl);
@@ -161,6 +159,11 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   -moz-border-radius: 0 0 var(--radius-lg);
   -ms-border-radius: 0 0 var(--radius-lg);
   -o-border-radius: 0 0 var(--radius-lg);
+
+  @media (max-width: variables.$breakpoint-md) {
+    padding: var(--space-xl) var(--space-m);
+    gap: var(--space-xl);
+  }
 }
 
 .chapter-header {
@@ -223,6 +226,11 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
     margin-bottom: var(--space-m);
     font-weight: bold;
   }
+
+  @media (max-width: variables.$breakpoint-md) {
+    padding: var(--space-m);
+    margin-bottom: var(--space-xl);
+  }
 }
 
 .chapter {
@@ -269,6 +277,11 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   margin-right: auto;
   padding-left: var(--space-m);
   padding-right: var(--space-m);
+
+  @media (max-width: variables.$breakpoint-md) {
+    padding-left: var(--space-2xs);
+    padding-right: var(--space-2xs);
+  }
 
   @media (min-width: 1024px) {
     max-width: 45em; /* Wider for medium screens */
