@@ -151,6 +151,10 @@
   <Menu size={24} />
 </button>
 
+<!-- Mobile Overlay (shown when sidebar is open on mobile) -->
+{#if isMobile && mobileSidebarOpen}
+  <div class="mobile-overlay" on:click={closeMobileSidebar}></div>
+{/if}
 
 <!-- Navigation -->
 
@@ -274,30 +278,19 @@
   nav {
     height: 100vh;
     background-color: var(--background-color);
-    /* Define transitions for relevant properties */
-    /* Remove width and transform transitions here, handled by parent grid */
-    /* transition: width 0.3s ease, transform 0.4s ease; */
-    transition: transform 0.4s ease; /* Keep only transform for mobile */
+    transition: transform 0.4s ease; /* For mobile slide-in/out */
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
-    /* Remove position: fixed, handled by parent */
-    /* position: fixed; */
     top: 0;
     border-right: 1.5px solid var(--border-color);
     left: 0;
-    z-index: 1001; /* Ensure it's above other content */
-    overflow: hidden; /* Keep this */
-    /* Remove explicit width, let grid control it */
-    /* width: var(--sidebar-width); */
-    /* width: 300px; */
-    width: 100%; /* Fill the grid cell */
+    z-index: 1001;
+    overflow: hidden;
+    width: 100%; /* Fill the nav container width */
     box-sizing: border-box;
 
     &.collapsed {
-      /* Remove desktop collapsed width, grid handles this */
-      /* width: var(--sidebar-width-collapsed); */
-
       .nav-item {
         justify-content: center;
         padding: var(--space-xs);
@@ -318,53 +311,43 @@
       .icon-search {
         margin: 0 auto;
       }
-
-      /* Remove toggle-btn adjustment here, it's handled by fixed positioning */
-      /* .toggle-btn { ... } */
     }
 
-    /* Remove the base .mobile-open rule, handle in media query */
-    /* &.mobile-open { ... } */
-
     @media (max-width: 768px) {
-      /* --- Add mobile positioning back --- */
-      position: fixed; /* Position fixed for slide-out */
+      /* Mobile positioning */
+      position: fixed;
       top: 0;
       left: 0;
-      height: 100vh; /* Ensure it takes full height */
-      z-index: 1001; /* Ensure it's above other content */
-      /* --- End additions --- */
+      height: 100vh;
+      z-index: 1001;
 
-      /* Mobile base state: Full width but off-screen */
-      width: 100vw;
-      max-width: none;
+      /* Mobile sidebar should be a reasonable width */
+      width: 300px;
+      max-width: 80vw;
       transform: translateX(-100%);
-      transition: transform 0.4s ease; /* Focus on transform */
-
 
       &.mobile-open {
-        /* Slide in by changing transform */
         transform: translateX(0);
+        box-shadow: var(--shadow-lg);
       }
 
-      /* Prevent desktop collapsed styles from breaking mobile */
+      /* Reset desktop collapsed styles for mobile */
       &.collapsed {
-         /* Ensure full width even if desktop is collapsed */
-         width: 100vw;
-         /* Reset specific desktop collapsed styles */
+         width: 300px; /* Ensure standard width on mobile regardless of desktop state */
+         max-width: 80vw;
+
          .nav-item {
-            justify-content: flex-start; /* Or initial value */
-            padding: var(--space-xs) var(--space-s); /* Or initial value */
+            justify-content: flex-start;
+            padding: var(--space-xs) var(--space-s);
          }
          .icon, .chapter-number {
-            margin-right: var(--space-xs); /* Restore margin */
+            margin-right: var(--space-xs);
          }
          .logo {
-            justify-content: flex-start; /* Restore alignment */
+            justify-content: flex-start;
          }
          .icon-search {
-            margin: 0; /* Reset margin */
-            /* Adjust justification if needed */
+            margin: 0;
          }
       }
     }
@@ -638,6 +621,21 @@
     /* Ensure it doesn't get hover effect from container */
     &:hover {
         background-color: transparent;
+    }
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000; /* Below nav but above content */
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
     }
   }
 </style>

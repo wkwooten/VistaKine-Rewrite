@@ -75,77 +75,88 @@ a {
   width: 100%;
   position: relative;
   z-index: 2;
-  display: grid;
-  // Define the default (expanded) state
-  grid-template-columns: 310px 1fr; // 300px nav + 10px toggle bar
+  display: flex; // Changed from grid to flex
   // Add transition for smooth resizing
-  transition: grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+  transition: all var(--sidebar-transition-duration) var(--sidebar-transition-timing);
 
-  // Define the collapsed state
+  // Define the collapsed state - now handled by .navigation width
   &.sidebar-collapsed {
-    grid-template-columns: 90px 1fr; // 80px collapsed nav + 10px toggle bar
+    // grid-template-columns removed
   }
 }
 
 // Navigation Sidebar Area
 .navigation {
-  position: static; // Part of the grid layout
+  flex-shrink: 0; // Prevent sidebar from shrinking
+  position: static; // Part of the flex layout
   top: 0;
   left: 0;
   height: 100vh;
-  display: grid;
+  display: grid; // Keep internal grid for toggle bar
+  width: 310px; // Total width: content + toggle bar
   // Internal grid columns for nav content + toggle bar
   grid-template-columns: 300px 10px; // This changes via .collapsed class in +layout.svelte style
-  // Transition for the internal grid change (when .collapsed is applied)
-  transition: grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+  // Transition for the width change (when .collapsed is applied)
+  transition: width var(--sidebar-transition-duration) var(--sidebar-transition-timing),
+              grid-template-columns var(--sidebar-transition-duration) var(--sidebar-transition-timing);
   z-index: 1001; // Keep high z-index if needed for potential future overlaps
+
+  &.collapsed {
+    width: 90px; // Total width when collapsed: content + toggle bar
+    grid-template-columns: 80px 10px;
+  }
 }
 
 // Main Content Area
 .content {
-  /* display: grid; */ /* Removed grid display */
-  /* justify-content: center; */ /* Removed grid centering */
+  flex-grow: 1; // Takes up remaining space
+  min-width: 0; // Prevent content overflow issues in flex items
   height: 100%; // Needed for overflow-y to work correctly
   overflow-y: auto; // Allow content scrolling
   padding-inline: var(--space-m);
-  width: 100%; // Takes full width of its grid column
+  width: 100%; // Takes full width of its flex space
+}
+
+// Mobile overlay (for sidebar)
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+
+  &.active {
+    display: block;
+  }
 }
 
 // Responsive adjustments for smaller screens
 @media (max-width: 768px) {
   .app-container {
-    display: block; // Revert to block layout
-    // Reset grid columns for mobile
-    grid-template-columns: none;
-    transition: none; // Remove transition for mobile block layout
-
-    // Ensure collapsed state doesn't apply grid on mobile
-    &.sidebar-collapsed {
-      grid-template-columns: none;
-    }
+    display: block; // Keep block layout for mobile
   }
 
   .navigation {
-    // Mobile navigation styles (likely fixed/absolute for slide-out)
-    // These should be defined within Navigation.svelte's style block
-    // or potentially here if globally managed.
-    // Resetting desktop grid-related styles:
-    display: block; // Or whatever display is needed for mobile nav
-    position: fixed; // Example: Assuming fixed for mobile slide-out
-    height: 100vh; // Example
-    width: 300px; // Example width for mobile slide-out
-    max-width: 80%; // Example
-    transform: translateX(-100%); // Example: Off-screen by default
-    // Ensure transitions are appropriate for mobile slide-in/out
-    transition: transform 0.3s ease; // Example
-    grid-template-columns: none; // Ensure no grid columns apply
+    position: fixed; // Fixed positioning for mobile slide-out menu
+    width: 300px; // Full width when open
+    max-width: 80%; // Cap at 80% of viewport
+    transform: translateX(-100%); // Off-screen by default
+    transition: transform 0.3s ease; // For slide-in/out
+
+    &.mobile-open {
+      transform: translateX(0); // Slide in when open
+    }
+
+    // Reset desktop-specific styles
+    display: block;
+    grid-template-columns: none;
   }
 
   .content {
-    margin-left: 0; // Ensure no margin from desktop layout
-    padding: var(--space-3xs);
-    width: auto; // Allow content to take full width
-    height: auto; // Allow content height to be determined by content
-    overflow-y: visible; // Or 'auto' if scrolling is desired within content on mobile
+    margin-left: 0;
+    padding: var(--space-s);
   }
 }

@@ -79,21 +79,24 @@
     width: 100%;
     position: relative;
     z-index: 2;
-    display: grid;
-    grid-template-columns: 310px 1fr;
+    display: flex;
   }
 
   .navigation {
+    flex-shrink: 0;
     position: static;
     top: 0;
     left: 0;
     height: 100vh;
     display: grid;
     grid-template-columns: 300px 10px;
-    transition: grid-template-columns 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0);
+    width: 310px;
+    transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0),
+                grid-template-columns 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0);
     z-index: 1001;
 
     &.collapsed {
+      width: 90px;
       grid-template-columns: 80px 10px;
 
       .sidebar-toggle-bar::before {
@@ -156,6 +159,8 @@
   }
 
   .content {
+    flex-grow: 1;
+    min-width: 0;
     height: 100%;
     overflow-y: auto;
     padding-inline: var(--space-m);
