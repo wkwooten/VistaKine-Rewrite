@@ -1,0 +1,15 @@
+// Main SCSS file - imports all other SCSS files
+
+// Core variables and settings
+@import 'variables';
+@import 'typography';
+@import 'spacing';
+@import 'grid';
+@import 'animations';
+
+// Reset and utilities
+@import 'reset';
+@import 'utilities';
+
+// Component-specific styles
+@import 'chapter-styles';

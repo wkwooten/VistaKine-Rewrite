@@ -1,23 +1,150 @@
+// --- Define Chapter Theme Mixin ---
+@mixin chapter-theme-vars($color, $color-light, $color-dark, $bg-alpha: 0.05) {
+  --chapter-color: #{$color};
+  --chapter-color-light: #{$color-light};
+  --chapter-color-dark: #{$color-dark};
+  // Use rgba() for background with the provided alpha
+  --chapter-bg: rgba(#{red($color)}, #{green($color)}, #{blue($color)}, $bg-alpha);
+  // Keep these consistent for now, could be arguments later if needed
+  --chapter-section-bg: white;
+  --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
+}
+// --- End Mixin Definition ---
+
+
 // Chapter Theme Variables
 // Chapter 1 Styles - Teal/Green Theme
 .chapter.chapter-1-theme {
-  --chapter-color: #10b981;
-  --chapter-color-light: #6ee7b7;
-  --chapter-color-dark: #047857;
-  --chapter-bg: rgba(0, 255, 0, 0.05);
-  --chapter-section-bg: white;
-  --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
+  @include chapter-theme-vars(
+    $color: #10b981,
+    $color-light: #6ee7b7,
+    $color-dark: #047857
+  ); // Uses default bg-alpha: 0.05
 }
 
 // Chapter 2 Styles - Blue Theme
 .chapter.chapter-2-theme {
-  --chapter-color: #007bff;
-  --chapter-color-light: #67b3ff;
-  --chapter-color-dark: #0056b3;
-  --chapter-bg: rgba(0, 123, 255, 0.05);
-  --chapter-section-bg: white;
-  --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
+  @include chapter-theme-vars(
+    $color: #007bff,
+    $color-light: #67b3ff,
+    $color-dark: #0056b3
+  );
 }
+
+// --- Remove Duplicated Variable Definitions for Sidebar ---
+// The following blocks defining variables specifically for the sidebar are no longer needed.
+/*
+nav .nav-items li.nav-chapter-group.chapter-1-theme { ... }
+nav .nav-items li.nav-chapter-group.chapter-2-theme { ... }
+... etc for chapters 3-10 ...
+*/
+// --- End Removal ---
+
+
+// --- Apply Mixin to Sidebar Elements ---
+
+// Chapter 1 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-1-theme {
+  @include chapter-theme-vars(
+    $color: #10b981,
+    $color-light: #6ee7b7,
+    $color-dark: #047857,
+    $bg-alpha: 0.07 // Pass specific alpha for sidebar
+  );
+}
+
+// Chapter 2 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-2-theme {
+  @include chapter-theme-vars(
+    $color: #007bff,
+    $color-light: #67b3ff,
+    $color-dark: #0056b3,
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 3 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-3-theme {
+  @include chapter-theme-vars(
+    $color: #6366f1, // Indigo
+    $color-light: color-mix(in srgb, #6366f1 70%, white),
+    $color-dark: color-mix(in srgb, #6366f1 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 4 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-4-theme {
+  @include chapter-theme-vars(
+    $color: #22d3ee, // Cyan
+    $color-light: color-mix(in srgb, #22d3ee 70%, white),
+    $color-dark: color-mix(in srgb, #22d3ee 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 5 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-5-theme {
+  @include chapter-theme-vars(
+    $color: #84cc16, // Lime Green
+    $color-light: color-mix(in srgb, #84cc16 70%, white),
+    $color-dark: color-mix(in srgb, #84cc16 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 6 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-6-theme {
+  @include chapter-theme-vars(
+    $color: #f97316, // Orange
+    $color-light: color-mix(in srgb, #f97316 70%, white),
+    $color-dark: color-mix(in srgb, #f97316 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 7 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-7-theme {
+  @include chapter-theme-vars(
+    $color: #ec4899, // Pink
+    $color-light: color-mix(in srgb, #ec4899 70%, white),
+    $color-dark: color-mix(in srgb, #ec4899 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 8 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-8-theme {
+  @include chapter-theme-vars(
+    $color: #f59e0b, // Amber
+    $color-light: color-mix(in srgb, #f59e0b 70%, white),
+    $color-dark: color-mix(in srgb, #f59e0b 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 9 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-9-theme {
+  @include chapter-theme-vars(
+    $color: #38bdf8, // Sky Blue
+    $color-light: color-mix(in srgb, #38bdf8 70%, white),
+    $color-dark: color-mix(in srgb, #38bdf8 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// Chapter 10 Sidebar Vars
+nav .nav-items li.nav-chapter-group.chapter-10-theme {
+  @include chapter-theme-vars(
+    $color: #8b5cf6, // Violet
+    $color-light: color-mix(in srgb, #8b5cf6 70%, white),
+    $color-dark: color-mix(in srgb, #8b5cf6 70%, black),
+    $bg-alpha: 0.07
+  );
+}
+
+// --- End Sidebar Application ---
+
 
 // General Chapter Styles
 .chapter-wrapper {
@@ -103,7 +230,6 @@
   grid-template-columns: 1fr;
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-xl) var(--space-m);
 }
 
 .section-title {
@@ -169,4 +295,30 @@
   .visualization-container {
     margin-top: var(--space-m);
   }
+}
+
+/* Sidebar Navigation Styling */
+nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .nav-item.chapter-item:hover {
+  background-color: var(--chapter-bg);
+  transition: background-color 0.2s ease;
+  -webkit-transition: background-color 0.2s ease;
+  -moz-transition: background-color 0.2s ease;
+  -ms-transition: background-color 0.2s ease;
+  -o-transition: background-color 0.2s ease;
+}
+
+nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"].is-active {
+  border-left: 3px solid var(--chapter-color);
+  background-color: var(--chapter-bg);
+}
+
+nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"].is-active .nav-item.chapter-item {
+  background-color: var(--chapter-bg);
+}
+
+/* Additional styling for chapter numbers in the sidebar */
+nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
+  border-color: var(--chapter-color);
+  background-color: color-mix(in srgb, var(--chapter-color) 20%, white);
+  color: var(--chapter-color-dark, var(--chapter-color));
 }

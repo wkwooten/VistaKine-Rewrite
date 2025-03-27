@@ -208,12 +208,12 @@
       </li>
 
       {#each chapters as chapter, index}
-        <li>
-          <div class="nav-item chapter-item">
+        <li class="nav-chapter-group {`chapter-${index + 1}-theme`}" class:is-active={$currentChapter === chapter.slug}>
+          <div class="nav-item chapter-item" on:click={() => toggleChapterSections(chapter.slug)}>
             <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(!desktopSidebarExpanded) {toggleSidebar()}}}">{index + 1}</a>
             {#if combinedSidebarExpanded}
               <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
-              <div class="chevron" class:expanded={expandedChapter === chapter.slug} on:click={() => toggleChapterSections(chapter.slug)}>
+              <div class="chevron" class:expanded={expandedChapter === chapter.slug} on:click|stopPropagation={() => toggleChapterSections(chapter.slug)}>
                 <ChevronRight size={iconSize} />
               </div>
             {/if}
