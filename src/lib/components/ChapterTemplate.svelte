@@ -67,15 +67,17 @@
 </svelte:head>
 
 <div class="chapter {themeClass}">
-  <div class="chapter-header-separator"></div>
-  <slot></slot>
+  <div class="container">
+    <div class="chapter-header-separator"></div>
+    <slot></slot>
+  </div>
 </div>
 
 <style lang="scss">
   .chapter {
     display: flex;
     flex-direction: column;
-    align-items: stretch; // Default to stretch for full width sections
+    align-items: center; // Center the container
     min-height: 100vh; // Ensure chapter takes at least full viewport height
     padding: var(--space-xl) 0; // Top and bottom padding for chapter content
     /* background-color: var(--chapter-bg);  */

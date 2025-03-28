@@ -61,6 +61,7 @@ $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 // Dimensions
 $max-content-width: 1000px;
 $wide-content-width: 1400px;
+$readable-max-width: 70ch; // Optimal reading width (ch units are width of "0" character)
 $sidebar-width: 300px;
 $sidebar-collapsed-width: 80px;
 $sidebar-width-full: 300px; // Consider consolidating with $sidebar-width
@@ -148,6 +149,7 @@ $radius-pill: 9999px;
   // Dimensions
   --max-content-width: #{$max-content-width};
   --wide-content-width: #{$wide-content-width};
+  --readable-max-width: #{$readable-max-width};
   --sidebar-width: #{$sidebar-width};
   --sidebar-collapsed-width: #{$sidebar-collapsed-width};
   --sidebar-width-full: #{$sidebar-width-full};

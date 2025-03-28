@@ -161,8 +161,13 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   -o-border-radius: 0 0 var(--radius-lg);
 
   @media (max-width: variables.$breakpoint-md) {
-    padding: var(--space-xl) var(--space-m);
+    padding: var(--space-m) var(--space-s); /* Reduced padding for medium screens */
     gap: var(--space-xl);
+  }
+
+  @media (max-width: variables.$breakpoint-sm) {
+    padding-inline: var(--space-xs); /* Further reduced horizontal padding for small screens */
+    gap: var(--space-l); /* Slightly reduced gap for smaller screens */
   }
 }
 
@@ -172,6 +177,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   padding: var(--space-s) var(--space-s);
   margin-top: var(--space-l);
   max-width: var(--wide-content-width);
+  border-radius: var(--radius-md);
 
   h1 {
     font-size: var(--step-4);
@@ -205,17 +211,14 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   scroll-margin-top: 2rem;
   padding: var(--space-l);
   border-bottom: none;
-  margin-bottom: var(--space-3xl);
-  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-lg);
   background-color: var(--background-color);
-  background-size: 20px 20px;
-  background-image: linear-gradient(rgba(30, 100, 200, 0.05) 1px, transparent 1px),
+  background-size: 40px 40px;
+  background-image: linear-gradient(rgba(30, 100, 200, 0.075) 1px, transparent 1px),
     linear-gradient(90deg, rgba(30, 100, 200, 0.05) 1px, transparent 1px) !important;
   border-radius: var(--radius-lg);
-  -webkit-border-radius: var(--radius-lg);
-  -moz-border-radius: var(--radius-lg);
-  -ms-border-radius: var(--radius-lg);
-  -o-border-radius: var(--radius-lg);
+
 
   &:last-child {
     border-bottom: none;
@@ -228,8 +231,13 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   }
 
   @media (max-width: variables.$breakpoint-md) {
-    padding: var(--space-m);
+    padding: var(--space-s); /* Reduced padding for medium screens */
     margin-bottom: var(--space-xl);
+  }
+
+  @media (max-width: variables.$breakpoint-sm) {
+    padding: var(--space-xs); /* Further reduced padding for small screens */
+    margin-bottom: var(--space-l); /* Slightly reduced margin for smaller screens */
   }
 }
 
@@ -241,16 +249,17 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 }
 
 .section-title {
-  background-color: var(--chapter-color);
-  color: var(--chapter-section-bg);
+  background-color: transparent;
+  color: var(--chapter-color);
   padding: var(--space-xs) var(--space-s);
-  border-radius: var(--radius-md);
+  border-bottom: 2px solid var(--chapter-color);
 }
 
 .sections-content {
   display: flex;
   flex-direction: column;
   gap: var(--space-3xl);
+  padding-inline: var(--space-l);
 }
 
 .section-intro {
@@ -279,8 +288,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   padding-right: var(--space-m);
 
   @media (max-width: variables.$breakpoint-md) {
-    padding-left: var(--space-2xs);
-    padding-right: var(--space-2xs);
+    padding-inline: var(--space-2xs); /* Slightly reduced horizontal padding for medium screens */
   }
 
   @media (min-width: 1024px) {
@@ -291,7 +299,35 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
     max-width: 55em; /* Even wider for large screens */
   }
 
+  @media (max-width: variables.$breakpoint-sm) {
+    padding-inline: var(--space-3xs); /* Even smaller horizontal padding for small screens */
+  }
+
   p {
+    margin-bottom: var(--space-m);
+    line-height: 1.7;
+  }
+}
+
+/* New readable content class for optimal text readability */
+.readable-content {
+  max-width: var(--readable-max-width, 70ch); /* Use CSS variable with fallback */
+  margin-inline: auto; /* Center horizontally */
+  padding-inline: var(--space-m);
+  width: 100%;
+  box-sizing: border-box;
+
+  /* Responsive adjustments */
+  @media (max-width: variables.$breakpoint-md) {
+    padding-inline: var(--space-xs); /* Reduced horizontal padding for medium screens */
+  }
+
+  @media (max-width: variables.$breakpoint-sm) {
+    padding-inline: 0; /* Removed horizontal padding for small screens */
+  }
+
+  /* Text styling */
+  p, ul, ol, li, blockquote, figure, pre {
     margin-bottom: var(--space-m);
     line-height: 1.7;
   }

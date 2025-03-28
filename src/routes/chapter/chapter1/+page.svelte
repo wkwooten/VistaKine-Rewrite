@@ -94,12 +94,12 @@
         use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
         on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
       >
-        <div class="section-content">
+        <div class="readable-content">
           <h2 class="section-title">1.1 Coordinate Systems</h2>
 
           <div class="section-intro">
             <Scenario>
-              <p><strong>Ava:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>
+              <p><strong>Surya:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>
               <p><strong>Leo:</strong> That's where coordinate systems come in! They're like a map for 3D space.</p>
             </Scenario>
 
@@ -160,19 +160,17 @@
         use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
         on:intersect={(e) => handleSectionIntersect(e, 'vectors-in-space')}
       >
-        <div class="section-content">
+        <div class="readable-content">
           <h2 class="section-title">1.2 Vectors in 3D Space</h2>
 
           <div class="section-intro">
             <Scenario>
-              <p><strong>Ava:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of vectors.</p>
+              <p><strong>Surya:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of vectors.</p>
               <p><strong>Leo:</strong> Vectors are perfect for that! They tell the arm both how far to move and in what direction.</p>
             </Scenario>
 
-            <div class="section-content">
-              <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
-              <p>Vectors show us both how *hard* you kick (magnitude) and *where* you kick it (direction).</p>
-            </div>
+            <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
+            <p>Vectors show us both how *hard* you kick (magnitude) and *where* you kick it (direction).</p>
           </div>
 
           <div class="section-core">
@@ -184,17 +182,15 @@
               <Scene />
             </VisContainer>
 
-            <div class="section-content">
-              <p>
-                A vector in 3D space can be represented by its components along the x, y, and z axes.
-              </p>
-              <p>
-                For example, a vector pointing from the origin to the point (2, 3, 4) has components x=2, y=3, and z=4.
-              </p>
-              <p>
-                The magnitude of the vector represents its length, and can be calculated using the Pythagorean theorem in 3D.
-              </p>
-            </div>
+            <p>
+              A vector in 3D space can be represented by its components along the x, y, and z axes.
+            </p>
+            <p>
+              For example, a vector pointing from the origin to the point (2, 3, 4) has components x=2, y=3, and z=4.
+            </p>
+            <p>
+              The magnitude of the vector represents its length, and can be calculated using the Pythagorean theorem in 3D.
+            </p>
 
             <GuidedCalculation>
               <p>The initial velocity of the soccer ball is 50 m/s at an angle of 30 degrees above the horizontal.</p>
@@ -245,12 +241,12 @@
         use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
         on:intersect={(e) => handleSectionIntersect(e, 'reference-frames')}
       >
-        <div class="section-content">
+        <div class="readable-content">
           <h2 class="section-title">1.3 Reference Frames</h2>
 
           <div class="section-intro">
             <Scenario>
-              <p><strong>Ava:</strong> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
+              <p><strong>Surya:</strong> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
               <p><strong>Leo:</strong> That's because you're seeing it from a different reference frame! It's like watching someone walk on a moving train.</p>
             </Scenario>
 
@@ -260,32 +256,28 @@
           </div>
 
           <div class="section-core">
-            <div class="section-content">
-              <p>
-                A reference frame is a coordinate system attached to an observer, providing a perspective
-                from which to measure position, velocity, and other physical quantities.
-              </p>
-              <p>
-                This section explores how measurements change when observed from different reference frames,
-                laying the groundwork for understanding relative motion in kinematics.
-              </p>
-            </div>
+            <p>
+              A reference frame is a coordinate system attached to an observer, providing a perspective
+              from which to measure position, velocity, and other physical quantities.
+            </p>
+            <p>
+              This section explores how measurements change when observed from different reference frames,
+              laying the groundwork for understanding relative motion in kinematics.
+            </p>
 
             <VisContainer {currentSection}>
               <Scene/>
             </VisContainer>
 
-            <div class="section-content">
-              <p>
-                Imagine you're standing still and watching a car drive by. You measure its speed relative to your position.
-              </p>
-              <p>
-                But if you were inside another car moving alongside it, the first car's speed would appear different.
-              </p>
-              <p>
-                Understanding reference frames is crucial for correctly interpreting motion in different situations.
-              </p>
-            </div>
+            <p>
+              Imagine you're standing still and watching a car drive by. You measure its speed relative to your position.
+            </p>
+            <p>
+              But if you were inside another car moving alongside it, the first car's speed would appear different.
+            </p>
+            <p>
+              Understanding reference frames is crucial for correctly interpreting motion in different situations.
+            </p>
           </div>
 
           <SectionReview>
