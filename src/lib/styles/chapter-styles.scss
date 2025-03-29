@@ -149,11 +149,11 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   display: flex;
   flex-direction: column;
   border: 2px dashed var(--chapter-color);
-  border-width: 0 2px 2px 2px;
-  background-color: var(--background-color);
+  // border-width: 0 2px 2px 2px;
+  // background-color: var(--background-color);
   padding: var(--space-2xl) var(--space-l);
   border-radius: 0 0 var(--radius-lg);
-  gap: var(--space-3xl);
+  gap: var(--space-xl);
   max-width: var(--wide-content-width);
   -webkit-border-radius: 0 0 var(--radius-lg);
   -moz-border-radius: 0 0 var(--radius-lg);
@@ -174,6 +174,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 .chapter-header {
   background-color: var(--chapter-header-bg);
   width: 100%;
+  box-shadow: var(--shadow-lg);
   padding: var(--space-s) var(--space-s);
   margin-top: var(--space-l);
   max-width: var(--wide-content-width);
@@ -209,35 +210,51 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 
 .content-section {
   scroll-margin-top: 2rem;
+  position: relative;
   padding: var(--space-l);
   border-bottom: none;
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-3xl);
   margin-bottom: var(--space-xl);
-  box-shadow: var(--shadow-lg);
   background-color: var(--background-color);
-  background-size: 40px 40px;
-  background-image: linear-gradient(rgba(30, 100, 200, 0.075) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(30, 100, 200, 0.05) 1px, transparent 1px) !important;
-  border-radius: var(--radius-lg);
 
-
-  &:last-child {
-    border-bottom: none;
+  &::before {
+    content: '';
+    position: absolute;
+    top: var(--space-m);
+    bottom: var(--space-m);
+    left: 45px;
+    width: 2px;
+    background-color: var(--chapter-color);
+    opacity: 0.5;
+    top: 45px;
   }
 
-  h2 {
-    font-size: var(--step-2);
-    margin-bottom: var(--space-m);
+  &::after {
+    content: attr(data-section);
+    position: absolute;
+    left: 30px;
+    color: var(--chapter-color);
+    font-size: var(--step-0);
     font-weight: bold;
+    opacity: 0.7;
+    top: 15px;
   }
 
   @media (max-width: variables.$breakpoint-md) {
-    padding: var(--space-s); /* Reduced padding for medium screens */
+    margin-left: var(--space-m);
+    padding: var(--space-s);
     margin-bottom: var(--space-xl);
   }
 
   @media (max-width: variables.$breakpoint-sm) {
-    padding: var(--space-xs); /* Further reduced padding for small screens */
-    margin-bottom: var(--space-l); /* Slightly reduced margin for smaller screens */
+    margin-left: var(--space-xs);
+    padding: var(--space-xs);
+    margin-bottom: var(--space-l);
+
+    &::before, &::after {
+      display: none;
+    }
   }
 }
 
@@ -251,15 +268,17 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 .section-title {
   background-color: transparent;
   color: var(--chapter-color);
+  margin-top: var(--space-xl);
   padding: var(--space-xs) var(--space-s);
   border-bottom: 2px solid var(--chapter-color);
 }
 
-.sections-content {
+.page-content {
   display: flex;
   flex-direction: column;
   gap: var(--space-3xl);
-  padding-inline: var(--space-l);
+  padding-inline: var(--space-s);
+  margin-inline: var(--space-m);
 }
 
 .section-intro {
@@ -277,36 +296,6 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 .section-review {
   border-top: 1px solid var(--border-color);
   padding-top: var(--space-m);
-}
-
-.section-content {
-  margin-bottom: 0;
-  max-width: 33em; /* Base width for smaller screens */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--space-m);
-  padding-right: var(--space-m);
-
-  @media (max-width: variables.$breakpoint-md) {
-    padding-inline: var(--space-2xs); /* Slightly reduced horizontal padding for medium screens */
-  }
-
-  @media (min-width: 1024px) {
-    max-width: 45em; /* Wider for medium screens */
-  }
-
-  @media (min-width: 1440px) {
-    max-width: 55em; /* Even wider for large screens */
-  }
-
-  @media (max-width: variables.$breakpoint-sm) {
-    padding-inline: var(--space-3xs); /* Even smaller horizontal padding for small screens */
-  }
-
-  p {
-    margin-bottom: var(--space-m);
-    line-height: 1.7;
-  }
 }
 
 /* New readable content class for optimal text readability */

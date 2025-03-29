@@ -67,36 +67,27 @@
 
 >
 
-<!--
-{chapterColor}
-{chapterColorLight}
-{chapterColorDark}
-{chapterSectionBg}
-{chapterHeaderBg}
-{chapterBg} -->
+<div class="chapter-wrapper">
+    <header class="chapter-header">
+      <h1>Chapter 1: <br> Understanding 3D Space</h1>
+      <p class="chapter-intro">
+        This chapter introduces the fundamental concepts of three-dimensional space and
+        coordinate systems, essential for understanding kinematics and dynamics.
+      </p>
 
-  <header class="chapter-header">
-    <h1>Chapter 1: <br> Understanding 3D Space</h1>
-    <p class="chapter-intro">
-      This chapter introduces the fundamental concepts of three-dimensional space and
-      coordinate systems, essential for understanding kinematics and dynamics.
-    </p>
-
-    <!-- Add the optional header navigation -->
-    <ChapterHeaderNav chapterSections={chapterSections} />
-  </header>
-  <div class="chapter-wrapper">
-    <div class="sections-content">
-      <!-- @ts-ignore -->
+      <!-- Add the optional header navigation -->
+      <ChapterHeaderNav chapterSections={chapterSections} />
+    </header>
+    <div class="page-content">
       <section
         id="coordinate-systems"
         class="content-section section-header"
+        data-section="1.1"
         use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
         on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
       >
         <div class="readable-content">
           <h2 class="section-title">1.1 Coordinate Systems</h2>
-
           <div class="section-intro">
             <Scenario>
               <p><strong>Surya:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>

@@ -1,6 +1,6 @@
 <script>
   import { slide } from 'svelte/transition';
-  let showReview = false;
+  let showReview = true;
 </script>
 
 <div class="section-review">
@@ -17,7 +17,7 @@
   .section-review {
     margin-top: var(--space-l);
     padding-top: var(--space-m);
-    border-top: 1px solid var(--border-color);
+    border-left: 1px solid var(--chapter-color);
   }
 
   details {
@@ -35,11 +35,6 @@
 
     &:hover {
       color: var(--primary-color);
-    }
-
-    &::before {
-      content: "+ ";
-      margin-right: var(--space-xs);
     }
   }
 

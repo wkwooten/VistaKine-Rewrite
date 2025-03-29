@@ -61,16 +61,16 @@
   {nextChapter}
   currentChapterSlug="kinematics"
 >
-  <header class="chapter-header">
-  <h1>Chapter 2: <br> Kinematics</h1>
-    <p class="chapter-intro">
-      In this chapter, we will explore the study of motion, known as kinematics.
-    </p>
-    <ChapterHeaderNav chapterSections={chapterSections} />
-  </header>
-
   <div class="chapter-wrapper">
-    <div class="sections-content">
+
+    <header class="chapter-header">
+      <h1>Chapter 2: <br> Kinematics</h1>
+        <p class="chapter-intro">
+          In this chapter, we will explore the study of motion, known as kinematics.
+        </p>
+        <ChapterHeaderNav chapterSections={chapterSections} />
+      </header>
+    <div class="page-content">
       <!-- Section 2.1 -->
       <!-- @ts-ignore -->
       <section

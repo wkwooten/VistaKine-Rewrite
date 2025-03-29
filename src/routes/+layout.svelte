@@ -5,42 +5,14 @@
   import Navigation from '$lib/components/Navigation.svelte';
   import { sidebarExpanded } from '$lib/stores/appState';
   import { parallaxBackground } from '$lib/scripts/parallax';
-
-  let toggleButtonElement: HTMLButtonElement;
-  let highlightTimeout: number | null = null;
+  import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
   onMount(() => {
     parallaxBackground();
-    return () => {
-      if (highlightTimeout) {
-        clearTimeout(highlightTimeout);
-      }
-    };
   });
 
   function handleClick() {
     $sidebarExpanded = !$sidebarExpanded;
-    if (toggleButtonElement) {
-      if (highlightTimeout) {
-        clearTimeout(highlightTimeout);
-        console.log('handleClick: Cleared previous timeout');
-      }
-      toggleButtonElement.classList.remove('fade-out-highlight');
-
-      console.log('handleClick: Adding click-highlighted');
-      toggleButtonElement.classList.add('click-highlighted');
-
-      highlightTimeout = window.setTimeout(() => {
-        console.log('Timeout: Attempting to remove click-highlighted');
-        if (toggleButtonElement) {
-          toggleButtonElement.classList.remove('click-highlighted');
-          console.log('Timeout: Class removed. Current classes:', toggleButtonElement.classList.toString());
-        } else {
-          console.log('Timeout: toggleButtonElement gone?');
-        }
-        highlightTimeout = null;
-      }, 600);
-    }
   }
 </script>
 
@@ -60,12 +32,17 @@
   <aside class="navigation" class:collapsed={!$sidebarExpanded}>
     <Navigation />
     <button
-      bind:this={toggleButtonElement}
-      class="sidebar-toggle-bar"
+      class="sidebar-toggle-button"
       on:click={handleClick}
       aria-label="Toggle Sidebar"
       title="Toggle Sidebar"
-    ></button>
+    >
+      {#if $sidebarExpanded}
+        <ChevronLeft size={18} stroke-width="3"/>
+      {:else}
+        <ChevronRight size={18} stroke-width="3"/>
+      {/if}
+    </button>
   </aside>
 
   <main class="content">
@@ -84,32 +61,20 @@
 
   .navigation {
     flex-shrink: 0;
-    position: static;
+    display: flex;
+    align-items: stretch;
     top: 0;
     left: 0;
     height: 100vh;
-    display: grid;
-    grid-template-columns: 300px 10px;
-    width: 310px;
-    transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0),
-                grid-template-columns 0.3s cubic-bezier(0.25, 0.1, 0.25, 1.0);
     z-index: 1001;
 
+    & > :first-child {
+        flex-grow: 1;
+        min-width: 0;
+        width: 100%;
+    }
+
     &.collapsed {
-      width: 90px;
-      grid-template-columns: 80px 10px;
-
-      .sidebar-toggle-bar::before {
-        background-color: var(--border-color-light);
-      }
-
-      .sidebar-toggle-bar:hover::before {
-        background-color: var(--primary-color);
-      }
-
-      .sidebar-toggle-bar.click-highlighted::before {
-        background-color: var(--primary-color);
-      }
     }
 
     @media (max-width: 768px) {
@@ -118,44 +83,41 @@
       height: auto;
       width: auto;
       z-index: auto;
-      grid-template-columns: none;
       transition: none;
+
+      .sidebar-toggle-button {
+          display: none;
+      }
     }
   }
 
-  .sidebar-toggle-bar {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    position: relative;
+  .sidebar-toggle-button {
+      z-index: 1002;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      height: 100%;
-      width: 4px;
-      left: 0;
-      background-color: var(--border-color-light);
-      transition: background-color 0.3s ease-out;
-      pointer-events: none;
-    }
+      flex-shrink: 0;
+      width: 30px;
+      align-self: center;
 
-    &:hover::before {
-      background-color: var(--primary-color);
-    }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50px;
+      padding: 0;
+      background-color: var(--background-color);
+      border: 1px solid var(--border-color);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      border-left: none;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      color: var(--text-color);
+      transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
-    &.click-highlighted::before {
-      background-color: var(--primary-color);
-      transition-duration: 0s;
-    }
-
-    @media (max-width: 768px) {
-      display: none;
-    }
+      &:hover {
+          background-color: var(--background-color-offset);
+          border-color: var(--border-color-hover);
+          box-shadow: var(--shadow-md);
+          color: var(--primary-color);
+      }
   }
 
   .content {

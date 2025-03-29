@@ -171,7 +171,7 @@
           </div>
         {:else}
           <div class="icon-logo">
-            <Hexagon size={iconSize} color="var(--primary-color)" />
+            <Hexagon size={32} color="var(--primary-color)" />
           </div>
         {/if}
       </div>
@@ -193,7 +193,7 @@
       </div>
     {:else}
       <div class="icon-search">
-        <Search size={iconSize} />
+        <Search size={24} />
       </div>
     {/if}
   </div>
@@ -355,7 +355,7 @@
 
   .nav-header-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: var(--space-xs) var(--space-s);
     position: relative; /* Positioning context for the close button */
@@ -392,9 +392,6 @@
   }
 
   .icon-logo {
-    width: 32px;
-    height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;

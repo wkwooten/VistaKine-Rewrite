@@ -5,6 +5,7 @@
 
 <div class="chapter-header-nav">
   <nav>
+    <p>Jump to section:</p>
     <ul>
       {#each chapterSections as section}
         <li>
@@ -18,17 +19,22 @@
 <style lang="scss">
   .chapter-header-nav {
     margin-top: var(--space-m);
-    padding: var(--space-s) 0;
-    border-top: 1px solid var(--border-color-light, rgba(0, 0, 0, 0.1));
+    padding: var(--space-s);
+    /* border-top: 1px solid var(--background-color); */
   }
 
   nav {
+    p {
+      color: var(--background-color);
+      font-size: var(--step-2);
+      margin-bottom: var(--space-xs);
+    }
     ul {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-s);
       list-style: none;
-      padding: 0;
+      padding-inline: var(--space-s);
       margin: 0;
 
       @media (max-width: 768px) {
@@ -39,6 +45,9 @@
 
     li {
       margin: 0;
+      background-color: var(--background-color);
+      border-radius: var(--radius-sm);
+      padding: var(--space-xs);
     }
 
     a {

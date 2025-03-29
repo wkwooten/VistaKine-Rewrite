@@ -21,5 +21,5 @@
 
 <T.GridHelper args={[50]} />
 
-<Ground />
+<Ground position={[0, -1, 0]} />
 <Box />
