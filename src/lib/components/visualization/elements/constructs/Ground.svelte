@@ -18,11 +18,11 @@
 </script>
 
 <RigidBody type="fixed">
-  <T.Group position={[0, -0.25, 0]}>
+  <T.Group position={[0, 0, 0]}>
     <AutoColliders shape={'cuboid'}>
       <T.Mesh receiveShadow>
-        <T.BoxGeometry args={[500, 0.5, 500]} />
-        <T.MeshStandardMaterial>
+        <T.BoxGeometry args={[100, 0.5, 100]} />
+        <T.MeshBasicMaterial>
           <RadialGradientTexture
             stops={[
               { color: Stop1, offset: 0 },
@@ -31,7 +31,7 @@
             innerRadius={0}
             outerRadius={'auto'}
           />
-        </T.MeshStandardMaterial>
+        </T.MeshBasicMaterial>
       </T.Mesh>
     </AutoColliders>
   </T.Group>

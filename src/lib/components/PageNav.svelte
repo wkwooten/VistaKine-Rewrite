@@ -7,19 +7,14 @@
 <nav class="page-nav">
     <div class="nav-links">
         {#if prevChapter}
-            {#if typeof prevChapter === 'string'}
-                <!-- If prevChapter is a string (URL), link directly -->
-                <a href={prevChapter} class="nav-link prev">
-                    <span class="arrow">&larr;</span>
-                    Table of Contents
-                </a>
-            {:else}
-                <!-- Default: prevChapter is a chapter object -->
-                <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
-                    <span class="arrow">&larr;</span>
-                    Previous Chapter: {prevChapter.title}
-                </a>
-            {/if}
+            <!-- Always expect an object now -->
+            <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
+                <span class="arrow">&larr;</span>
+                Previous Chapter: {prevChapter.title}
+            </a>
+        {:else}
+            <!-- Optional: Add a disabled or placeholder state if needed -->
+            <span class="nav-link prev disabled">&larr; Beginning</span >
         {/if}
 
         <!-- Table of Contents link in the middle -->
@@ -32,6 +27,9 @@
                 Next Chapter: {nextChapter.title}
                 <span class="arrow">&rarr;</span>
             </a>
+        {:else}
+             <!-- Optional: Add a disabled or placeholder state if needed -->
+            <span class="nav-link next disabled">End &rarr;</span >
         {/if}
     </div>
 </nav>
@@ -81,5 +79,11 @@
             display: inline-block;
             margin-inline: var(--space-xs);
         }
+    }
+
+    .nav-link.disabled { // Add some basic styling for disabled state
+        color: var(--text-color-muted); // Example color
+        pointer-events: none; // Make it non-interactive
+        opacity: 0.6;
     }
 </style>

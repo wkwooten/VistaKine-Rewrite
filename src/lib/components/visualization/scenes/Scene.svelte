@@ -19,7 +19,7 @@
   position={[8, 20, -3]}
 />
 
-<T.GridHelper args={[50]} />
+<T.GridHelper args={[100]} />
 
-<Ground position={[0, -1, 0]} />
+<Ground />
 <Box />

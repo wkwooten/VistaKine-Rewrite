@@ -1,1 +1,0 @@
-<h1>Placeholder Content for Chapter 5</h1>

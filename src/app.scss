@@ -11,6 +11,7 @@
 body {
   font-family: var(--font-family-base);
   color: var(--text-color);
+  @include typography.body;
   background-color: var(--background-color);
   line-height: 1.5;
   height: 100vh;

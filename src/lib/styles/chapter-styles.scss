@@ -11,7 +11,7 @@
     #{color.channel($color, 'red')},
     #{color.channel($color, 'green')},
     #{color.channel($color, 'blue')},
-    $bg-alpha
+    .15
   );
   // Keep these consistent for now, could be arguments later if needed
   --chapter-section-bg: white;
@@ -175,7 +175,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   background-color: var(--chapter-header-bg);
   width: 100%;
   box-shadow: var(--shadow-lg);
-  padding: var(--space-s) var(--space-s);
+  padding: var(--space-m) var(--space-s);
   margin-top: var(--space-l);
   max-width: var(--wide-content-width);
   border-radius: var(--radius-md);
@@ -218,27 +218,28 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   margin-bottom: var(--space-xl);
   background-color: var(--background-color);
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: var(--space-m);
-    bottom: var(--space-m);
-    left: 45px;
-    width: 2px;
-    background-color: var(--chapter-color);
-    opacity: 0.5;
-    top: 45px;
-  }
-
+  // Top Section Number (using ::after)
   &::after {
     content: attr(data-section);
     position: absolute;
     left: 30px;
+    top: var(--space-m);
     color: var(--chapter-color);
     font-size: var(--step-0);
     font-weight: bold;
     opacity: 0.7;
-    top: 15px;
+  }
+
+  // Bottom Section Number (using ::before)
+  &::before {
+    content: attr(data-section);
+    position: absolute;
+    left: 30px;
+    bottom: var(--space-m);
+    color: var(--chapter-color);
+    font-size: var(--step-0);
+    font-weight: bold;
+    opacity: 0.7;
   }
 
   @media (max-width: variables.$breakpoint-md) {
@@ -252,7 +253,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
     padding: var(--space-xs);
     margin-bottom: var(--space-l);
 
-    &::before, &::after {
+    &::before, &::after, .section-line {
       display: none;
     }
   }
@@ -359,4 +360,15 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
   border-color: var(--chapter-color);
   background-color: color-mix(in srgb, var(--chapter-color) 20%, white);
   color: var(--chapter-color-dark, var(--chapter-color));
+}
+
+// New styles for the dedicated line element
+.section-line {
+  position: absolute;
+  top: calc(var(--space-m) + var(--step-0) * 1.2);
+  bottom: calc(var(--space-m) + var(--step-0) * 1.2);
+  left: 45px;
+  width: 2px;
+  background-color: var(--chapter-color);
+  opacity: 0.5;
 }

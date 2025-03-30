@@ -4,70 +4,18 @@
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { browser } from '$app/environment';
+  import { getChapterList } from '$lib/data/chapters';
 
-  // Navigation data could come from a store or API later
-  export let chapters = [
-    { title: 'Introduction', slug: 'chapter1' },
-    { title: 'Kinematics', slug: 'chapter2' },
-    { title: 'Dynamics', slug: 'chapter3' },
-    { title: 'Advanced Topics', slug: 'chapter4' },
-    { title: 'Motion Analysis', slug: 'chapter5' },
-    { title: 'Biomechanics', slug: 'chapter6' },
-    { title: 'Clinical Applications', slug: 'chapter7' },
-    { title: 'Research Methods', slug: 'chapter8' },
-    // Add more chapters as needed
-  ];
+  // Add a reactive log to monitor the store value
+  $: console.log('Navigation.svelte - currentChapter store value:', $currentChapter);
+
+  // Use the centralized chapter data
+  export let chapters = getChapterList();
 
   interface SectionItem {
     id: string;
     title: string;
   }
-
-  interface ChapterSections {
-    [key: string]: SectionItem[];
-  }
-
-  // Section data for each chapter (for sidebar navigation)
-  const chapterSections: ChapterSections = {
-    'chapter1': [ // Introduction chapter
-      { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
-      { id: "vectors-in-space", title: "1.2 Vectors in 3D Space" },
-      { id: "reference-frames", title: "1.3 Reference Frames" }
-    ],
-    'chapter2': [ // Kinematics chapter
-      { id: "kinematics-section1", title: "2.1 Kinematics Section 1" },
-      { id: "kinematics-section2", title: "2.2 Kinematics Section 2" },
-      // ... more sections for Kinematics
-    ],
-    'chapter3': [ // Dynamics chapter
-      { id: "dynamics-section1", title: "3.1 Dynamics Section 1" },
-      // ... more sections for Dynamics
-    ],
-    'chapter4': [ // Advanced Topics chapter
-      { id: "advanced-section1", title: "4.1 Advanced Topic 1 - Placeholder" },
-      { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" },
-      // ... more sections for Advanced Topics
-    ],
-    'chapter5': [ // Motion Analysis chapter
-      { id: "motion-analysis-section1", title: "5.1 Motion Analysis 1 - Placeholder" },
-      { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" },
-      // ... more sections for Motion Analysis
-    ],
-    'chapter6': [ // Biomechanics chapter
-      { id: "biomechanics-section1", title: "6.1 Biomechanics 1 - Placeholder" },
-      { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" },
-      // ... more sections for Biomechanics
-    ],
-    'chapter7': [ // Clinical Applications chapter
-      { id: "clinical-section1", title: "7.1 Clinical Applications 1 - Placeholder" },
-      { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" },
-      // ... more sections for Clinical Applications
-    ],
-    'chapter8': [ // Research Methods chapter
-      { id: "research-section1", title: "8.1 Research Methods 1 - Placeholder" },
-      { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
-    ]
-  };
 
   // Common size for all icons
   const iconSize = 18;
@@ -212,28 +160,45 @@
       </li>
 
       {#each chapters as chapter, index}
-        <li class="nav-chapter-group {`chapter-${index + 1}-theme`}" class:is-active={$currentChapter === chapter.slug}>
-          <div class="nav-item chapter-item" on:click={() => toggleChapterSections(chapter.slug)}>
+        <!-- Add a log right before the class is checked -->
+        {@const isActive = $currentChapter === chapter.slug}
+        <!-- {console.log(`Checking active for ${chapter.slug}: current='${$currentChapter}', slug='${chapter.slug}', isActive=${isActive}`)} -->
+        <li class="nav-chapter-group {`chapter-${index + 1}-theme`}" class:is-active={isActive}>
+          <div
+            class="nav-item chapter-item"
+            role="button"
+            tabindex="0"
+            on:click={() => toggleChapterSections(chapter.slug)}
+            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleChapterSections(chapter.slug); }}
+            aria-expanded={expandedChapter === chapter.slug}
+            aria-controls={`sections-${chapter.slug}`}
+          >
             <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(!desktopSidebarExpanded) {toggleSidebar()}}}">{index + 1}</a>
             {#if combinedSidebarExpanded}
               <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
-              <div class="chevron" class:expanded={expandedChapter === chapter.slug} on:click|stopPropagation={() => toggleChapterSections(chapter.slug)}>
+              <div
+                class="chevron"
+                class:expanded={expandedChapter === chapter.slug}
+                role="button"
+                tabindex="0"
+                on:click|stopPropagation={() => toggleChapterSections(chapter.slug)}
+                on:keydown|stopPropagation={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleChapterSections(chapter.slug); }}
+                aria-label={expandedChapter === chapter.slug ? `Collapse ${chapter.title} sections` : `Expand ${chapter.title} sections`}
+              >
                 <ChevronRight size={iconSize} />
               </div>
             {/if}
           </div>
           {#if combinedSidebarExpanded && expandedChapter === chapter.slug}
-            <ul class="chapter-sections" transition:slide>
-              {#each chapterSections[chapter.slug] || [] as section}
+            <ul class="chapter-sections" id={`sections-${chapter.slug}`} transition:slide>
+              {#each chapter.sections || [] as section}
                 <li class="section-item">
                   <a
                     href={`/chapter/${chapter.slug}#${section.id}`}
                     class="nav-item section-link"
                     on:click|preventDefault={() => handleSectionClick(chapter.slug, section.id)}
                   >
-                    {#if combinedSidebarExpanded}
-                      <span>{section.title}</span>
-                    {/if}
+                    {section.title}
                   </a>
                 </li>
               {/each}
@@ -468,7 +433,6 @@
     color: var(--text-color);
     text-decoration: none;
     border-radius: 4px;
-    margin: 0 var(--space-2xs);
     position: relative;
     /* Ensure box-sizing is correct */
     box-sizing: border-box;
@@ -546,76 +510,57 @@
     @extend .nav-item;
     padding-left: calc(var(--space-s) + var(--space-xs));
     font-size: 0.9em;
-    /* Allow link height to adjust */
     height: auto;
-    /* Remove any truncation styles */
-    /* overflow: hidden; */
-    /* white-space: nowrap; */
-    /* Ensure box-sizing */
     box-sizing: border-box;
 
     &:hover {
+      background-color: var(--chapter-bg);
       text-decoration: underline;
       color: var(--primary-color);
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     span {
-      /* Allow wrapping */
       white-space: normal;
-      word-break: break-word; /* Or break-all */
-      /* Remove any truncation styles */
-      /* overflow: hidden; */
-      /* text-overflow: ellipsis; */
-      /* Remove max-width */
-      /* max-width: calc(100% - 20px); */
-      /* Ensure it takes space correctly */
-      display: inline-block; /* Or block if needed */
+      word-break: break-word;
+      display: inline-block;
     }
   }
 
   .chevron {
     margin-left: auto;
-    /* Remove transition from the container */
-    /* transition: transform 0.3s ease; */
-    /* Add padding or dimensions if needed to maintain clickable area */
-    padding: var(--space-2xs); /* Example padding */
-    cursor: pointer; /* Ensure cursor indicates interactivity */
-    display: flex; /* Helps align the SVG if needed */
-    align-items: center; /* Center SVG vertically */
-    justify-content: center; /* Center SVG horizontally */
+    padding: var(--space-2xs);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    /* Target the SVG directly for transition */
     :global(svg) {
       transition: transform 0.3s ease;
     }
 
     &.expanded {
-      /* Remove transform from the container */
-      /* transform: rotate(90deg); */
-
-      /* Apply transform to the SVG when expanded */
       :global(svg) {
         transform: rotate(90deg);
       }
     }
 
     &:hover {
-      background-color: rgba(59, 130, 246, 0.1); // Highlight on hover
+      background-color: rgba(59, 130, 246, 0.1);
     }
   }
 
   .mobile-close-button {
     position: absolute;
-    top: 50%;          /* Vertically center */
+    top: 50%;
     right: var(--space-s);
-    transform: translateY(-50%); /* Adjust for vertical centering */
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
     color: var(--text-color);
     padding: var(--space-xs);
-    z-index: 1002; /* Ensure it's above the overlay */
-    /* Ensure it doesn't get hover effect from container */
+    z-index: 1002;
     &:hover {
         background-color: transparent;
     }
@@ -628,7 +573,7 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000; /* Below nav but above content */
+    z-index: 1000;
     display: none;
 
     @media (max-width: 768px) {
