@@ -38,6 +38,7 @@
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'displacement-velocity-acceleration')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">2.1 Displacement, Velocity, and Acceleration</h2>
         <div class="section-intro">
@@ -74,9 +75,11 @@
     <section
       id="uniform-motion"
       class="content-section"
+      data-section="2.2"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'uniform-motion')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">2.2 Uniform Motion</h2>
 
@@ -105,9 +108,11 @@
     <section
       id="non-uniform-motion"
       class="content-section"
+      data-section="2.3"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'non-uniform-motion')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">2.3 Non-Uniform Motion</h2>
 
@@ -150,9 +155,11 @@
     <section
       id="projectile-motion"
       class="content-section"
+      data-section="2.4"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'projectile-motion')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">2.4 Projectile Motion</h2>
 

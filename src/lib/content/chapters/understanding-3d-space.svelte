@@ -42,6 +42,7 @@
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">1.1 Coordinate Systems</h2>
         <div class="section-intro">
@@ -104,9 +105,11 @@
     <section
       id="vectors-in-space"
       class="content-section"
+      data-section="1.2"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'vectors-in-space')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">1.2 Vectors in 3D Space</h2>
 
@@ -185,9 +188,11 @@
     <section
       id="reference-frames"
       class="content-section"
+      data-section="1.3"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'reference-frames')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">1.3 Reference Frames</h2>
 

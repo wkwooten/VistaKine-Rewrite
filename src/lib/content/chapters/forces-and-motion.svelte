@@ -39,6 +39,7 @@
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'newtons-laws')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">3.1 Newton's Laws</h2>
         <div class="section-intro">
@@ -91,6 +92,7 @@
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
       on:intersect={(e) => handleSectionIntersect(e, 'newtons-laws-of-motion')}
     >
+      <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
         <h2 class="section-title">3.2 Newton's Laws of Motion</h2>
 

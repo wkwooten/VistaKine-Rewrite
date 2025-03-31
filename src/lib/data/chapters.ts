@@ -9,6 +9,7 @@ export interface Chapter {
   sections: Section[];
   prevChapter: { slug: string; title: string } | null;
   nextChapter: { slug: string; title: string } | null;
+  chapterNumber: number;
 }
 
 // Define all chapters with their data
@@ -22,7 +23,8 @@ export const chapters: Chapter[] = [
       { id: "reference-frames", title: "1.3 Reference Frames" }
     ],
     prevChapter: null,
-    nextChapter: null // Filled in by initialize function
+    nextChapter: null, // Filled in by initialize function
+    chapterNumber: 1
   },
   {
     title: 'Kinematics',
@@ -34,7 +36,8 @@ export const chapters: Chapter[] = [
       { id: "projectile-motion", title: "2.4 Projectile Motion" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 2
   },
   {
     title: 'Dynamics',
@@ -44,7 +47,8 @@ export const chapters: Chapter[] = [
       { id: "newtons-laws-of-motion", title: "3.2 Newton's Laws of Motion" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 3
   },
   {
     title: 'Advanced Topics',
@@ -54,7 +58,8 @@ export const chapters: Chapter[] = [
       { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 4
   },
   {
     title: 'Motion Analysis',
@@ -64,7 +69,8 @@ export const chapters: Chapter[] = [
       { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 5
   },
   {
     title: 'Biomechanics',
@@ -74,7 +80,8 @@ export const chapters: Chapter[] = [
       { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 6
   },
   {
     title: 'Clinical Applications',
@@ -84,7 +91,8 @@ export const chapters: Chapter[] = [
       { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 7
   },
   {
     title: 'Research Methods',
@@ -94,7 +102,8 @@ export const chapters: Chapter[] = [
       { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
     ],
     prevChapter: null, // Filled in by initialize function
-    nextChapter: null  // Filled in by initialize function
+    nextChapter: null,  // Filled in by initialize function
+    chapterNumber: 8
   }
 ];
 

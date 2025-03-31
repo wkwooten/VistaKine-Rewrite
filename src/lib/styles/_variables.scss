@@ -1,9 +1,9 @@
 // Color Variables - Core
 $primary-color: #3b82f6;
 $text-color: #1f2937;
-$background-color: #F0F8FF;
+$background-color: #f0f8ff;
 $sidebar-background: #f9fafb;
-$border-color: #1565C0;
+$border-color: #64B5F6;
 // Add a lighter border color, e.g., a semi-transparent version of text color
 $border-color-light: rgba($text-color, 0.2);
 
@@ -194,4 +194,15 @@ $radius-pill: 9999px;
   --radius-xl: #{$radius-xl};
   --radius-round: #{$radius-round};
   --radius-pill: #{$radius-pill};
+
+  // Chapter Theme Colors - Define as CSS variables
+  --chapter-color-1: #10b981;
+  --chapter-color-light-1: #6ee7b7;
+  --chapter-color-dark-1: #047857;
+
+  --chapter-color-2: #007bff;
+  --chapter-color-light-2: #67b3ff;
+  --chapter-color-dark-2: #0056b3;
+
+
 }

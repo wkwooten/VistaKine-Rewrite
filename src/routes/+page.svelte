@@ -65,7 +65,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: linear-gradient(135deg, var(--background-color) 0%, var(--sidebar-background) 100%);
+    /* background: linear-gradient(135deg, var(--background-color) 0%, var(--sidebar-background) 100%);  */
   }
 
   .hero-content {

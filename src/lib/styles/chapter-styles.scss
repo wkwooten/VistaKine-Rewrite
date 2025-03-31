@@ -11,8 +11,7 @@
     #{color.channel($color, 'red')},
     #{color.channel($color, 'green')},
     #{color.channel($color, 'blue')},
-    .15
-  );
+    .15);
   // Keep these consistent for now, could be arguments later if needed
   --chapter-section-bg: white;
   --chapter-header-bg: color-mix(in srgb, var(--chapter-color) 80%, black);
@@ -25,8 +24,8 @@
 .chapter.chapter-1-theme {
   @include chapter-theme-vars(
     $color: #10b981,
-    $color-light: #6ee7b7,
-    $color-dark: #047857
+    $color-light: color-mix(in srgb, #10b981 70%, white),
+    $color-dark: color-mix(in srgb, #10b981 70%, black),
   ); // Uses default bg-alpha: 0.05
 }
 
@@ -34,8 +33,16 @@
 .chapter.chapter-2-theme {
   @include chapter-theme-vars(
     $color: #007bff,
-    $color-light: #67b3ff,
-    $color-dark: #0056b3
+    $color-light: color-mix(in srgb, #007bff 70%, white),
+    $color-dark: color-mix(in srgb, #007bff 70%, black),
+  );
+}
+
+.chapter.chapter-3-theme {
+  @include chapter-theme-vars(
+    $color: #6366f1,
+    $color-light: color-mix(in srgb, #6366f1 70%, white),
+    $color-dark: color-mix(in srgb, #6366f1 70%, black),
   );
 }
 
@@ -45,8 +52,8 @@
 nav .nav-items li.nav-chapter-group.chapter-1-theme {
   @include chapter-theme-vars(
     $color: #10b981,
-    $color-light: #6ee7b7,
-    $color-dark: #047857,
+    $color-light: color-mix(in srgb, #10b981 70%, white),
+    $color-dark: color-mix(in srgb, #10b981 70%, black),
     $bg-alpha: 0.07 // Pass specific alpha for sidebar
   );
 }
@@ -55,8 +62,8 @@ nav .nav-items li.nav-chapter-group.chapter-1-theme {
 nav .nav-items li.nav-chapter-group.chapter-2-theme {
   @include chapter-theme-vars(
     $color: #007bff,
-    $color-light: #67b3ff,
-    $color-dark: #0056b3,
+    $color-light: color-mix(in srgb, #007bff 70%, white),
+    $color-dark: color-mix(in srgb, #007bff 70%, black),
     $bg-alpha: 0.07
   );
 }
@@ -179,6 +186,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   margin-top: var(--space-l);
   max-width: var(--wide-content-width);
   border-radius: var(--radius-md);
+  color: var(--chapter-section-bg);
 
   h1 {
     font-size: var(--step-4);
@@ -280,6 +288,10 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   gap: var(--space-3xl);
   padding-inline: var(--space-s);
   margin-inline: var(--space-m);
+
+  @media (max-width: variables.$breakpoint-md) {
+    margin-inline: 0;
+  }
 }
 
 .section-intro {
@@ -324,13 +336,10 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 }
 
 /* Media Queries */
-@media (min-width: 768px) {
+@media (min-width: variables.$breakpoint-md) {
   .content-section {
     grid-template-columns: 2fr 1fr;
   }
-}
-
-@media (max-width: 767px) {
   .visualization-container {
     margin-top: var(--space-m);
   }

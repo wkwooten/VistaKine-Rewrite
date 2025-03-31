@@ -15,15 +15,16 @@
 <style lang="scss">
   /* Styles for section review */
   .section-review {
-    margin-top: var(--space-l);
-    padding-top: var(--space-m);
-    border-left: 1px solid var(--chapter-color);
+    margin-top: var(--space-m);
+    border-left: 3px solid var(--chapter-color);
+    padding-left: var(--space-s);
+    margin-bottom: var(--space-m); /* Added to match FormulaAccordion */
   }
 
   details {
-    margin-block: var(--space-m);
-    padding: var(--space-m);
-    margin-bottom: var(--space-m);
+    margin-block: 0; /* Changed to 0 to reduce extra spacing */
+    padding: 0; /* Changed to 0 to remove padding from details */
+    margin-bottom: 0; /* Changed to 0 to reduce extra spacing */
   }
 
   summary {
@@ -39,7 +40,10 @@
   }
 
   .review-content {
-    margin-top: var(--space-s);
-    padding: var(--space-s);
+    padding: var(--space-m);
+    margin-top: var(--space-xs);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
   }
 </style>

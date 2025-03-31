@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { chapters, getChapterBySlug } from '$lib/data/chapters';
+import { getChapterBySlug } from '$lib/data/chapters';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
@@ -11,13 +11,12 @@ export const load: PageLoad = async ({ params }) => {
     throw error(404, 'Chapter not found');
   }
 
-  // Find the index of the current chapter in the main array
-  const chapterIndex = chapters.findIndex(ch => ch.slug === slug);
-  // Generate theme class based on index (add 1 because arrays are 0-indexed)
-  // Add a fallback class just in case, though the 404 should prevent index -1
-  const themeClass = chapterIndex !== -1
-    ? `chapter-${chapterIndex + 1}-theme`
-    : 'chapter-default-theme';
+  // Add a check for the new property for safety
+  if (typeof chapterData.chapterNumber !== 'number') {
+    console.error(`Chapter data for slug "${slug}" is missing 'chapterNumber'.`);
+    // You could throw an error here or assign a default theme
+    throw error(500, `Chapter data for slug "${slug}" is misconfigured.`);
+  }
 
   try {
     // Dynamically import the chapter content component
@@ -31,7 +30,8 @@ export const load: PageLoad = async ({ params }) => {
       sections: chapterData.sections,
       prevChapter: chapterData.prevChapter,
       nextChapter: chapterData.nextChapter,
-      themeClass: themeClass,
+      // Use the reliable chapterNumber property
+      themeClass: `chapter-${chapterData.chapterNumber}-theme`,
       ChapterContent
     };
   } catch (e) {

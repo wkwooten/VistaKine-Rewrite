@@ -1,4 +1,5 @@
 @use '$lib/styles/typography';
+@use '$lib/styles/variables';
 @use '$lib/styles/main'; // Ensure this imports variables, typography, etc.
 // Import Google Fonts
 // @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -111,6 +112,7 @@ a {
   overflow-y: auto; // Allow content scrolling
   padding-inline: var(--space-m);
   width: 100%; // Takes full width of its flex space
+
 }
 
 // Mobile overlay (for sidebar)
@@ -130,7 +132,7 @@ a {
 }
 
 // Responsive adjustments for smaller screens
-@media (max-width: 768px) {
+@media (max-width: variables.$breakpoint-md) {
   .app-container {
     display: block; // Keep block layout for mobile
   }
@@ -153,6 +155,6 @@ a {
 
   .content {
     margin-left: 0;
-    padding: var(--space-s);
+    padding: 0;
   }
 }
