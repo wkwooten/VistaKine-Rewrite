@@ -34,7 +34,6 @@
       flex-wrap: wrap;
       gap: var(--space-s);
       list-style: none;
-      border-top: 1px solid var(--background-color);
       padding-inline: var(--space-s);
       margin: 0;
 
@@ -47,7 +46,6 @@
     li {
       margin: 0;
       border-radius: var(--radius-sm);
-      padding: var(--space-xs);
     }
 
     a {

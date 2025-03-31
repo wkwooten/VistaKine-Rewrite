@@ -7,16 +7,56 @@
   import Navigation from '$lib/components/Navigation.svelte';
   import { sidebarExpanded } from '$lib/stores/appState';
   import { parallaxBackground } from '$lib/scripts/parallax';
-  import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { ChevronLeft, ChevronRight, Menu } from 'lucide-svelte';
+  import { browser } from '$app/environment';
+
+  let mobileNavOpen = false;
+  let isMobile = false;
 
   onMount(() => {
     parallaxBackground();
+
+    function checkMobile() {
+      if (browser) {
+        isMobile = window.innerWidth <= 768;
+        if (!isMobile && mobileNavOpen) {
+          mobileNavOpen = false;
+        }
+      }
+    }
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      if (browser) {
+        window.removeEventListener('resize', checkMobile);
+      }
+    };
   });
 
-  function handleClick() {
+  function toggleDesktopSidebar() {
     $sidebarExpanded = !$sidebarExpanded;
   }
+
+  function toggleMobileSidebar() {
+    mobileNavOpen = !mobileNavOpen;
+  }
+
+  function closeMobileSidebar() {
+    mobileNavOpen = false;
+  }
 </script>
+
+{#if isMobile}
+  <button class="mobile-menu-button" on:click={toggleMobileSidebar} aria-label="Open Menu" type="button">
+    <Menu size={24} />
+  </button>
+{/if}
+
+{#if isMobile && mobileNavOpen}
+  <div class="mobile-overlay active" on:click={closeMobileSidebar} role="button"  aria-label="Close Menu"></div>
+{/if}
 
 <div class="parallax-background">
   <div class="grid-background"></div>
@@ -31,20 +71,22 @@
 </div>
 
 <div class="app-container" class:sidebar-collapsed={!$sidebarExpanded}>
-  <aside class="navigation" class:collapsed={!$sidebarExpanded}>
+  <aside class="navigation" class:collapsed={!$sidebarExpanded} class:mobile-open={mobileNavOpen}>
     <Navigation />
-    <button
-      class="sidebar-toggle-button"
-      on:click={handleClick}
-      aria-label="Toggle Sidebar"
-      title="Toggle Sidebar"
-    >
-      {#if $sidebarExpanded}
-        <ChevronLeft size={18} stroke-width="3"/>
-      {:else}
-        <ChevronRight size={18} stroke-width="3"/>
-      {/if}
-    </button>
+    {#if !isMobile}
+      <button
+        class="sidebar-toggle-button"
+        on:click={toggleDesktopSidebar}
+        aria-label="Toggle Sidebar"
+        title="Toggle Sidebar"
+      >
+        {#if $sidebarExpanded}
+          <ChevronLeft size={18} stroke-width="3"/>
+        {:else}
+          <ChevronRight size={18} stroke-width="3"/>
+        {/if}
+      </button>
+    {/if}
   </aside>
 
   <main class="content">
@@ -59,16 +101,17 @@
     position: relative;
     z-index: 2;
     display: flex;
+    transition: all var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
   }
 
   .navigation {
     flex-shrink: 0;
     display: flex;
     align-items: stretch;
-    top: 0;
-    left: 0;
     height: 100vh;
     z-index: 1001;
+    width: 330px;
+    transition: width var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
 
     & > :first-child {
         flex-grow: 1;
@@ -77,15 +120,32 @@
     }
 
     &.collapsed {
+      width: 110px;
     }
 
     @media (max-width: 768px) {
-      display: block;
-      position: static;
-      height: auto;
-      width: auto;
-      z-index: auto;
-      transition: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      max-width: 80%;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      background-color: var(--sidebar-background, var(--background-color));
+      box-shadow: var(--shadow-lg);
+      flex-direction: column;
+      align-items: initial;
+      height: 100vh;
+      z-index: 1050;
+
+      &.mobile-open {
+        transform: translateX(0);
+      }
+
+      &.collapsed {
+         width: 300px;
+         max-width: 80%;
+      }
 
       .sidebar-toggle-button {
           display: none;
@@ -120,6 +180,10 @@
           box-shadow: var(--shadow-md);
           color: var(--primary-color);
       }
+
+      @media (max-width: 768px) {
+        // display: none;
+      }
   }
 
   .content {
@@ -128,10 +192,43 @@
     height: 100%;
     overflow-y: auto;
     padding-inline: var(--space-m);
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+      padding: 5px;
+    }
   }
 
-  @media (max-width: 768px) {
-    .app-container { display: block; }
-    .content { margin-left: 0; padding: var(--space-s); }
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 4;
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .mobile-menu-button {
+    display: none;
+    position: fixed;
+    top: var(--space-s, 10px);
+    left: var(--space-s, 10px);
+    z-index: 1003;
+    background-color: var(--background-color, white);
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: var(--radius-sm, 4px);
+    padding: var(--space-xs, 8px);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+
+    &[type="button"] {
+       display: block;
+    }
   }
 </style>

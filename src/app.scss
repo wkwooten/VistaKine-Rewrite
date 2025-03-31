@@ -1,6 +1,7 @@
 @use '$lib/styles/typography';
 @use '$lib/styles/variables';
 @use '$lib/styles/main'; // Ensure this imports variables, typography, etc.
+@use 'lib/styles/katex-custom'; // Import the KaTeX overrides
 // Import Google Fonts
 // @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700&display=swap'); // Added for Headers
@@ -73,88 +74,17 @@ a {
   outline-offset: 2px;
 }
 
-// Main App Layout Container
-.app-container {
-  height: 100vh;
-  width: 100%;
-  position: relative;
-  z-index: 2;
-  display: flex; // Changed from grid to flex
-  // Add transition for smooth resizing
-  transition: all var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+// Main App Layout Container - REMOVED
+// .app-container { ... }
 
-  // Define the collapsed state - now handled by .navigation width
-  &.sidebar-collapsed {
-    // grid-template-columns removed
-  }
-}
+// Navigation Sidebar Area - REMOVED
+// .navigation { ... }
 
-// Navigation Sidebar Area
-.navigation {
-  flex-shrink: 0;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 330px; // Increased from 300px (300 + 30 for handle)
-  transition: width var(--sidebar-transition-duration) var(--sidebar-transition-timing);
-  z-index: 1001;
+// Main Content Area - REMOVED
+// .content { ... }
 
-  &.collapsed {
-    width: 110px; // Increased from 80px (80 + 30 for handle)
-  }
-}
+// Mobile overlay (for sidebar) - REMOVED
+// .mobile-overlay { ... }
 
-// Main Content Area
-.content {
-  flex-grow: 1; // Takes up remaining space
-  min-width: 0; // Prevent content overflow issues in flex items
-  height: 100%; // Needed for overflow-y to work correctly
-  overflow-y: auto; // Allow content scrolling
-  padding-inline: var(--space-m);
-  width: 100%; // Takes full width of its flex space
-
-}
-
-// Mobile overlay (for sidebar)
-.mobile-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: none;
-
-  &.active {
-    display: block;
-  }
-}
-
-// Responsive adjustments for smaller screens
-@media (max-width: variables.$breakpoint-md) {
-  .app-container {
-    display: block; // Keep block layout for mobile
-  }
-
-  .navigation {
-    position: fixed; // Fixed positioning for mobile slide-out menu
-    width: 300px; // Full width when open
-    max-width: 80%; // Cap at 80% of viewport
-    transform: translateX(-100%); // Off-screen by default
-    transition: transform 0.3s ease; // For slide-in/out
-
-    &.mobile-open {
-      transform: translateX(0); // Slide in when open
-    }
-
-    // Reset desktop-specific styles
-    display: block;
-    // grid-template-columns: none;
-  }
-
-  .content {
-    margin-left: 0;
-    padding: 0;
-  }
-}
+// Responsive adjustments for smaller screens - REMOVED
+// @media (max-width: variables.$breakpoint-md) { ... }

@@ -1,15 +1,14 @@
 <script lang="ts">
   import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
-  import { Hexagon, BookOpen, Settings, Search, ChevronRight, Menu, X } from 'lucide-svelte';
+  import { Hexagon, BookOpen, Settings, Search, ChevronRight } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
+  import { quintOut } from 'svelte/easing';
   import { browser } from '$app/environment';
   import { getChapterList } from '$lib/data/chapters';
 
-  // Add a reactive log to monitor the store value
   $: console.log('Navigation.svelte - currentChapter store value:', $currentChapter);
 
-  // Use the centralized chapter data
   export let chapters = getChapterList();
 
   interface SectionItem {
@@ -17,50 +16,25 @@
     title: string;
   }
 
-  // Common size for all icons
   const iconSize = 18;
 
-  let mobileSidebarOpen = false; // Track mobile sidebar state separately
   let desktopSidebarExpanded = $sidebarExpanded; // Local state for desktop
-  let isMobile = false; // State to track if we are on mobile
 
   onMount(() => {
-    // This code runs only in the browser
-    function checkMobile() {
-        isMobile = window.innerWidth < 768;
-    }
-
-    checkMobile(); // Initial check
-    window.addEventListener('resize', checkMobile); // Check on resize
-
-    // Update desktopSidebarExpanded when $sidebarExpanded changes
     const unsubscribe = sidebarExpanded.subscribe(value => {
       desktopSidebarExpanded = value;
     });
 
-    // Clean up the subscription and event listener when the component is unmounted
     return () => {
-        window.removeEventListener('resize', checkMobile);
         unsubscribe();
     };
   });
 
-  function toggleSidebar(): void {
-    if (isMobile) { // Use the isMobile state
-      mobileSidebarOpen = !mobileSidebarOpen;
-    } else {
-      $sidebarExpanded = !$sidebarExpanded;
-    }
-  }
-
-  let expandedChapter: string | null = null; // Track expanded chapter for accordion
+  let expandedChapter: string | null = null;
   function toggleChapterSections(chapterSlug: string): void {
     expandedChapter = expandedChapter === chapterSlug ? null : chapterSlug;
   }
 
-  /**
-   * Scroll to a section within the page
-   */
   function scrollToSection(sectionId: string): void {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -68,49 +42,27 @@
     }
   }
 
-  /**
-   * Handle section link clicks
-   */
   function handleSectionClick(chapterSlug: string, sectionId: string): void {
     if ($currentChapter === chapterSlug) {
       scrollToSection(sectionId);
     } else {
-      // Use browser check before accessing window.location
       if (browser) {
         window.location.href = `/chapter/${chapterSlug}#${sectionId}`;
       }
     }
-
-    // Close the mobile sidebar after clicking a section link
-    if (isMobile) { // Use the isMobile state
-      mobileSidebarOpen = false;
-    }
   }
 
-  function closeMobileSidebar() {
-    mobileSidebarOpen = false;
-  }
+  // Use desktopSidebarExpanded directly for conditional rendering logic
+  $: navCollapsed = !desktopSidebarExpanded;
 
-  $: combinedSidebarExpanded = isMobile ? mobileSidebarOpen : desktopSidebarExpanded;
 </script>
 
-<!-- Mobile Menu Button (Hamburger) -->
-<button class="mobile-menu-button" on:click={toggleSidebar} aria-label="Open Menu" type="button">
-  <Menu size={24} />
-</button>
-
-<!-- Mobile Overlay (shown when sidebar is open on mobile) -->
-{#if isMobile && mobileSidebarOpen}
-  <div class="mobile-overlay" on:click={closeMobileSidebar}></div>
-{/if}
-
 <!-- Navigation -->
-
-<nav class:collapsed={!combinedSidebarExpanded} class:mobile-open={mobileSidebarOpen} style="--sidebar-width: {desktopSidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
+<nav class:collapsed={navCollapsed} style="--sidebar-width: {desktopSidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
       <div class="logo">
-        {#if combinedSidebarExpanded}
+        {#if !navCollapsed}
           <div class="logo-with-text">
             <div class="icon-logo">
               <Hexagon size={iconSize} color="var(--primary-color)" />
@@ -124,17 +76,10 @@
         {/if}
       </div>
     </a>
-
-    <!-- Mobile Close Button (Moved outside the link) -->
-    {#if mobileSidebarOpen}
-      <button class="mobile-close-button" on:click={closeMobileSidebar} aria-label="Close Menu" type="button">
-        <X size={24} />
-      </button>
-    {/if}
   </div>
 
   <div class="search">
-    {#if combinedSidebarExpanded}
+    {#if !navCollapsed}
       <div class="search-input-container">
         <Search size={iconSize} color="var(--text-color)" opacity="0.6" />
         <input type="text" placeholder="Search textbook..." />
@@ -153,16 +98,14 @@
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
-          {#if combinedSidebarExpanded}
+          {#if !navCollapsed}
             <span>Chapters</span>
           {/if}
         </a>
       </li>
 
       {#each chapters as chapter, index}
-        <!-- Add a log right before the class is checked -->
         {@const isActive = $currentChapter === chapter.slug}
-        <!-- {console.log(`Checking active for ${chapter.slug}: current='${$currentChapter}', slug='${chapter.slug}', isActive=${isActive}`)} -->
         <li class="nav-chapter-group {`chapter-${index + 1}-theme`}" class:is-active={isActive}>
           <div
             class="nav-item chapter-item"
@@ -173,8 +116,8 @@
             aria-expanded={expandedChapter === chapter.slug}
             aria-controls={`sections-${chapter.slug}`}
           >
-            <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(!desktopSidebarExpanded) {toggleSidebar()}}}">{index + 1}</a>
-            {#if combinedSidebarExpanded}
+            <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(navCollapsed) {$sidebarExpanded = true;}}}">{index + 1}</a>
+            {#if !navCollapsed}
               <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
               <div
                 class="chevron"
@@ -189,8 +132,8 @@
               </div>
             {/if}
           </div>
-          {#if combinedSidebarExpanded && expandedChapter === chapter.slug}
-            <ul class="chapter-sections" id={`sections-${chapter.slug}`} transition:slide>
+          {#if !navCollapsed && expandedChapter === chapter.slug}
+            <ul class="chapter-sections" id={`sections-${chapter.slug}`} transition:slide={{ duration: 300, easing: quintOut }}>
               {#each chapter.sections || [] as section}
                 <li class="section-item">
                   <a
@@ -215,7 +158,7 @@
       <div class="icon">
         <Settings size={iconSize} />
       </div>
-      {#if combinedSidebarExpanded}
+      {#if !navCollapsed}
         <span>Settings</span>
       {/if}
     </a>
@@ -223,27 +166,9 @@
 </nav>
 
 <style lang="scss">
-  .mobile-menu-button {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: var(--space-s);
-    left: var(--space-s);
-    z-index: 1001; /* Above the overlay */
-    background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--space-xs);
-    cursor: pointer;
-
-    @media (max-width: 768px) {
-      display: block; /* Show on mobile */
-    }
-  }
-
   nav {
     height: 100vh;
     background-color: var(--background-color);
-    transition: transform 0.4s ease; /* For mobile slide-in/out */
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
@@ -252,7 +177,7 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    width: 100%; /* Fill the nav container width */
+    width: 100%;
     box-sizing: border-box;
 
     &.collapsed {
@@ -277,45 +202,6 @@
         margin: 0 auto;
       }
     }
-
-    @media (max-width: 768px) {
-      /* Mobile positioning */
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      z-index: 1001;
-
-      /* Mobile sidebar should be a reasonable width */
-      width: 300px;
-      max-width: 80vw;
-      transform: translateX(-100%);
-
-      &.mobile-open {
-        transform: translateX(0);
-        box-shadow: var(--shadow-lg);
-      }
-
-      /* Reset desktop collapsed styles for mobile */
-      &.collapsed {
-         width: 300px; /* Ensure standard width on mobile regardless of desktop state */
-         max-width: 80vw;
-
-         .nav-item {
-            justify-content: flex-start;
-            padding: var(--space-xs) var(--space-s);
-         }
-         .icon, .chapter-number {
-            margin-right: var(--space-xs);
-         }
-         .logo {
-            justify-content: flex-start;
-         }
-         .icon-search {
-            margin: 0;
-         }
-      }
-    }
   }
 
   .nav-header-container {
@@ -323,16 +209,16 @@
     justify-content: center;
     align-items: center;
     padding: var(--space-xs) var(--space-s);
-    position: relative; /* Positioning context for the close button */
-    &:hover { /* Apply hover effect to the container */
+    position: relative;
+    &:hover {
        background-color: rgba(59, 130, 246, 0.1);
     }
   }
 
   .nav-header-link {
     text-decoration: none;
-    color: inherit; /* Ensure link inherits text color */
-    display: flex; /* Ensure it takes up space correctly */
+    color: inherit;
+    display: flex;
     align-items: center;
   }
 
@@ -373,7 +259,6 @@
     border-block: 1px solid var(--border-color);
     display: flex;
     justify-content: center;
-    /* margin-bottom: var(--space-m); */
   }
 
   .search-input-container {
@@ -418,25 +303,19 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: var(--space-s);
     padding-block: var(--space-l);
   }
 
-  .nav-items li {
-    margin-bottom: var(--space-xs);
-  }
 
   .nav-item {
     display: flex;
     align-items: center;
-    padding: var(--space-xs) var(--space-s);
+    padding: var(--space-xs) var(--space-m);
     color: var(--text-color);
     text-decoration: none;
     border-radius: 4px;
     position: relative;
-    /* Ensure box-sizing is correct */
     box-sizing: border-box;
-    /* Prevent flex items from causing overflow if not wrapping */
     min-width: 0;
 
     &:hover {
@@ -447,13 +326,9 @@
   .chapter-title {
     text-decoration: none;
     color: inherit;
-    /* Allow wrapping */
     white-space: normal;
-    word-break: break-word; /* Or break-all */
-    /* Remove max-width, let parent width control wrapping */
-    /* max-width: calc(100% - 40px); */
-    /* Ensure it takes space correctly */
-    display: inline-block; /* Or block if needed */
+    word-break: break-word;
+    display: inline-block;
 
     &:hover {
       text-decoration: underline;
@@ -547,37 +422,6 @@
 
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
-    }
-  }
-
-  .mobile-close-button {
-    position: absolute;
-    top: 50%;
-    right: var(--space-s);
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--text-color);
-    padding: var(--space-xs);
-    z-index: 1002;
-    &:hover {
-        background-color: transparent;
-    }
-  }
-
-  .mobile-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: none;
-
-    @media (max-width: 768px) {
-      display: block;
     }
   }
 </style>

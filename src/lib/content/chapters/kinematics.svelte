@@ -7,7 +7,9 @@
   import Quiz from '$lib/components/Quiz.svelte';
   import Scenario from '$lib/components/Scenario.svelte';
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
-
+  import Katex from 'svelte-katex';
+  import PageNav from '$lib/components/PageNav.svelte';
+  import Footer from '$lib/components/Footer.svelte';
   // Handle section intersection
   function handleSectionIntersect(event: any, sectionId: string) {
     if (event.detail.isIntersecting && event.detail.intersectionRatio > 0.3) {
@@ -60,9 +62,14 @@
 
         <div class="section-core">
           <FormulaAccordion>
-            <p>Displacement (Δx) = Final Position (x₂) - Initial Position (x₁)</p>
-            <p>Velocity (v) = Displacement (Δx) / Time (Δt)</p>
-            <p>Acceleration (a) = Change in Velocity (Δv) / Time (Δt)</p>
+            <p class="formula-label">Displacement:</p>
+            <Katex displayMode>{'\\textcolor{blue}{\\Delta x} = \\textcolor{red}{x_f} - \\textcolor{green}{x_i}'}</Katex>
+
+            <p class="formula-label">Average Velocity:</p>
+            <Katex displayMode>{'\\textcolor{blue}{v_{avg}} = \\frac{\\textcolor{purple}{\\Delta x}}{\\textcolor{green}{\\Delta t}}'}</Katex>
+
+            <p class="formula-label">Average Acceleration:</p>
+            <Katex displayMode>{'\\textcolor{blue}{a_{avg}} = \\frac{\\textcolor{purple}{\\Delta v}}{\\textcolor{green}{\\Delta t}}'}</Katex>
           </FormulaAccordion>
 
           <p>
@@ -94,7 +101,7 @@
 
         <div class="section-core">
           <FormulaAccordion>
-            <p>For uniform motion: x = x₀ + v·t</p>
+            <Katex displayMode>{'\\textcolor{blue}{x} = \\textcolor{green}{x_0} + \\textcolor{red}{v}\\textcolor{purple}{t}'}</Katex>
             <p>Where x is position, x₀ is initial position, v is velocity, and t is time.</p>
           </FormulaAccordion>
 
@@ -130,9 +137,9 @@
         <div class="section-core">
           <FormulaAccordion>
             <p>For motion with constant acceleration:</p>
-            <p>v = v₀ + a·t</p>
-            <p>x = x₀ + v₀·t + ½a·t²</p>
-            <p>v² = v₀² + 2a·(x-x₀)</p>
+            <Katex displayMode>{'\\textcolor{blue}{v} = \\textcolor{green}{v_0} + \\textcolor{red}{a}\\textcolor{purple}{t}'}</Katex>
+            <Katex displayMode>{'\\textcolor{blue}{x} = \\textcolor{green}{x_0} + \\textcolor{green}{v_0} \\textcolor{purple}{t} + \\frac{1}{2} \\textcolor{red}{a} \\textcolor{purple}{t^2}'}</Katex>
+            <Katex displayMode>{'\\textcolor{blue}{v^2} = \\textcolor{green}{v_0^2} + 2\\textcolor{red}{a}(\\textcolor{blue}{x} - \\textcolor{green}{x_0})'}</Katex>
           </FormulaAccordion>
 
           <GuidedCalculation>
@@ -176,10 +183,10 @@
 
         <div class="section-core">
           <FormulaAccordion>
-            <p>Horizontal position: x = x₀ + v₀cosθ·t</p>
-            <p>Vertical position: y = y₀ + v₀sinθ·t - ½gt²</p>
-            <p>Maximum height: h = (v₀sinθ)²/(2g)</p>
-            <p>Range: R = (v₀²sin2θ)/g</p>
+            <Katex displayMode>{'\\textcolor{blue}{x} = \\textcolor{green}{x_0} + \\textcolor{red}{v_0} \\cos \\textcolor{orange}{\\theta} \\cdot \\textcolor{purple}{t}'}</Katex>
+            <Katex displayMode>{'\\textcolor{blue}{y} = \\textcolor{green}{y_0} + \\textcolor{red}{v_0} \\sin \\textcolor{orange}{\\theta} \\cdot \\textcolor{purple}{t} - \\frac{1}{2} \\textcolor{teal}{g} \\textcolor{purple}{t^2}'}</Katex>
+            <Katex displayMode>{'\\textcolor{blue}{h} = \\frac{(\\textcolor{red}{v_0} \\sin \\textcolor{orange}{\\theta})^2}{2\\textcolor{teal}{g}}'}</Katex>
+            <Katex displayMode>{'\\textcolor{blue}{R} = \\frac{\\textcolor{red}{v_0^2} \\sin(2\\textcolor{orange}{\\theta})}{\\textcolor{teal}{g}}'}</Katex>
           </FormulaAccordion>
 
           <p>
@@ -207,3 +214,4 @@
     </section>
   </div>
 </div>
+

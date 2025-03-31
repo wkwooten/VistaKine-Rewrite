@@ -3,7 +3,7 @@
   import { ChevronRight } from 'lucide-svelte';
 
   // Props
-  export let initiallyOpen: boolean = false; // Allow controlling initial state
+  export let initiallyOpen: boolean = true; // Allow controlling initial state
 
   // Internal state
   let showContent = initiallyOpen;
@@ -26,7 +26,7 @@
   >
     <slot name="header">Default Header</slot>
     <div class="chevron" class:expanded={showContent}>
-      <ChevronRight size={18} />
+      <ChevronRight size={24} />
     </div>
   </div>
 
@@ -50,14 +50,13 @@
     margin-bottom: var(--space-m);
     /* Optional: Add border/padding based on common use case */
     border-left: 3px solid var(--chapter-color, var(--primary-color)); /* Use a variable or fallback */
-    padding-left: var(--space-s);
   }
 
   .accordion-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-xs) 0;
+    padding: var(--space-xs);
     font-size: var(--step-1); /* Consider making font size/weight props or using defaults */
     font-weight: 600;
     cursor: pointer;
@@ -77,7 +76,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: var(--space-xs);
     transition: transform 0.3s ease;
 
     &.expanded {
@@ -89,6 +87,7 @@
     overflow: hidden;
     /* Optional: Add default padding/margin/background/border for content */
     padding: var(--space-m);
+    margin-inline: var(--space-m);
     margin-top: var(--space-xs);
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);

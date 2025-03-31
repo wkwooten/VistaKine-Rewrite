@@ -1,0 +1,27 @@
+// KaTeX Customizations
+
+// Increase the base font size for all KaTeX elements
+.katex {
+  font-size: 1.5em; // Adjust as needed (e.g., 110% of surrounding text)
+}
+
+// Change the default color to match body text (if needed)
+// Often KaTeX inherits color well, but you can force it:
+.katex {
+  color: var(--text-color); // Use your text color variable
+}
+
+// Example: Change color of binary operators (+, -, etc.)
+.katex .mbin {
+  color: var(--primary-color); // Make operators use primary color
+}
+
+// Example: Change color of fractions lines
+.katex .frac-line {
+  border-bottom-color: var(--secondary-color); // Use a different color for fraction lines
+}
+
+// Example: Add vertical spacing around display-mode math
+// .katex-display {
+//   margin-block: var(--space-xs);
+// }

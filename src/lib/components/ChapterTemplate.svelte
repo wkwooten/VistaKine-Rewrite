@@ -28,7 +28,10 @@
   <div class="container">
     <slot></slot>
   </div>
+  <PageNav />
+  <Footer />
 </div>
+
 
 <style lang="scss">
   .chapter {
@@ -36,11 +39,7 @@
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: var(--space-xl) 0;
+    /* padding: var(--space-xl) 0; */
     color: var(--text-color);
-
-    @media (max-width: 768px) {
-      padding: var(--space-l) 0;
-    }
   }
 </style>
