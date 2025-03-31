@@ -5,7 +5,7 @@
 
 <div class="chapter-header-nav">
   <nav>
-    <p>Jump to section:</p>
+    <p>Jump to section</p>
     <ul>
       {#each chapterSections as section}
         <li>
@@ -26,7 +26,7 @@
   nav {
     p {
       color: var(--background-color);
-      font-size: var(--step-2);
+      font-size: var(--step-1);
       margin-bottom: var(--space-xs);
     }
     ul {
@@ -34,6 +34,7 @@
       flex-wrap: wrap;
       gap: var(--space-s);
       list-style: none;
+      border-top: 1px solid var(--background-color);
       padding-inline: var(--space-s);
       margin: 0;
 
@@ -45,18 +46,17 @@
 
     li {
       margin: 0;
-      background-color: var(--background-color);
       border-radius: var(--radius-sm);
       padding: var(--space-xs);
     }
 
     a {
-      color: var(--primary-color);
-      text-decoration: none;
+      color: var(--background-color);
+      text-decoration: underline;
       padding: var(--space-xs) var(--space-s);
       border-radius: var(--radius-sm, 4px);
       transition: background-color 0.2s ease;
-      font-size: var(--step--1, 0.875rem);
+      font-size: var(--step-0, 0.875rem);
 
       &:hover {
         background-color: var(--brand-hover-bg, rgba(0, 0, 0, 0.05));

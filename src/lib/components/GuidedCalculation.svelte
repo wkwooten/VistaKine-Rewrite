@@ -1,14 +1,13 @@
-<script>
-  import { slide } from 'svelte/transition';
-  let showCalculation = false;
+<script lang="ts">
+  import Accordion from './Accordion.svelte'; // Import the generic Accordion
 </script>
 
-<details open on:toggle={() => showCalculation = !showCalculation}>
-  <summary>Guided Calculation</summary>
-  <div class="calculation" transition:slide={showCalculation ? {} : {}}>
-    <slot />  <!-- Slot for the content of the calculation -->
+<Accordion initiallyOpen={false}>
+  <span slot="header">Guided Calculation</span>
+  <div slot="content" class="calculation-inner-content">
+    <slot />
   </div>
-</details>
+</Accordion>
 
 <style lang="scss">
   /* Styles for guided calculation */
@@ -36,4 +35,7 @@
       width: 60px;
     }
   }
+
+  /* Remove styles related to the old .calculation container */
+  /* as the Accordion component handles the outer styling */
 </style>

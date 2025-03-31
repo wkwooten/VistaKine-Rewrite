@@ -84,18 +84,23 @@
 
         <SectionReview>
           <Quiz>
-            <p>Which axis represents depth in a 3D Cartesian coordinate system?</p>
-            <form>
-              <label><input type="radio" name="q1" value="a"> x</label>
-              <label><input type="radio" name="q1" value="b"> y</label>
-              <label><input type="radio" name="q1" value="c"> z</label>
-            </form>
-            <p>If you move a point only along the y-axis, what changes?</p>
-            <form>
-              <label><input type="radio" name="q2" value="a"> Its horizontal position</label>
-              <label><input type="radio" name="q2" value="b"> Its vertical position</label>
-              <label><input type="radio" name="q2" value="c"> Its depth</label>
-            </form>
+            <div class="quiz-question-group">
+              <p>Which axis represents depth in a 3D Cartesian coordinate system?</p>
+              <form class="multiple-choice-question">
+                <label><input type="radio" name="q1" value="a"> x</label>
+                <label><input type="radio" name="q1" value="b"> y</label>
+                <label><input type="radio" name="q1" value="c"> z</label>
+              </form>
+            </div>
+
+            <div class="quiz-question-group">
+              <p>If you move a point only along the y-axis, what changes?</p>
+              <form>
+                <label><input type="radio" name="q2" value="a"> Its horizontal position</label>
+                <label><input type="radio" name="q2" value="b"> Its vertical position</label>
+                <label><input type="radio" name="q2" value="c"> Its depth</label>
+              </form>
+            </div>
           </Quiz>
         </SectionReview>
       </div>

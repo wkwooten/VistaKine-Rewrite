@@ -1,33 +1,13 @@
-<script>
-  import { slide } from 'svelte/transition';
-  let showFormulas = false; // Local state for this component
+<script lang="ts">
+  import Accordion from './Accordion.svelte';
 </script>
 
-<details class="formula-accordion" open on:toggle={() => showFormulas = !showFormulas}>
-  <summary class="formula-header">Key Formulas</summary>
-  <div class="formula-content" transition:slide>
+<Accordion initiallyOpen={true}>
+  <span slot="header">Key Formulas</span>
+  <div slot="content">
     <slot />
   </div>
-</details>
+</Accordion>
 
-<style lang="scss">
-  /* Styles for the formula accordion */
-  .formula-accordion {
-    margin-bottom: var(--space-m);
-    border-left: 3px solid var(--chapter-color, var(--primary-color));
-    padding-left: var(--space-s);
-  }
-
-  .formula-content {
-    padding: var(--space-m);
-    margin-top: var(--space-xs);
-    border-radius: var(--radius-md);
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-  }
-
-  .formula-header {
-    font-size: var(--step-1);
-    font-weight: 600;
-  }
-</style>
+<!-- No <style> block needed here anymore unless you have -->
+<!-- styles *specific* only to the FormulaAccordion variant -->

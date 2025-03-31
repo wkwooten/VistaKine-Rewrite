@@ -5,26 +5,33 @@
 <style lang="scss">
   /* Styles for quiz */
   .quiz {
-    margin-top: var(--space-m); /* Added top margin to give quiz some space from surrounding content */
-    padding: var(--space-s); /* Added padding around the quiz container for better visual separation */
-    border-radius: var(--radius-md); /* Added border-radius to the quiz container */
-    background-color: var(--bg-secondary); /* Added background color to the quiz container */
-    border: 1px solid var(--border-color); /* Added border to the quiz container */
+    margin-top: var(--space-m);
+    padding: var(--space-s);
+    background-color: var(--bg-secondary);
+  }
+
+  .quiz-question-group {
+    margin-bottom: var(--space-m);
+  }
+
+  .multiple-choice-question {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
   }
 
   p {
-    margin-bottom: var(--space-xs); /* Reduced bottom margin for questions to tighten spacing */
-    font-weight: 600; /* Increased font weight for questions */
+    font-weight: 600;
   }
 
   form {
-    margin-top: var(--space-2xs); /* Reduced top margin to pull form closer to question */
-    margin-bottom: var(--space-m); /* Increased bottom margin to separate questions */
+    margin-top: var(--space-2xs);
+    margin-bottom: 0;
   }
 
   label {
     display: block;
-    margin-bottom: var(--space-2xs); /* Reduced bottom margin between labels for tighter spacing */
+    margin-bottom: var(--space-2xs);
     padding: var(--space-m);
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
