@@ -24,7 +24,9 @@
     on:click={() => showContent = !showContent}
     on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { showContent = !showContent; } }}
   >
-    <slot name="header">Default Header</slot>
+    <div class="header-content">
+      <slot name="header" />
+    </div>
     <div class="chevron" class:expanded={showContent}>
       <ChevronRight size={24} />
     </div>
@@ -58,7 +60,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-xs);
-    font-size: var(--step-1); /* Consider making font size/weight props or using defaults */
+    font-size: var(--step-1);
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -73,15 +75,21 @@
     }
   }
 
+
+  .header-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-s);
+  }
+
   .chevron {
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.3s ease;
-
-    &.expanded {
-      transform: rotate(90deg);
-    }
+    /* margin-left: auto;  Not needed anymore as space-between handles chevron position */
   }
 
   .accordion-content {
