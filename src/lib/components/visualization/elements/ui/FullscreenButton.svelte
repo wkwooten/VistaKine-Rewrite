@@ -6,29 +6,60 @@
 
 	const dispatch = createEventDispatcher();
 	export let isFullscreen = false;
+	export let targetElement: HTMLElement | undefined = undefined; // Accept the target element
 
-	function toggleFullscreen() {
-		isFullscreen = !isFullscreen;
-		dispatch('toggleFullscreen', isFullscreen); // Dispatch with the new state
+	async function toggleFullscreen() {
+		if (!browser || !targetElement) return; // Guard against SSR and missing element
+
+		if (!document.fullscreenElement) {
+			try {
+				await targetElement.requestFullscreen();
+				// isFullscreen = true; // State will be updated by the event listener
+			} catch (err) {
+				console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+				// Optionally reset state if request fails
+				// isFullscreen = false;
+			}
+		} else {
+			if (document.exitFullscreen) {
+				try {
+					await document.exitFullscreen();
+					// isFullscreen = false; // State will be updated by the event listener
+				} catch (err) {
+					console.error(`Error attempting to disable full-screen mode: ${err.message} (${err.name})`);
+				}
+			}
+		}
+		// We no longer need to manually dispatch the state,
+		// as the 'fullscreenchange' listener will handle it.
+		// dispatch('toggleFullscreen', isFullscreen);
 	}
 
 	onMount(() => {
-		// Define handleFullscreenChange *inside* onMount
 		function handleFullscreenChange() {
 			if (browser) {
+				// Update state based on the actual browser fullscreen status
 				isFullscreen = !!document.fullscreenElement;
+				// Dispatch the updated state if the parent still needs it
+				dispatch('toggleFullscreen', isFullscreen);
 			}
 		}
 
-		document.addEventListener('fullscreenchange', handleFullscreenChange);
+		// Add listener only in browser
+		if (browser) {
+			document.addEventListener('fullscreenchange', handleFullscreenChange);
+		}
 
+		// Cleanup function
 		return () => {
-			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+			if (browser) {
+				document.removeEventListener('fullscreenchange', handleFullscreenChange);
+			}
 		};
 	});
 </script>
 
-<button on:click={toggleFullscreen} class="fullscreen-button">
+<button on:click={toggleFullscreen} class="fullscreen-button" title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}>
 	{#if isFullscreen}
 		<Minimize2 size={24} />
 	{:else}

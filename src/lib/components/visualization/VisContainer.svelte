@@ -10,16 +10,17 @@
 	let width: number;
 	let height: number;
 	let isFullscreen = false;
+	let containerElement: HTMLDivElement;
 
 	function handleFullscreenToggle(event: CustomEvent<boolean>) {
 		isFullscreen = event.detail;
 	}
 </script>
 
-<div class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
+<div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
 	<div class="ui-container">
 		<ToolbarMain />
-		<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen}/>
+		<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={containerElement}/>
 	</div>
 
 	<Canvas {width} {height}>

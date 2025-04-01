@@ -44,6 +44,7 @@
 </div>
 
 <style lang="scss">
+
   /* Generic Accordion Styles */
   .accordion {
     /* Add any overall container styles if needed, e.g., margin */
@@ -92,5 +93,10 @@
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
+
+    @media (max-width: 768px) {
+      margin-inline: var(--space-xs);
+      padding: var(--space-xs);
+    }
   }
 </style>

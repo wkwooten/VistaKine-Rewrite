@@ -48,15 +48,8 @@
   }
 </script>
 
-{#if isMobile}
-  <button class="mobile-menu-button" on:click={toggleMobileSidebar} aria-label="Open Menu" type="button">
-    <Menu size={24} />
-  </button>
-{/if}
-
-{#if isMobile && mobileNavOpen}
-  <div class="mobile-overlay active" on:click={closeMobileSidebar} role="button"  aria-label="Close Menu"></div>
-{/if}
+<!-- Mobile Menu Button - REMOVED from here -->
+<!-- {#if isMobile} ... {/if} -->
 
 <div class="parallax-background">
   <div class="grid-background"></div>
@@ -70,7 +63,17 @@
   </svg>
 </div>
 
-<div class="app-container" class:sidebar-collapsed={!$sidebarExpanded}>
+<div class="app-container"
+     class:sidebar-collapsed={!$sidebarExpanded}
+     class:mobile-nav-active={mobileNavOpen}
+>
+  <!-- Mobile Menu Button - MOVED here -->
+  {#if isMobile}
+    <button class="mobile-menu-button" on:click={toggleMobileSidebar} aria-label="Open Menu" type="button">
+      <Menu size={24} />
+    </button >
+  {/if}
+
   <aside class="navigation" class:collapsed={!$sidebarExpanded} class:mobile-open={mobileNavOpen}>
     <Navigation />
     {#if !isMobile}
@@ -85,14 +88,18 @@
         {:else}
           <ChevronRight size={18} stroke-width="3"/>
         {/if}
-      </button>
+      </button >
     {/if}
-  </aside>
+  </aside >
+
+  {#if isMobile && mobileNavOpen}
+    <div class="mobile-overlay active" on:click={closeMobileSidebar} role="button" tabindex="0" aria-label="Close Menu"></div>
+  {/if}
 
   <main class="content">
     <slot />
-  </main>
-</div>
+  </main >
+</div >
 
 <style lang="scss">
   .app-container {
@@ -102,6 +109,14 @@
     z-index: 2;
     display: flex;
     transition: all var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
+
+    &.mobile-nav-active {
+      .mobile-menu-button {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    }
   }
 
   .navigation {
@@ -206,7 +221,7 @@
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 4;
+    z-index: 1040;
     display: none;
 
     &.active {
@@ -215,20 +230,21 @@
   }
 
   .mobile-menu-button {
-    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     top: var(--space-s, 10px);
     left: var(--space-s, 10px);
-    z-index: 1003;
+    z-index: 1060;
     background-color: var(--background-color, white);
     border: 1px solid var(--border-color, #ccc);
     border-radius: var(--radius-sm, 4px);
     padding: var(--space-xs, 8px);
     cursor: pointer;
     box-shadow: var(--shadow-md);
-
-    &[type="button"] {
-       display: block;
-    }
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    opacity: 1;
+    visibility: visible;
   }
 </style>
