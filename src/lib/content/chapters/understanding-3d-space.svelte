@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSection } from '$lib/stores/appState';
+  import { currentSection } from '$lib/stores/appState.js';
   import { intersect } from '$lib/utils/intersection';
   import { Canvas } from '@threlte/core';
   import Scene from '$lib/components/visualization/scenes/Scene.svelte';
@@ -7,7 +7,7 @@
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import GuidedCalculation from '$lib/components/GuidedCalculation.svelte';
   import SectionReview from '$lib/components/SectionReview.svelte';
-  import Quiz from '$lib/components/Quiz.svelte';
+  import Quiz from '$lib/components/Quiz.svelte'
   import Scenario from '$lib/components/Scenario.svelte';
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
@@ -67,8 +67,8 @@
           <FormulaAccordion>
             <p>Formulas will go here.</p>
           </FormulaAccordion>
-
-          <VisContainer currentSection={$currentSection}>
+          <h3>Visualize it: Calibrating the 3D printer</h3>
+          <VisContainer currentSection={currentSection}>
             <Scene />
           </VisContainer>
 
@@ -134,7 +134,7 @@
             <p>Formulas will go here.</p>
           </FormulaAccordion>
 
-          <VisContainer currentSection={$currentSection}>
+          <VisContainer currentSection={currentSection}>
             <Scene />
           </VisContainer>
 

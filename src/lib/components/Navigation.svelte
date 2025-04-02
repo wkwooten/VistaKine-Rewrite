@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
-  import { Hexagon, BookOpen, Settings, Search, ChevronRight, List } from 'lucide-svelte';
+  import { Hexagon, BookOpen, Settings, Search, ChevronRight, List, Shapes } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -150,6 +150,16 @@
         </li>
       {/each}
 
+      <li>
+        <a href="/physics-pg" class="nav-item">
+          <div class="icon">
+            <Shapes size={iconSize} />
+          </div>
+          {#if !navCollapsed}
+            <span>Physics Playground</span>
+          {/if}
+        </a>
+      </li>
 
     </ul>
   </div>

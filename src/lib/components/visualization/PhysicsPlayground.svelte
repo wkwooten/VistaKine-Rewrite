@@ -6,8 +6,6 @@
 	import { onMount, onDestroy } from 'svelte';
 	export let currentSection : Writable<string>;
 
-	let width: number;
-	let height: number;
 	let isFullscreen = false;
 	let containerElement: HTMLDivElement;
 
@@ -16,12 +14,12 @@
 	}
 </script>
 
-<div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
+<div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen}>
 	<div class="ui-container">
-		<HudScene {isFullscreen} targetElement={containerElement}/>
+		<HudScene {currentSection} {isFullscreen} targetElement={containerElement}/>
 	</div>
 
-	<Canvas {width} {height}>
+	<Canvas>
 		<World>
 			<slot />
 		</World>
@@ -32,22 +30,15 @@
 
 	.visualization-container {
 		background-color: var(--background-color);
-		border-radius: var(--radius-sm);
-		margin-block: var(--space-xl);
+		/* margin-block: var(--space-xl); */
 		border: 1px solid var(--border-color);
-		max-height: 500px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		/* box-shadow: var(--shadow-md); */
 		aspect-ratio: 16/9;
 		width: 100%;
 		height: 100%;
-		position: relative; /* Important for absolute positioning of children */
-		/* transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease; */
-
-		@media (max-width: 768px) {
-			aspect-ratio: 9/16;
-		}
+		position: relative;
+		border-radius: var(--radius-sm);
 	}
 </style>
