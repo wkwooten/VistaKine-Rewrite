@@ -1,6 +1,6 @@
 <script lang="ts">
   import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
-  import { Hexagon, BookOpen, Settings, Search, ChevronRight } from 'lucide-svelte';
+  import { Hexagon, BookOpen, Settings, Search, ChevronRight, List } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
@@ -150,19 +150,32 @@
         </li>
       {/each}
 
+
     </ul>
   </div>
 
-  <li class="bottom-item">
-    <a href="/settings" class="nav-item">
-      <div class="icon">
-        <Settings size={iconSize} />
+  <ul class="bottom-item">
+    <li>
+      <a href="/glossary" class="nav-item">
+        <div class="icon">
+          <List size={iconSize} />
+        </div>
+        {#if !navCollapsed}
+        <span>Glossary</span>
+        {/if}
+      </a>
+    </li>
+    <li>
+      <a href="/settings" class="nav-item">
+        <div class="icon">
+          <Settings size={iconSize} />
       </div>
       {#if !navCollapsed}
         <span>Settings</span>
       {/if}
-    </a>
-  </li>
+      </a>
+    </li>
+  </ul>
 </nav>
 
 <style lang="scss">

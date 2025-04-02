@@ -10,6 +10,7 @@
   import Quiz from '$lib/components/Quiz.svelte';
   import Scenario from '$lib/components/Scenario.svelte';
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
+  import extractKeywords from '$lib/utils/keywordExtractor.js';
 
   // Handle section intersection
   function handleSectionIntersect(event: any, sectionId: string) {
@@ -26,8 +27,8 @@
   <header class="chapter-header">
     <h1>Chapter 1: <br> Understanding 3D Space</h1>
     <p class="chapter-intro">
-      This chapter introduces the fundamental concepts of three-dimensional space and
-      coordinate systems, essential for understanding kinematics and dynamics.
+      This chapter introduces the fundamental concepts of <span class="keyword">three-dimensional space</span> and
+      <span class="keyword">coordinate systems</span>, essential for understanding <span class="keyword">kinematics</span> and <span class="keyword">dynamics</span>.
     </p>
 
     <!-- Add the optional header navigation -->
@@ -48,17 +49,17 @@
         <div class="section-intro">
           <Scenario>
             <p><strong>Surya:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>
-            <p><strong>Leo:</strong> That's where coordinate systems come in! They're like a map for 3D space.</p>
+            <p><strong>Leo:</strong> That's where <span class="keyword">coordinate systems</span> come in! They're like a map for <span class="keyword">3D space</span>.</p>
           </Scenario>
 
           <p>
-            Coordinate systems are essential tools that allow us to precisely define the position of objects in space.  They provide a framework for describing locations using numerical coordinates.
+            <span class="keyword">Coordinate systems</span> are essential tools that allow us to precisely define the position of objects in <span class="keyword">space</span>.  They provide a framework for describing locations using numerical <span class="keyword">coordinates</span>.
           </p>
           <p>
-            We encounter simplified versions of coordinate systems in everyday life, such as when we use a map to navigate. A map uses a grid (latitude and longitude) to specify locations on the Earth's surface.
+            We encounter simplified versions of <span class="keyword">coordinate systems</span> in everyday life, such as when we use a map to navigate. A map uses a grid (latitude and longitude) to specify locations on the Earth's surface.
           </p>
           <p>
-            In three-dimensional space, we extend this concept by adding a third axis, allowing us to describe locations not just on a surface, but also above or below it.
+            In three-dimensional space, we extend this concept by adding a third <span class="keyword">axis</span>, allowing us to describe locations not just on a surface, but also above or below it.
           </p>
         </div>
 
@@ -72,33 +73,33 @@
           </VisContainer>
 
           <p>
-            Think of a 3D printer. It uses three axes (x, y, and z) to pinpoint any location within its printing area. The intersection of these three axes is called the origin, typically represented as (0, 0, 0).
+            Think of a 3D printer. It uses three <span class="keyword">axes</span> (<span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z</span>) to pinpoint any location within its printing area. The intersection of these three <span class="keyword">axes</span> is called the <span class="keyword">origin</span>, typically represented as (0, 0, 0).
           </p>
           <p>
-            The x-axis usually represents horizontal movement, the y-axis represents vertical movement, and the z-axis represents depth, forming a right-handed coordinate system.
+            The <span class="keyword">x-axis</span> usually represents <span class="keyword">horizontal</span> movement, the <span class="keyword">y-axis</span> represents <span class="keyword">vertical</span> movement, and the <span class="keyword">z-axis</span> represents <span class="keyword">depth</span>, forming a <span class="keyword">right-handed coordinate system</span>.
           </p>
           <p>
-            By combining coordinates along these axes – positive or negative distances from the origin – we can specify any point in 3D space, giving us a powerful way to describe and manipulate objects.
+            By combining <span class="keyword">coordinates</span> along these <span class="keyword">axes</span> – positive or negative distances from the <span class="keyword">origin</span> – we can specify any point in <span class="keyword">3D space</span>, giving us a powerful way to describe and manipulate objects.
           </p>
         </div>
 
         <SectionReview>
           <Quiz>
             <div class="quiz-question-group">
-              <p>Which axis represents depth in a 3D Cartesian coordinate system?</p>
+              <p>Which <span class="keyword">axis</span> represents <span class="keyword">depth</span> in a 3D Cartesian <span class="keyword">coordinate system</span>?</p>
               <form class="multiple-choice-question">
-                <label><input type="radio" name="q1" value="a"> x</label>
-                <label><input type="radio" name="q1" value="b"> y</label>
-                <label><input type="radio" name="q1" value="c"> z</label>
+                <label><input type="radio" name="q1" value="a"> <span class="keyword">x</span></label>
+                <label><input type="radio" name="q1" value="b"> <span class="keyword">y</span></label>
+                <label><input type="radio" name="q1" value="c"> <span class="keyword">z</span></label>
               </form>
             </div>
 
             <div class="quiz-question-group">
-              <p>If you move a point only along the y-axis, what changes?</p>
+              <p>If you move a point only along the <span class="keyword">y-axis</span>, what changes?</p>
               <form>
-                <label><input type="radio" name="q2" value="a"> Its horizontal position</label>
-                <label><input type="radio" name="q2" value="b"> Its vertical position</label>
-                <label><input type="radio" name="q2" value="c"> Its depth</label>
+                <label><input type="radio" name="q2" value="a"> Its <span class="keyword">horizontal</span> position</label>
+                <label><input type="radio" name="q2" value="b"> Its <span class="keyword">vertical</span> position</label>
+                <label><input type="radio" name="q2" value="c"> Its <span class="keyword">depth</span></label>
               </form>
             </div>
           </Quiz>
@@ -120,12 +121,12 @@
 
         <div class="section-intro">
           <Scenario>
-            <p><strong>Surya:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of vectors.</p>
-            <p><strong>Leo:</strong> Vectors are perfect for that! They tell the arm both how far to move and in what direction.</p>
+            <p><strong>Surya:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of <span class="keyword">vectors</span>.</p>
+            <p><strong>Leo:</strong> <span class="keyword">Vectors</span> are perfect for that! They tell the arm both how far to move and in what <span class="keyword">direction</span>.</p>
           </Scenario>
 
           <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
-          <p>Vectors show us both how *hard* you kick (magnitude) and *where* you kick it (direction).</p>
+          <p><span class="keyword">Vectors</span> show us both how *hard* you kick (<span class="keyword">magnitude</span>) and *where* you kick it (<span class="keyword">direction</span>).</p>
         </div>
 
         <div class="section-core">
@@ -138,24 +139,24 @@
           </VisContainer>
 
           <p>
-            A vector in 3D space can be represented by its components along the x, y, and z axes.
+            A <span class="keyword">vector</span> in <span class="keyword">3D space</span> can be represented by its <span class="keyword">components</span> along the <span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z axes</span>.
           </p>
           <p>
-            For example, a vector pointing from the origin to the point (2, 3, 4) has components x=2, y=3, and z=4.
+            For example, a <span class="keyword">vector</span> pointing from the <span class="keyword">origin</span> to the point (2, 3, 4) has <span class="keyword">components</span> <span class="keyword">x</span>=2, <span class="keyword">y</span>=3, and <span class="keyword">z</span>=4.
           </p>
           <p>
-            The magnitude of the vector represents its length, and can be calculated using the Pythagorean theorem in 3D.
+            The <span class="keyword">magnitude</span> of the <span class="keyword">vector</span> represents its length, and can be calculated using the <span class="keyword">Pythagorean theorem</span> in 3D.
           </p>
 
           <GuidedCalculation>
-            <p>The initial velocity of the soccer ball is 50 m/s at an angle of 30 degrees above the horizontal.</p>
+            <p>The initial <span class="keyword">velocity</span> of the soccer ball is 50 m/s at an <span class="keyword">angle</span> of 30 degrees above the <span class="keyword">horizontal</span>.</p>
             <form>
               <label>
-                1. What is the horizontal component of the velocity? (Vx = V * cos(θ))<br>
+                1. What is the <span class="keyword">horizontal</span> component of the <span class="keyword">velocity</span>? (Vx = V * cos(θ))<br>
                 Vx = <input type="number" name="vx"> m/s
               </label>
               <label>
-                2. What is the vertical component of the velocity? (Vy = V * sin(θ))<br>
+                2. What is the <span class="keyword">vertical</span> component of the <span class="keyword">velocity</span>? (Vy = V * sin(θ))<br>
                 Vy = <input type="number" name="vy"> m/s
               </label>
               <label>
@@ -163,7 +164,7 @@
                 t = <input type="number" name="t"> s
               </label>
               <label>
-                4. How far will the ball travel horizontally? (Range = Vx * t)<br>
+                4. How far will the ball travel <span class="keyword">horizontally</span>? (Range = Vx * t)<br>
                 Range = <input type="number" name="range"> m
               </label>
             </form>
@@ -173,16 +174,16 @@
         <SectionReview>
           <Quiz>
             <div class="quiz-question-group">
-              <p>A vector pointing directly upwards has:</p>
+              <p>A <span class="keyword">vector</span> pointing directly upwards has:</p>
               <form class="multiple-choice-question">
-                <label><input type="radio" name="q3" value="a"> Only magnitude</label>
-                <label><input type="radio" name="q3" value="b"> Only direction</label>
-                <label><input type="radio" name="q3" value="c"> Both magnitude and direction</label>
+                <label><input type="radio" name="q3" value="a"> Only <span class="keyword">magnitude</span></label>
+                <label><input type="radio" name="q3" value="b"> Only <span class="keyword">direction</span></label>
+                <label><input type="radio" name="q3" value="c"> Both <span class="keyword">magnitude</span> and <span class="keyword">direction</span></label>
               </form>
             </div>
 
             <div class="quiz-question-group">
-              <p>If you double the magnitude of a vector, what happens to its length?</p>
+              <p>If you double the <span class="keyword">magnitude</span> of a <span class="keyword">vector</span>, what happens to its length?</p>
               <form class="multiple-choice-question">
                 <label><input type="radio" name="q4" value="a"> It halves</label>
                 <label><input type="radio" name="q4" value="b"> It doubles</label>
@@ -209,7 +210,7 @@
         <div class="section-intro">
           <Scenario>
             <p><strong>Surya:</strong> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
-            <p><strong>Leo:</strong> That's because you're seeing it from a different reference frame! It's like watching someone walk on a moving train.</p>
+            <p><strong>Leo:</strong> That's because you're seeing it from a different <span class="keyword">reference frame</span>! It's like watching someone walk on a moving train.</p>
           </Scenario>
 
           <FormulaAccordion>
@@ -219,12 +220,12 @@
 
         <div class="section-core">
           <p>
-            A reference frame is a coordinate system attached to an observer, providing a perspective
-            from which to measure position, velocity, and other physical quantities.
+            A <span class="keyword">reference frame</span> is a <span class="keyword">coordinate system</span> attached to an observer, providing a perspective
+            from which to measure position, <span class="keyword">velocity</span>, and other physical quantities.
           </p>
           <p>
-            This section explores how measurements change when observed from different reference frames,
-            laying the groundwork for understanding relative motion in kinematics.
+            This section explores how measurements change when observed from different <span class="keyword">reference frames</span>,
+            laying the groundwork for understanding relative motion in <span class="keyword">kinematics</span>.
           </p>
         </div>
       </div>
@@ -291,5 +292,14 @@
 
   .quiz input[type="radio"] { /* More specific input style */
     margin-right: var(--space-xs);
+  }
+
+  .keyword {
+    font-weight: 800; /* Make keywords bold */
+    color: var(--color-accent); /* Give keywords the accent color */
+    /* You could also add a background color if you like, e.g., */
+    /* background-color: rgba(var(--color-accent-rgb), 0.15); */
+    /* padding: 0.1em 0.3em; */
+    /* border-radius: var(--radius-sm); */
   }
 </style>

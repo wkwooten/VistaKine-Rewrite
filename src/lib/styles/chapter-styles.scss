@@ -156,8 +156,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   display: flex;
   flex-direction: column;
   border: 2px dashed var(--chapter-color);
-  // border-width: 0 2px 2px 2px;
-  // background-color: var(--background-color);
+  margin-top: var(--space-s);
   padding: var(--space-2xl) var(--space-l);
   border-radius: var(--radius-lg);
   gap: var(--space-xl);

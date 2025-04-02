@@ -16,7 +16,7 @@
       Explore interactive 3D visualizations that bring kinematics to life.</p>
 
     <div class="hero-buttons">
-      <a href="/chapter/chapter1" class="btn primary">Learn Now</a>
+      <a href="/chapter/chapter1" class="btn primary">Begin Learning</a>
       <button class="btn secondary" on:click={scrollToAbout}>About VistaKine</button>
     </div>
   </div>

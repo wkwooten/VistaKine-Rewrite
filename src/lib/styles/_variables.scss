@@ -10,6 +10,7 @@ $border-color-light: rgba($text-color, 0.2);
 // Color Variables - Brand/Accent
 $brand-primary: #1E88E5;
 $brand-accent: #64B5F6;
+$brand-accent-rgb: #90CAF9;
 $brand-accent-dark: #1565C0;
 $brand-text-dark: #212121;
 $brand-text-light: #37474F;
@@ -36,6 +37,14 @@ $brand-link-color: #1976D2;
 $brand-link-color-hover: #1565C0;
 $brand-link-color-visited: #5E35B1;
 $brand-link-color-active: #0D47A1;
+
+
+// Keyword Colors
+$keyword-color: rgba($brand-accent-rgb, 0.15);
+$keyword-color-hover: #1565C0;
+$keyword-color-visited: #5E35B1;
+$keyword-color-active: #0D47A1;
+
 
 
 // Typography
@@ -143,6 +152,11 @@ $radius-pill: 9999px;
   --link-color-visited: #{$brand-link-color-visited};
   --link-color-active: #{$brand-link-color-active};
 
+  // Keyword colors
+  --keyword-color: #{$keyword-color};
+  --keyword-color-hover: #{$keyword-color-hover};
+  --keyword-color-visited: #{$keyword-color-visited};
+  --keyword-color-active: #{$keyword-color-active};
 
   // Transitions
   --transition-fast: #{$transition-fast};
