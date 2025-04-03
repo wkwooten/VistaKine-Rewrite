@@ -41,7 +41,6 @@
       class="content-section section-header"
       data-section="1.1"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
-      <!-- // @ts-ignore -->
       on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
     >
       <div class="section-line" aria-hidden="true"></div>
@@ -202,7 +201,6 @@
       class="content-section"
       data-section="1.3"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
-      // @ts-ignore
       on:intersect={(e) => handleSectionIntersect(e, 'reference-frames')}
     >
       <div class="section-line" aria-hidden="true"></div>

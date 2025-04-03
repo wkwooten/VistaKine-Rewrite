@@ -1,20 +1,25 @@
 <script lang="ts">
 	import { T, useThrelte, useTask } from '@threlte/core'
 	import { AutoColliders, RigidBody } from '@threlte/rapier' // Restored physics
-	import { Edges, Text } from '@threlte/extras' // Import Text
+	import { Edges, Text, Outlines, Billboard } from '@threlte/extras' // Import Text & Billboard
 	// Import type for RigidBody instance and the RigidBodyType enum
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat' // Restored physics
+	import { RigidBodyType } from '@dimforge/rapier3d-compat' // <-- Import RigidBodyType
 	// Import the dragging store
 	import { isDragging as isDraggingStore } from '$lib/stores/draggingStore';
 	// Remove TextMesh type import
 	// import type { TextMesh } from 'troika-three-text'
 
 	import { onMount, onDestroy } from 'svelte'
-	import { Vector3, Plane, Raycaster, Vector2, ArrowHelper, Color } from 'three' // Keep Color import
+	import { Vector3, Plane, Raycaster, Vector2, ArrowHelper, Color, Group } from 'three' // Keep imported Mesh as ThreeMesh
 
 
 	export let color: string = '#ffffff'
 	export let scale: number = 1
+	// Prop for the control mode ('drag' or 'translate')
+	export let controlMode: 'drag' | 'translate' = 'drag';
+	// Prop to bind the root group
+	export let groupRef: Group | undefined = undefined;
 
 	// Prop to bind and expose the RigidBody instance
 	export let rigidBodyRef: RapierRigidBody | undefined = undefined // Restored physics
@@ -36,13 +41,69 @@
 	const dragStiffness = 20; // Stiffness factor for drag velocity
 
 	// Ref for the velocity vector helper
-	let arrowHelperRef: ArrowHelper | undefined = undefined;
-	// Ref for the text label
-	let textRef: any | undefined = undefined; // Changed type to any
+	let velocityArrowHelperRef: ArrowHelper | undefined = undefined; // Renamed for clarity
+	// Ref for the gravity vector helper
+	let gravityArrowHelperRef: ArrowHelper | undefined = undefined;
+
+	// Standard gravity constant (approximate)
+	const GRAVITY_CONSTANT = 9.81;
+
+	// Reactive state for Billboard positions and visibility
+	let velocityBillboardPosition = new Vector3();
+	let velocityBillboardVisible = false;
+	let gravityBillboardPosition = new Vector3();
+	let gravityBillboardVisible = false;
+
+	// --- State for storing original physics properties ---
+	let previousRigidBodyType: RigidBodyType = RigidBodyType.Dynamic; // Store original type
+	let previousGravityScale: number = 1; // Store original gravity scale
+	let physicsStateStored = false; // Flag to ensure we only store once per switch
+
+	// --- Reactive statement to manage RigidBody type based on controlMode ---
+	$: {
+		if (rigidBodyRef) {
+			if (controlMode === 'translate') {
+				if (!physicsStateStored) {
+					// Store current state before changing
+					previousRigidBodyType = rigidBodyRef.bodyType();
+					previousGravityScale = rigidBodyRef.gravityScale();
+					physicsStateStored = true;
+					// console.log('Storing physics state:', previousRigidBodyType, previousGravityScale);
+				}
+				// Set to Kinematic for TransformControls
+				if (rigidBodyRef.bodyType() !== RigidBodyType.KinematicPositionBased) {
+					rigidBodyRef.setBodyType(RigidBodyType.KinematicPositionBased, true);
+				}
+				if (rigidBodyRef.gravityScale() !== 0) {
+					rigidBodyRef.setGravityScale(0, true);
+				}
+				// Ensure it stops moving from previous physics interactions
+				rigidBodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true);
+        		rigidBodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true);
+
+			} else if (controlMode === 'drag') {
+				if (physicsStateStored) {
+					// Restore original state only if it was previously stored
+					if (rigidBodyRef.bodyType() !== previousRigidBodyType) {
+						rigidBodyRef.setBodyType(previousRigidBodyType, true);
+					}
+					if (rigidBodyRef.gravityScale() !== previousGravityScale) {
+						rigidBodyRef.setGravityScale(previousGravityScale, true);
+					}
+					// console.log('Restoring physics state:', previousRigidBodyType, previousGravityScale);
+					physicsStateStored = false; // Reset flag
+				}
+			}
+		}
+	}
+	// --- End Reactive Statement ---
 
 	// Reactive statement to set arrow color once ref is available
-	$: if (arrowHelperRef) {
-		arrowHelperRef.setColor(new Color('red'));
+	$: if (velocityArrowHelperRef) {
+		velocityArrowHelperRef.setColor(new Color('red'));
+	}
+	$: if (gravityArrowHelperRef) {
+		gravityArrowHelperRef.setColor(new Color('green'));
 	}
 
 	onMount(() => {
@@ -55,41 +116,81 @@
 		window.removeEventListener('pointerup', handlePointerUp)
 	})
 
-	// --- Update Arrow Helper and Text Label Task ---
+	// --- Update Arrow Helpers and Text Labels Task ---
 	useTask(() => {
 		if (!rigidBodyRef) return;
 
+		const worldPosition = new Vector3().copy(rigidBodyRef.translation() as Vector3); // Get position once
+
+		// --- Velocity Vector ---
 		const linvel = rigidBodyRef.linvel();
-		const position = rigidBodyRef.translation();
 		const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
-		const length = linvelVec.length();
+		const velocityLength = linvelVec.length();
+		const isVelocityVisible = velocityLength > 0.01;
+		let velocityArrowTipPosition = new Vector3();
 
-		const isVisible = length > 0.01; // Determine visibility based on velocity
-
-		// Update Arrow
-		if (arrowHelperRef) {
-			arrowHelperRef.position.set(position.x, position.y, position.z);
-			arrowHelperRef.visible = isVisible;
-			if (isVisible) {
-				const direction = linvelVec.clone().normalize(); // Use clone to avoid modifying original
-				arrowHelperRef.setDirection(direction);
-				arrowHelperRef.setLength(length * 0.5, 0.2, 0.1); // Adjust multiplier as needed
+		if (velocityArrowHelperRef) {
+			velocityArrowHelperRef.position.copy(worldPosition);
+			velocityArrowHelperRef.visible = isVelocityVisible;
+			if (isVelocityVisible) {
+				const direction = linvelVec.clone().normalize();
+				const visualLength = velocityLength * 0.5;
+				velocityArrowHelperRef.setDirection(direction);
+				velocityArrowHelperRef.setLength(visualLength, 0.2, 0.1);
+				velocityArrowTipPosition.copy(worldPosition).add(direction.multiplyScalar(visualLength));
 			} else {
-				arrowHelperRef.setLength(0.1, 0.2, 0.1); // Keep minimum size
+				velocityArrowHelperRef.setLength(0.1, 0.2, 0.1);
+				velocityArrowTipPosition.copy(worldPosition);
 			}
 		}
 
-		// Update Text Label
-		if (textRef) {
-			// Position slightly above and to the side of the arrow origin (adjust offset as needed)
-			textRef.position.set(position.x + 0.2, position.y + 0.2, position.z);
-			textRef.visible = isVisible; // Sync visibility with arrow
+		// Update Velocity Billboard state
+		velocityBillboardVisible = isVelocityVisible;
+		if(isVelocityVisible){
+			// Reassign to trigger reactivity
+			velocityBillboardPosition = new Vector3(velocityArrowTipPosition.x, velocityArrowTipPosition.y + 0.4, velocityArrowTipPosition.z);
+		} else {
+			// Reassign to trigger reactivity
+			velocityBillboardPosition = worldPosition.clone(); // Keep it near the box when invisible
+		}
+
+		// --- Gravity Vector ---
+		const gravityScale = rigidBodyRef.gravityScale();
+		const isGravityVisible = gravityScale > 0.01; // Visible if gravity is applied
+		let gravityArrowTipPosition = new Vector3();
+		const gravityDirection = new Vector3(0, -1, 0); // Gravity typically points down
+		const visualGravityLength = gravityScale * GRAVITY_CONSTANT * 0.1; // Scale for visualization
+
+		if (gravityArrowHelperRef) {
+			gravityArrowHelperRef.position.copy(worldPosition);
+			gravityArrowHelperRef.visible = isGravityVisible;
+			if (isGravityVisible) {
+				gravityArrowHelperRef.setDirection(gravityDirection);
+				gravityArrowHelperRef.setLength(visualGravityLength, 0.2, 0.1);
+				gravityArrowTipPosition.copy(worldPosition).add(gravityDirection.clone().multiplyScalar(visualGravityLength)); // Use clone
+			} else {
+				gravityArrowHelperRef.setLength(0.1, 0.2, 0.1); // Minimum size when not active
+				gravityArrowTipPosition.copy(worldPosition);
+			}
+		}
+
+		// Update Gravity Billboard state
+		gravityBillboardVisible = isGravityVisible;
+		if(isGravityVisible){
+			// Reassign to trigger reactivity
+			gravityBillboardPosition = new Vector3(gravityArrowTipPosition.x, gravityArrowTipPosition.y - 0.4, gravityArrowTipPosition.z); // Offset below
+		} else {
+			// Reassign to trigger reactivity
+			gravityBillboardPosition = worldPosition.clone(); // Keep it near the box when invisible
 		}
 	});
 	// --- End Task ---
 
 	// Handler for pointer down using interactivity prop
 	const handlePointerDownProp = (event: any) => {
+		// Only allow dragging if in 'drag' mode
+		if (controlMode !== 'drag') return;
+
 		if (!rigidBodyRef || !event.object || !event.point || !camera.current) {
 			// console.log('--> Drag start condition not met');
 			return;
@@ -215,9 +316,9 @@
 
 </script>
 
-<!-- Wrap RigidBody, ArrowHelper, and Text in a Group -->
-<T.Group>
-	<RigidBody bind:rigidBody={rigidBodyRef} type='dynamic'>
+<!-- Wrap RigidBody, ArrowHelper, Text, and Background in a Group -->
+<T.Group bind:ref={groupRef}>
+	<RigidBody bind:rigidBody={rigidBodyRef} type={RigidBodyType.Dynamic}>
 		<AutoColliders shape={'cuboid'}>
 			<T.Mesh
 				receiveShadow
@@ -229,26 +330,55 @@
 				<T.BoxGeometry args={[1, 1, 1]} />
 				<T.MeshBasicMaterial color={color} />
 				<Edges color="#64B5F6" />
+				<Outlines thickness={0.1} color="#64B5F6" />
 			</T.Mesh>
 		</AutoColliders>
 	</RigidBody>
 
-	<!-- ArrowHelper is now a SIBLING -->
+	<!-- Velocity ArrowHelper -->
 	<T.ArrowHelper
-		bind:ref={arrowHelperRef}
+		bind:ref={velocityArrowHelperRef}
 		dir={[0, 1, 0]}
 		origin={[0, 0, 0]}
-		length={1}
-	/>
-
-	<!-- Text Label -->
-	<Text
-		bind:ref={textRef}
-		text="v"
-		color="black"
-		fontSize={1}
-		anchorX="center"
-		anchorY="middle"
+		length={0.1}
 		visible={false}
 	/>
+
+	<!-- Velocity Text Label -->
+	<Billboard position={[velocityBillboardPosition.x, velocityBillboardPosition.y, velocityBillboardPosition.z]} visible={velocityBillboardVisible}>
+		<Text
+			text="v"
+			font="/fonts/STIXTwoText-Regular.ttf"
+			color="red"
+			fontSize={1}
+			outlineWidth={'1%'}
+			outlineColor={'white'}
+			anchorX="center"
+			anchorY="middle"
+		/>
+	</Billboard>
+
+	<!-- Gravity ArrowHelper -->
+	<T.ArrowHelper
+		bind:ref={gravityArrowHelperRef}
+		dir={[0, -1, 0]}
+		origin={[0, 0, 0]}
+		length={0.1}
+		visible={false}
+	/>
+
+	<!-- Gravity Text Label -->
+	<Billboard position={[gravityBillboardPosition.x, gravityBillboardPosition.y, gravityBillboardPosition.z]} visible={gravityBillboardVisible}>
+		<Text
+			text="g"
+			font="/fonts/STIXTwoText-Regular.ttf"
+			color="green"
+			fontSize={1}
+			direction='ltr'
+			outlineWidth={'1%'}
+			outlineColor={'white'}
+			anchorX="center"
+			anchorY="middle"
+		/>
+	</Billboard>
 </T.Group>

@@ -6,14 +6,24 @@
 	import { writable } from 'svelte/store';
 
 	const currentSection = writable<string>('physics-playground');
+
+	// State for the selected control mode
+	let selectedControlMode: 'drag' | 'translate' = 'drag';
+
+	// Handler to update the mode when the event bubbles up
+	function handleModeChange(event: CustomEvent<{ mode: 'drag' | 'translate' }>) {
+		selectedControlMode = event.detail.mode;
+		console.log('Page received mode change:', selectedControlMode); // For debugging
+	}
+
 </script>
 
 <div>
   <h1>Physics Playground</h1>
   <div class="physics-pg-container">
 		<p> This is a testbed for physics simulations. </p>
-		<PhysicsPlayground {currentSection}>
-			<Scene />
+		<PhysicsPlayground {currentSection} controlMode={selectedControlMode} on:modechange={handleModeChange}>
+			<Scene controlMode={selectedControlMode} />
 		</PhysicsPlayground>
   </div>
 </div>

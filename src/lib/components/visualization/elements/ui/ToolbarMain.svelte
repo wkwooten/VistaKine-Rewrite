@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ControlModeToggle from './ControlModeToggle.svelte';
+
 	// Props for customization (optional, but good practice)
 	export let backgroundColor: string = 'var(--glass-bg-color, rgba(255, 255, 255, 0.1))'; // Default background with fallback - UPDATED
 	export let textColor: string = 'var(--text-color)';          // Default text color
@@ -7,6 +9,11 @@
 	export let borderRadius: string = 'var(--radius-sm)'; // Default border radius
 	export let boxShadow: string = 'var(--shadow-sm)';    // Default box shadow
 	export let width: string = 'fit-content';
+	export let selectedMode: 'drag' | 'translate' = 'drag'; // Default - Exported prop
+
+	function handleModeChange(event: CustomEvent<{ mode: 'drag' | 'translate' }>) {
+		selectedMode = event.detail.mode; // Update the bound prop directly
+	}
 </script>
 
 <div
@@ -19,8 +26,8 @@
 	style:box-shadow={boxShadow}
 	style:width={width}
 >
+	<ControlModeToggle on:modechange={handleModeChange} />
 	<!-- Placeholder slots -->
-	<div class="placeholder-slot">1</div>
 	<div class="placeholder-slot">2</div>
 	<div class="placeholder-slot">3</div>
 	<div class="placeholder-slot">4</div>
@@ -32,6 +39,7 @@
 		display: flex;
 		align-items: center; /* Vertically center items */
 		z-index: 1000; /* Ensure it's above other content */
+		border: 1px solid var(--border-color,#ccc);
 
 		/* Glassmorphism */
 		backdrop-filter: var(--glass-backdrop-blur, blur(8px));

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { T, useTask } from '@threlte/core'
-  import { Environment, Grid, OrbitControls, SoftShadows, transitions } from '@threlte/extras'
+  import { Environment, Grid, OrbitControls, SoftShadows, TransformControls } from '@threlte/extras'
   // Import the actual OrbitControls type from Three.js
   import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
   // Import the dragging store
@@ -12,7 +12,7 @@
   // import { Debug } from '@threlte/rapier'
   import Ground from '../elements/constructs/Ground.svelte'
 	import Box from '../elements/constructs/Box.svelte'
-  import { Vector3 } from 'three'
+  import { Vector3, Group } from 'three'
   // Removed SvelteComponent import and component ref variable
   // import type { SvelteComponent } from 'svelte'
   // let controlsComponentRef: SvelteComponent | undefined = undefined;
@@ -20,13 +20,19 @@
   // import { onBeforeRender } from '@threlte/core'
   // import { ref } from 'vue';
 
+  // Prop to receive the control mode from the parent
+  export let controlMode: 'drag' | 'translate' = 'drag';
+
+  // State to hold the reference to the Box's group
+  let boxGroupRef: Group | undefined = undefined;
+
   // Define your bounding box
-  const minX = -50; // Example bounds, adjust as needed
-  const maxX = 50;
+  const minX = -100; // Example bounds, adjust as needed
+  const maxX = 100;
   const minY = 5;
-  const maxY = 30;
-  const minZ = -50;
-  const maxZ = 50;
+  const maxY = 50;
+  const minZ = -100;
+  const maxZ = 100;
 
   let controls: ThreeOrbitControls | undefined = undefined; // Use the correct Three.js type
 
@@ -84,14 +90,23 @@
 <Grid
   position.y={0.01}
   infiniteGrid={true}
+  fadeOrigin={new Vector3(0, 0, 0)}
   sectionsSize={10}
   sectionThickness={1}
   cellColor='#ADD8E6'
   sectionColor='#64B5F6'
-  fadeDistance={400}
+  fadeDistance={150}
 />
 
 <Ground />
 <!-- No need to pass controls prop -->
 
-<Box />
+<Box bind:groupRef={boxGroupRef} {controlMode} />
+
+{#if boxGroupRef}
+	<TransformControls
+		object={boxGroupRef}
+		mode={'translate'}
+		enabled={controlMode === 'translate'}
+	/>
+{/if}

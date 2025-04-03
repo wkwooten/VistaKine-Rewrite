@@ -2,9 +2,14 @@
 	import ToolbarMain from './ToolbarMain.svelte';
 	import FullscreenButton from './FullscreenButton.svelte';
 	import type { Writable } from 'svelte/store';
+	import { createEventDispatcher } from 'svelte';
+
 	export let currentSection : Writable<string>;
 	export let isFullscreen: boolean;
 	export let targetElement: HTMLDivElement;
+	export let selectedControlMode: 'drag' | 'translate' = 'drag'; // State for the control mode
+
+	const dispatch = createEventDispatcher();
 
 	let width: number;
 	let height: number;
@@ -12,11 +17,18 @@
 	function handleFullscreenToggle(event: CustomEvent<boolean>) {
 		isFullscreen = event.detail;
 	}
+
+	// Reactively dispatch the modechange event whenever selectedControlMode changes
+	$: if (dispatch) {
+		dispatch('modechange', { mode: selectedControlMode });
+	}
+
+	// $: console.log('Selected control mode in HudScene:', selectedControlMode); // Optional: Log changes
 </script>
 
 <div class="ui-container">
 	<slot />
-	<ToolbarMain />
+	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>
 

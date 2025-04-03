@@ -3,6 +3,7 @@
 	import { World } from '@threlte/rapier';
 	import type { Writable } from 'svelte/store';
 	import HudScene from './elements/ui/HudScene.svelte';
+	import RendererSetup from './helpers/RendererSetup.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	export let currentSection : Writable<string>;
 
@@ -22,6 +23,7 @@
 	</div>
 
 	<Canvas {width} {height}>
+		<RendererSetup />
 		<World>
 			<slot />
 		</World>
