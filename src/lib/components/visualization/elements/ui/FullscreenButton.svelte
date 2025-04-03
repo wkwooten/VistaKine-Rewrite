@@ -11,49 +11,86 @@
 	async function toggleFullscreen() {
 		if (!browser || !targetElement) return; // Guard against SSR and missing element
 
-		if (!document.fullscreenElement) {
-			try {
-				await targetElement.requestFullscreen();
-				// isFullscreen = true; // State will be updated by the event listener
-			} catch (err) {
-				console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-				// Optionally reset state if request fails
-				// isFullscreen = false;
-			}
-		} else {
-			if (document.exitFullscreen) {
+		// --- Manual State Toggle --- START
+		// Determine the intended new state *before* attempting native API
+		const newState = !isFullscreen;
+		// Update local state immediately so the icon changes
+		isFullscreen = newState;
+		// Dispatch the change immediately so parent applies CSS class
+		dispatch('toggleFullscreen', newState);
+		// --- Manual State Toggle --- END
+
+		// Now, attempt native fullscreen/exit (best effort, might fail on iOS)
+		if (newState) { // If we are trying to ENTER fullscreen
+			if (!document.fullscreenElement) { // Only request if not already in native FS
 				try {
-					await document.exitFullscreen();
-					// isFullscreen = false; // State will be updated by the event listener
+					// Use vendor prefixes for wider compatibility if needed, but standard first
+					if (targetElement.requestFullscreen) {
+						await targetElement.requestFullscreen();
+					} else if ((targetElement as any).webkitRequestFullscreen) { /* Safari */
+						await (targetElement as any).webkitRequestFullscreen();
+					} else if ((targetElement as any).msRequestFullscreen) { /* IE11 */
+						await (targetElement as any).msRequestFullscreen();
+					}
+					// State was already updated manually. Listener handles browser state sync later.
 				} catch (err) {
-					console.error(`Error attempting to disable full-screen mode: ${err.message} (${err.name})`);
+					console.error(`Error attempting to enable full-screen mode: ${err instanceof Error ? err.message : String(err)} (${err instanceof Error ? err.name : 'Unknown Error'})`);
+					// If native request fails, our manual state toggle ensures the CSS class is still applied.
+					// We don't revert isFullscreen here because the user *intended* to go fullscreen.
 				}
 			}
+		} else { // If we are trying to EXIT fullscreen
+			if (document.fullscreenElement) { // Only exit if browser *is* in native FS
+				try {
+					if (document.exitFullscreen) {
+						await document.exitFullscreen();
+					} else if ((document as any).webkitExitFullscreen) { /* Safari */
+						await (document as any).webkitExitFullscreen();
+					} else if ((document as any).msExitFullscreen) { /* IE11 */
+						await (document as any).msExitFullscreen();
+					}
+					// State was already updated manually. Listener handles browser state sync later.
+				} catch (err) {
+					console.error(`Error attempting to disable full-screen mode: ${err instanceof Error ? err.message : String(err)} (${err instanceof Error ? err.name : 'Unknown Error'})`);
+					// If native exit fails, we keep the manually toggled state (exited).
+				}
+			}
+			// If document.fullscreenElement was already null (e.g., exited via ESC),
+			// our manual toggle already set isFullscreen to false, which is correct.
 		}
-		// We no longer need to manually dispatch the state,
-		// as the 'fullscreenchange' listener will handle it.
-		// dispatch('toggleFullscreen', isFullscreen);
+		// The 'fullscreenchange' listener below handles syncing 'isFullscreen'
+		// if the browser's state changes independently (e.g., ESC key).
 	}
 
 	onMount(() => {
 		function handleFullscreenChange() {
 			if (browser) {
-				// Update state based on the actual browser fullscreen status
-				isFullscreen = !!document.fullscreenElement;
-				// Dispatch the updated state if the parent still needs it
-				dispatch('toggleFullscreen', isFullscreen);
+				// Get the actual browser fullscreen status
+				const browserIsFullscreen = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+
+				// If the browser state differs from our component state
+				if (isFullscreen !== browserIsFullscreen) {
+					console.log(`Fullscreen state mismatch detected. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}. Syncing...`);
+					isFullscreen = browserIsFullscreen; // Sync component state to browser state
+					// Dispatch the updated state reflecting the browser's actual status
+					dispatch('toggleFullscreen', isFullscreen);
+				}
 			}
 		}
 
-		// Add listener only in browser
+		// Add listeners for standard and vendor-prefixed events
 		if (browser) {
 			document.addEventListener('fullscreenchange', handleFullscreenChange);
+			document.addEventListener('webkitfullscreenchange', handleFullscreenChange); // Safari
+			document.addEventListener('msfullscreenchange', handleFullscreenChange); // IE11
 		}
 
 		// Cleanup function
 		return () => {
 			if (browser) {
 				document.removeEventListener('fullscreenchange', handleFullscreenChange);
+				document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+				document.removeEventListener('msfullscreenchange', handleFullscreenChange);
 			}
 		};
 	});
