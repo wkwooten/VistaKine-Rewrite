@@ -19,10 +19,10 @@
 
 <div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
 	<div class="ui-container">
-		<HudScene {isFullscreen} targetElement={containerElement}/>
+		<HudScene {isFullscreen} targetElement={containerElement} {currentSection}/>
 	</div>
 
-	<Canvas {width} {height}>
+	<Canvas>
 		<RendererSetup />
 		<World>
 			<slot />
@@ -48,8 +48,25 @@
 		position: relative; /* Important for absolute positioning of children */
 		/* transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease; */
 
+		&.fullscreen {
+			position: fixed; /* Use fixed positioning for fullscreen */
+			top: 0;
+			left: 0;
+			width: 100vw; /* Full viewport width */
+			height: 100vh; /* Full viewport height */
+			max-height: 100vh; /* Override max-height */
+			border-radius: 0; /* Remove border radius */
+			border: none; /* Remove border */
+			z-index: 9999; /* Ensure it's on top */
+			aspect-ratio: auto; /* Allow free aspect ratio */
+		}
+
 		@media (max-width: 768px) {
 			aspect-ratio: 9/16;
+
+			&.fullscreen {
+				aspect-ratio: auto; /* Override aspect ratio for fullscreen on mobile */
+			}
 		}
 	}
 </style>

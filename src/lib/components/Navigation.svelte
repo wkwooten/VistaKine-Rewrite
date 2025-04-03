@@ -1,7 +1,7 @@
 <script lang="ts">
   import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
   import { Hexagon, BookOpen, Settings, Search, ChevronRight, List, Shapes } from 'lucide-svelte';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { browser } from '$app/environment';
@@ -19,14 +19,51 @@
   const iconSize = 18;
 
   let desktopSidebarExpanded = $sidebarExpanded; // Local state for desktop
+  let isMobile = false; // State to track mobile viewport
+  let bodyClassApplied = false; // Track if class is applied
+
+  // Function to update body scroll class
+  function updateBodyScroll() {
+    if (browser) {
+      const shouldLockScroll = $sidebarExpanded && isMobile;
+      if (shouldLockScroll && !bodyClassApplied) {
+        document.body.classList.add('body-no-scroll');
+        bodyClassApplied = true;
+      } else if (!shouldLockScroll && bodyClassApplied) {
+        document.body.classList.remove('body-no-scroll');
+        bodyClassApplied = false;
+      }
+    }
+  }
 
   onMount(() => {
-    const unsubscribe = sidebarExpanded.subscribe(value => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)'); // Example breakpoint
+    isMobile = mediaQuery.matches;
+
+    const handleResize = () => {
+      isMobile = mediaQuery.matches;
+      updateBodyScroll(); // Update on resize
+    };
+
+    mediaQuery.addEventListener('change', handleResize);
+    window.addEventListener('resize', handleResize); // Also listen to resize
+
+    const unsubscribeSidebar = sidebarExpanded.subscribe(value => {
       desktopSidebarExpanded = value;
+      updateBodyScroll(); // Update on sidebar state change
     });
 
+    // Initial check
+    updateBodyScroll();
+
     return () => {
-        unsubscribe();
+      mediaQuery.removeEventListener('change', handleResize);
+      window.removeEventListener('resize', handleResize);
+      unsubscribeSidebar();
+      // Clean up body class if component is destroyed while scroll is locked
+      if (bodyClassApplied) {
+        document.body.classList.remove('body-no-scroll');
+      }
     };
   });
 
@@ -448,3 +485,15 @@
     }
   }
 </style>
+
+<!-- Add global style for body scroll lock -->
+<svelte:head>
+  {#if browser}
+    <style>
+      .body-no-scroll {
+        overflow: hidden !important; /* Force no scroll */
+        /* Optionally add touch-action: none; if needed for touch devices */
+      }
+    </style>
+  {/if}
+</svelte:head>

@@ -60,9 +60,27 @@
 		position: relative;
 		border-radius: var(--radius-sm);
 
+		&.fullscreen {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			min-height: 100vh; /* Override min-height */
+			border-radius: 0;
+			border: none;
+			z-index: 9999;
+			aspect-ratio: auto;
+		}
+
 		@media (max-width: 768px) {
 			aspect-ratio: 9/16;
 			min-height: 300px;
+
+			&.fullscreen {
+				aspect-ratio: auto; /* Override aspect ratio for fullscreen on mobile */
+				min-height: 100vh; /* Ensure full height on mobile fullscreen */
+			}
 		}
 	}
 </style>
