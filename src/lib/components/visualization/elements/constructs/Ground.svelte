@@ -21,7 +21,7 @@
   <T.Group position={[0, -.5, 0]}>
     <AutoColliders shape={'cuboid'}>
       <T.Mesh receiveShadow>
-        <T.BoxGeometry args={[100, .95, 100]} />
+        <T.BoxGeometry args={[5000, .95, 5000]} />
         <T.MeshBasicMaterial>
           <RadialGradientTexture
             stops={[

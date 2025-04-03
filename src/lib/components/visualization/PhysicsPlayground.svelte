@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Canvas } from '@threlte/core';
-	import { World } from '@threlte/rapier';
+	import { World, Debug } from '@threlte/rapier';
 	import type { Writable } from 'svelte/store';
 	import HudScene from './elements/ui/HudScene.svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
+	import RendererSetup from './helpers/RendererSetup.svelte';
 	export let currentSection : Writable<string>;
 
 	let isFullscreen = false;
@@ -20,7 +21,9 @@
 	</div>
 
 	<Canvas>
+		<RendererSetup />
 		<World>
+			<!-- <Debug /> -->
 			<slot />
 		</World>
 	</Canvas>

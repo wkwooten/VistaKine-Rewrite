@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { T, useThrelte } from '@threlte/core'
+	import { T, useThrelte, useTask } from '@threlte/core'
 	import { AutoColliders, RigidBody } from '@threlte/rapier' // Restored physics
-	import { Edges } from '@threlte/extras' // Remove useControlsContext import
+	import { Edges, Text } from '@threlte/extras' // Import Text
 	// Import type for RigidBody instance and the RigidBodyType enum
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat' // Restored physics
-	import { RigidBodyType } from '@dimforge/rapier3d-compat' // Restored physics
+	// Import the dragging store
+	import { isDragging as isDraggingStore } from '$lib/stores/draggingStore';
+	// Remove TextMesh type import
+	// import type { TextMesh } from 'troika-three-text'
+
 	import { onMount, onDestroy } from 'svelte'
-	import { Vector3, Plane, Raycaster, Vector2 } from 'three'
-	// Removed SvelteComponent import
-	// import type { SvelteComponent } from 'svelte'
+	import { Vector3, Plane, Raycaster, Vector2, ArrowHelper, Color } from 'three' // Keep Color import
+
 
 	export let color: string = '#ffffff'
 	export let scale: number = 1
@@ -26,7 +29,21 @@
 	let isDragging = false
 	const dragPlane = new Plane()
 	const dragOffset = new Vector3()
-	let originalBodyType: RigidBodyType | undefined = undefined // Restored physics
+	// Remove originalBodyType
+	// let originalBodyType: RigidBodyType | undefined = undefined
+	let originalGravityScale: number | undefined = undefined;
+	let originalLinearDamping: number | undefined = undefined;
+	const dragStiffness = 20; // Stiffness factor for drag velocity
+
+	// Ref for the velocity vector helper
+	let arrowHelperRef: ArrowHelper | undefined = undefined;
+	// Ref for the text label
+	let textRef: any | undefined = undefined; // Changed type to any
+
+	// Reactive statement to set arrow color once ref is available
+	$: if (arrowHelperRef) {
+		arrowHelperRef.setColor(new Color('red'));
+	}
 
 	onMount(() => {
 		const computedStyle = getComputedStyle(document.documentElement)
@@ -38,73 +55,89 @@
 		window.removeEventListener('pointerup', handlePointerUp)
 	})
 
+	// --- Update Arrow Helper and Text Label Task ---
+	useTask(() => {
+		if (!rigidBodyRef) return;
+
+		const linvel = rigidBodyRef.linvel();
+		const position = rigidBodyRef.translation();
+		const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
+		const length = linvelVec.length();
+
+		const isVisible = length > 0.01; // Determine visibility based on velocity
+
+		// Update Arrow
+		if (arrowHelperRef) {
+			arrowHelperRef.position.set(position.x, position.y, position.z);
+			arrowHelperRef.visible = isVisible;
+			if (isVisible) {
+				const direction = linvelVec.clone().normalize(); // Use clone to avoid modifying original
+				arrowHelperRef.setDirection(direction);
+				arrowHelperRef.setLength(length * 0.5, 0.2, 0.1); // Adjust multiplier as needed
+			} else {
+				arrowHelperRef.setLength(0.1, 0.2, 0.1); // Keep minimum size
+			}
+		}
+
+		// Update Text Label
+		if (textRef) {
+			// Position slightly above and to the side of the arrow origin (adjust offset as needed)
+			textRef.position.set(position.x + 0.2, position.y + 0.2, position.z);
+			textRef.visible = isVisible; // Sync visibility with arrow
+		}
+	});
+	// --- End Task ---
 
 	// Handler for pointer down using interactivity prop
 	const handlePointerDownProp = (event: any) => {
-		// console.log('Box Pointer Down (interactivity prop)', event); // Keep commented unless needed
-
-		// Removed controls check log
-		// const controls = $orbitControlsStore;
-		// console.log('--> OrbitControls from user context [orbit-controls]:', controls);
-
 		if (!rigidBodyRef || !event.object || !event.point || !camera.current) {
-			console.log('--> Drag start condition not met');
+			// console.log('--> Drag start condition not met');
 			return;
 		}
 
-		console.log('--> Starting Drag');
-		isDragging = true
-		originalBodyType = rigidBodyRef.bodyType()
-		console.log(`--> Changing body type to Kinematic. Original: ${originalBodyType}`);
-		rigidBodyRef.setBodyType(RigidBodyType.KinematicPositionBased, true)
+		if (!$isDraggingStore) { // Check store value
+			console.log('--> Starting Dynamic Drag');
+			originalGravityScale = rigidBodyRef.gravityScale();
+			originalLinearDamping = rigidBodyRef.linearDamping();
+			// console.log(`--> Storing Original gravityScale: ${originalGravityScale}, linearDamping: ${originalLinearDamping}`);
+			isDraggingStore.set(true); // Set store to true
+		} else {
+			// console.log('--> PointerDown fired again during existing drag, ignoring store.');
+			return;
+		}
+
+		rigidBodyRef.setGravityScale(0, true);
+		rigidBodyRef.setLinearDamping(10);
+		// console.log('--> Set gravityScale=0, linearDamping=1.0');
+
 		rigidBodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true)
 		rigidBodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true)
 
+		// Offset and Plane calculation
 		const intersectionPoint = event.point
 		const currentPosition = new Vector3().copy(rigidBodyRef.translation() as Vector3)
-
-		// --- Calculate Camera-Facing Drag Plane ---
-		const cameraPosition = camera.current.position;
 		const cameraDirection = new Vector3();
-		camera.current.getWorldDirection(cameraDirection); // Get the direction camera is looking
-		const initialDistance = cameraPosition.distanceTo(intersectionPoint);
-
-		// Set plane normal to camera direction, positioned at initial distance
+		camera.current.getWorldDirection(cameraDirection);
 		dragPlane.setFromNormalAndCoplanarPoint(cameraDirection, intersectionPoint);
-		// OR use distance (often more stable if camera moves/rotates during drag?)
-		// dragPlane.set(cameraDirection, -initialDistance);
-		// dragPlane.translate(cameraPosition); // Translate plane to camera position
-		console.log('--> Using camera-facing drag plane'); // DEBUG
-		// --- End Plane Calculation ---
-
+		// console.log('--> Using camera-facing drag plane');
 		const intersectionOnPlane = new Vector3()
 		if (event.ray) {
 			event.ray.intersectPlane(dragPlane, intersectionOnPlane)
 		} else {
-			console.warn("Ray not available on event for offset calculation.");
+			// console.warn("Ray not available on event for offset calculation.");
 			intersectionOnPlane.copy(intersectionPoint);
 		}
 		dragOffset.copy(intersectionOnPlane).sub(currentPosition)
-		console.log(`--> Calculated Offset: ${dragOffset.x.toFixed(2)}, ${dragOffset.y.toFixed(2)}, ${dragOffset.z.toFixed(2)}`);
+		// console.log(`--> Calculated Offset: ${dragOffset.x.toFixed(2)}, ${dragOffset.y.toFixed(2)}, ${dragOffset.z.toFixed(2)}`);
 
-		// Removed OrbitControls disable logic
-		/*
-		if (controls) {
-			console.log('--> Disabling OrbitControls via user context');
-			controls.enabled = false
-		} else {
-			console.log('--> OrbitControls from user context was undefined, cannot disable');
-		}
-		*/
 		renderer.domElement.style.cursor = 'grabbing'
-
 		window.addEventListener('pointermove', handlePointerMove)
 		window.addEventListener('pointerup', handlePointerUp, { once: true })
 	}
 
 	// Handler for pointer move (global listener)
 	const handlePointerMove = (event: PointerEvent) => {
-		if (!isDragging || !camera.current || !rigidBodyRef) return
+		if (!$isDraggingStore || !camera.current || !rigidBodyRef) return // Check store value
 
 		const { width, height, left, top } = renderer.domElement.getBoundingClientRect();
 		const x = ((event.clientX - left) / width) * 2 - 1;
@@ -116,77 +149,106 @@
 
 		const intersectionPoint = new Vector3()
 		if (raycaster.ray.intersectPlane(dragPlane, intersectionPoint)) {
-			const newPosition = intersectionPoint.sub(dragOffset)
+			const targetPosition = intersectionPoint.sub(dragOffset)
 
-			// --- Clamp Y position to prevent going through ground ---
+			// --- Re-enable Y position clamping on the target position ---
 			const halfHeight = scale / 2;
-			newPosition.y = Math.max(newPosition.y, halfHeight);
+			targetPosition.y = Math.max(targetPosition.y, halfHeight);
 			// --- End Clamping ---
 
-			console.log(`--> New Position Calculated (Clamped): ${newPosition.x.toFixed(2)}, ${newPosition.y.toFixed(2)}, ${newPosition.z.toFixed(2)}`); // Updated log
-			rigidBodyRef.setNextKinematicTranslation(newPosition)
+			// Calculate velocity needed to reach target
+			const currentPosition = rigidBodyRef.translation();
+			const velocity = new Vector3()
+				.copy(targetPosition)
+				.sub(currentPosition)
+				.multiplyScalar(dragStiffness); // Use constant
 
-			invalidate()
+			rigidBodyRef.setLinvel(velocity, true);
+			// console.log(`--> Target Vel: ${velocity.x.toFixed(2)}, ${velocity.y.toFixed(2)}, ${velocity.z.toFixed(2)}`);
+
+			// Remove invalidate() - physics engine should trigger updates
+			// invalidate()
 		}
 	}
 
 	// Handler for pointer up (global listener)
 	const handlePointerUp = () => {
-		if (!isDragging || !rigidBodyRef) return
+		if (!$isDraggingStore || !rigidBodyRef) return // Check store value
+		const bodyRef = rigidBodyRef;
 
-		console.log('--> Ending Drag');
-		isDragging = false
+		console.log('--> Ending Dynamic Drag (Release/Throw)');
+		isDraggingStore.set(false); // Set store to false
 		renderer.domElement.style.cursor = 'grab'
 
-		if (originalBodyType !== undefined) {
-			console.log(`--> Restoring body type to: ${originalBodyType}`);
-			rigidBodyRef.setBodyType(originalBodyType, false)
-			rigidBodyRef.wakeUp()
-			// Give it a slight nudge downwards to ensure physics takes over
-			const currentLinvel = rigidBodyRef.linvel(); // Get current velocity
-			rigidBodyRef.setLinvel({ x: currentLinvel.x, y: -0.1, z: currentLinvel.z }, true);
-			console.log('--> Applied small downward velocity nudge'); // DEBUG
+		// Restore original physics properties
+		if (originalGravityScale !== undefined) {
+			bodyRef.setGravityScale(originalGravityScale, true);
+			// console.log(`--> Restored gravityScale to: ${originalGravityScale}`);
 		}
-		originalBodyType = undefined
 
-		// Removed OrbitControls enable logic
-		/*
-		const controls = $orbitControlsStore;
-		if (controls) {
-			console.log('--> Re-enabling OrbitControls via user context');
-			controls.enabled = true
-		} else {
-			console.log('--> OrbitControls from user context was undefined on pointer up');
+		// --- REMOVED Velocity Reset ---
+		// Keep current velocity to allow throwing
+		// bodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true);
+		// bodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true);
+		// console.log('--> Velocities NOT reset on release');
+		// --- End Removal ---
+
+		// Restore damping AFTER potential velocity is kept
+		if (originalLinearDamping !== undefined) {
+			bodyRef.setLinearDamping(originalLinearDamping);
+			// console.log(`--> Restored linearDamping to: ${originalLinearDamping}`);
 		}
-		*/
+
+		originalGravityScale = undefined;
+		originalLinearDamping = undefined;
 
 		window.removeEventListener('pointermove', handlePointerMove)
 	}
 
 	const handlePointerEnter = (event: any) => {
-		if (!isDragging) renderer.domElement.style.cursor = 'grab'
+		if (!$isDraggingStore) renderer.domElement.style.cursor = 'grab' // Check store value
 	}
 
 	const handlePointerLeave = (event: any) => {
-		if (!isDragging) renderer.domElement.style.cursor = 'auto'
+		if (!$isDraggingStore) renderer.domElement.style.cursor = 'auto' // Check store value
 	}
 
 </script>
 
-<!-- Restore physics components -->
-<RigidBody bind:rigidBody={rigidBodyRef} type='dynamic'>
-	<AutoColliders shape={'cuboid'}>
-		<!-- Use interactivity props instead of on: handlers -->
-		<T.Mesh
-			receiveShadow
-			{scale}
-			onpointerdown={handlePointerDownProp}
-			onpointerenter={handlePointerEnter}
-			onpointerleave={handlePointerLeave}
-		>
-			<T.BoxGeometry args={[1, 1, 1]} />
-			<T.MeshToonMaterial color={color} />
-			<Edges color="#64B5F6" />
-		</T.Mesh>
-	</AutoColliders>
-</RigidBody>
+<!-- Wrap RigidBody, ArrowHelper, and Text in a Group -->
+<T.Group>
+	<RigidBody bind:rigidBody={rigidBodyRef} type='dynamic'>
+		<AutoColliders shape={'cuboid'}>
+			<T.Mesh
+				receiveShadow
+				{scale}
+				onpointerdown={handlePointerDownProp}
+				onpointerenter={handlePointerEnter}
+				onpointerleave={handlePointerLeave}
+			>
+				<T.BoxGeometry args={[1, 1, 1]} />
+				<T.MeshBasicMaterial color={color} />
+				<Edges color="#64B5F6" />
+			</T.Mesh>
+		</AutoColliders>
+	</RigidBody>
+
+	<!-- ArrowHelper is now a SIBLING -->
+	<T.ArrowHelper
+		bind:ref={arrowHelperRef}
+		dir={[0, 1, 0]}
+		origin={[0, 0, 0]}
+		length={1}
+	/>
+
+	<!-- Text Label -->
+	<Text
+		bind:ref={textRef}
+		text="v"
+		color="black"
+		fontSize={1}
+		anchorX="center"
+		anchorY="middle"
+		visible={false}
+	/>
+</T.Group>

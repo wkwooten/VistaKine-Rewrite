@@ -13,7 +13,7 @@
   import extractKeywords from '$lib/utils/keywordExtractor.js';
 
   // Handle section intersection
-  function handleSectionIntersect(event: any, sectionId: string) {
+  function handleSectionIntersect(event: CustomEvent<{ isIntersecting: boolean; intersectionRatio: number; }>, sectionId: string) {
     if (event.detail.isIntersecting && event.detail.intersectionRatio > 0.3) {
       currentSection.set(sectionId);
     }
@@ -41,6 +41,7 @@
       class="content-section section-header"
       data-section="1.1"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
+      <!-- // @ts-ignore -->
       on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
     >
       <div class="section-line" aria-hidden="true"></div>
@@ -67,7 +68,7 @@
           <FormulaAccordion>
             <p>Formulas will go here.</p>
           </FormulaAccordion>
-          <h3>Visualize it: Calibrating the 3D printer</h3>
+          <h3 class="subsection-title">Visualize it: Calibrating the 3D printer</h3>
           <VisContainer currentSection={currentSection}>
             <Scene />
           </VisContainer>
@@ -201,6 +202,7 @@
       class="content-section"
       data-section="1.3"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
+      // @ts-ignore
       on:intersect={(e) => handleSectionIntersect(e, 'reference-frames')}
     >
       <div class="section-line" aria-hidden="true"></div>
