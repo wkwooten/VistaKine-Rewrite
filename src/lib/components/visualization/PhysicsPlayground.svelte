@@ -21,6 +21,10 @@
 	function forwardModeChange(event: CustomEvent<{ mode: 'drag' | 'translate' }>) {
 		dispatch('modechange', event.detail);
 	}
+
+	function handleResetScene() {
+		dispatch('resetscene');
+	}
 </script>
 
 <div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen}>
@@ -31,6 +35,7 @@
 			targetElement={containerElement}
 			bind:selectedControlMode={controlMode}
 			on:modechange={forwardModeChange}
+			on:resetscene={handleResetScene}
 		/>
 	</div>
 

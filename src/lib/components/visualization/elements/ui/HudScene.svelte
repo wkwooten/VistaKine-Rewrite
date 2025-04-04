@@ -18,6 +18,10 @@
 		isFullscreen = event.detail;
 	}
 
+	function handleResetClick() {
+		dispatch('resetscene');
+	}
+
 	// Reactively dispatch the modechange event whenever selectedControlMode changes
 	$: if (dispatch) {
 		dispatch('modechange', { mode: selectedControlMode });
@@ -28,6 +32,7 @@
 
 <div class="ui-container">
 	<slot />
+	<button class="reset-button" on:click={handleResetClick}>Reset</button>
 	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>
@@ -61,6 +66,12 @@
 		position: absolute;
 		top: 1rem;
 		right: 1rem;
+	}
+	:global(.ui-container .reset-button) {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		z-index: 11; /* Ensure it's above other UI elements if needed */
 	}
 	.hud-scene {
 		position: absolute;

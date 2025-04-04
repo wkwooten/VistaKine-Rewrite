@@ -1,92 +1,97 @@
 <script lang="ts">
   import { T, useTask } from '@threlte/core'
-  import { Environment, Grid, OrbitControls, SoftShadows, TransformControls } from '@threlte/extras'
-  // Import the actual OrbitControls type from Three.js
+  import { Environment, Grid, OrbitControls, SoftShadows, TransformControls, interactivity } from '@threlte/extras'
   import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-  // Import the dragging store
+  import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
+  import { Vector3, Group, Quaternion, Euler } from 'three'
+
   import { isDragging } from '$lib/stores/draggingStore';
-  // Import and initialize interactivity
-  import { interactivity } from '@threlte/extras'
+  import Ground from '../elements/constructs/Ground.svelte'
+  import Cube from '../elements/constructs/Cube.svelte'
+
   interactivity()
 
-  // import { Debug } from '@threlte/rapier'
-  import Ground from '../elements/constructs/Ground.svelte'
-	import Box from '../elements/constructs/Box.svelte'
-  import { Vector3, Group } from 'three'
-  // Removed SvelteComponent import and component ref variable
-  // import type { SvelteComponent } from 'svelte'
-  // let controlsComponentRef: SvelteComponent | undefined = undefined;
-  // Removed incorrect imports
-  // import { onBeforeRender } from '@threlte/core'
-  // import { ref } from 'vue';
-
-  // Prop to receive the control mode from the parent
+  // Props
   export let controlMode: 'drag' | 'translate' = 'drag';
 
-  // State to hold the reference to the Box's group
-  let boxGroupRef: Group | undefined = undefined;
+  // State & Refs
+  let controls: ThreeOrbitControls | undefined = undefined;
+  let cubeGroupRef: Group | undefined = undefined;
+	let cubeRigidBodyRef: RapierRigidBody | undefined = undefined;
 
-  // Define your bounding box
-  const minX = -100; // Example bounds, adjust as needed
-  const maxX = 100;
-  const minY = 5;
-  const maxY = 50;
-  const minZ = -100;
-  const maxZ = 100;
+  // Constants
+  const BOUNDS = { minX: -100, maxX: 100, minY: 5, maxY: 50, minZ: -100, maxZ: 100 };
+  const defaultCameraPosition = new Vector3(0, 2, 10);
+  const defaultCameraTarget = new Vector3(0, 0, 0);
+  const defaultCubePosition = new Vector3(2, 5, 0);
+  const defaultRotation = new Quaternion().setFromEuler(new Euler(0, 0, 0));
 
-  let controls: ThreeOrbitControls | undefined = undefined; // Use the correct Three.js type
+  // --- Camera Clamping Task ---
+  useTask(() => {
+    if (!controls) return;
+    const camera = controls.object;
 
-  useTask((delta) => { // Corrected useTask call, added delta parameter
-    if (!controls) return; // Check controls directly
+    camera.position.x = Math.max(BOUNDS.minX, Math.min(BOUNDS.maxX, camera.position.x));
+    camera.position.y = Math.max(BOUNDS.minY, Math.min(BOUNDS.maxY, camera.position.y));
+    camera.position.z = Math.max(BOUNDS.minZ, Math.min(BOUNDS.maxZ, camera.position.z));
 
-    const camera = controls.object; // Access camera via controls.object
+    controls.target.x = Math.max(BOUNDS.minX, Math.min(BOUNDS.maxX, controls.target.x));
+    controls.target.y = Math.max(BOUNDS.minY, Math.min(BOUNDS.maxY, controls.target.y));
+    controls.target.z = Math.max(BOUNDS.minZ, Math.min(BOUNDS.maxZ, controls.target.z));
+  });
 
-    // Clamp the camera position within the bounding box
-    camera.position.x = Math.max(minX, Math.min(maxX, camera.position.x));
-    camera.position.y = Math.max(minY, Math.min(maxY, camera.position.y));
-    camera.position.z = Math.max(minZ, Math.min(maxZ, camera.position.z));
+  // --- Scene Reset Function ---
+	export function resetScene() {
+		console.log('Resetting Scene...');
+		// Reset camera
+		if (controls) {
+			controls.object.position.copy(defaultCameraPosition);
+			controls.target.copy(defaultCameraTarget);
+			controls.update();
+		}
 
-    // Clamp target position
-    controls.target.x = Math.max(minX, Math.min(maxX, controls.target.x));
-    controls.target.y = Math.max(minY, Math.min(maxY, controls.target.y));
-    controls.target.z = Math.max(minZ, Math.min(maxZ, controls.target.z));
+		// Reset Cube
+		if (cubeRigidBodyRef) {
+			cubeRigidBodyRef.setTranslation(defaultCubePosition, true);
+			cubeRigidBodyRef.setRotation(defaultRotation, true);
+			cubeRigidBodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true);
+			cubeRigidBodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true);
+		}
+		if (cubeGroupRef) {
+			cubeGroupRef.position.copy(defaultCubePosition);
+			cubeGroupRef.quaternion.copy(defaultRotation);
+		}
 
-  }); // Removed incorrect options object
+		// controlMode = 'drag'; // Optional: reset control mode
+	}
 
 </script>
 
+<!-- Camera Setup -->
 <T.PerspectiveCamera
   makeDefault
-  position={[0, 2, 10]}
+  position={defaultCameraPosition.toArray()}
 >
 	<OrbitControls
-    enableZoom={true}
     bind:ref={controls}
+    target={defaultCameraTarget.toArray()}
+    enableZoom={true}
     enabled={!$isDragging}
     maxPolarAngle={Math.PI / 2}
   />
 </T.PerspectiveCamera>
 
-<!-- Remove Sky Component -->
-<!-- <Sky /> -->
-
-<!-- Add Fog -->
+<!-- Environment -->
 <T.Fog
   color={'#f0f8ff'}
   near={10}
   far={50}
 />
-
 <T.AmbientLight intensity={1} />
-
 <T.DirectionalLight
   castShadow
   position={[8, 20, -3]}
 />
-<!--
-<T.GridHelper args={[1000]} /> -->
-<!-- infiniteGrid={true} -->
-
 <Grid
   position.y={0.01}
   infiniteGrid={true}
@@ -97,16 +102,8 @@
   sectionColor='#64B5F6'
   fadeDistance={150}
 />
-
 <Ground />
-<!-- No need to pass controls prop -->
 
-<Box bind:groupRef={boxGroupRef} {controlMode} />
+<!-- Scene Objects -->
+<Cube bind:groupRef={cubeGroupRef} bind:rigidBodyRef={cubeRigidBodyRef} {controlMode} />
 
-{#if boxGroupRef}
-	<TransformControls
-		object={boxGroupRef}
-		mode={'translate'}
-		enabled={controlMode === 'translate'}
-	/>
-{/if}

@@ -15,11 +15,22 @@
 	function handleFullscreenToggle(event: CustomEvent<boolean>) {
 		isFullscreen = event.detail;
 	}
+	function handleResetScene() {
+		// Placeholder for actual reset logic if needed at this level
+		// For now, just log or forward if necessary
+		console.log('Reset scene requested in VisContainer');
+		// If VisContainer needs to dispatch this further, add dispatch here
+	}
 </script>
 
 <div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
 	<div class="ui-container">
-		<HudScene {isFullscreen} targetElement={containerElement} {currentSection}/>
+		<HudScene
+			{isFullscreen}
+			targetElement={containerElement}
+			{currentSection}
+			on:resetscene={handleResetScene}
+		/>
 	</div>
 
 	<Canvas>
