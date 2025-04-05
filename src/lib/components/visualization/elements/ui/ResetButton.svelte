@@ -4,16 +4,44 @@
 
 	const dispatch = createEventDispatcher();
 
+	let isRotating = false; // State to control animation
+
 	function handleResetClick() {
 		dispatch('resetscene');
+		if (!isRotating) { // Prevent re-triggering if already rotating
+			isRotating = true;
+		}
+	}
+
+	function handleAnimationEnd() {
+		isRotating = false; // Reset state when animation finishes
 	}
 </script>
 
 <button class="reset-button" on:click={handleResetClick}>
-	<RotateCcw size={24} />
+	<!-- Apply rotating class based on state and listen for animation end -->
+	<div  class:rotating={isRotating} on:animationend={handleAnimationEnd}>
+		<RotateCcw size={24} />
+	</div>
 </button>
 
 <style>
+	/* Define the rotation animation */
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(-360deg); /* Counter-clockwise rotation */
+		}
+	}
+
+	/* Apply the animation when the rotating class is present */
+	/* Use :global(svg) to target the SVG inside the Lucide component */
+	:global(.reset-button svg.rotating) {
+		animation: spin 0.5s linear; /* Adjust duration and timing as needed */
+	}
+
 	/* Add any button-specific styles here */
 	.reset-button {
 
@@ -49,5 +77,9 @@
 		&:active {
 			background-color: var(--brand-active-bg);
 		}
+	}
+
+	.rotating {
+		animation: spin 0.5s linear; /* Adjust duration and timing as needed */
 	}
 </style>

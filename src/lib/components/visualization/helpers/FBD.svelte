@@ -130,7 +130,6 @@
 		const linvel = rigidBody.linvel();
 		const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
 		const velocityLength = linvelVec.length();
-		// Read visibility from Svelte store
 		const isVelocityVisible = $fbdVisibilityStore.velocity && velocityLength > MIN_VISIBLE_LENGTH;
 		let velocityArrowTipPosition = worldPosition.clone(); // Default to world pos
 
@@ -168,8 +167,8 @@
         // Logging (optional, adjust as needed)
         // console.log(`[FBD Debug] Current Vel: (${linvelVec.x.toFixed(2)}, ${linvelVec.y.toFixed(2)}, ${linvelVec.z.toFixed(2)})`);
         // console.log(`[FBD Debug] Avg Acceleration: (${averageAcceleration.x.toFixed(2)}, ${averageAcceleration.y.toFixed(2)}, ${averageAcceleration.z.toFixed(2)})`);
-        console.log(`[FBD Debug] Smoothed Avg Acceleration: (${smoothedAcceleration.x.toFixed(2)}, ${smoothedAcceleration.y.toFixed(2)}, ${smoothedAcceleration.z.toFixed(2)}) Length: ${smoothedAcceleration.length().toFixed(2)}`);
-        console.log(`[FBD Debug] Net Force: (${netForce.x.toFixed(2)}, ${netForce.y.toFixed(2)}, ${netForce.z.toFixed(2)}) Length: ${netForce.length().toFixed(2)}`);
+        // console.log(`[FBD Debug] Smoothed Avg Acceleration: (${smoothedAcceleration.x.toFixed(2)}, ${smoothedAcceleration.y.toFixed(2)}, ${smoothedAcceleration.z.toFixed(2)}) Length: ${smoothedAcceleration.length().toFixed(2)}`);
+        // console.log(`[FBD Debug] Net Force: (${netForce.x.toFixed(2)}, ${netForce.y.toFixed(2)}, ${netForce.z.toFixed(2)}) Length: ${netForce.length().toFixed(2)}`);
 
 		if (velocityArrowHelperRef) {
 			velocityArrowHelperRef.position.copy(worldPosition);
@@ -199,7 +198,6 @@
 		// --- Weight Vector (Previously Gravity) ---
 		const gravityScaleValue = rigidBody.gravityScale();
 		const weightMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
-		// Read visibility from Svelte store
 		const isWeightVisible = $fbdVisibilityStore.weight && weightMagnitude > MIN_VISIBLE_LENGTH;
 		let weightArrowTipPosition = worldPosition.clone();
 		const weightDirection = new Vector3(0, -1, 0);
@@ -234,7 +232,6 @@
 
 		// --- Acceleration Vector ---
         const accelerationLength = smoothedAcceleration.length(); // Use smoothed length
-        // Read visibility from Svelte store
         const isAccelerationVisible = $fbdVisibilityStore.acceleration && accelerationLength > MIN_VISIBLE_LENGTH;
         let accelerationArrowTipPosition = worldPosition.clone(); // Default to world pos
         let visualAccelerationLength = 0; // Initialize
@@ -246,7 +243,7 @@
                 const direction = smoothedAcceleration.clone().normalize(); // Use smoothed direction
                 /* Scale visual length - adjust multiplier as needed */
                 visualAccelerationLength = accelerationLength * 0.1 * vectorScale; // Might need different scaling than velocity/gravity
-                console.log(`[FBD Debug] Visual Accel Length: ${visualAccelerationLength.toFixed(3)}`);
+                // console.log(`[FBD Debug] Visual Accel Length: ${visualAccelerationLength.toFixed(3)}`);
                 accelerationArrowHelperRef.setDirection(direction);
                 accelerationArrowHelperRef.setLength(
                     visualAccelerationLength,
@@ -267,7 +264,6 @@
 
         // --- Net Force Vector ---
         const netForceLength = netForce.length();
-        // Read visibility from Svelte store
         const isNetForceVisible = $fbdVisibilityStore.netForce && netForceLength > MIN_VISIBLE_LENGTH;
         let netForceArrowTipPosition = worldPosition.clone();
         let visualNetForceLength = 0;
@@ -314,7 +310,6 @@
         }
 
         const normalForceLength = normalForce.length(); // Will be 0 if not grounded or weight is negligible
-        // Read visibility from Svelte store
         const isNormalForceVisible = $fbdVisibilityStore.normalForce && normalForceLength > MIN_VISIBLE_LENGTH && isGrounded;
         let normalForceArrowTipPosition = worldPosition.clone();
         let visualNormalForceLength = 0;
@@ -359,7 +354,6 @@
         }
 
         const frictionForceLength = frictionForce.length();
-        // Read visibility from Svelte store
         const isFrictionVisible = $fbdVisibilityStore.friction && frictionForceLength > MIN_VISIBLE_LENGTH && isSliding;
         let frictionArrowTipPosition = worldPosition.clone();
         let visualFrictionForceLength = 0;

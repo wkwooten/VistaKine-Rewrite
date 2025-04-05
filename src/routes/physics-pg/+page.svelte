@@ -20,7 +20,8 @@
 
 	onMount(async () => {
 		const module = await import('$lib/components/visualization/PhysicsPlayground.svelte');
-		PhysicsPlaygroundComponent = module.default;
+		// Explicitly cast to satisfy the type checker
+		PhysicsPlaygroundComponent = module.default as typeof SvelteComponent;
 	});
 
 	// Handler to update the mode when the event bubbles up
@@ -35,6 +36,9 @@
 		if (sceneComponent) {
 			sceneComponent.resetScene(); // Call the exported function
 		}
+		// Reset the control mode back to drag
+		selectedControlMode = 'drag';
+		console.log('Control mode reset to drag');
 	}
 
 </script>

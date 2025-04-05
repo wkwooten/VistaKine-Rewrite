@@ -26,12 +26,13 @@
 	style:box-shadow={boxShadow}
 	style:width={width}
 >
-	<ControlModeToggle on:modechange={handleModeChange} />
+	<div class="Control-mode">
+		<ControlModeToggle on:modechange={handleModeChange} />
+	</div>
 	<!-- Placeholder slots -->
 	<div class="placeholder-slot">2</div>
 	<div class="placeholder-slot">3</div>
 	<div class="placeholder-slot">4</div>
-	<div class="placeholder-slot">5</div>
 </div>
 
 <style>

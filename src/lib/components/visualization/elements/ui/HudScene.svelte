@@ -32,7 +32,9 @@
 <div class="ui-container">
 	<slot />
 	<ResetButton on:resetscene={() => dispatch('resetscene')} />
-	<FBDMenu />
+	<div class="fbd-menu-container">
+		<FBDMenu />
+	</div>
 	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>
@@ -67,6 +69,20 @@
 		top: 1rem;
 		right: 1rem;
 	}
+
+	:global(.ui-container .fbd-menu-container) {
+		position: absolute;
+		top: 20%; /* Position below the reset button */
+		left: 1rem;
+		z-index: 11;
+		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
+		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
+		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
+		padding: var(--space-s);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-sm);
+	}
+
 	:global(.ui-container .reset-button) {
 		position: absolute;
 		top: 1rem;

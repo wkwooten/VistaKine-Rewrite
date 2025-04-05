@@ -68,18 +68,6 @@
 </div>
 
 <style>
-  div {
-    /* Basic styling to make it visible */
-    background-color: rgba(50, 50, 50, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    position: absolute; /* Example positioning, adjust as needed */
-    top: 10px; /* Adjusted position */
-    right: 60px; /* Adjusted position */
-    z-index: 10; /* Ensure it's above the canvas */
-    width: 200px; /* Give it some width */
-  }
   label {
     display: block;
     margin-bottom: 5px;

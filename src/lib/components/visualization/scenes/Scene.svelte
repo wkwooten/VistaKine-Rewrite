@@ -2,6 +2,7 @@
   import { T, useTask } from '@threlte/core'
   import { Environment, Grid, OrbitControls, SoftShadows, TransformControls, interactivity } from '@threlte/extras'
   import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import { RigidBodyType } from '@dimforge/rapier3d-compat';
   import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
   import { Vector3, Group, Quaternion, Euler } from 'three'
 
@@ -23,7 +24,7 @@
   const BOUNDS = { minX: -100, maxX: 100, minY: 2, maxY: 50, minZ: -100, maxZ: 100 };
   const defaultCameraPosition = new Vector3(0, 2, 10);
   const defaultCameraTarget = new Vector3(0, 0, 0);
-  const defaultCubePosition = new Vector3(2, 5, 0);
+  const defaultCubePosition = new Vector3(0, 0, 0);
   const defaultRotation = new Quaternion().setFromEuler(new Euler(0, 0, 0));
 
   // --- Camera Clamping Task ---
@@ -42,7 +43,6 @@
 
   // --- Scene Reset Function ---
 	export function resetScene() {
-		console.log('Resetting Scene...');
 		// Reset camera
 		if (controls) {
 			controls.object.position.copy(defaultCameraPosition);
@@ -56,6 +56,8 @@
 			cubeRigidBodyRef.setRotation(defaultRotation, true);
 			cubeRigidBodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true);
 			cubeRigidBodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true);
+			cubeRigidBodyRef.setBodyType(RigidBodyType.Dynamic, true);
+			cubeRigidBodyRef.setGravityScale(1, true);
 		}
 		if (cubeGroupRef) {
 			cubeGroupRef.position.copy(defaultCubePosition);

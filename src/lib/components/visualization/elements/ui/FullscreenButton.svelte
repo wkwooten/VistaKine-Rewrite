@@ -108,7 +108,7 @@
 	.fullscreen-button {
 		padding: var(--space-xs-s); /* Use Utopia fluid spacing */
 		/* border: none; */ /* Remove or adjust border */
-		border-radius: var(--radius-sm); /* Use variable for radius */
+		border-radius: 50%; /* Use variable for radius */
 		/* background-color: var(--brand-primary); */ /* Original background */
 		color: var(--primary-color); /* Use appropriate text color */
 		cursor: pointer;
