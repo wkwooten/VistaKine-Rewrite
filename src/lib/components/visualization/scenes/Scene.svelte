@@ -20,7 +20,7 @@
 	let cubeRigidBodyRef: RapierRigidBody | undefined = undefined;
 
   // Constants
-  const BOUNDS = { minX: -100, maxX: 100, minY: 5, maxY: 50, minZ: -100, maxZ: 100 };
+  const BOUNDS = { minX: -100, maxX: 100, minY: 2, maxY: 50, minZ: -100, maxZ: 100 };
   const defaultCameraPosition = new Vector3(0, 2, 10);
   const defaultCameraTarget = new Vector3(0, 0, 0);
   const defaultCubePosition = new Vector3(2, 5, 0);
@@ -106,4 +106,3 @@
 
 <!-- Scene Objects -->
 <Cube bind:groupRef={cubeGroupRef} bind:rigidBodyRef={cubeRigidBodyRef} {controlMode} />
-

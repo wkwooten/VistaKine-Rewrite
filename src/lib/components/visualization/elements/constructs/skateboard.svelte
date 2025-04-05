@@ -2,7 +2,7 @@
 	console.log('[Cube.svelte] Script Initializing');
 	import { T, useThrelte, useTask } from '@threlte/core';
 	import { AutoColliders, RigidBody } from '@threlte/rapier';
-	import { Edges, Outlines } from '@threlte/extras'; /* Removed Billboard, Text */
+	import { Edges, Outlines, useGltf } from '@threlte/extras'; /* Removed Billboard, Text */
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
 	import { RigidBodyType } from '@dimforge/rapier3d-compat';
 	import { isDragging as isDraggingStore } from '$lib/stores/draggingStore';
@@ -22,6 +22,7 @@
 
 	const { camera, renderer, invalidate, scene } = useThrelte();
 	const mass = 1;
+
 
 	const writableScale = writable(scale);
 	const writableControlMode = writable(controlMode);

@@ -3,6 +3,8 @@
 	import FullscreenButton from './FullscreenButton.svelte';
 	import type { Writable } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
+	import FBDMenu from './FBDMenu.svelte';
+
 
 	export let currentSection : Writable<string>;
 	export let isFullscreen: boolean;
@@ -33,6 +35,7 @@
 <div class="ui-container">
 	<slot />
 	<button class="reset-button" on:click={handleResetClick}>Reset</button>
+	<FBDMenu />
 	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>
