@@ -7,6 +7,7 @@ export interface FBDVisibilityState {
   netForce: boolean;
   normalForce: boolean;
   friction: boolean;
+  axes: boolean;
 }
 
 // Initial state: all vectors visible
@@ -16,7 +17,8 @@ const initialState: FBDVisibilityState = {
   acceleration: true,
   netForce: true,
   normalForce: true,
-  friction: true
+  friction: true,
+  axes: true
 };
 
 // Create the writable store

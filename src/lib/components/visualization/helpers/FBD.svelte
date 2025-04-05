@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
 	import { Billboard, Text } from '@threlte/extras';
-	import { Vector3, ArrowHelper, Color, LineBasicMaterial, MeshBasicMaterial, SphereGeometry } from 'three';
+	import { Vector3, ArrowHelper, Color, LineBasicMaterial, MeshBasicMaterial, SphereGeometry, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial } from 'three';
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
 	import { fbdVisibilityStore } from '$lib/stores/fbdStores';
+	import { isFBDMenuOpen } from '$lib/stores/uiStores';
 
 	/** The Rapier RigidBody instance to visualize vectors for. */
 	export let rigidBody: RapierRigidBody | undefined = undefined;
@@ -24,6 +25,10 @@
 	let netForceArrowHelperRef: ArrowHelper | undefined = undefined;
 	let normalForceArrowHelperRef: ArrowHelper | undefined = undefined;
 	let frictionArrowHelperRef: ArrowHelper | undefined = undefined;
+	// --- Refs for Axes ---
+	let xAxisRef: LineSegments | undefined = undefined;
+	let yAxisRef: LineSegments | undefined = undefined;
+	let zAxisRef: LineSegments | undefined = undefined;
 
 	// --- Constants ---
 	const GRAVITY_CONSTANT = 9.81;
@@ -33,6 +38,10 @@
 	const MIN_ARROW_LENGTH = 0.1; // Smallest visual size for an arrow
 	const ACCELERATION_SMOOTHING_FACTOR = 0.2; // Smoothing factor for acceleration
 	const ACCELERATION_AVERAGING_INTERVAL = 0.1; // seconds (100ms)
+	// --- Axis Constants ---
+	const AXIS_LENGTH = 1.0 * vectorScale; // Scale axis length with vector scale
+	const AXIS_DASH_SIZE = 0.05 * vectorScale;
+	const AXIS_GAP_SIZE = 0.05 * vectorScale;
 
 	// --- Reactive State for Billboards ---
 	let velocityBillboardPosition = new Vector3();
@@ -58,6 +67,28 @@
 	let frictionForce = new Vector3(); // Calculated Friction Force
 	let timeAccumulator = 0;
 	let velocityAtIntervalStart = new Vector3();
+
+	// --- Geometry & Material for Axes (create once) ---
+	const xAxisGeometry = new BufferGeometry();
+	const yAxisGeometry = new BufferGeometry();
+	const zAxisGeometry = new BufferGeometry();
+
+	const xAxisVertices = new Float32Array([ 0, 0, 0,  AXIS_LENGTH, 0, 0 ]);
+	const yAxisVertices = new Float32Array([ 0, 0, 0,  0, AXIS_LENGTH, 0 ]);
+	const zAxisVertices = new Float32Array([ 0, 0, 0,  0, 0, AXIS_LENGTH ]);
+
+	xAxisGeometry.setAttribute('position', new Float32BufferAttribute(xAxisVertices, 3));
+	yAxisGeometry.setAttribute('position', new Float32BufferAttribute(yAxisVertices, 3));
+	zAxisGeometry.setAttribute('position', new Float32BufferAttribute(zAxisVertices, 3));
+
+	// REMOVED - computeLineDistances() seems deprecated/unnecessary
+	// xAxisGeometry.computeLineDistances();
+	// yAxisGeometry.computeLineDistances();
+	// zAxisGeometry.computeLineDistances();
+
+	const xAxisMaterial = new LineDashedMaterial({ color: 0xff0000, dashSize: AXIS_DASH_SIZE, gapSize: AXIS_GAP_SIZE, depthTest: false }); // Red
+	const yAxisMaterial = new LineDashedMaterial({ color: 0x00ff00, dashSize: AXIS_DASH_SIZE, gapSize: AXIS_GAP_SIZE, depthTest: false }); // Green
+	const zAxisMaterial = new LineDashedMaterial({ color: 0x0000ff, dashSize: AXIS_DASH_SIZE, gapSize: AXIS_GAP_SIZE, depthTest: false }); // Blue
 
 	// --- Arrow Colors ---
 	$: if (velocityArrowHelperRef) velocityArrowHelperRef.setColor(new Color('red'));
@@ -112,6 +143,11 @@
             normalForceBillboardVisible = false;
             frictionBillboardVisible = false;
             originDotVisible = false; // Hide dot
+			// Hide axes if no rigid body
+            if(xAxisRef) xAxisRef.visible = false;
+            if(yAxisRef) yAxisRef.visible = false;
+            if(zAxisRef) zAxisRef.visible = false;
+
             averageAcceleration.set(0,0,0);
             smoothedAcceleration.set(0,0,0); // Reset smoothed acceleration
             netForce.set(0,0,0); // Reset net force
@@ -124,7 +160,25 @@
 
 		const worldPosition = new Vector3().copy(rigidBody.translation() as Vector3);
 		originDotPosition = worldPosition.clone(); // Reassign for reactivity
-		originDotVisible = true; // Show dot
+		// Only show dot if menu is open and rigid body exists
+		originDotVisible = $isFBDMenuOpen;
+
+		// Update axes position and visibility
+		if (xAxisRef) {
+			xAxisRef.position.copy(worldPosition);
+			// Visible only if menu is open AND axes are enabled in store
+			xAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes;
+		}
+		if (yAxisRef) {
+			yAxisRef.position.copy(worldPosition);
+			// Visible only if menu is open AND axes are enabled in store
+			yAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes;
+		}
+		if (zAxisRef) {
+			zAxisRef.position.copy(worldPosition);
+			// Visible only if menu is open AND axes are enabled in store
+			zAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes;
+		}
 
 		// --- Velocity Vector ---
 		const linvel = rigidBody.linvel();
@@ -393,6 +447,11 @@
 		<T.SphereGeometry args={[0.05 * vectorScale, 8, 8]} />
 		<T.MeshBasicMaterial color="black" depthTest={false} />
 	</T.Mesh>
+
+	<!-- Axes -->
+	<T.LineSegments bind:ref={xAxisRef} geometry={xAxisGeometry} material={xAxisMaterial} />
+	<T.LineSegments bind:ref={yAxisRef} geometry={yAxisGeometry} material={yAxisMaterial} />
+	<T.LineSegments bind:ref={zAxisRef} geometry={zAxisGeometry} material={zAxisMaterial} />
 
 	<!-- Velocity ArrowHelper -->
 	<T.ArrowHelper

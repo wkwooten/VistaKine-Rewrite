@@ -5,6 +5,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import FBDMenu from './FBDMenu.svelte';
 	import ResetButton from './ResetButton.svelte';
+	import { isFBDMenuOpen } from '$lib/stores/uiStores'; // Import menu state store
+	import { fbdVisibilityStore, type FBDVisibilityState } from '$lib/stores/fbdStores'; // Import FBD visibility store
 
 
 	export let currentSection : Writable<string>;
@@ -27,14 +29,40 @@
 	}
 
 	// $: console.log('Selected control mode in HudScene:', selectedControlMode); // Optional: Log changes
+
+	// Reactive statement to clear FBD visibility when menu closes
+	$: {
+		if (!$isFBDMenuOpen) {
+			// Check if any are currently visible before updating to avoid unnecessary updates
+			let anyVisible = false;
+			const unsub = fbdVisibilityStore.subscribe(current => {
+				anyVisible = Object.values(current).some(v => v);
+			});
+			unsub(); // Unsubscribe immediately after reading
+
+			if (anyVisible) {
+				console.log('[HudScene] FBD Menu closed, hiding all vectors.');
+				fbdVisibilityStore.update(current => {
+					const updated: FBDVisibilityState = { ...current };
+					for (const key in updated) {
+						updated[key as keyof FBDVisibilityState] = false;
+					}
+					return updated;
+				});
+			}
+		}
+	}
 </script>
 
 <div class="ui-container">
 	<slot />
 	<ResetButton on:resetscene={() => dispatch('resetscene')} />
-	<div class="fbd-menu-container">
-		<FBDMenu />
-	</div>
+	<!-- Conditionally render FBDMenu container based on store -->
+	{#if $isFBDMenuOpen}
+		<div class="fbd-menu-container">
+			<FBDMenu />
+		</div>
+	{/if}
 	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>

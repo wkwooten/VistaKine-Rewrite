@@ -24,7 +24,7 @@
 <div class="control-mode-toggle">
 	<button class="toggle-button" on:click={toggleMenu} title="Change control mode">
 		{#if currentMode === 'drag'}
-			<Hand size={20} />
+			<Hand size={32} />
 		{:else}
 			<Move3D size={20} />
 		{/if}
@@ -59,8 +59,9 @@
 		cursor: pointer;
 		font-size: 1.2rem; /* Adjust icon size */
 		line-height: 1;
-		min-width: 40px; /* Ensure minimum width */
+		/* min-width: 40px;
 		height: 40px;
+		aspect-ratio: 1/1; */
 		display: flex;
 		align-items: center;
 		justify-content: center;

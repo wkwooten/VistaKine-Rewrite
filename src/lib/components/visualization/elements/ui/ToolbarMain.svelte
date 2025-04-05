@@ -1,5 +1,7 @@
 <script lang="ts">
 	import ControlModeToggle from './ControlModeToggle.svelte';
+	import { Move } from 'lucide-svelte'; // Import the icon
+	import { isFBDMenuOpen } from '$lib/stores/uiStores'; // Import the store
 
 	// Props for customization (optional, but good practice)
 	export let backgroundColor: string = 'var(--glass-bg-color, rgba(255, 255, 255, 0.1))'; // Default background with fallback - UPDATED
@@ -26,11 +28,17 @@
 	style:box-shadow={boxShadow}
 	style:width={width}
 >
-	<div class="Control-mode">
-		<ControlModeToggle on:modechange={handleModeChange} />
-	</div>
+
+	<ControlModeToggle on:modechange={handleModeChange} />
+
+	<!-- FBD Menu Toggle Button -->
+	<button class="toolbar-button fbd-toggle-button" on:click={() => isFBDMenuOpen.update(open => !open)} title="Toggle Free Body Diagram Controls">
+		<Move size={32} />
+	</button>
+
 	<!-- Placeholder slots -->
-	<div class="placeholder-slot">2</div>
+	<!-- <div class="placeholder-slot">1</div>
+	<div class="placeholder-slot">2</div> -->
 	<div class="placeholder-slot">3</div>
 	<div class="placeholder-slot">4</div>
 </div>
@@ -60,5 +68,30 @@
 		justify-content: center;
 		font-size: 0.8em;
 		color: var(--text-muted-color, #888);
+	}
+
+	/* Style for the toolbar buttons */
+	.toolbar-button {
+		background: none;
+		border: none;
+		padding: var(--space-3xs); /* Small padding */
+		margin: 0;
+		color: inherit; /* Inherit text color from toolbar */
+		cursor: pointer;
+		display: inline-flex; /* Align icon nicely */
+		align-items: center;
+		justify-content: center;
+		border-radius: var(--radius-sm);
+		transition: background-color 0.2s ease;
+	}
+
+	.toolbar-button:hover {
+		background-color: var(--brand-hover-bg);
+		color: var(--brand-hover-color);
+	}
+
+	.fbd-toggle-button:focus {
+		outline: 2px solid var(--focus-ring-color);
+		outline-offset: 1px;
 	}
 </style>
