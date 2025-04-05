@@ -40,11 +40,13 @@
 		align-items: center; /* Vertically center items */
 		z-index: 1000; /* Ensure it's above other content */
 		border: 1px solid var(--border-color,#ccc);
+		box-shadow: var(--shadow-sm);
+		border-radius: var(--radius-lg);
 
 		/* Glassmorphism */
 		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
 		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
-		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
+		/* border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15)); */
 	}
 
 	/* Basic styling for placeholder slots */

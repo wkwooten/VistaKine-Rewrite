@@ -3,6 +3,7 @@
 	import { Billboard, Text } from '@threlte/extras';
 	import { Vector3, ArrowHelper, Color, LineBasicMaterial, MeshBasicMaterial, SphereGeometry } from 'three';
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
+	import { fbdVisibilityStore } from '$lib/stores/fbdStores';
 
 	/** The Rapier RigidBody instance to visualize vectors for. */
 	export let rigidBody: RapierRigidBody | undefined = undefined;
@@ -10,20 +11,8 @@
 	/** Optional: Scale factor for the visual length of vectors. */
 	export let vectorScale: number = .5;
 
-	/** Control visibility of the velocity vector. */
-	export let showVelocityVector = true;
-
-	/** Control visibility of the weight vector. */
-	export let showWeightVector = true;
-
-	/** Control visibility of the acceleration vector. */
-	export let showAccelerationVector = true;
-
-	/** Control visibility of the net force vector. */
-	export let showNetForceVector = true;
-
-	/** Control visibility of the normal force vector. */
-	export let showNormalForceVector = true;
+	/** Friction coefficient of the object's collider. */
+	export let frictionCoefficient: number = 0.5;
 
 	/** Half-height of the object FBD represents (center-to-base distance). */
 	export let objectHalfHeight: number = 0.5;
@@ -34,6 +23,7 @@
 	let accelerationArrowHelperRef: ArrowHelper | undefined = undefined;
 	let netForceArrowHelperRef: ArrowHelper | undefined = undefined;
 	let normalForceArrowHelperRef: ArrowHelper | undefined = undefined;
+	let frictionArrowHelperRef: ArrowHelper | undefined = undefined;
 
 	// --- Constants ---
 	const GRAVITY_CONSTANT = 9.81;
@@ -55,6 +45,8 @@
 	let netForceBillboardVisible = false;
 	let normalForceBillboardPosition = new Vector3();
 	let normalForceBillboardVisible = false;
+	let frictionBillboardPosition = new Vector3();
+	let frictionBillboardVisible = false;
 	let originDotPosition = new Vector3();
 	let originDotVisible = false;
 
@@ -63,6 +55,7 @@
 	let smoothedAcceleration = new Vector3(); // State for smoothed value
 	let netForce = new Vector3(); // Calculated Net Force (F=ma)
 	let normalForce = new Vector3(); // Calculated Normal Force
+	let frictionForce = new Vector3(); // Calculated Friction Force
 	let timeAccumulator = 0;
 	let velocityAtIntervalStart = new Vector3();
 
@@ -72,6 +65,7 @@
 	$: if (accelerationArrowHelperRef) accelerationArrowHelperRef.setColor(new Color('blue'));
 	$: if (netForceArrowHelperRef) netForceArrowHelperRef.setColor(new Color('magenta'));
 	$: if (normalForceArrowHelperRef) normalForceArrowHelperRef.setColor(new Color('yellow'));
+	$: if (frictionArrowHelperRef) frictionArrowHelperRef.setColor(new Color('orange'));
 
 	// --- Disable Depth Test for Overlay Effect ---
 	$: {
@@ -95,6 +89,10 @@
 			(normalForceArrowHelperRef.line.material as LineBasicMaterial).depthTest = false;
 			(normalForceArrowHelperRef.cone.material as MeshBasicMaterial).depthTest = false;
 		}
+		if (frictionArrowHelperRef) {
+			(frictionArrowHelperRef.line.material as LineBasicMaterial).depthTest = false;
+			(frictionArrowHelperRef.cone.material as MeshBasicMaterial).depthTest = false;
+		}
 	}
 
 	// --- Update Task ---
@@ -106,16 +104,19 @@
             if(accelerationArrowHelperRef) accelerationArrowHelperRef.visible = false;
             if(netForceArrowHelperRef) netForceArrowHelperRef.visible = false;
             if(normalForceArrowHelperRef) normalForceArrowHelperRef.visible = false;
+            if(frictionArrowHelperRef) frictionArrowHelperRef.visible = false;
             velocityBillboardVisible = false;
             weightBillboardVisible = false;
             accelerationBillboardVisible = false;
             netForceBillboardVisible = false;
             normalForceBillboardVisible = false;
+            frictionBillboardVisible = false;
             originDotVisible = false; // Hide dot
             averageAcceleration.set(0,0,0);
             smoothedAcceleration.set(0,0,0); // Reset smoothed acceleration
             netForce.set(0,0,0); // Reset net force
             normalForce.set(0,0,0); // Reset normal force
+            frictionForce.set(0,0,0); // Reset friction force
             timeAccumulator = 0; // Reset accumulator
             velocityAtIntervalStart.set(0,0,0);
             return;
@@ -129,7 +130,8 @@
 		const linvel = rigidBody.linvel();
 		const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
 		const velocityLength = linvelVec.length();
-		const isVelocityVisible = showVelocityVector && velocityLength > MIN_VISIBLE_LENGTH;
+		// Read visibility from Svelte store
+		const isVelocityVisible = $fbdVisibilityStore.velocity && velocityLength > MIN_VISIBLE_LENGTH;
 		let velocityArrowTipPosition = worldPosition.clone(); // Default to world pos
 
         // --- Time-Averaged Acceleration Calculation ---
@@ -197,7 +199,8 @@
 		// --- Weight Vector (Previously Gravity) ---
 		const gravityScaleValue = rigidBody.gravityScale();
 		const weightMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
-		const isWeightVisible = showWeightVector && weightMagnitude > MIN_VISIBLE_LENGTH;
+		// Read visibility from Svelte store
+		const isWeightVisible = $fbdVisibilityStore.weight && weightMagnitude > MIN_VISIBLE_LENGTH;
 		let weightArrowTipPosition = worldPosition.clone();
 		const weightDirection = new Vector3(0, -1, 0);
         /* Scale visual length for better visibility */
@@ -231,7 +234,8 @@
 
 		// --- Acceleration Vector ---
         const accelerationLength = smoothedAcceleration.length(); // Use smoothed length
-        const isAccelerationVisible = showAccelerationVector && accelerationLength > MIN_VISIBLE_LENGTH;
+        // Read visibility from Svelte store
+        const isAccelerationVisible = $fbdVisibilityStore.acceleration && accelerationLength > MIN_VISIBLE_LENGTH;
         let accelerationArrowTipPosition = worldPosition.clone(); // Default to world pos
         let visualAccelerationLength = 0; // Initialize
 
@@ -263,7 +267,8 @@
 
         // --- Net Force Vector ---
         const netForceLength = netForce.length();
-        const isNetForceVisible = showNetForceVector && netForceLength > MIN_VISIBLE_LENGTH;
+        // Read visibility from Svelte store
+        const isNetForceVisible = $fbdVisibilityStore.netForce && netForceLength > MIN_VISIBLE_LENGTH;
         let netForceArrowTipPosition = worldPosition.clone();
         let visualNetForceLength = 0;
 
@@ -309,7 +314,8 @@
         }
 
         const normalForceLength = normalForce.length(); // Will be 0 if not grounded or weight is negligible
-        const isNormalForceVisible = showNormalForceVector && normalForceLength > MIN_VISIBLE_LENGTH && isGrounded;
+        // Read visibility from Svelte store
+        const isNormalForceVisible = $fbdVisibilityStore.normalForce && normalForceLength > MIN_VISIBLE_LENGTH && isGrounded;
         let normalForceArrowTipPosition = worldPosition.clone();
         let visualNormalForceLength = 0;
 
@@ -338,6 +344,50 @@
         normalForceBillboardPosition = isNormalForceVisible
             ? normalForceArrowTipPosition.clone().add(new Vector3(0.1 * vectorScale, 0.2 * vectorScale, 0)) // Example offset upwards
             : worldPosition.clone();
+
+        // --- Friction Force Vector ---
+        const horizontalVel = new Vector3(linvelVec.x, 0, linvelVec.z);
+        const slidingSpeedThreshold = 0.1;
+        const isSliding = isGrounded && horizontalVel.length() > slidingSpeedThreshold;
+        let frictionMagnitude = 0;
+        frictionForce.set(0, 0, 0); // Default to zero
+
+        if (isSliding && normalForceMagnitude > 1e-6) {
+            frictionMagnitude = frictionCoefficient * normalForceMagnitude;
+            const frictionDirection = horizontalVel.normalize().negate();
+            frictionForce = frictionDirection.multiplyScalar(frictionMagnitude);
+        }
+
+        const frictionForceLength = frictionForce.length();
+        // Read visibility from Svelte store
+        const isFrictionVisible = $fbdVisibilityStore.friction && frictionForceLength > MIN_VISIBLE_LENGTH && isSliding;
+        let frictionArrowTipPosition = worldPosition.clone();
+        let visualFrictionForceLength = 0;
+
+        if (frictionArrowHelperRef) {
+            frictionArrowHelperRef.position.copy(worldPosition);
+            frictionArrowHelperRef.visible = isFrictionVisible;
+            if (isFrictionVisible) {
+                const direction = frictionForce.clone().normalize();
+                 /* Scale visual length - adjust multiplier */
+                visualFrictionForceLength = frictionForceLength * 0.1 * vectorScale; // Needs scaling adjustment
+                frictionArrowHelperRef.setDirection(direction);
+                frictionArrowHelperRef.setLength(
+                    visualFrictionForceLength,
+                    visualFrictionForceLength * ARROW_HEAD_SIZE_RATIO,
+                    visualFrictionForceLength * ARROW_HEAD_WIDTH_RATIO
+                );
+                frictionArrowTipPosition = worldPosition.clone().add(direction.multiplyScalar(visualFrictionForceLength));
+            } else {
+                frictionArrowHelperRef.setLength(MIN_ARROW_LENGTH, MIN_ARROW_LENGTH * ARROW_HEAD_SIZE_RATIO, MIN_ARROW_LENGTH * ARROW_HEAD_WIDTH_RATIO);
+            }
+        }
+
+        frictionBillboardVisible = isFrictionVisible;
+        /* Offset billboard - adjust as needed */
+        frictionBillboardPosition = isFrictionVisible
+            ? frictionArrowTipPosition.clone().add(new Vector3(0, -0.2 * vectorScale, 0.1 * vectorScale)) // Example offset
+            : worldPosition.clone();
 	});
 
 </script>
@@ -353,7 +403,7 @@
 	<!-- Velocity ArrowHelper -->
 	<T.ArrowHelper
 		bind:ref={velocityArrowHelperRef}
-		dir={[0, 1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} visible={showVelocityVector} />
+		dir={[0, 1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
 
 	<!-- Velocity Text Label -->
 	<Billboard
@@ -365,7 +415,7 @@
 	<!-- Weight ArrowHelper (Previously Gravity) -->
 	<T.ArrowHelper
 		bind:ref={weightArrowHelperRef}
-		dir={[0, -1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} visible={showWeightVector} />
+		dir={[0, -1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
 
 	<!-- Weight Text Label (Previously Gravity) -->
 	<Billboard
@@ -377,7 +427,7 @@
     <!-- Acceleration ArrowHelper -->
     <T.ArrowHelper
         bind:ref={accelerationArrowHelperRef}
-        dir={[1, 0, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} visible={showAccelerationVector} />
+        dir={[1, 0, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
 
     <!-- Acceleration Text Label -->
     <Billboard
@@ -389,7 +439,7 @@
     <!-- Net Force ArrowHelper -->
     <T.ArrowHelper
         bind:ref={netForceArrowHelperRef}
-        dir={[1, 0, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} visible={showNetForceVector} />
+        dir={[1, 0, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
 
     <!-- Net Force Text Label -->
     <Billboard
@@ -401,12 +451,24 @@
     <!-- Normal Force ArrowHelper -->
     <T.ArrowHelper
         bind:ref={normalForceArrowHelperRef}
-        dir={[0, 1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} visible={showNormalForceVector} />
+        dir={[0, 1, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
 
     <!-- Normal Force Text Label -->
     <Billboard
         position={[normalForceBillboardPosition.x, normalForceBillboardPosition.y, normalForceBillboardPosition.z]}
         visible={normalForceBillboardVisible}>
         <Text text="N" font="/fonts/STIXTwoText-Regular.ttf" color="yellow" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+    </Billboard>
+
+    <!-- Friction Force ArrowHelper -->
+    <T.ArrowHelper
+        bind:ref={frictionArrowHelperRef}
+        dir={[1, 0, 0]} origin={[0, 0, 0]} length={MIN_ARROW_LENGTH} />
+
+    <!-- Friction Force Text Label -->
+    <Billboard
+        position={[frictionBillboardPosition.x, frictionBillboardPosition.y, frictionBillboardPosition.z]}
+        visible={frictionBillboardVisible}>
+        <Text text="Ff" font="/fonts/STIXTwoText-Regular.ttf" color="orange" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
     </Billboard>
 </T.Group>

@@ -4,6 +4,7 @@
 	import type { Writable } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
 	import FBDMenu from './FBDMenu.svelte';
+	import ResetButton from './ResetButton.svelte';
 
 
 	export let currentSection : Writable<string>;
@@ -20,10 +21,6 @@
 		isFullscreen = event.detail;
 	}
 
-	function handleResetClick() {
-		dispatch('resetscene');
-	}
-
 	// Reactively dispatch the modechange event whenever selectedControlMode changes
 	$: if (dispatch) {
 		dispatch('modechange', { mode: selectedControlMode });
@@ -34,7 +31,7 @@
 
 <div class="ui-container">
 	<slot />
-	<button class="reset-button" on:click={handleResetClick}>Reset</button>
+	<ResetButton on:resetscene={() => dispatch('resetscene')} />
 	<FBDMenu />
 	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>

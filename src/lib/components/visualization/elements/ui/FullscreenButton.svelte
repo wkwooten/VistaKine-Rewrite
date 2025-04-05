@@ -122,7 +122,7 @@
 		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
 		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
 		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
-
+		box-shadow: var(--shadow-sm);
 
 		&:hover {
 			/* Adjust hover if needed - maybe slightly less transparent */

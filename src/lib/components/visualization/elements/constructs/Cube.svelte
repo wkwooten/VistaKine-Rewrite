@@ -138,7 +138,11 @@
 	</RigidBody>
 
 	{#if rigidBodyRef}
-		<FBD rigidBody={rigidBodyRef} vectorScale={scale} />
+		<FBD
+			rigidBody={rigidBodyRef}
+			vectorScale={scale}
+			objectHalfHeight={scale / 2}
+		/>
 	{/if}
 
 </T.Group>
