@@ -19,6 +19,7 @@
 	export let controlMode: 'drag' | 'translate' = 'drag';
 	export let groupRef: Group | undefined = undefined;
 	export let rigidBodyRef: RapierRigidBody | undefined = undefined;
+	export let initialPosition: Vector3 = new Vector3(0, 0, 0);
 
 	const { camera, renderer, invalidate, scene } = useThrelte();
 	const mass = 1;
@@ -118,8 +119,11 @@
 
 </script>
 
-<T.Group bind:ref={groupRef}>
-	<RigidBody bind:rigidBody={rigidBodyRef} type={'dynamic'}>
+<T.Group bind:ref={groupRef} position={initialPosition.toArray()}>
+	<RigidBody
+		bind:rigidBody={rigidBodyRef}
+		type={'dynamic'}
+	>
 		<AutoColliders mass={mass} shape={'cuboid'}>
 			<T.Mesh
 				receiveShadow
@@ -132,7 +136,7 @@
 				<T.BoxGeometry args={[1, 1, 1]} />
 				<T.MeshBasicMaterial {color} />
 				<Edges color="#64B5F6" />
-				<Outlines thickness={0.1} color="#64B5F6" />
+				<!-- <Outlines thickness={0.1} color="#64B5F6" /> -->
 			</T.Mesh>
 		</AutoColliders>
 	</RigidBody>
@@ -142,6 +146,7 @@
 			rigidBody={rigidBodyRef}
 			vectorScale={scale}
 			objectHalfHeight={scale / 2}
+			initialPosition={initialPosition}
 		/>
 	{/if}
 

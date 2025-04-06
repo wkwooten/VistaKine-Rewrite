@@ -9,7 +9,7 @@
 	/** The Rapier RigidBody instance to visualize vectors for. */
 	export let rigidBody: RapierRigidBody | undefined = undefined;
 
-	/** Optional: Scale factor for the visual length of vectors. */
+	/** Scale factor for the visual length of vectors. */
 	export let vectorScale: number = .5;
 
 	/** Friction coefficient of the object's collider. */
@@ -60,11 +60,11 @@
 	let originDotVisible = false;
 
 	// --- Physics State for Calculation ---
-	let averageAcceleration = new Vector3(); // Calculated over interval
-	let smoothedAcceleration = new Vector3(); // State for smoothed value
-	let netForce = new Vector3(); // Calculated Net Force (F=ma)
-	let normalForce = new Vector3(); // Calculated Normal Force
-	let frictionForce = new Vector3(); // Calculated Friction Force
+	let averageAcceleration = new Vector3();
+	let smoothedAcceleration = new Vector3();
+	let netForce = new Vector3();
+	let normalForce = new Vector3();
+	let frictionForce = new Vector3();
 	let timeAccumulator = 0;
 	let velocityAtIntervalStart = new Vector3();
 

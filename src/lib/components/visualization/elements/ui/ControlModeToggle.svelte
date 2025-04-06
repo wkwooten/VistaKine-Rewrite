@@ -53,7 +53,6 @@
 		/* Basic button styling - adapt as needed */
 		background: var(--glass-bg-color, rgba(255, 255, 255, 0.2));
 		border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.3));
-		color: var(--text-color);
 		padding: var(--space-3xs) var(--space-2xs);
 		border-radius: var(--radius-sm);
 		cursor: pointer;

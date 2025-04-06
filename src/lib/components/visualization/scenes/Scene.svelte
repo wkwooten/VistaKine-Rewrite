@@ -17,8 +17,17 @@
 
   // State & Refs
   let controls: ThreeOrbitControls | undefined = undefined;
-  let cubeGroupRef: Group | undefined = undefined;
-	let cubeRigidBodyRef: RapierRigidBody | undefined = undefined;
+
+  // Cube Data
+  const cubeData = [
+    { id: 'cube1', position: new Vector3(0, 0, 0) },
+    { id: 'cube2', position: new Vector3(0, 0, 0) },
+    { id: 'cube3', position: new Vector3(0, 0, 0) }
+  ];
+
+  // Updated Refs for multiple cubes
+  let cubeGroupRefs: (Group | undefined)[] = Array(cubeData.length).fill(undefined);
+  let cubeRigidBodyInstances: (RapierRigidBody | undefined)[] = Array(cubeData.length).fill(undefined);
 
   // Constants
   const BOUNDS = { minX: -100, maxX: 100, minY: 2, maxY: 50, minZ: -100, maxZ: 100 };
@@ -50,19 +59,25 @@
 			controls.update();
 		}
 
-		// Reset Cube
-		if (cubeRigidBodyRef) {
-			cubeRigidBodyRef.setTranslation(defaultCubePosition, true);
-			cubeRigidBodyRef.setRotation(defaultRotation, true);
-			cubeRigidBodyRef.setLinvel({ x: 0, y: 0, z: 0 }, true);
-			cubeRigidBodyRef.setAngvel({ x: 0, y: 0, z: 0 }, true);
-			cubeRigidBodyRef.setBodyType(RigidBodyType.Dynamic, true);
-			cubeRigidBodyRef.setGravityScale(1, true);
-		}
-		if (cubeGroupRef) {
-			cubeGroupRef.position.copy(defaultCubePosition);
-			cubeGroupRef.quaternion.copy(defaultRotation);
-		}
+		// Reset Cubes
+		cubeData.forEach((cube, index) => {
+			const rigidBody = cubeRigidBodyInstances[index];
+			const groupRef = cubeGroupRefs[index];
+
+			if (rigidBody) {
+				// Restore explicit translation setting for the physics body
+				rigidBody.setTranslation(cube.position, true);
+				rigidBody.setRotation(defaultRotation, true);
+				rigidBody.setLinvel({ x: 0, y: 0, z: 0 }, true);
+				rigidBody.setAngvel({ x: 0, y: 0, z: 0 }, true);
+				rigidBody.setBodyType(RigidBodyType.Dynamic, true);
+				rigidBody.setGravityScale(1, true);
+			}
+			if (groupRef) {
+				groupRef.position.copy(cube.position);
+				groupRef.quaternion.copy(defaultRotation);
+			}
+		});
 
 		// controlMode = 'drag'; // Optional: reset control mode
 	}
@@ -84,11 +99,11 @@
 </T.PerspectiveCamera>
 
 <!-- Environment -->
-<T.Fog
+<!-- <T.Fog
   color={'#f0f8ff'}
   near={10}
   far={50}
-/>
+/> -->
 <T.AmbientLight intensity={1} />
 <T.DirectionalLight
   castShadow
@@ -107,4 +122,11 @@
 <Ground />
 
 <!-- Scene Objects -->
-<Cube bind:groupRef={cubeGroupRef} bind:rigidBodyRef={cubeRigidBodyRef} {controlMode} />
+{#each cubeData as cube, index (cube.id)}
+  <Cube
+    bind:groupRef={cubeGroupRefs[index]}
+    bind:rigidBodyRef={cubeRigidBodyInstances[index]}
+    initialPosition={cube.position}
+    {controlMode}
+  />
+{/each}

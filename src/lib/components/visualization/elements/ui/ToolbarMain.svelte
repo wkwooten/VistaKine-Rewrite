@@ -76,7 +76,7 @@
 		border: none;
 		padding: var(--space-3xs); /* Small padding */
 		margin: 0;
-		color: inherit; /* Inherit text color from toolbar */
+		color: var(--primary-color); /* Inherit text color from toolbar */
 		cursor: pointer;
 		display: inline-flex; /* Align icon nicely */
 		align-items: center;
