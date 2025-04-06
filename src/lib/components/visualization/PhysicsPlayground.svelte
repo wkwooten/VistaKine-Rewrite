@@ -41,11 +41,11 @@
 
 	<Canvas>
 		<RendererSetup />
-		<!-- <PerfMonitor domElement={containerElement} /> -->
 		<World>
 			<!-- <Debug /> -->
 			<slot />
 		</World>
+		<PerfMonitor domElement={containerElement}   anchorX={'right'} anchorY={'top'}/>
 	</Canvas>
 </div>
 

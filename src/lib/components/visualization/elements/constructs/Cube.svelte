@@ -10,7 +10,7 @@
 	import { writable, get } from 'svelte/store';
 	import { onMount, onDestroy } from 'svelte';
 	/* Removed ArrowHelper, Color */
-	import { Vector3, Group, type Camera, type WebGLRenderer, MeshBasicMaterial } from 'three';
+	import { Vector3, Group, type Camera, type WebGLRenderer, MeshBasicMaterial, Quaternion } from 'three';
 	/* Import the new FBD component */
 	import FBD from '$lib/components/visualization/helpers/FBD.svelte';
 
@@ -19,7 +19,7 @@
 	export let controlMode: 'drag' | 'translate' = 'drag';
 	export let groupRef: Group | undefined = undefined;
 	export let rigidBodyRef: RapierRigidBody | undefined = undefined;
-	export let initialPosition: Vector3 = new Vector3(0, 0, 0);
+	export let initialPosition: Vector3 = new Vector3(0, 0.5, 0);
 
 	const { camera, renderer, invalidate, scene } = useThrelte();
 	const mass = 1;
@@ -100,6 +100,13 @@
 	// $: if (velocityArrowHelperRef) velocityArrowHelperRef.setColor(new Color('red'));
 	// $: if (gravityArrowHelperRef) gravityArrowHelperRef.setColor(new Color('green'));
 
+	// --- Sync Physics Body to Visual Group ---
+	useTask(() => {
+	  if (rigidBodyRef && groupRef) {
+	    groupRef.position.copy(rigidBodyRef.translation() as Vector3);
+	    groupRef.quaternion.copy(rigidBodyRef.rotation() as Quaternion);
+	  }
+	});
 
 	onMount(() => {
 		console.log('[Cube.svelte] Component Mounted.');
@@ -146,7 +153,6 @@
 			rigidBody={rigidBodyRef}
 			vectorScale={scale}
 			objectHalfHeight={scale / 2}
-			initialPosition={initialPosition}
 		/>
 	{/if}
 

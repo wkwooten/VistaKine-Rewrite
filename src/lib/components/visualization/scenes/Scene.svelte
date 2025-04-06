@@ -20,9 +20,9 @@
 
   // Cube Data
   const cubeData = [
-    { id: 'cube1', position: new Vector3(0, 0, 0) },
-    { id: 'cube2', position: new Vector3(0, 0, 0) },
-    { id: 'cube3', position: new Vector3(0, 0, 0) }
+    { id: 'cube1', position: new Vector3(0, 0.5, 0) },
+    { id: 'cube2', position: new Vector3(2, 0.5, 2) },
+    { id: 'cube3', position: new Vector3(-2, 0.5, 0) }
   ];
 
   // Updated Refs for multiple cubes
