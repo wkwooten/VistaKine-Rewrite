@@ -13,6 +13,8 @@
 	import { Vector3, Group, type Camera, type WebGLRenderer, MeshBasicMaterial, Quaternion } from 'three';
 	/* Import the new FBD component */
 	import FBD from '$lib/components/visualization/helpers/FBD.svelte';
+	import { selectedObject } from '$lib/stores/selectedObjectStore';
+	import { followedObject } from '$lib/stores/followedObjectStore';
 
 	export let color: string = '#ffffff';
 	export let scale: number = 1;
@@ -24,6 +26,9 @@
 	const { camera, renderer, invalidate, scene } = useThrelte();
 	const mass = 1;
 
+	let isHovering = false;
+	let isSelected = false;
+
 	const writableScale = writable(scale);
 	const writableControlMode = writable(controlMode);
     const writableCamera = writable<Camera | undefined>(undefined);
@@ -33,6 +38,9 @@
 	$: writableControlMode.set(controlMode);
 	$: writableCamera.set($camera);
     $: writableRenderer.set(renderer);
+
+	$: isSelected = $selectedObject === groupRef;
+	$: console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] isSelected check:`, isSelected, '$selectedObject:', $selectedObject, 'groupRef:', groupRef);
 
 	$: if (rigidBodyRef) console.log('[Cube.svelte] Reactive: rigidBodyRef prop updated:', rigidBodyRef);
 
@@ -46,15 +54,6 @@
 		scale: writableScale,
 		controlMode: writableControlMode
 	});
-
-	/* Remove state related to arrows/billboards */
-	// let velocityArrowHelperRef: ArrowHelper | undefined = undefined;
-	// let gravityArrowHelperRef: ArrowHelper | undefined = undefined;
-	// const GRAVITY_CONSTANT = 9.81;
-	// let velocityBillboardPosition = new Vector3();
-	// let velocityBillboardVisible = false;
-	// let gravityBillboardPosition = new Vector3();
-	// let gravityBillboardVisible = false;
 
 	let previousRigidBodyTypeStore: RigidBodyType = RigidBodyType.Dynamic;
 	let previousGravityScaleStore: number = 1;
@@ -96,11 +95,6 @@
 		}
 	}
 
-	/* Remove reactive statements for arrow colors */
-	// $: if (velocityArrowHelperRef) velocityArrowHelperRef.setColor(new Color('red'));
-	// $: if (gravityArrowHelperRef) gravityArrowHelperRef.setColor(new Color('green'));
-
-	// --- Sync Physics Body to Visual Group ---
 	useTask(() => {
 	  if (rigidBodyRef && groupRef) {
 	    groupRef.position.copy(rigidBodyRef.translation() as Vector3);
@@ -116,13 +110,52 @@
         writableRenderer.set(renderer);
 	});
 
-	/* Remove useTask for arrows/billboards */
-	// useTask(() => { ... });
+	// --- Modified Event Handlers ---
+	const originalHandlePointerEnter = handlePointerEnter;
+	const originalHandlePointerLeave = handlePointerLeave;
 
-	const handleClick = (e: any) => {
+	const handlePointerEnterModified = (e: any) => {
+		// ---> REMOVE MODE CHECK: Always show hover outline when not dragging
+		if (!$isDraggingStore) {
+			isHovering = true;
+		} else {
+            isHovering = false;
+        }
+		originalHandlePointerEnter(e); // Call original drag handler logic for cursor
+	};
+
+	const handlePointerLeaveModified = (e: any) => {
+		// Always remove hover outline on leave
+		isHovering = false;
+		originalHandlePointerLeave(e); // Call original drag handler logic for cursor
+	};
+
+	// Threshold to distinguish click from drag (in pixels)
+	const CLICK_VS_DRAG_THRESHOLD = 5;
+
+	// Handler for double click
+	const handleDoubleClick = (e: any) => {
 		e.stopPropagation();
-		console.log('[Cube.svelte using Box syntax] TEMPLATE Click Event Triggered', e.intersections);
-	}
+		// Check delta to ensure it wasn't an accidental drag ending in double click
+		const deltaX = Array.isArray(e.delta) ? e.delta[0] : (e.delta?.x ?? 0);
+		const deltaY = Array.isArray(e.delta) ? e.delta[1] : (e.delta?.y ?? 0);
+		const moveDelta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+		console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Double Click Event Triggered. Move delta: ${moveDelta}`);
+
+		if (moveDelta > CLICK_VS_DRAG_THRESHOLD) {
+			console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Double Click ignored, likely end of drag.`);
+			return;
+		}
+
+		// Toggle following this object
+		if (get(followedObject) === groupRef) {
+			followedObject.set(null); // Unfollow if already following
+			console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Unfollowed. Store value:`, get(followedObject));
+		} else {
+			followedObject.set(groupRef ?? null); // Follow this cube
+			console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Followed. Store value:`, get(followedObject));
+		}
+	};
 
 </script>
 
@@ -136,14 +169,42 @@
 				receiveShadow
 				{scale}
 				onpointerdown={handlePointerDown}
-				onpointerenter={handlePointerEnter}
-				onpointerleave={handlePointerLeave}
-				onclick={handleClick}
+				onpointerenter={handlePointerEnterModified}
+				onpointerleave={handlePointerLeaveModified}
+				onclick={(e) => {
+					e.stopPropagation();
+					// ---> REMOVE MODE CHECK
+
+					// Use event delta to differentiate click from drag
+                    console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Raw delta:`, e.delta);
+					const deltaX = Array.isArray(e.delta) ? e.delta[0] : (e.delta?.x ?? 0);
+                    const deltaY = Array.isArray(e.delta) ? e.delta[1] : (e.delta?.y ?? 0);
+                    const moveDelta = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+					console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Click Event Triggered. Move delta: ${moveDelta}`);
+
+					// If mouse moved significantly, assume it was a drag, not a click
+					if (moveDelta > CLICK_VS_DRAG_THRESHOLD) {
+						console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Click ignored, likely end of drag.`);
+						return;
+					}
+
+					// Proceed with selection logic
+					if ($selectedObject === groupRef) {
+						selectedObject.set(null); // Deselect
+						console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Deselected. Store value after set:`, get(selectedObject));
+					} else {
+						selectedObject.set(groupRef ?? null); // Select
+						console.log(`[Cube.svelte ${initialPosition.toArray().join(',')}] Selected. Store value after set:`, get(selectedObject));
+					}
+				}}
+				ondblclick={handleDoubleClick}
 			>
 				<T.BoxGeometry args={[1, 1, 1]} />
 				<T.MeshBasicMaterial {color} />
 				<Edges color="#64B5F6" />
-				<!-- <Outlines thickness={0.1} color="#64B5F6" /> -->
+				{#if isSelected || isHovering}
+					<Outlines thickness={0.1} color="#64B5F6" />
+				{/if}
 			</T.Mesh>
 		</AutoColliders>
 	</RigidBody>

@@ -4,6 +4,8 @@ import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
 
 // Constants
 const dragStiffness = 20; // Stiffness factor for drag velocity
+const MAX_DRAG_SPEED = 40; // Maximum speed during drag
+const DRAG_DEPTH_SENSITIVITY = 5; // How much vertical mouse movement affects depth (Reduced from 15)
 
 export function createDraggableHandlers(options: {
 	getRigidBody: () => RapierRigidBody | undefined;
@@ -21,6 +23,7 @@ export function createDraggableHandlers(options: {
 	let originalGravityScale: number | undefined = undefined;
 	let originalLinearDamping: number | undefined = undefined;
 	let isDraggingLocally = false; // Local flag to manage listener attachment/detachment
+	let initialPointerY_NDC: number | null = null; // Store initial Y for depth adjustment
 
 
 	// Handler for pointer move (global listener)
@@ -29,14 +32,12 @@ export function createDraggableHandlers(options: {
         const currentCamera = get(camera);
         const currentRigidBody = getRigidBody();
 
-		console.log('[draggable.ts] handlePointerMove Triggered. isDraggingLocally:', isDraggingLocally); // Log entry
-
 		if (!isDraggingLocally || !currentCamera || !currentRenderer || !currentRigidBody) {
-			console.log('[draggable.ts] handlePointerMove: Aborting - Drag not active or refs missing.'); // Log entry
 			return;
 		}
 
 		const { width, height, left, top } = currentRenderer.domElement.getBoundingClientRect();
+		console.log('[Draggable Debug] NDC Calculation Input:', { clientY: event.clientY, top, height }); // Log inputs
 		const x = ((event.clientX - left) / width) * 2 - 1;
 		const y = -((event.clientY - top) / height) * 2 + 1;
 		const pointerCoordsVec2 = new Vector2(x, y);
@@ -44,9 +45,19 @@ export function createDraggableHandlers(options: {
 		const raycaster = new Raycaster();
 		raycaster.setFromCamera(pointerCoordsVec2, currentCamera);
 
-		const intersectionPoint = new Vector3();
-		if (raycaster.ray.intersectPlane(dragPlane, intersectionPoint)) {
-			const targetPosition = intersectionPoint.sub(dragOffset);
+		const planeIntersectionPoint = new Vector3(); // Intersection with the original plane
+		if (initialPointerY_NDC !== null && raycaster.ray.intersectPlane(dragPlane, planeIntersectionPoint)) {
+			// 1. Calculate base target position on the original plane
+			const planeTargetPosition = planeIntersectionPoint.clone().sub(dragOffset);
+
+			// 2. Calculate depth offset based on vertical mouse movement
+			const deltaY_NDC = pointerCoordsVec2.y - initialPointerY_NDC;
+			const cameraDirection = new Vector3();
+			currentCamera.getWorldDirection(cameraDirection);
+			const depthOffsetVector = cameraDirection.clone().multiplyScalar(deltaY_NDC * DRAG_DEPTH_SENSITIVITY);
+
+			// 3. Combine planar position and depth offset
+			const targetPosition = planeTargetPosition.add(depthOffsetVector);
 
 			// Re-enable Y position clamping on the target position
             const currentScale = get(scale);
@@ -61,6 +72,10 @@ export function createDraggableHandlers(options: {
 				.sub(currentPosition)
 				.multiplyScalar(dragStiffness); // Use constant
 
+			const velocityBeforeClamp = velocity.clone();
+			// Clamp velocity to the maximum speed
+			velocity.clampLength(0, MAX_DRAG_SPEED);
+
 			currentRigidBody.setLinvel(velocity, true);
 		}
 	};
@@ -70,10 +85,7 @@ export function createDraggableHandlers(options: {
         const currentRigidBody = getRigidBody();
         const currentRenderer = get(renderer);
 
-		console.log('[draggable.ts] handlePointerUp Triggered. isDraggingLocally:', isDraggingLocally); // Log entry
-
 		if (!isDraggingLocally || !currentRigidBody || !currentRenderer) {
-			console.log('[draggable.ts] handlePointerUp: Aborting - Drag not active or refs missing.'); // Log entry
 			return;
 		}
 
@@ -89,6 +101,7 @@ export function createDraggableHandlers(options: {
 		}
 
 		// Keep current velocity to allow throwing
+		initialPointerY_NDC = null; // Reset initial Y
 
 		// Restore damping AFTER potential velocity is kept
 		if (originalLinearDamping !== undefined) {
@@ -169,6 +182,14 @@ export function createDraggableHandlers(options: {
 		currentCamera.getWorldDirection(cameraDirection);
 		dragPlane.setFromNormalAndCoplanarPoint(cameraDirection, intersectionPoint);
 		console.log('[draggable.ts] Calculated drag plane and offset.'); // Log entry
+
+		// Store initial pointer Y in NDC for depth calculation
+		const { height, top } = currentRenderer.domElement.getBoundingClientRect();
+		initialPointerY_NDC = -((event.clientY - top) / height) * 2 + 1;
+		const clientY = event.nativeEvent?.clientY; // Access clientY via nativeEvent
+		initialPointerY_NDC = -((clientY - top) / height) * 2 + 1;
+		console.log('[Draggable Debug] PointerDown NDC Calculation Input:', { clientY, top, height }); // Updated log
+		console.log('[Draggable Debug] Calculated initialPointerY_NDC:', initialPointerY_NDC);
 
 		const intersectionOnPlane = new Vector3();
 		if (event.ray) {

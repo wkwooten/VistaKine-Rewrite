@@ -375,7 +375,7 @@
 	<!-- Origin Dot (always at local 0,0,0) -->
 	<T.Mesh visible={originDotVisible}>
 		<T.SphereGeometry args={[0.05 * vectorScale, 8, 8]} />
-		<T.MeshBasicMaterial color="black" depthTest={false} />
+		<T.MeshBasicMaterial color="#3b82f6" depthTest={false} />
 	</T.Mesh>
 
 	<!-- Axes (always at local 0,0,0) -->
