@@ -9,10 +9,10 @@
 	import { createDraggableHandlers } from '$lib/actions/draggable';
 	import { writable, get } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import { Vector3, Group, type Camera, type WebGLRenderer, type Mesh, MeshStandardMaterial } from 'three';
+	import { Vector3, Group, type Camera, type WebGLRenderer, type Mesh, MeshStandardMaterial, Quaternion } from 'three';
 	import FBD from '$lib/components/visualization/helpers/FBD.svelte';
 
-	export let scale: number = .25;
+	export let scale: number = 1;
 	export let controlMode: 'drag' | 'translate' = 'drag';
 	export let groupRef: Group | undefined = undefined;
 	export let rigidBodyRef: RapierRigidBody | undefined = undefined;
@@ -41,8 +41,6 @@
 	$: writableControlMode.set(controlMode);
 	$: writableCamera.set($camera);
     $: writableRenderer.set(renderer);
-
-	$: if (rigidBodyRef) console.log('[Skateboard.svelte] Reactive: rigidBodyRef prop updated:', rigidBodyRef);
 
 	const { handlePointerDown, handlePointerEnter, handlePointerLeave } = createDraggableHandlers({
 		getRigidBody: () => rigidBodyRef,
@@ -89,6 +87,13 @@
 		}
 	}
 
+	useTask(() => {
+	  if (rigidBodyRef && groupRef) {
+	    groupRef.position.copy(rigidBodyRef.translation() as Vector3);
+	    groupRef.quaternion.copy(rigidBodyRef.rotation() as Quaternion);
+	  }
+	});
+
 	onMount(() => {
 		console.log('[Skateboard.svelte] Component Mounted.');
         writableCamera.set($camera);
@@ -112,7 +117,10 @@
 {/snippet}
 
 <Suspense {fallback}>
-	<T.Group bind:ref={groupRef} position={initialPosition.toArray()}>
+	<T.Group
+		bind:ref={groupRef}
+		position={initialPosition.toArray()}
+	>
 		{#if $gltf?.nodes?.Skateboard_Mesh && $gltf?.materials?.Skateboard_Mat}
 			<RigidBody bind:rigidBody={rigidBodyRef} type={'dynamic'}>
 				<AutoColliders mass={mass} shape={'trimesh'}>
@@ -122,10 +130,10 @@
 						scale={scale}
 						castShadow
 						receiveShadow
-						on:pointerdown={handlePointerDown}
-						on:pointerenter={handlePointerEnter}
-						on:pointerleave={handlePointerLeave}
-						on:click={handleClick}
+						onpointerdown={handlePointerDown}
+						onpointerenter={handlePointerEnter}
+						onpointerleave={handlePointerLeave}
+						onclick={handleClick}
 					/>
 				</AutoColliders>
 			</RigidBody>
@@ -135,7 +143,7 @@
 			<FBD
 				rigidBody={rigidBodyRef}
 				vectorScale={scale}
-				objectHalfHeight={scale / 2}
+				objectHalfHeight={scale}
 			/>
 		{/if}
 	</T.Group>

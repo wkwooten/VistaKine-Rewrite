@@ -10,7 +10,7 @@
 	import { writable, get } from 'svelte/store';
 	import { onMount, onDestroy } from 'svelte';
 	/* Removed ArrowHelper, Color */
-	import { Vector3, Group, type Camera, type WebGLRenderer, MeshBasicMaterial, Quaternion } from 'three';
+	import { Vector3, Group, type Camera, type WebGLRenderer, Quaternion } from 'three';
 	/* Import the new FBD component */
 	import FBD from '$lib/components/visualization/helpers/FBD.svelte';
 	import { selectedObject } from '$lib/stores/selectedObjectStore';

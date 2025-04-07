@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { T, useTask } from '@threlte/core';
+	import { useRapier } from '@threlte/rapier';
 	import { Billboard, Text } from '@threlte/extras';
 	import { Vector3, ArrowHelper, Color, LineBasicMaterial, MeshBasicMaterial, SphereGeometry, BufferGeometry, Float32BufferAttribute, LineSegments, LineDashedMaterial, Group, Quaternion } from 'three';
 	import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat';
@@ -7,7 +8,7 @@
 	import { isFBDMenuOpen } from '$lib/stores/uiStores';
 
 	/** The Rapier RigidBody instance to visualize vectors for. */
-	export let rigidBody: RapierRigidBody | undefined = undefined;
+	export let rigidBody: { handle: number; /* ... other known props */ } | undefined = undefined;
 
 	/** Optional: Scale factor for the visual length of vectors. */
 	export let vectorScale: number = .5;
@@ -31,6 +32,7 @@
 	let zAxisRef: LineSegments | undefined = undefined;
 	// --- Ref for FBD root group ---
 	let fbdGroupRef: Group | undefined = undefined;
+	let internalFbdOriginGroupRef: Group | undefined = undefined; // Ref for the new inner group
 
 	// --- Constants ---
 	const GRAVITY_CONSTANT = 9.81;
@@ -127,46 +129,82 @@
 		}
 	}
 
+	// --- Get Rapier Context ---
+	const ctx = useRapier();
+
 	// --- Update Task ---
 	useTask((delta: number) => {
-		if (!rigidBody) {
-            // Hide everything if rigidBody is not available
-            if(velocityArrowHelperRef) velocityArrowHelperRef.visible = false;
-            if(weightArrowHelperRef) weightArrowHelperRef.visible = false;
-            if(accelerationArrowHelperRef) accelerationArrowHelperRef.visible = false;
-            if(netForceArrowHelperRef) netForceArrowHelperRef.visible = false;
-            if(normalForceArrowHelperRef) normalForceArrowHelperRef.visible = false;
-            if(frictionArrowHelperRef) frictionArrowHelperRef.visible = false;
-            velocityBillboardVisible = false;
-            weightBillboardVisible = false;
-            accelerationBillboardVisible = false;
-            netForceBillboardVisible = false;
-            normalForceBillboardVisible = false;
-            frictionBillboardVisible = false;
-            originDotVisible = false; // Hide dot
+		if (!rigidBody || !ctx.world) {
+			// Hide everything if rigidBody is not available
+			if(velocityArrowHelperRef) velocityArrowHelperRef.visible = false;
+			if(weightArrowHelperRef) weightArrowHelperRef.visible = false;
+			if(accelerationArrowHelperRef) accelerationArrowHelperRef.visible = false;
+			if(netForceArrowHelperRef) netForceArrowHelperRef.visible = false;
+			if(normalForceArrowHelperRef) normalForceArrowHelperRef.visible = false;
+			if(frictionArrowHelperRef) frictionArrowHelperRef.visible = false;
+			velocityBillboardVisible = false;
+			weightBillboardVisible = false;
+			accelerationBillboardVisible = false;
+			netForceBillboardVisible = false;
+			normalForceBillboardVisible = false;
+			frictionBillboardVisible = false;
+			originDotVisible = false; // Hide dot
 			// Hide axes if no rigid body
-            if(xAxisRef) xAxisRef.visible = false;
-            if(yAxisRef) yAxisRef.visible = false;
-            if(zAxisRef) zAxisRef.visible = false;
+			if(xAxisRef) xAxisRef.visible = false;
+			if(yAxisRef) yAxisRef.visible = false;
+			if(zAxisRef) zAxisRef.visible = false;
 
-            averageAcceleration.set(0,0,0);
-            smoothedAcceleration.set(0,0,0); // Reset smoothed acceleration
-            netForce.set(0,0,0); // Reset net force
-            normalForce.set(0,0,0); // Reset normal force
-            frictionForce.set(0,0,0); // Reset friction force
-            timeAccumulator = 0; // Reset accumulator
-            velocityAtIntervalStart.set(0,0,0);
-            return;
-        };
+			averageAcceleration.set(0,0,0);
+			smoothedAcceleration.set(0,0,0); // Reset smoothed acceleration
+			netForce.set(0,0,0); // Reset net force
+			normalForce.set(0,0,0); // Reset normal force
+			frictionForce.set(0,0,0); // Reset friction force
+			timeAccumulator = 0; // Reset accumulator
+			velocityAtIntervalStart.set(0,0,0);
+			if(internalFbdOriginGroupRef) internalFbdOriginGroupRef.position.set(0,0,0); // Reset inner group position
+			return;
+		};
 
-    // --- Counteract Parent Rotation ---
-    if (fbdGroupRef?.parent) {
-        const parentWorldQuaternion = fbdGroupRef.parent.getWorldQuaternion(new Quaternion());
-        fbdGroupRef.quaternion.copy(parentWorldQuaternion.invert());
-    } else if (fbdGroupRef) {
-        // Reset rotation if parent is somehow lost
-        fbdGroupRef.quaternion.identity();
-    }
+		// --- Get the FULL RigidBody API object using the handle ---
+		const fullBody = ctx.world.getRigidBody(rigidBody.handle);
+
+		// --- Remove Debugging Logs ---
+		// console.log("[FBD] Handle used:", rigidBody.handle);
+		if (!fullBody) {
+			// console.error("[FBD] world.getRigidBody returned null/undefined for handle!");
+			if(internalFbdOriginGroupRef) internalFbdOriginGroupRef.position.set(0,0,0);
+			return;
+		}
+		// else {
+		// 	console.log("[FBD] Retrieved fullBody:", fullBody);
+		// 	console.log("[FBD] Keys on fullBody:", Object.keys(fullBody));
+		// }
+		// --- End Remove Debugging Logs ---
+
+		// --- Now use fullBody for all API calls ---
+
+		// --- Get Center of Mass using localCom ---
+		let comVec = new Vector3(0, 0, 0);
+		if (typeof fullBody.localCom === 'function') {
+			const com = (fullBody as any).localCom();
+			comVec.set(com.x, com.y, com.z);
+			// console.log("[FBD] Successfully got localCom:", comVec);
+		} else {
+			// console.error("[FBD] localCom method not found on fullBody!", fullBody);
+		}
+		// --- Position the INNER group at the COM ---
+		if (internalFbdOriginGroupRef) {
+			internalFbdOriginGroupRef.position.copy(comVec);
+		}
+
+		// --- Counteract Parent Rotation (for the OUTER group) ---
+		if (fbdGroupRef?.parent) {
+			const parentWorldQuaternion = fbdGroupRef.parent.getWorldQuaternion(new Quaternion());
+			fbdGroupRef.quaternion.copy(parentWorldQuaternion.invert());
+		} else if (fbdGroupRef) {
+			// Reset rotation if parent is somehow lost
+			fbdGroupRef.quaternion.identity();
+		}
 
 		// --- Position Origin Dot and Axes Locally (at 0,0,0) ---
 		originDotVisible = $isFBDMenuOpen; // Visibility only
@@ -174,11 +212,11 @@
 		if (yAxisRef) yAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes; // Visibility only
 		if (zAxisRef) zAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes; // Visibility only
 
-		// --- Calculate Physics Vectors ---
-		const linvel = rigidBody.linvel();
+		// --- Calculate Physics Vectors using fullBody ---
+		const linvel = fullBody.linvel(); // Use fullBody
 		const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
-		const mass = rigidBody.mass();
-		const gravityScaleValue = rigidBody.gravityScale();
+		const mass = fullBody.mass(); // Use fullBody
+		const gravityScaleValue = fullBody.gravityScale(); // Use fullBody
 
 		// Acceleration averaging
 		timeAccumulator += delta;
@@ -194,7 +232,7 @@
 		netForce = mass > 1e-6 ? smoothedAcceleration.clone().multiplyScalar(mass) : new Vector3();
 
 		// --- Calculate Normal & Friction (Requires World Position for Ground Check) ---
-		const worldPosition = new Vector3().copy(rigidBody.translation() as Vector3);
+		const worldPosition = new Vector3().copy(fullBody.translation() as Vector3); // Use fullBody
 		const groundContactY = objectHalfHeight;
 		const verticalVelocityThreshold = 0.1;
 		const groundContactThreshold = 0.05;
@@ -219,11 +257,15 @@
 			frictionForce = frictionDirection.multiplyScalar(frictionMagnitude);
 		}
 
-		// --- Update Velocity Vector (Locally) ---
+		// --- Update All Vector Helpers using calculated values & fullBody methods ---
+		// (Velocity, Weight, Acceleration, Net Force, Normal Force, Friction)
+		// Ensure all direct calls like .setDirection, .setLength are still valid
+		// Billboard offsets calculated relative to COM remain the same conceptually
+
+		// --- Update Velocity Vector (Locally relative to COM) ---
 		const velocityLength = linvelVec.length();
 		const isVelocityVisible = $fbdVisibilityStore.velocity && velocityLength > MIN_VISIBLE_LENGTH;
 		let velocityArrowTipLocal = new Vector3();
-
 		if (velocityArrowHelperRef) {
 			velocityArrowHelperRef.visible = isVelocityVisible;
 			if (isVelocityVisible) {
@@ -231,25 +273,23 @@
 				const visualLength = velocityLength * 0.5 * vectorScale;
 				velocityArrowHelperRef.setDirection(direction);
 				velocityArrowHelperRef.setLength(visualLength, visualLength * ARROW_HEAD_SIZE_RATIO, visualLength * ARROW_HEAD_WIDTH_RATIO);
-				velocityArrowTipLocal = direction.multiplyScalar(visualLength); // Calculate LOCAL tip
+				velocityArrowTipLocal = direction.multiplyScalar(visualLength);
 			} else {
 				velocityArrowHelperRef.setLength(MIN_ARROW_LENGTH, MIN_ARROW_LENGTH * ARROW_HEAD_SIZE_RATIO, MIN_ARROW_LENGTH * ARROW_HEAD_WIDTH_RATIO);
-                velocityArrowTipLocal.set(0,0,0); // Reset local tip if not visible
+                velocityArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		velocityBillboardVisible = isVelocityVisible;
 		velocityBillboardLocalOffset = isVelocityVisible
 			? velocityArrowTipLocal.clone().add(new Vector3(0, 0.2 * vectorScale, 0))
-			: new Vector3(); // Default to local origin if hidden
+			: new Vector3();
 
-		// --- Update Weight Vector (Locally) ---
+		// --- Update Weight Vector (Locally relative to COM) ---
 		const weightMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
 		const isWeightVisible = $fbdVisibilityStore.weight && weightMagnitude > MIN_VISIBLE_LENGTH;
 		let weightArrowTipLocal = new Vector3();
 		const weightDirection = new Vector3(0, -1, 0);
 		const visualWeightLength = weightMagnitude * 0.1 * vectorScale;
-
 		if (weightArrowHelperRef) {
 			weightArrowHelperRef.visible = isWeightVisible && visualWeightLength > 0;
 			if (isWeightVisible && visualWeightLength > 0) {
@@ -261,18 +301,16 @@
                 weightArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		weightBillboardVisible = weightArrowHelperRef?.visible ?? false;
 		weightBillboardLocalOffset = isWeightVisible && visualWeightLength > 0
         	? weightArrowTipLocal.clone().add(new Vector3(0, -0.2 * vectorScale, 0))
             : new Vector3();
 
-		// --- Update Acceleration Vector (Locally) ---
+		// --- Update Acceleration Vector (Locally relative to COM) ---
 		const accelerationLength = smoothedAcceleration.length();
 		const isAccelerationVisible = $fbdVisibilityStore.acceleration && accelerationLength > MIN_VISIBLE_LENGTH;
 		let accelerationArrowTipLocal = new Vector3();
 		let visualAccelerationLength = 0;
-
 		if (accelerationArrowHelperRef) {
 			accelerationArrowHelperRef.visible = isAccelerationVisible;
 			if (isAccelerationVisible) {
@@ -286,18 +324,16 @@
                 accelerationArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		accelerationBillboardVisible = isAccelerationVisible;
 		accelerationBillboardLocalOffset = isAccelerationVisible
 			? accelerationArrowTipLocal.clone().add(new Vector3(0.1 * vectorScale, 0.1 * vectorScale, 0))
 			: new Vector3();
 
-		// --- Update Net Force Vector (Locally) ---
+		// --- Update Net Force Vector (Locally relative to COM) ---
 		const netForceLength = netForce.length();
 		const isNetForceVisible = $fbdVisibilityStore.netForce && netForceLength > MIN_VISIBLE_LENGTH;
 		let netForceArrowTipLocal = new Vector3();
 		let visualNetForceLength = 0;
-
 		if (netForceArrowHelperRef) {
 			netForceArrowHelperRef.visible = isNetForceVisible;
 			if (isNetForceVisible) {
@@ -311,18 +347,16 @@
                 netForceArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		netForceBillboardVisible = isNetForceVisible;
 		netForceBillboardLocalOffset = isNetForceVisible
 			? netForceArrowTipLocal.clone().add(new Vector3(-0.1 * vectorScale, -0.1 * vectorScale, 0))
 			: new Vector3();
 
-		// --- Update Normal Force Vector (Locally) ---
+		// --- Update Normal Force Vector (Locally relative to COM) ---
 		const normalForceLength = normalForce.length();
 		const isNormalForceVisible = $fbdVisibilityStore.normalForce && normalForceLength > MIN_VISIBLE_LENGTH && isGrounded;
 		let normalForceArrowTipLocal = new Vector3();
 		let visualNormalForceLength = 0;
-
 		if (normalForceArrowHelperRef) {
 			normalForceArrowHelperRef.visible = isNormalForceVisible;
 			if (isNormalForceVisible) {
@@ -336,18 +370,16 @@
                 normalForceArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		normalForceBillboardVisible = isNormalForceVisible;
 		normalForceBillboardLocalOffset = isNormalForceVisible
 			? normalForceArrowTipLocal.clone().add(new Vector3(0.1 * vectorScale, 0.2 * vectorScale, 0))
 			: new Vector3();
 
-		// --- Update Friction Force Vector (Locally) ---
+		// --- Update Friction Force Vector (Locally relative to COM) ---
 		const frictionForceLength = frictionForce.length();
 		const isFrictionVisible = $fbdVisibilityStore.friction && frictionForceLength > MIN_VISIBLE_LENGTH && isSliding;
 		let frictionArrowTipLocal = new Vector3();
 		let visualFrictionForceLength = 0;
-
 		if (frictionArrowHelperRef) {
 			frictionArrowHelperRef.visible = isFrictionVisible;
 			if (isFrictionVisible) {
@@ -361,7 +393,6 @@
                 frictionArrowTipLocal.set(0,0,0);
 			}
 		}
-
 		frictionBillboardVisible = isFrictionVisible;
 		frictionBillboardLocalOffset = isFrictionVisible
 			? frictionArrowTipLocal.clone().add(new Vector3(0, -0.2 * vectorScale, 0.1 * vectorScale))
@@ -370,76 +401,61 @@
 
 </script>
 
-<!-- Render Arrows and Billboards -->
+<!-- OUTER group is positioned at RB Origin by parent -->
 <T.Group bind:ref={fbdGroupRef}>
-	<!-- Origin Dot (always at local 0,0,0) -->
+	<!-- Origin Dot & Axes remain at RB Origin -->
 	<T.Mesh visible={originDotVisible}>
 		<T.SphereGeometry args={[0.05 * vectorScale, 8, 8]} />
 		<T.MeshBasicMaterial color="#3b82f6" depthTest={false} />
 	</T.Mesh>
-
-	<!-- Axes (always at local 0,0,0) -->
 	<T.LineSegments bind:ref={xAxisRef} geometry={xAxisGeometry} material={xAxisMaterial} />
 	<T.LineSegments bind:ref={yAxisRef} geometry={yAxisGeometry} material={yAxisMaterial} />
 	<T.LineSegments bind:ref={zAxisRef} geometry={zAxisGeometry} material={zAxisMaterial} />
 
-	<!-- Velocity ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={velocityArrowHelperRef} dir={[0, 1, 0]} length={MIN_ARROW_LENGTH} />
 
-	<!-- Velocity Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={velocityBillboardLocalOffset.toArray()}
-		visible={velocityBillboardVisible}>
-		<Text text="v" font="/fonts/STIXTwoText-Regular.ttf" color="red" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
+	<!-- INNER group positioned at COM relative to RB Origin -->
+	<T.Group bind:ref={internalFbdOriginGroupRef}>
+		<!-- Velocity ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={velocityArrowHelperRef} dir={[0, 1, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Velocity Text Label (position is relative to COM) -->
+		<Billboard position={velocityBillboardLocalOffset.toArray()} visible={velocityBillboardVisible}>
+			<Text text="v" font="/fonts/STIXTwoText-Regular.ttf" color="red" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Weight ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={weightArrowHelperRef} dir={[0, -1, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Weight ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={weightArrowHelperRef} dir={[0, -1, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Weight Text Label (position is relative to COM) -->
+		<Billboard position={weightBillboardLocalOffset.toArray()} visible={weightBillboardVisible}>
+			<Text text="W" font="/fonts/STIXTwoText-Regular.ttf" color="green" fontSize={0.75 * vectorScale} direction='ltr' outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Weight Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={weightBillboardLocalOffset.toArray()}
-		visible={weightBillboardVisible}>
-		<Text text="W" font="/fonts/STIXTwoText-Regular.ttf" color="green" fontSize={0.75 * vectorScale} direction='ltr' outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
+		<!-- Acceleration ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={accelerationArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Acceleration Text Label (position is relative to COM) -->
+		<Billboard position={accelerationBillboardLocalOffset.toArray()} visible={accelerationBillboardVisible}>
+			<Text text="a" font="/fonts/STIXTwoText-Regular.ttf" color="blue" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Acceleration ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={accelerationArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Net Force ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={netForceArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Net Force Text Label (position is relative to COM) -->
+		<Billboard position={netForceBillboardLocalOffset.toArray()} visible={netForceBillboardVisible}>
+			<Text text="ΣF" font="/fonts/STIXTwoText-Regular.ttf" color="magenta" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Acceleration Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={accelerationBillboardLocalOffset.toArray()}
-		visible={accelerationBillboardVisible}>
-		<Text text="a" font="/fonts/STIXTwoText-Regular.ttf" color="blue" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
+		<!-- Normal Force ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={normalForceArrowHelperRef} dir={[0, 1, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Normal Force Text Label (position is relative to COM) -->
+		<Billboard position={normalForceBillboardLocalOffset.toArray()} visible={normalForceBillboardVisible}>
+			<Text text="N" font="/fonts/STIXTwoText-Regular.ttf" color="purple" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Net Force ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={netForceArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Friction Force ArrowHelper (origin is now COM) -->
+		<T.ArrowHelper bind:ref={frictionArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
+		<!-- Friction Force Text Label (position is relative to COM) -->
+		<Billboard position={frictionBillboardLocalOffset.toArray()} visible={frictionBillboardVisible}>
+			<Text text="Ff" font="/fonts/STIXTwoText-Regular.ttf" color="orange" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
+		</Billboard>
 
-	<!-- Net Force Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={netForceBillboardLocalOffset.toArray()}
-		visible={netForceBillboardVisible}>
-		<Text text="ΣF" font="/fonts/STIXTwoText-Regular.ttf" color="magenta" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
-
-	<!-- Normal Force ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={normalForceArrowHelperRef} dir={[0, 1, 0]} length={MIN_ARROW_LENGTH} />
-
-	<!-- Normal Force Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={normalForceBillboardLocalOffset.toArray()}
-		visible={normalForceBillboardVisible}>
-		<Text text="N" font="/fonts/STIXTwoText-Regular.ttf" color="yellow" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
-
-	<!-- Friction Force ArrowHelper (origin defaults to 0,0,0) -->
-	<T.ArrowHelper bind:ref={frictionArrowHelperRef} dir={[1, 0, 0]} length={MIN_ARROW_LENGTH} />
-
-	<!-- Friction Force Text Label (position is LOCAL offset) -->
-	<Billboard
-		position={frictionBillboardLocalOffset.toArray()}
-		visible={frictionBillboardVisible}>
-		<Text text="Ff" font="/fonts/STIXTwoText-Regular.ttf" color="orange" fontSize={0.75 * vectorScale} outlineWidth={'1%'} outlineColor={'white'} anchorX="center" anchorY="middle" material-depthTest={false} />
-	</Billboard>
+	</T.Group>
 </T.Group>

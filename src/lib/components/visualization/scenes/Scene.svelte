@@ -210,6 +210,6 @@
 		bind:groupRef={skateboardGroupRefs[index]}
 		bind:rigidBodyRef={skateboardRigidBodyInstances[index]}
 		{controlMode}
-		scale={0.5}
+		scale={.3}
 	/>
 {/each}
