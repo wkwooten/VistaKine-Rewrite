@@ -136,8 +136,8 @@
   const gridNumbers: { text: string, x: number, z: number, axis: 'x' | 'z' }[] = [];
   const step = 2;
   const gridSizeVal = 12;
-  const numberYOffset = 1.05;
-  const numberOutwardOffset = 0.6;
+  const numberYOffset = .5;
+  const numberOutwardOffset = .8;
 
   // Along Z=-offset (near X-axis)
   for (let i = 0; i <= gridSizeVal; i += step) { // Include 12
