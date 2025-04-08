@@ -1,0 +1,347 @@
+<script lang="ts">
+	import { T, useTask } from '@threlte/core'
+  import {
+    Environment,
+    Grid,
+    OrbitControls,
+    SoftShadows,
+    TransformControls,
+    interactivity,
+    Edges,
+    Gizmo,
+    Billboard,
+    Text
+  } from '@threlte/extras'
+  import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import { RigidBodyType } from '@dimforge/rapier3d-compat';
+  import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
+  import { Vector3, Group, Quaternion, Euler, Vector2 } from 'three'
+  import { tweened } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
+  import { derived } from 'svelte/store';
+  import { createEventDispatcher } from 'svelte';
+
+  import { isDragging } from '$lib/stores/draggingStore';
+  import { followedObject } from '$lib/stores/followedObjectStore';
+  // import Ground from '../elements/constructs/Ground.svelte' // Keep commented
+
+  interactivity()
+
+  const dispatch = createEventDispatcher();
+
+  // --- Exported Props ---
+  export let targets: { id: string; x: number; y: number; z: number }[] = [];
+  export let currentStage: number = 1;
+
+  // --- Define the corner origin relative to world center ---
+  const cornerOriginOffset = new Vector3(-6, 1, -6);
+
+  // --- State for Nozzle Position (World Coordinates) using Tweened ---
+  const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
+  const animatedPosition = tweened(initialWorldPosition, {
+    duration: 500, // Animation duration in ms
+    easing: cubicOut, // Apply easing
+    interpolate: (a, b) => {
+      // Custom interpolator for Vector3
+      const vec = a.clone();
+      return t => vec.lerpVectors(a, b, t);
+    }
+  });
+
+  // --- State for Hit Targets ---
+  let hitTargets = new Set<string>();
+  const targetProximityThreshold = 0.3; // How close the nozzle needs to be
+
+  // --- Reset hitTargets when targets prop changes (new stage) ---
+  $: if (targets) {
+    console.log('[PrinterCalibration] Targets updated, resetting hits.');
+    hitTargets = new Set<string>();
+  }
+
+  // --- Calculate World Positions for Targets (reactive) ---
+  // Now also includes original relative Y for hit detection logic
+  $: targetDetails = targets.map(target => ({
+    id: target.id,
+    relativeY: target.y,
+    worldPos: cornerOriginOffset.clone().add(new Vector3(target.x, target.y, target.z))
+  }));
+
+  // --- Check for target proximity & stage completion ---
+  $: {
+    const currentNozzlePos = $animatedPosition;
+    let newlyHit = false;
+    targetDetails.forEach(target => {
+      if (!hitTargets.has(target.id)) {
+        let distance = Infinity;
+        if (target.relativeY === 0) {
+          // Calculate XZ distance for targets on the bed
+          const nozzleXZ = new Vector2(currentNozzlePos.x, currentNozzlePos.z);
+          const targetXZ = new Vector2(target.worldPos.x, target.worldPos.z);
+          distance = nozzleXZ.distanceTo(targetXZ);
+        } else {
+          // Calculate 3D distance for targets with height (future)
+          distance = currentNozzlePos.distanceTo(target.worldPos);
+        }
+
+        if (distance < targetProximityThreshold) {
+          console.log(`[PrinterCalibration] Hit target: ${target.id}`);
+          hitTargets.add(target.id);
+          newlyHit = true; // Flag that a hit occurred
+        }
+      }
+    });
+
+    // If a hit occurred, update the Set reactivity and check for stage completion
+    if (newlyHit) {
+      hitTargets = hitTargets;
+      if (hitTargets.size === targets.length && targets.length > 0) {
+        // Dispatch stageComplete for stage 1
+        if (currentStage === 1) {
+           console.log('[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete.');
+           dispatch('stageComplete');
+        }
+        // Dispatch allStagesComplete for stage 2
+        else if (currentStage === 2) {
+           console.log('[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete.');
+           dispatch('allStagesComplete');
+        }
+      }
+    }
+  }
+
+  // --- Exported function to update target ---
+  export function setTargetPosition(x: number, y: number, z: number) {
+    console.log(`[PrinterCalibration] Received target relative to corner: ${x}, ${y}, ${z}`);
+    // Calculate world position by adding offset to the relative input
+    const targetWorldPosition = cornerOriginOffset.clone().add(new Vector3(x, y, z));
+    console.log(`[PrinterCalibration] Setting animated target to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`);
+    // Set the target for the tweened store
+    animatedPosition.set(targetWorldPosition);
+  }
+
+  // --- Exported function to reset scene state ---
+  export function resetScene() {
+    console.log('[PrinterCalibration] Resetting scene...');
+    // Reset nozzle position to initial state
+    const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
+    animatedPosition.set(initialWorldPosition, { duration: 0 }); // Reset immediately
+
+    // Reset hit targets
+    hitTargets = new Set<string>();
+
+    // Note: Stage reset is handled by the parent component
+  }
+
+  // --- Generate Grid Number Positions & Text ---
+  const gridNumbers: { text: string, x: number, z: number, axis: 'x' | 'z' }[] = [];
+  const step = 2;
+  const gridSizeVal = 12;
+  const numberYOffset = 1.05;
+  const numberOutwardOffset = 0.6;
+
+  // Along Z=-offset (near X-axis)
+  for (let i = 0; i <= gridSizeVal; i += step) { // Include 12
+    gridNumbers.push({ text: `${i}`, x: i, z: -numberOutwardOffset, axis: 'x' });
+  }
+  // Along X=-offset (near Z-axis)
+  for (let i = step; i <= gridSizeVal; i += step) { // Include 12, start from step
+    gridNumbers.push({ text: `${i}`, x: -numberOutwardOffset, z: i, axis: 'z' });
+  }
+  // REMOVED LOOPS FOR FAR EDGES
+
+  // --- Generate Tick Positions ---
+  const tickStep = 2;
+  const tickSize = 0.15;
+  const tickLength = 0.5; // Length for elongated X/Z ticks
+  const tickOpacity = 0.8; // Separate opacity for ticks
+  const yAxisLength = 10; // Match Y axis length
+  const xAxisLength = 12;
+  const zAxisLength = 12;
+  const xTicks: number[] = [];
+  const zTicks: number[] = [];
+  const yTicks: number[] = []; // Add Y ticks array
+  for (let i = tickStep; i < xAxisLength; i += tickStep) xTicks.push(i);
+  for (let i = tickStep; i < zAxisLength; i += tickStep) zTicks.push(i);
+  for (let i = tickStep; i <= yAxisLength; i += tickStep) yTicks.push(i); // Generate Y ticks up to max height
+
+  // --- Define Label Constants ---
+  const labelOffset = 1.0;
+  const labelYPos = 1.0;
+  const labelFontSize = 0.8;
+  const xLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(xAxisLength + labelOffset, 0, 0));
+  const yLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(0, yAxisLength + labelOffset, 0));
+  const zLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(0, 0, zAxisLength + labelOffset));
+
+</script>
+
+<!-- Basic Lighting -->
+<T.AmbientLight intensity={1} />
+
+<T.PerspectiveCamera
+	makeDefault
+	position={[0, 20, 5]}
+>
+	<OrbitControls
+		enableZoom={true}
+		enablePan={false}
+		maxPolarAngle={Math.PI / 2}
+		maxDistance={50}
+  >
+		<Gizmo placement='bottom-left' />
+	</OrbitControls>
+</T.PerspectiveCamera>
+
+
+<!-- Nozzle Group -->
+<T.Group position={$animatedPosition.toArray()}>
+  <!-- Actual Nozzle Mesh, offset vertically -->
+  <T.Mesh position.y={1}>
+    <T.BoxGeometry args={[1, 2, 1]}/>
+    <T.MeshBasicMaterial color={"steelblue"} />
+    <Edges color='#ADD8E6' />
+  </T.Mesh>
+
+  <!-- Height Indicator Cylinder -->
+  {@const indicatorHeight = $animatedPosition.y - 1} // Height from bed surface (world Y=1) to nozzle bottom (world Y=$animatedPosition.y)
+  {#if indicatorHeight > 0.01} // Only show if nozzle is noticeably above the bed
+    <T.Mesh position.y={-indicatorHeight / 2}> // Position center relative to group origin (nozzle bottom)
+      <T.CylinderGeometry args={[0.05, 0.05, indicatorHeight, 8]} />
+      <T.MeshBasicMaterial color="#ADD8E6" transparent={true} opacity={0.6} />
+    </T.Mesh>
+  {/if}
+</T.Group>
+
+<!-- Printer Bed-->
+<Grid
+	position.y={1.1}
+	sectionsSize={10}
+	gridSize={12}
+	sectionThickness={1}
+	cellColor='#ADD8E6'
+	sectionColor='#64B5F6'
+/>
+<T.Mesh position.y={0.5}>
+	<T.BoxGeometry args={[12, 1, 12]}/>
+	<T.MeshBasicMaterial color={"white"} />
+	<Edges color='#ADD8E6' />
+</T.Mesh>
+
+<!-- Axes Group at Corner -->
+<T.Group position={[-6, 1, -6]}>
+  <!-- Custom Axes Lines -->
+  {@const axisThickness = 0.08}
+  {@const axisLengthX = 12}
+  {@const axisLengthY = 10}
+  {@const axisLengthZ = 12}
+  {@const axisOpacity = 0.4} // Define opacity
+  <!-- X Axis -->
+  <T.Mesh position.x={axisLengthX / 2}>
+    <T.BoxGeometry args={[axisLengthX, axisThickness, axisThickness]} />
+    <T.MeshBasicMaterial color="red" transparent={true} opacity={axisOpacity} />
+  </T.Mesh>
+  <!-- Y Axis -->
+  <T.Mesh position.y={axisLengthY / 2}>
+    <T.BoxGeometry args={[axisThickness, axisLengthY, axisThickness]} />
+    <T.MeshBasicMaterial color="lime" transparent={true} opacity={axisOpacity} />
+  </T.Mesh>
+  <!-- Z Axis -->
+  <T.Mesh position.z={axisLengthZ / 2}>
+    <T.BoxGeometry args={[axisThickness, axisThickness, axisLengthZ]} />
+    <T.MeshBasicMaterial color="blue" transparent={true} opacity={axisOpacity} />
+  </T.Mesh>
+
+  <!-- X Axis Ticks -->
+  {#each xTicks as x (x)}
+    <T.Mesh position.x={x}>
+      <T.BoxGeometry args={[axisThickness / 2, tickSize, tickLength]} />
+      <T.MeshBasicMaterial color="red" transparent={true} opacity={tickOpacity} />
+    </T.Mesh>
+  {/each}
+
+  <!-- Z Axis Ticks -->
+  {#each zTicks as z (z)}
+    <T.Mesh position.z={z}>
+      <T.BoxGeometry args={[tickLength, tickSize, axisThickness / 2]} />
+      <T.MeshBasicMaterial color="blue" transparent={true} opacity={tickOpacity} />
+    </T.Mesh>
+  {/each}
+
+  <!-- Y Axis Ticks -->
+  {#each yTicks as y (y)}
+    <T.Mesh position.y={y}>
+      <T.BoxGeometry args={[tickSize, axisThickness / 2, tickSize]} />
+      <T.MeshBasicMaterial color="lime" transparent={true} opacity={tickOpacity} />
+    </T.Mesh>
+  {/each}
+
+</T.Group>
+
+<!-- Grid Numbers (Near Axes Only) -->
+{#each gridNumbers as num}
+  {@const worldPos = cornerOriginOffset.clone().add(new Vector3(num.x, 0, num.z))}
+  {@const numColor = num.axis === 'x' ? 'red' : 'blue'}
+  <Billboard position={[worldPos.x, numberYOffset, worldPos.z]}>
+    <Text
+      text={num.text}
+      fontSize={0.6}
+      color={numColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
+    />
+  </Billboard>
+{/each}
+
+<!-- Y Axis Numbers -->
+{#each yTicks as y (y)}
+  {@const worldPos = cornerOriginOffset.clone().add(new Vector3(0, y, 0))}
+  {@const yNumberOffset = 0.4}
+  <Billboard position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}> // Offset diagonally away
+    <Text
+      text={y.toString()}
+      fontSize={0.6}
+      color="lime"
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
+    />
+  </Billboard>
+{/each}
+
+<!-- Axis Labels -->
+<!-- X Label -->
+<Billboard position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}>
+  <Text text="X" fontSize={labelFontSize} color="red" anchorX="center" anchorY="middle" depthTest={false} />
+</Billboard>
+<!-- Y Label -->
+<Billboard position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}>
+  <Text text="Y" fontSize={labelFontSize} color="lime" anchorX="center" anchorY="middle" depthTest={false} />
+</Billboard>
+<!-- Z Label -->
+<Billboard position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}>
+  <Text text="Z" fontSize={labelFontSize} color="blue" anchorX="center" anchorY="middle" depthTest={false} />
+</Billboard>
+
+<!-- Target Point Markers -->
+{#each targetDetails as target (target.id)}
+  {@const isHit = hitTargets.has(target.id)}
+  {@const color = isHit ? 'lime' : 'orange'}
+
+  <!-- Target Sphere -->
+  <T.Mesh position={target.worldPos.toArray()}>
+    <T.SphereGeometry args={[0.2]} />
+    <T.MeshBasicMaterial {color} />
+  </T.Mesh>
+
+  <!-- Vertical Line for Stage 2 targets (Y > 0) -->
+  {#if target.relativeY > 0}
+    {@const lineHeight = target.worldPos.y - 1} // Height from bed surface (world Y=1) to target Y
+    {@const lineCenterY = 1 + lineHeight / 2} // Midpoint Y for cylinder position
+    <T.Mesh position={[target.worldPos.x, lineCenterY, target.worldPos.z]}>
+      <T.CylinderGeometry args={[0.03, 0.03, lineHeight, 6]} />
+      <T.MeshBasicMaterial {color} transparent={!isHit} opacity={isHit ? 1 : 0.5} />
+    </T.Mesh>
+  {/if}
+{/each}
+
+<!-- <Ground /> --> // Keep commented

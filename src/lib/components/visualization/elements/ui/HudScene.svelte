@@ -12,7 +12,6 @@
 	export let currentSection : Writable<string>;
 	export let isFullscreen: boolean;
 	export let targetElement: HTMLDivElement;
-	export let selectedControlMode: 'drag' | 'translate' = 'drag'; // State for the control mode
 
 	const dispatch = createEventDispatcher();
 
@@ -21,11 +20,6 @@
 
 	function handleFullscreenToggle(event: CustomEvent<boolean>) {
 		isFullscreen = event.detail;
-	}
-
-	// Reactively dispatch the modechange event whenever selectedControlMode changes
-	$: if (dispatch) {
-		dispatch('modechange', { mode: selectedControlMode });
 	}
 
 	// $: console.log('Selected control mode in HudScene:', selectedControlMode); // Optional: Log changes
@@ -63,7 +57,6 @@
 			<FBDMenu />
 		</div>
 	{/if}
-	<ToolbarMain bind:selectedMode={selectedControlMode} />
 	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
 </div>
 

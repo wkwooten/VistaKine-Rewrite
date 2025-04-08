@@ -22,6 +22,8 @@ $brand-text-on-dark: #F0F8FF;
 $brand-text-error: #d32f2f;
 $brand-bg-error: rgba($brand-text-error, 0.1);
 $brand-border-error: rgba($brand-text-error, 0.3);
+$color-success: #10b981;
+
 
 
 // ui colors
@@ -145,6 +147,7 @@ $radius-pill: 9999px;
   --brand-text-error: #{$brand-text-error};
   --brand-bg-error: #{$brand-bg-error};
   --brand-border-error: #{$brand-border-error};
+  --color-success: #{$color-success};
 
   // Link colors
   --link-color: #{$brand-link-color};

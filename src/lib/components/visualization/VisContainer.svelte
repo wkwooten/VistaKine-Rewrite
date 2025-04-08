@@ -2,10 +2,11 @@
 	import { Canvas } from '@threlte/core';
 	import { World } from '@threlte/rapier';
 	import type { Writable } from 'svelte/store';
-	import HudScene from './elements/ui/HudScene.svelte';
 	import RendererSetup from './helpers/RendererSetup.svelte';
 	import { onMount, onDestroy } from 'svelte';
+
 	export let currentSection : Writable<string>;
+	export let isCalibrationComplete = false;
 
 	let width: number;
 	let height: number;
@@ -23,16 +24,14 @@
 	}
 </script>
 
-<div bind:this={containerElement} class="visualization-container" class:fullscreen={isFullscreen} bind:clientWidth={width} bind:clientHeight={height}>
-	<div class="ui-container">
-		<HudScene
-			{isFullscreen}
-			targetElement={containerElement}
-			{currentSection}
-			on:resetscene={handleResetScene}
-		/>
-	</div>
-
+<div
+	bind:this={containerElement}
+	class="visualization-container"
+	class:fullscreen={isFullscreen}
+	class:complete={isCalibrationComplete}
+	bind:clientWidth={width}
+	bind:clientHeight={height}
+>
 	<Canvas>
 		<RendererSetup />
 		<World>
@@ -42,11 +41,10 @@
 </div>
 
 <style lang="scss">
-
 	.visualization-container {
 		background-color: var(--background-color);
 		border-radius: var(--radius-sm);
-		margin-block: var(--space-xl);
+		/* margin-block: var(--space-xl); */
 		border: 1px solid var(--border-color);
 		max-height: 500px;
 		display: flex;
@@ -58,6 +56,11 @@
 		height: 100%;
 		position: relative; /* Important for absolute positioning of children */
 		/* transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease; */
+		transition: border-color 0.5s ease;
+
+		&.complete {
+			box-shadow: var(--color-success) 2px 2px 10px 0;
+		}
 
 		&.fullscreen {
 			position: fixed; /* Use fixed positioning for fullscreen */
