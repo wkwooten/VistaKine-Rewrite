@@ -261,7 +261,7 @@
 		maxDistance={50}
 		minDistance={10}
   >
-		<Gizmo placement='bottom-left' />
+    <Gizmo placement='bottom-left' />
 	</OrbitControls>
 </T.PerspectiveCamera>
 

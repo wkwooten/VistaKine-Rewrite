@@ -151,25 +151,27 @@
 {/if}
 
 <style>
-  /* Base styles common to both (positioning, z-index, etc.) */
+  /* Base styles common to both (z-index, etc.) */
   .dialog-box {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     cursor: pointer;
-    z-index: 1000;
+    z-index: 11;
     border-radius: 10px;
     background-color: white;
     border: 1px solid var(--border-color);
     color: var(--text-color);
-    transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease; /* Add transition */
+    transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease, top 0.2s ease, right 0.2s ease; /* Add transition */
+  }
+
+  /* Make sure the expanded/collapsed box itself captures pointer events */
+  .dialog-box.expanded,
+  .dialog-box.collapsed {
+    pointer-events: auto;
   }
 
   /* Expanded styles */
   .dialog-box.expanded {
     padding: 15px;
-    width: 80%;
+    margin: 0 auto;
     max-width: 600px;
     min-width: 30ch; /* Keep min-width */
     min-height: 80px;
@@ -177,6 +179,8 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
+    position: relative;
+    width: auto; /* Let flexbox determine width up to max-width */
   }
 
   .speaker {
@@ -220,6 +224,9 @@
 
   /* Collapsed styles */
   .dialog-box.collapsed {
+    position: absolute;
+    top: var(--space-s); /* Align near top */
+    right: var(--space-s); /* Align near right */
     width: 45px; /* Adjust size as needed */
     height: 45px;
     min-width: unset; /* Remove min-width */
@@ -230,16 +237,14 @@
     padding: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     border-radius: 50%; /* Make it circular */
-    /* Add slight offset if needed */
-    /* bottom: 25px; */
   }
 
   /* Unread indicator dot */
   .dialog-box.collapsed.has-unread::after {
       content: '';
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 3px; /* Adjust relative to button */
+      right: 3px;
       width: 10px;
       height: 10px;
       background-color: var(--color-error, red);

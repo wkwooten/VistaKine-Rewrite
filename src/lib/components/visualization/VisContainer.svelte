@@ -4,6 +4,7 @@
 	import type { Writable } from 'svelte/store';
 	import RendererSetup from './helpers/RendererSetup.svelte';
 	import { onMount, onDestroy } from 'svelte';
+	import { browser } from '$app/environment';
 	import CalibrationHud from './elements/layouts/CalibrationHud.svelte';
 
 	let { currentSection = undefined, isCalibrationComplete = false } = $props<{
@@ -16,14 +17,75 @@
 	let isFullscreen = false;
 	let containerElement: HTMLDivElement;
 
-	function handleFullscreenToggle(event: CustomEvent<boolean>) {
-		isFullscreen = event.detail;
+	async function toggleFullscreen() {
+		if (!browser || !containerElement) return;
+
+		const newState = !isFullscreen;
+
+		if (newState) {
+			if (!document.fullscreenElement) {
+				try {
+					if (containerElement.requestFullscreen) {
+						await containerElement.requestFullscreen();
+					} else if ((containerElement as any).webkitRequestFullscreen) {
+						await (containerElement as any).webkitRequestFullscreen();
+					} else if ((containerElement as any).msRequestFullscreen) {
+						await (containerElement as any).msRequestFullscreen();
+					}
+					isFullscreen = true;
+				} catch (err) {
+					console.error(`Error attempting to enable full-screen mode: ${err instanceof Error ? err.message : String(err)} (${err instanceof Error ? err.name : 'Unknown Error'})`);
+					isFullscreen = false;
+				}
+			}
+		} else {
+			if (document.fullscreenElement) {
+				try {
+					if (document.exitFullscreen) {
+						await document.exitFullscreen();
+					} else if ((document as any).webkitExitFullscreen) {
+						await (document as any).webkitExitFullscreen();
+					} else if ((document as any).msExitFullscreen) {
+						await (document as any).msExitFullscreen();
+					}
+					isFullscreen = false;
+				} catch (err) {
+					console.error(`Error attempting to disable full-screen mode: ${err instanceof Error ? err.message : String(err)} (${err instanceof Error ? err.name : 'Unknown Error'})`);
+				}
+			} else {
+				isFullscreen = false;
+			}
+		}
 	}
+
+	onMount(() => {
+		function handleFullscreenChange() {
+			if (browser) {
+				const browserIsFullscreen = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+				if (isFullscreen !== browserIsFullscreen) {
+					console.log(`[VisContainer] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`);
+					isFullscreen = browserIsFullscreen;
+				}
+			}
+		}
+
+		if (browser) {
+			document.addEventListener('fullscreenchange', handleFullscreenChange);
+			document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+			document.addEventListener('msfullscreenchange', handleFullscreenChange);
+		}
+
+		return () => {
+			if (browser) {
+				document.removeEventListener('fullscreenchange', handleFullscreenChange);
+				document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+				document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+			}
+		};
+	});
+
 	function handleResetScene() {
-		// Placeholder for actual reset logic if needed at this level
-		// For now, just log or forward if necessary
 		console.log('Reset scene requested in VisContainer');
-		// If VisContainer needs to dispatch this further, add dispatch here
 	}
 </script>
 
@@ -44,7 +106,7 @@
 
 	<CalibrationHud
 		bind:isFullscreen
-		targetElement={containerElement}
+		on:requestToggleFullscreen={toggleFullscreen}
 	/>
 </div>
 

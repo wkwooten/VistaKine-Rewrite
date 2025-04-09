@@ -17,7 +17,7 @@
 	// --- Props ---
 	// export let overlayMessage: string | null = null; // Can be removed if DialogBox handles all messages
 	export let isFullscreen = false; // Need to bind this from parent
-	export let targetElement: HTMLDivElement | undefined = undefined;
+	// export let targetElement: HTMLDivElement | undefined = undefined; // Removed: Logic moved to parent
 
 	// --- Input State (Local to HUD, drives store update) ---
 	let nozzleX = MIN_X;
@@ -55,23 +55,33 @@
 		console.log(`[CalibrationHud] Dialog close event received, hiding via store`);
 		hideCalibrationDialog();
 	}
+
+	// Forward the request from the button
+	const dispatch = createEventDispatcher();
+	function handleRequestToggle() {
+		console.log('[CalibrationHud] Forwarding requestToggleFullscreen');
+		dispatch('requestToggleFullscreen');
+	}
 </script>
 
-<div class="calibration-hud-container">
-	<!-- Dialog Box (Uses store state, absolute positioning handled by its own CSS) -->
-	<DialogBox
-		messages={$dialogMessages}
-		show={$showDialog}
-		speaker={$speaker}
-		on:close={handleDialogClose}
-	/>
+<!-- Main container for portal target -->
+<div class="calibration-hud-container" id="hud-overlay">
 
-	<!-- Top Left Controls (Reset/Fullscreen) -->
-	<div class="scene-controls">
-		<ResetButton on:click={handleResetScene} />
-		{#if targetElement}
-			<FullscreenButton {targetElement} bind:isFullscreen />
-		{/if}
+	<!-- Top Panel for Controls and Dialog -->
+	<div class="top-panel">
+		<div class="top-left-controls">
+			<ResetButton on:click={handleResetScene} />
+		</div>
+		<!-- Dialog Box - Centered in flex space -->
+		<DialogBox
+			messages={$dialogMessages}
+			show={$showDialog}
+			speaker={$speaker}
+			on:close={handleDialogClose}
+		/>
+		<div class="top-right-controls">
+			<FullscreenButton bind:isFullscreen on:requestToggle={handleRequestToggle} />
+		</div>
 	</div>
 
 	<!-- Bottom Right Input Controls -->
@@ -112,6 +122,8 @@
 		height: 100%;
 		pointer-events: none; /* Default: pass clicks through */
 		padding: var(--space-s);
+		padding-left: calc(var(--space-s) + 70px); /* Adjust based on Gizmo size */
+		padding-bottom: calc(var(--space-s) + 70px); /* Adjust based on Gizmo size */
 		box-sizing: border-box;
 		/* Use flex to potentially align groups if needed, but positioning is absolute */
 		display: flex;
@@ -242,5 +254,29 @@
 			font-size: 0.9em;
 			margin-top: var(--space-xs);
 		}
+	}
+
+	/* Top Panel adjustments */
+	.top-panel {
+		position: absolute;
+		top: var(--space-s);
+		left: var(--space-s);
+		right: var(--space-s); /* Span across the top */
+		display: flex;
+		justify-content: space-between; /* Push items to edges */
+		align-items: flex-start; /* Align items to the top */
+		pointer-events: none; /* Pass clicks through by default */
+		gap: var(--space-m); /* Space between elements */
+	}
+
+	/* Ensure control groups can be interacted with */
+	.top-left-controls,
+	.top-right-controls {
+		display: flex;
+		gap: var(--space-xs);
+		pointer-events: auto;
+		z-index: 10;
+		/* Allow shrinking if dialog is wide */
+		flex-shrink: 0;
 	}
 </style>
