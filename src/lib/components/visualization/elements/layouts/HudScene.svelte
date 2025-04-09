@@ -1,10 +1,10 @@
 <script lang="ts">
-	import ToolbarMain from './ToolbarMain.svelte';
-	import FullscreenButton from './FullscreenButton.svelte';
+	import ToolbarMain from '../ui/ToolbarMain.svelte';
+	import FullscreenButton from '../ui/FullscreenButton.svelte';
 	import type { Writable } from 'svelte/store';
 	import { createEventDispatcher } from 'svelte';
-	import FBDMenu from './FBDMenu.svelte';
-	import ResetButton from './ResetButton.svelte';
+	import FBDMenu from '../ui/FBDMenu.svelte';
+	import ResetButton from '../ui/ResetButton.svelte';
 	import { isFBDMenuOpen } from '$lib/stores/uiStores'; // Import menu state store
 	import { fbdVisibilityStore, type FBDVisibilityState } from '$lib/stores/fbdStores'; // Import FBD visibility store
 

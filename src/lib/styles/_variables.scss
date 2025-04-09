@@ -34,6 +34,26 @@ $ui-color-quaternary: #e9f5ff;
 $ui-color-quinary: #e9f5ff;
 
 
+// Axis Colors
+$axis-color-x: #EF5350; // A slightly desaturated Red
+$axis-color-y: #66BB6A; // A matching Green
+$axis-color-z: #2C8FFF; // A distinct Purple
+
+// Axis Colors with Transparency
+
+$axis-color-x-t75: rgba($axis-color-x, 0.75); // 75% transparent
+$axis-color-y-t75: rgba($axis-color-y, 0.75);
+$axis-color-z-t75: rgba($axis-color-z, 0.75);
+
+$axis-color-x-t50: rgba($axis-color-x, 0.5); // 50% transparent
+$axis-color-y-t50: rgba($axis-color-y, 0.5);
+$axis-color-z-t50: rgba($axis-color-z, 0.5);
+
+$axis-color-x-t25: rgba($axis-color-x, 0.25); // 25% transparent
+$axis-color-y-t25: rgba($axis-color-y, 0.25);
+$axis-color-z-t25: rgba($axis-color-z, 0.25);
+
+
 // Link Colors
 $brand-link-color: #1976D2;
 $brand-link-color-hover: #1565C0;
@@ -211,6 +231,22 @@ $radius-pill: 9999px;
   --radius-xl: #{$radius-xl};
   --radius-round: #{$radius-round};
   --radius-pill: #{$radius-pill};
+
+  // Axis Colors
+  --axis-color-x: #{$axis-color-x};
+  --axis-color-y: #{$axis-color-y};
+  --axis-color-z: #{$axis-color-z};
+
+  // Axis Colors with Transparency
+  --axis-color-x-t75: #{$axis-color-x-t75};
+  --axis-color-y-t75: #{$axis-color-y-t75};
+  --axis-color-z-t75: #{$axis-color-z-t75};
+  --axis-color-x-t50: #{$axis-color-x-t50};
+  --axis-color-y-t50: #{$axis-color-y-t50};
+  --axis-color-z-t50: #{$axis-color-z-t50};
+  --axis-color-x-t25: #{$axis-color-x-t25};
+  --axis-color-y-t25: #{$axis-color-y-t25};
+  --axis-color-z-t25: #{$axis-color-z-t25};
 
   // Chapter Theme Colors - Define as CSS variables
   --chapter-color-1: #10b981;

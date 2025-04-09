@@ -12,23 +12,20 @@
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import PrinterCalibration from '$lib/components/visualization/scenes/PrinterCalibration.svelte';
-  import type PrinterCalibration_Type from '$lib/components/visualization/scenes/PrinterCalibration.svelte';
   import CalibrationHud from '$lib/components/visualization/elements/layouts/CalibrationHud.svelte';
+  import { resetSceneRequested } from '$lib/stores/calibrationState';
 
   // Handle section intersection
-  function handleSectionIntersect(event: CustomEvent<{ isIntersecting: boolean; intersectionRatio: number; }>, sectionId: string) {
+  function handleSectionIntersect(event: CustomEvent<{ isIntersecting: boolean; intersectionRatio: number; }> | any, sectionId: string) {
     if (event.detail.isIntersecting && event.detail.intersectionRatio > 0.3) {
       currentSection.set(sectionId);
     }
   }
 
-  // Export the sections for this chapter
-  export let chapterSections;
+  // Props using Svelte 5 runes
+  let { chapterSections = [] } = $props<{ chapterSections?: any[] }>(); // Assuming chapterSections is optional array, adjust type as needed
 
-  // Reference to the PrinterCalibration component instance
-  let printerCalibrationInstance: PrinterCalibration_Type | undefined;
-
-  // --- Printer Boundaries (Relative Coordinates) ---
+  // --- Printer Boundaries (Constants could be moved to store if needed elsewhere) ---
   const MIN_X = 0;
   const MAX_X = 12;
   const MIN_Y = 0;
@@ -36,39 +33,29 @@
   const MIN_Z = 0;
   const MAX_Z = 12;
 
-  // State for nozzle coordinates (relative to corner origin)
-  let nozzleX = MIN_X;
-  let nozzleY = 5; // Initial nozzle height
-  let nozzleZ = MIN_Z;
-
-  // State for validation messages
-  let validationMessage: string | null = null;
-
   // Define Stage 1 target points (relative to corner origin)
   const stage1Targets = [
-    { id: 't0', x: 12, y: 0, z: 0 }, // Added corner target
-    { id: 't1', x: 2, y: 0, z: 4 },
-    { id: 't2', x: 7, y: 0, z: 10 }
+    { id: 't0', x: 0, y: 0, z: 0 }, // Default corner target
+    { id: 't1', x: 12, y: 0, z: 0 },
+    { id: 't2', x: 2, y: 0, z: 4 },
+    { id: 't3', x: 7, y: 0, z: 10 }
   ];
 
   // Define Stage 2 target points (relative to corner origin)
   const stage2Targets = [
-    { id: 't4', x: 1, y: 3, z: 1 },  // Example Stage 2 targets
+    { id: 't4', x: 1, y: 3, z: 1 },
     { id: 't5', x: 8, y: 5, z: 8 },
     { id: 't6', x: 11, y: 2, z: 11 }
   ];
 
-  // Reactive variable for active targets
-  $: activeTargets = (currentStage === 1) ? stage1Targets : stage2Targets;
-
   // State for current stage
   let currentStage = 1;
 
+  // Derived variable for active targets
+  let activeTargets = $derived((currentStage === 1) ? stage1Targets : stage2Targets);
+
   // State for completion
   let isCalibrationComplete = false;
-
-  // State for stage/completion messages
-  let overlayMessage: string | null = null;
 
   // State for fullscreen
   let isFullscreen = false;
@@ -76,75 +63,32 @@
   // Ref for positioning wrapper
   let visWrapperElement: HTMLDivElement;
 
-  // Call the child component's function to move the nozzle, with validation
-  function handleMoveNozzle() {
-    validationMessage = null; // Clear previous message
-
-    // Input Validation
-    if (nozzleX < MIN_X || nozzleX > MAX_X) {
-      validationMessage = `Surya: Whoa! X needs to be between ${MIN_X} and ${MAX_X}.`;
-      return;
-    }
-    if (nozzleY < MIN_Y || nozzleY > MAX_Y) {
-      validationMessage = `Surya: Careful! Y should be between ${MIN_Y} and ${MAX_Y} so the nozzle doesn't crash or go too high.`;
-      return;
-    }
-    if (nozzleZ < MIN_Z || nozzleZ > MAX_Z) {
-      validationMessage = `Surya: Hmm, Z must be between ${MIN_Z} and ${MAX_Z} to stay on the bed.`;
-      return;
-    }
-
-    // If valid, move the nozzle
-    console.log(`Requesting move to: X=${nozzleX}, Y=${nozzleY}, Z=${nozzleZ}`);
-    if (printerCalibrationInstance) {
-      printerCalibrationInstance.setTargetPosition(nozzleX, nozzleY, nozzleZ);
-    } else {
-      console.error("PrinterCalibration instance not available yet.");
-    }
-  }
-
-  // Function to advance to the next stage
+  // Function to advance to the next stage - Dialog handled by child
   function goToStage2() {
     if (currentStage === 1) {
-      console.log("Stage 1 Complete! Starting Stage 2.");
+      console.log("[Parent] Stage 1 Complete event received! Starting Stage 2.");
       currentStage = 2;
-      overlayMessage = "Great! Now try hitting these targets with height.";
+      // No dialog logic here anymore
     }
   }
 
-  // Function to mark completion
+  // Function to mark completion - Dialog handled by child
   function handleCalibrationComplete() {
-    console.log("Calibration Complete!");
+    console.log("[Parent] Calibration Complete event received!");
     isCalibrationComplete = true;
-    overlayMessage = "Surya: You're the best! Thanks for helping me calibrate the printer! 🎉";
+    // No dialog logic here anymore
   }
 
-  // Handle move request from CalibrationHud
-  function handleHudMoveRequest(event: CustomEvent<{x: number; y: number; z: number}>) {
-    if (printerCalibrationInstance) {
-      console.log('[Page] Received requestMove from HUD', event.detail);
-      printerCalibrationInstance.setTargetPosition(event.detail.x, event.detail.y, event.detail.z);
-    } else {
-      console.error("PrinterCalibration instance not available yet.");
+  // React to reset requests from the store to update page-level state
+  $effect(() => {
+    if ($resetSceneRequested) {
+      console.log('[Parent Page] Resetting stage state due to store request.');
+      currentStage = 1;
+      isCalibrationComplete = false;
+      // The store flag ($resetSceneRequested) will be set back to false by PrinterCalibration
     }
-  }
+  });
 
-  // Handle reset request from CalibrationHud
-  function handleHudReset() {
-    console.log('[Page] Received reset scene request from HUD');
-    if (printerCalibrationInstance) {
-      printerCalibrationInstance.resetScene(); // Call method on instance
-    } else {
-      console.error("PrinterCalibration instance not available yet.");
-    }
-    // Also reset page-level state if necessary
-    currentStage = 1;
-    isCalibrationComplete = false;
-    overlayMessage = null;
-    // Reset nozzle position in HUD? Might need to expose a method on CalibrationHud
-    // or reset state here and pass down if inputs are bound to page state.
-    // Since inputs are local to CalibrationHud, maybe it resets itself? Add reset logic there.
-  }
 </script>
 
 <div class="chapter-wrapper">
@@ -165,7 +109,6 @@
       class="content-section section-header"
       data-section="1.1"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
-      on:intersect={(e) => handleSectionIntersect(e, 'coordinate-systems')}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
@@ -194,35 +137,20 @@
 
           <h3 class="subsection-title">Visualize it: Calibrating the 3D printer</h3>
 
-          <!-- Wrapper for positioning HUD -->
-          <div class="vis-hud-wrapper" bind:this={visWrapperElement} style="position: relative;" class:fullscreen={isFullscreen}>
+          <!-- VisContainer now includes the HUD internally -->
+          <div style="position: relative;" class:fullscreen={isFullscreen}>
             <VisContainer
               currentSection={currentSection}
               isCalibrationComplete={isCalibrationComplete}
             >
               <PrinterCalibration
-                bind:this={printerCalibrationInstance}
                 targets={activeTargets}
-                currentStage={currentStage}
+                {currentStage}
                 on:stageComplete={goToStage2}
                 on:allStagesComplete={handleCalibrationComplete}
               />
             </VisContainer>
-
-            <!-- Instantiate the dedicated HUD -->
-            <CalibrationHud
-              overlayMessage={overlayMessage}
-              bind:isFullscreen={isFullscreen}
-              targetElement={visWrapperElement}
-              on:requestMove={handleHudMoveRequest}
-              on:resetscene={handleHudReset}
-            />
           </div>
-
-          <!-- Validation Message Area -->
-          {#if validationMessage}
-            <p class="validation-error" style="color: var(--color-error); margin-top: var(--space-xs); font-style: italic;">{validationMessage}</p>
-          {/if}
 
           <p>
             Think of a 3D printer. It uses three <span class="keyword">axes</span> (<span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z</span>) to pinpoint any location within its printing area. The intersection of these three <span class="keyword">axes</span> is called the <span class="keyword">origin</span>, typically represented as (0, 0, 0).
@@ -259,14 +187,11 @@
       </div>
     </section>
 
-    <!-- @ts-ignore -->
-    // svelte-ignore invalid-event-type
     <section
       id="vectors-in-space"
       class="content-section"
       data-section="1.2"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
-      on:intersect={(e) => handleSectionIntersect(e, 'vectors-in-space')}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
@@ -348,14 +273,11 @@
       </div>
     </section>
 
-    <!-- @ts-ignore -->
-    // svelte-ignore invalid-event-type
     <section
       id="reference-frames"
       class="content-section"
       data-section="1.3"
       use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
-      on:intersect={(e) => handleSectionIntersect(e, 'reference-frames')}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">

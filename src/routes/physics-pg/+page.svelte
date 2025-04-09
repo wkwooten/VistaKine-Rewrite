@@ -43,10 +43,9 @@
 
 </script>
 
-<div>
-  <h1>Physics Playground</h1>
+<div class="page-container">
+  <h1 class="title">Physics Playground</h1>
   <div class="physics-pg-container">
-		<p> This is a testbed for physics simulations. </p>
 		{#if PhysicsPlaygroundComponent}
 			<svelte:component
 				this={PhysicsPlaygroundComponent}
@@ -61,9 +60,15 @@
 			<p>Loading visualization...</p> <!-- Optional loading indicator -->
 		{/if}
   </div>
+	<p> This is a testbed for physics simulations. </p>
 </div>
 
 <style lang="scss">
+	.title {
+		font-size: var(--step-3);
+		font-weight: 500;
+		margin-top: var(--space-m);
+	}
 	.physics-pg-container {
 		padding: var(--space-m);
 	}

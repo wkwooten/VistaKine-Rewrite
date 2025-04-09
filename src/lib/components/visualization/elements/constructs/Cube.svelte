@@ -16,7 +16,7 @@
 	import { selectedObject } from '$lib/stores/selectedObjectStore';
 	import { followedObject } from '$lib/stores/followedObjectStore';
 
-	export let color: string = '#ffffff';
+	export let color: string = 'steelblue';
 	export let scale: number = 1;
 	export let controlMode: 'drag' | 'translate' = 'drag';
 	export let groupRef: Group | undefined = undefined;
@@ -203,7 +203,7 @@
 				<T.MeshBasicMaterial {color} />
 				<Edges color="#64B5F6" />
 				{#if isSelected || isHovering}
-					<Outlines thickness={0.1} color="#64B5F6" />
+					<Outlines thickness={0.05} color="#64B5F6" />
 				{/if}
 			</T.Mesh>
 		</AutoColliders>

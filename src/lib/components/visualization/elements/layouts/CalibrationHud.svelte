@@ -2,23 +2,24 @@
 	import { createEventDispatcher } from 'svelte';
 	import FullscreenButton from '../ui/FullscreenButton.svelte';
 	import ResetButton from '../ui/ResetButton.svelte';
-
-	const dispatch = createEventDispatcher();
+	import DialogBox from '../ui/DialogBox.svelte';
+	import {
+		dialogMessages,
+		showDialog,
+		speaker,
+		hideCalibrationDialog,
+		requestedNozzlePosition,
+		resetSceneRequested,
+		showCalibrationDialog, // For validation messages
+		MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z // Import constants
+	} from '$lib/stores/calibrationState';
 
 	// --- Props ---
-	export let overlayMessage: string | null = null;
+	// export let overlayMessage: string | null = null; // Can be removed if DialogBox handles all messages
 	export let isFullscreen = false; // Need to bind this from parent
 	export let targetElement: HTMLDivElement | undefined = undefined;
 
-	// --- Boundaries (Local or Props) ---
-	const MIN_X = 0;
-	const MAX_X = 12;
-	const MIN_Y = 0;
-	const MAX_Y = 10;
-	const MIN_Z = 0;
-	const MAX_Z = 12;
-
-	// --- Input State ---
+	// --- Input State (Local to HUD, drives store update) ---
 	let nozzleX = MIN_X;
 	let nozzleY = 5;
 	let nozzleZ = MIN_Z;
@@ -26,26 +27,47 @@
 
 	// --- Event Handlers ---
 	function handleMoveRequest() {
-		// ... (existing validation logic) ...
-		// If valid, dispatch the event with coordinates
-		dispatch('requestMove', { x: nozzleX, y: nozzleY, z: nozzleZ });
+		// Input Validation
+		if (nozzleX < MIN_X || nozzleX > MAX_X) {
+			showCalibrationDialog([`Leo: Hold on, Surya! Remember, the X-axis only goes from ${MIN_X} to ${MAX_X} on this printer bed.`]);
+			return;
+		}
+		if (nozzleY < MIN_Y || nozzleY > MAX_Y) {
+			showCalibrationDialog([`Leo: Easy there! Keep the nozzle height (Y) between ${MIN_Y} and ${MAX_Y} so we don't hit the bed or go way too high.`]);
+			return;
+		}
+		if (nozzleZ < MIN_Z || nozzleZ > MAX_Z) {
+			showCalibrationDialog([`Leo: Almost! The Z-axis (depth) needs to stay between ${MIN_Z} and ${MAX_Z} to be over the printing area.`]);
+			return;
+		}
+
+		// If valid, update the store
+		console.log(`[CalibrationHud] Requesting move via store: X=${nozzleX}, Y=${nozzleY}, Z=${nozzleZ}`);
+		requestedNozzlePosition.set({ x: nozzleX, y: nozzleY, z: nozzleZ });
 	}
 
 	function handleResetScene() {
-		dispatch('resetscene');
+		console.log(`[CalibrationHud] Requesting reset via store`);
+		resetSceneRequested.set(true);
+	}
+
+	function handleDialogClose() {
+		console.log(`[CalibrationHud] Dialog close event received, hiding via store`);
+		hideCalibrationDialog();
 	}
 </script>
 
 <div class="calibration-hud-container">
-	<!-- Top Center Message -->
-	{#if overlayMessage}
-		<div class="overlay-message">
-			<p>{overlayMessage}</p>
-		</div>
-	{/if}
+	<!-- Dialog Box (Uses store state, absolute positioning handled by its own CSS) -->
+	<DialogBox
+		messages={$dialogMessages}
+		show={$showDialog}
+		speaker={$speaker}
+		on:close={handleDialogClose}
+	/>
 
 	<!-- Top Left Controls (Reset/Fullscreen) -->
-	<div class="controls-top-left">
+	<div class="scene-controls">
 		<ResetButton on:click={handleResetScene} />
 		{#if targetElement}
 			<FullscreenButton {targetElement} bind:isFullscreen />
@@ -53,19 +75,27 @@
 	</div>
 
 	<!-- Bottom Right Input Controls -->
-	<div class="controls-bottom-right">
-		<label>
-			X: ({MIN_X}-{MAX_X})
-			<input type="number" bind:value={nozzleX} min={MIN_X} max={MAX_X} />
-		</label>
-		<label>
-			Y: ({MIN_Y}-{MAX_Y})
-			<input type="number" bind:value={nozzleY} min={MIN_Y} max={MAX_Y} />
-		</label>
-		<label>
-			Z: ({MIN_Z}-{MAX_Z})
-			<input type="number" bind:value={nozzleZ} min={MIN_Z} max={MAX_Z} />
-		</label>
+	<div class="nozzle-control-panel">
+		<div class="axis-inputs">
+			<div class="axis-group" id="x-label">
+				<label class="axis-label" >
+					X <span class="axis-range">({MIN_X}-{MAX_X})</span>
+					<input type="number" bind:value={nozzleX} min={MIN_X} max={MAX_X} />
+				</label>
+			</div>
+			<div class="axis-group" id="y-label">
+				<label class="axis-label" >
+					Y <span class="axis-range">({MIN_Y}-{MAX_Y})</span>
+					<input type="number" bind:value={nozzleY} min={MIN_Y} max={MAX_Y} />
+				</label>
+			</div>
+			<div class="axis-group" id="z-label">
+				<label class="axis-label" >
+					Z <span class="axis-range">({MIN_Z}-{MAX_Z})</span>
+					<input type="number" bind:value={nozzleZ} min={MIN_Z} max={MAX_Z} />
+				</label>
+			</div>
+		</div>
 		<button on:click={handleMoveRequest}>Move Nozzle</button>
 		{#if validationMessage}
 			<p class="validation-error">{validationMessage}</p>
@@ -91,8 +121,8 @@
 
 	/* Make sure all control groups allow pointer events */
 	.overlay-message,
-	.controls-top-left,
-	.controls-bottom-right {
+	.scene-controls,
+	.nozzle-control-panel {
 		pointer-events: auto;
 		z-index: 10;
 	}
@@ -113,7 +143,7 @@
 		p { margin: 0; }
 	}
 
-	.controls-top-left {
+	.scene-controls {
 		position: absolute;
 		top: var(--space-s);
 		left: var(--space-s);
@@ -123,35 +153,80 @@
 		z-index: 10;
 	}
 
-	.controls-bottom-right {
+	.nozzle-control-panel {
 		position: absolute;
 		bottom: var(--space-s);
 		right: var(--space-s);
 		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
+		flex-direction: column; /* Stack axis inputs and button */
+		gap: var(--space-s); /* Gap between inputs row and button */
 		padding: var(--space-s);
 		background-color: rgba(var(--bg-secondary-rgb), 0.95);
 		border-radius: var(--radius-sm);
-		max-width: 180px;
+		/* max-width: 180px; Remove or adjust if needed */
 		color: var(--text-color);
 		pointer-events: auto;
 		z-index: 10;
 
-		label {
-			display: flex;
-			flex-direction: column;
-			font-size: 0.9em;
+		#x-label {
+			background-color: var(--axis-color-x-t75);
+			color: white;
 		}
+
+		#y-label {
+			background-color: var(--axis-color-y-t75);
+			color: white;
+		}
+
+		#z-label {
+			background-color: var(--axis-color-z-t75);
+			color: white;
+		}
+
+
+		.axis-inputs {
+			display: flex;
+			justify-content: space-between; /* Space out axis groups */
+			gap: var(--space-xs);
+		}
+
+		.axis-group {
+			display: flex; /* Use flex for label content alignment */
+			flex-direction: column;
+			align-items: center; /* Center label text and input */
+			border-radius: var(--radius-sm);
+			flex: 1; /* Allow groups to share space */
+		}
+
+		label {
+			/* display: flex; No longer needed here */
+			/* flex-direction: column; No longer needed here */
+			font-size: 0.9em;
+			font-weight: bold;
+			text-align: center;
+			margin-bottom: var(--space-3xs);
+		}
+
+		.axis-range {
+			font-size: 0.8em;
+			font-weight: normal;
+			display: block; /* Ensure range is on its own line or handled differently */
+			color: var(--text-secondary); /* Dim the range text */
+		}
+
 		input[type="number"] {
-			width: 100%;
+			/* width: 100%; Inherited flex item sizing will handle this */
+			max-width: 60px; /* Limit input width */
 			padding: var(--space-2xs);
 			background-color: var(--bg-primary);
 			border: 1px solid var(--border-color);
 			border-radius: var(--radius-xs);
 			color: var(--text-color);
+			background-color: white;
+			text-align: center;
 		}
 		button {
+			width: 100%; /* Make button take full width of panel */
 			padding: var(--space-xs) var(--space-s);
 			background-color: var(--color-accent);
 			color: var(--button-text-color);

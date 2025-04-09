@@ -2,10 +2,11 @@
 	import { Canvas } from '@threlte/core';
 	import { World, Debug } from '@threlte/rapier';
 	import type { Writable } from 'svelte/store';
-	import HudScene from './elements/ui/HudScene.svelte';
+	import HudScene from './elements/layouts/HudScene.svelte';
 	import { onDestroy, createEventDispatcher } from 'svelte';
 	import RendererSetup from './helpers/RendererSetup.svelte';
 	import { PerfMonitor } from '@threlte/extras';
+	import ToolBarMain from './elements/ui/ToolbarMain.svelte';
 	export let currentSection : Writable<string>;
 	export let controlMode: 'drag' | 'translate' = 'drag';
 
@@ -36,7 +37,9 @@
 			bind:selectedControlMode={controlMode}
 			on:modechange={forwardModeChange}
 			on:resetscene={handleResetScene}
-		/>
+		>
+			<ToolBarMain />
+		</HudScene>
 	</div>
 
 	<Canvas>
@@ -59,6 +62,7 @@
 		align-items: center;
 		justify-content: center;
 		min-height: 500px;
+		max-height: 800px;
 		aspect-ratio: 16/9;
 		width: 100%;
 		height: 100%;

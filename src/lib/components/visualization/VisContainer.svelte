@@ -4,9 +4,12 @@
 	import type { Writable } from 'svelte/store';
 	import RendererSetup from './helpers/RendererSetup.svelte';
 	import { onMount, onDestroy } from 'svelte';
+	import CalibrationHud from './elements/layouts/CalibrationHud.svelte';
 
-	export let currentSection : Writable<string>;
-	export let isCalibrationComplete = false;
+	let { currentSection = undefined, isCalibrationComplete = false } = $props<{
+		currentSection?: Writable<string>;
+		isCalibrationComplete?: boolean;
+	}>();
 
 	let width: number;
 	let height: number;
@@ -38,6 +41,11 @@
 			<slot />
 		</World>
 	</Canvas>
+
+	<CalibrationHud
+		bind:isFullscreen
+		targetElement={containerElement}
+	/>
 </div>
 
 <style lang="scss">
