@@ -1,8 +1,6 @@
 <script lang="ts">
   import { currentSection } from '$lib/stores/appState.js';
   import { intersect } from '$lib/utils/intersection';
-  import { Canvas } from '@threlte/core';
-  import Scene from '$lib/components/visualization/scenes/Scene.svelte';
   import VisContainer from '$lib/components/visualization/VisContainer.svelte';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import GuidedCalculation from '$lib/components/GuidedCalculation.svelte';
@@ -11,13 +9,11 @@
   import Scenario from '$lib/components/Scenario.svelte';
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
-  import PrinterCalibration from '$lib/components/visualization/scenes/PrinterCalibration.svelte';
-  import CalibrationHud from '$lib/components/visualization/elements/layouts/CalibrationHud.svelte';
-  import { resetSceneRequested } from '$lib/stores/calibrationState';
+  import PrinterCalibrationExercise from '$lib/components/visualization/interactions/printer-calibration/PrinterCalibrationExercise.svelte';
 
-  // Handle section intersection
-  function handleSectionIntersect(event: CustomEvent<{ isIntersecting: boolean; intersectionRatio: number; }> | any, sectionId: string) {
-    if (event.detail.isIntersecting && event.detail.intersectionRatio > 0.3) {
+  // The callback function definition remains the same, but now receives the detail object directly
+  function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
+    if (detail.isIntersecting && detail.intersectionRatio > 0.3) {
       currentSection.set(sectionId);
     }
   }
@@ -79,16 +75,6 @@
     // No dialog logic here anymore
   }
 
-  // React to reset requests from the store to update page-level state
-  $effect(() => {
-    if ($resetSceneRequested) {
-      console.log('[Parent Page] Resetting stage state due to store request.');
-      currentStage = 1;
-      isCalibrationComplete = false;
-      // The store flag ($resetSceneRequested) will be set back to false by PrinterCalibration
-    }
-  });
-
 </script>
 
 <div class="chapter-wrapper">
@@ -108,7 +94,10 @@
       id="coordinate-systems"
       class="content-section section-header"
       data-section="1.1"
-      use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
+      use:intersect={{
+        threshold: [0.1, 0.3, 0.5],
+        onIntersect: (detail) => handleSectionIntersect(detail, '1.1')
+      }}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
@@ -137,19 +126,8 @@
 
           <h3 class="subsection-title">Visualize it: Calibrating the 3D printer</h3>
 
-          <!-- VisContainer now includes the HUD internally -->
-          <div style="position: relative;" class:fullscreen={isFullscreen}>
-            <VisContainer
-              currentSection={currentSection}
-              isCalibrationComplete={isCalibrationComplete}
-            >
-              <PrinterCalibration
-                targets={activeTargets}
-                {currentStage}
-                on:stageComplete={goToStage2}
-                on:allStagesComplete={handleCalibrationComplete}
-              />
-            </VisContainer>
+          <div style="position: relative;">
+             <PrinterCalibrationExercise />
           </div>
 
           <p>
@@ -191,7 +169,10 @@
       id="vectors-in-space"
       class="content-section"
       data-section="1.2"
-      use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
+      use:intersect={{
+        threshold: [0.1, 0.3, 0.5],
+        onIntersect: (detail) => handleSectionIntersect(detail, '1.2')
+      }}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
@@ -277,7 +258,10 @@
       id="reference-frames"
       class="content-section"
       data-section="1.3"
-      use:intersect={{ threshold: [0.1, 0.3, 0.5] }}
+      use:intersect={{
+        threshold: [0.1, 0.3, 0.5],
+        onIntersect: (detail) => handleSectionIntersect(detail, '1.3')
+      }}
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">

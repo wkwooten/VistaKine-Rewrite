@@ -1,11 +1,23 @@
 import { browser } from '$app/environment';
 
+// Define the shape of the details passed to the callback
+interface IntersectDetail {
+	isIntersecting: boolean;
+	intersectionRatio: number;
+}
+
+// Define the shape of the options the action accepts
+interface IntersectOptions extends IntersectionObserverInit {
+	onIntersect?: (detail: IntersectDetail) => void; // Add the optional callback function
+}
+
 /**
  * Svelte action for intersection observer
  * Use this to detect when elements come into view
  */
-export function intersect(node: HTMLElement, options: IntersectionObserverInit = {}) {
+export function intersect(node: HTMLElement, options: IntersectOptions = {}) {
 	let observer: IntersectionObserver | null = null;
+	let currentOptions = options; // Store options to access callback
 
 	const defaultOptions: IntersectionObserverInit = {
 		root: null,
@@ -14,15 +26,22 @@ export function intersect(node: HTMLElement, options: IntersectionObserverInit =
 	};
 
 	if (browser) {
+		// Separate observer options from our custom onIntersect callback
+		const { onIntersect, ...observerOptions } = currentOptions;
+		const mergedObserverOptions = { ...defaultOptions, ...observerOptions };
+
 		observer = new IntersectionObserver((entries) => {
 			const entry = entries[0];
-			node.dispatchEvent(new CustomEvent('intersect', {
-				detail: {
-					isIntersecting: entry.isIntersecting,
-					intersectionRatio: entry.intersectionRatio
-				}
-			}));
-		}, { ...defaultOptions, ...options });
+			const detail: IntersectDetail = {
+				isIntersecting: entry.isIntersecting,
+				intersectionRatio: entry.intersectionRatio
+			};
+			// Call the callback directly if provided
+			if (typeof onIntersect === 'function') {
+				onIntersect(detail);
+			}
+			// Removed node.dispatchEvent
+		}, mergedObserverOptions);
 
 		observer.observe(node);
 	}
@@ -33,19 +52,26 @@ export function intersect(node: HTMLElement, options: IntersectionObserverInit =
 				observer.disconnect();
 			}
 		},
-		update(newOptions: IntersectionObserverInit) {
+		update(newOptions: IntersectOptions) {
+			currentOptions = newOptions; // Update stored options
 			if (observer) {
 				observer.disconnect();
-				const updatedOptions = { ...defaultOptions, ...newOptions };
+				// Separate observer options from our custom onIntersect callback
+				const { onIntersect, ...observerOptions } = currentOptions;
+				const mergedObserverOptions = { ...defaultOptions, ...observerOptions };
+
 				observer = new IntersectionObserver((entries) => {
 					const entry = entries[0];
-					node.dispatchEvent(new CustomEvent('intersect', {
-						detail: {
-							isIntersecting: entry.isIntersecting,
-							intersectionRatio: entry.intersectionRatio
-						}
-					}));
-				}, updatedOptions);
+					const detail: IntersectDetail = {
+						isIntersecting: entry.isIntersecting,
+						intersectionRatio: entry.intersectionRatio
+					};
+					// Call the callback directly if provided
+					if (typeof onIntersect === 'function') {
+						onIntersect(detail);
+					}
+					// Removed node.dispatchEvent
+				}, mergedObserverOptions);
 				observer.observe(node);
 			}
 		}

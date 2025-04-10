@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import FullscreenButton from '../ui/FullscreenButton.svelte';
-	import ResetButton from '../ui/ResetButton.svelte';
-	import DialogBox from '../ui/DialogBox.svelte';
+	import FullscreenButton from '../../elements/ui/FullscreenButton.svelte';
+	import ResetButton from '../../elements/ui/ResetButton.svelte';
+	import DialogBox from '../../elements/ui/DialogBox.svelte';
 	import {
 		dialogMessages,
 		showDialog,
@@ -239,14 +239,32 @@
 		}
 		button {
 			width: 100%; /* Make button take full width of panel */
-			padding: var(--space-xs) var(--space-s);
+			padding: var(--space-s); /* Increased padding */
 			background-color: var(--color-accent);
 			color: var(--button-text-color);
 			border: none;
 			border-radius: var(--radius-sm);
 			cursor: pointer;
-			transition: background-color 0.2s ease;
-			&:hover { background-color: var(--color-accent-hover); }
+			font-weight: bold;       /* Make text bolder */
+			font-size: 1rem;         /* Ensure a readable size */
+			text-transform: uppercase; /* Uppercase text */
+			letter-spacing: 0.5px;   /* Slight letter spacing */
+			transition:
+				background-color 0.2s ease,
+				transform 0.1s ease-out; /* Added transform to transition */
+
+			&:hover {
+				background-color: var(--color-accent-hover);
+				/* Optional: subtle lift effect */
+				/* transform: translateY(-1px); */
+			}
+
+			&:active {
+				/* Assuming --color-accent-active is defined or use a darker shade */
+				background-color: var(--color-accent-active, color-mix(in srgb, var(--color-accent), black 15%));
+				transform: scale(0.98); /* Push down effect */
+				transition-duration: 0.05s; /* Make active transition faster */
+			}
 		}
 		.validation-error {
 			color: var(--color-error);
