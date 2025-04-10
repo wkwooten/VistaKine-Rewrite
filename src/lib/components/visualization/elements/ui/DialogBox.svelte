@@ -150,16 +150,101 @@
     {/if}
 {/if}
 
-<style>
+<style lang="scss">
   /* Base styles common to both (z-index, etc.) */
   .dialog-box {
     cursor: pointer;
     z-index: 11;
     border-radius: 10px;
     background-color: white;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease, top 0.2s ease, right 0.2s ease; /* Add transition */
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease, top 0.2s ease, right 0.2s ease;
+
+    /* Nested styles for expanded content */
+    .dialog-header {
+      .title {
+        font-weight: bold;
+        color: var(--color-text-primary);
+      }
+      /* Add other header styles if needed */
+    }
+
+    .speaker {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: var(--color-accent);
+    }
+
+    .message {
+      margin-bottom: 10px;
+      flex-grow: 1;
+      min-height: 3em;
+      font-family: var(--font-body);
+      line-height: 1.5;
+    }
+
+    .dialog-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      padding: var(--space-s);
+      overflow-y: auto;
+      max-height: 300px; /* Limit height */
+
+      label {
+        font-size: 0.9em;
+        color: var(--color-text-secondary);
+        margin-bottom: 0.25rem;
+      }
+
+      input[type='range'] + span {
+        font-size: 0.8em;
+        color: var(--color-text-secondary);
+        min-width: 2.5em; // Ensure space for value
+        text-align: right;
+        display: inline-block;
+      }
+    }
+
+    .action-buttons button {
+      padding: 0.5em 1em;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+      transition: background-color 0.2s;
+    }
+
+    .action-buttons button:hover {
+      background-color: var(--color-accent-hover-bg);
+    }
+
+    .click-to-continue {
+      font-style: italic;
+      color: var(--color-text-secondary);
+      align-self: flex-end;
+      font-size: 0.9em;
+    }
+
+    /* Collapse button within expanded view */
+    .collapse-button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      font-size: 1.2em;
+      line-height: 1;
+      padding: 2px 5px;
+      cursor: pointer;
+      z-index: 1001; /* Above dialog content */
+    }
+    .collapse-button:hover {
+      color: var(--color-text-primary);
+    }
   }
 
   /* Make sure the expanded/collapsed box itself captures pointer events */
@@ -173,83 +258,43 @@
     padding: 15px;
     margin: 0 auto;
     max-width: 600px;
-    min-width: 30ch; /* Keep min-width */
+    min-width: 30ch;
     min-height: 80px;
     text-align: left;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
     position: relative;
-    width: auto; /* Let flexbox determine width up to max-width */
-  }
-
-  .speaker {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: var(--color-accent);
-  }
-
-  .message {
-    margin-bottom: 10px;
-    flex-grow: 1;
-    min-height: 3em;
-    font-family: var(--font-body);
-    line-height: 1.5;
-  }
-
-  .click-to-continue {
-    font-style: italic;
-    color: var(--text-secondary);
-    align-self: flex-end;
-    font-size: 0.9em;
-  }
-
-  /* Collapse button within expanded view */
-  .collapse-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.2em;
-    line-height: 1;
-    padding: 2px 5px;
-    cursor: pointer;
-    z-index: 1001; /* Above dialog content */
-  }
-  .collapse-button:hover {
-      color: var(--text-color);
+    width: auto;
   }
 
   /* Collapsed styles */
   .dialog-box.collapsed {
     position: absolute;
-    top: var(--space-s); /* Align near top */
-    right: var(--space-s); /* Align near right */
-    width: 45px; /* Adjust size as needed */
+    top: var(--space-s);
+    right: var(--space-s);
+    width: 45px;
     height: 45px;
-    min-width: unset; /* Remove min-width */
+    min-width: unset;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5em; /* Adjust icon size */
+    font-size: 1.5em;
     padding: 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    border-radius: 50%; /* Make it circular */
+    border-radius: 50%;
   }
 
   /* Unread indicator dot */
   .dialog-box.collapsed.has-unread::after {
       content: '';
       position: absolute;
-      top: 3px; /* Adjust relative to button */
+      top: 3px;
       right: 3px;
       width: 10px;
       height: 10px;
       background-color: var(--color-error, red);
       border-radius: 50%;
-      border: 1px solid var(--bg-secondary);
+      border: 1px solid var(--color-surface);
   }
-
 </style>

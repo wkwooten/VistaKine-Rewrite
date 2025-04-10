@@ -55,9 +55,9 @@
 <style lang="scss">
 
 	.visualization-container {
-		background-color: var(--background-color);
+		background-color: var(--color-background);
 		/* margin-block: var(--space-xl); */
-		border: 1px solid var(--border-color);
+		border: 1px solid var(--color-border);
 		display: flex;
 		align-items: center;
 		justify-content: center;

@@ -150,7 +150,7 @@
   .glossary-search-bar {
     position: sticky;
     top: 0;
-    background-color: var(--background-color);
+    background-color: var(--color-background);
     padding: var(--space-m) 0;
     margin-bottom: var(--space-l);
     z-index: 100;
@@ -177,7 +177,7 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
     background-color: var(--bg-secondary);
-    color: var(--text-color);
+    color: var(--color-text-primary);
     cursor: pointer;
     white-space: nowrap; /* Prevent text wrapping */
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -188,7 +188,7 @@
 
     &.active {
       background-color: var(--color-accent);
-      color: var(--text-color-on-accent);
+      color: var(--color-text-on-dark);
       border-color: var(--color-accent);
     }
   }
@@ -241,5 +241,19 @@
 
   .glossary-definition {
     margin-top: 0;
+  }
+
+  dt {
+    font-weight: bold;
+    margin-top: var(--space-s);
+    color: var(--color-text-primary);
+  }
+
+  .glossary-item {
+    padding: var(--space-xs) var(--space-s);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-on-dark);
+    font-weight: 600;
+    margin-right: var(--space-s);
   }
 </style>

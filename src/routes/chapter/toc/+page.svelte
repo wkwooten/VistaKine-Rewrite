@@ -42,7 +42,7 @@
     padding: var(--space-l) var(--space-m);
 
     h1 {
-      color: var(--primary-color);
+      color: var(--color-accent);
       margin-bottom: var(--space-l);
       font-size: var(--step-3);
     }
@@ -65,7 +65,7 @@
         transition: color 0.2s ease;
 
         &:hover {
-          color: var(--primary-color);
+          color: var(--color-accent);
         }
       }
     }
@@ -77,16 +77,20 @@
     margin: 0;
 
     li {
-      margin-bottom: var(--space-xs);
+      margin-bottom: var(--space-xxs);
+      color: var(--color-text-primary);
 
       a {
-        color: var(--text-color);
         text-decoration: none;
-        font-size: var(--step-0);
+        font-size: var(--step-1);
+        font-weight: 600;
+        color: var(--color-text-primary);
+        border-bottom: 1px solid var(--color-border-light);
+        padding-bottom: var(--space-xs);
         transition: color 0.2s ease;
 
         &:hover {
-          color: var(--primary-color);
+          color: var(--color-accent);
         }
       }
     }

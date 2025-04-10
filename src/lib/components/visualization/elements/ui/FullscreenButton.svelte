@@ -29,10 +29,10 @@
 <style>
 	.fullscreen-button {
 		padding: var(--space-xs-s); /* Use Utopia fluid spacing */
-		/* border: none; */ /* Remove or adjust border */
+		border: none;
 		border-radius: 50%; /* Use variable for radius */
-		/* background-color: var(--brand-primary); */ /* Original background */
-		color: var(--primary-color); /* Use appropriate text color */
+		/* background-color: var(--color-accent); */ /* Original background */
+		color: var(--color-accent); /* Use appropriate text color */
 		cursor: pointer;
 		transition: background-color var(--transition-normal) var(--transition-bezier), border-color var(--transition-normal) var(--transition-bezier); /* Smooth transition - Added border-color */
 		display: flex; /* Use flex to center the icon */
@@ -48,17 +48,17 @@
 
 		&:hover {
 			/* Adjust hover if needed - maybe slightly less transparent */
-			background-color: var(--brand-hover-bg); /* Revert to original hover or adjust */
-			color: var(--brand-hover-color)
+			background-color: var(--color-accent-hover-bg); /* Revert to original hover or adjust */
+			color: var(--color-accent-light);
 		}
 
 		&:focus {
-			outline: 2px solid var(--brand-accent); /* Focus style */
-			outline-offset: 2px;
+			outline: 2px solid var(--color-accent-light); /* Focus style */
+			outline-offset: 1px;
 		}
 
 		&:active {
-			background-color: var(--brand-active-bg);
+			background-color: var(--color-accent-active-bg);
 		}
 	}
 </style>

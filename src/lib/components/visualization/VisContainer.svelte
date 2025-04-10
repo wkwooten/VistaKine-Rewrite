@@ -26,9 +26,9 @@
 
 <style lang="scss">
 	.visualization-container {
-		background-color: var(--background-color);
+		background-color: var(--color-background);
 		border-radius: var(--radius-sm);
-		border: 1px solid var(--border-color);
+		border: 1px solid var(--color-border);
 		max-height: 500px;
 		display: flex;
 		align-items: center;

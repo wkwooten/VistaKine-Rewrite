@@ -20,7 +20,7 @@
   }
 
   h1 {
-    color: var(--primary-color);
+    color: var(--color-accent);
     margin-bottom: var(--space-m);
   }
 

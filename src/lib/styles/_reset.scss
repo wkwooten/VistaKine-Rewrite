@@ -51,6 +51,17 @@ select {
   font: inherit;
 }
 
+/* Add more specific button resets */
+button {
+  background: none; /* Remove default background */
+  color: inherit; /* Inherit text color */
+  border: none; /* Remove default border */
+  padding: 0; /* Remove default padding */
+  text-align: inherit; /* Inherit text alignment */
+  cursor: pointer; /* Assume pointer cursor for buttons */
+  appearance: none; /* Remove browser default appearance */
+}
+
 /* Avoid text overflows */
 p,
 h1,

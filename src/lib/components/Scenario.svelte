@@ -14,7 +14,7 @@
     p {
       margin-bottom: var(--space-xs);
       font-style: italic;
-      color: var(--text-light);
+      color: var(--color-text-secondary);
 
       strong {
         font-weight: 600;
@@ -22,5 +22,13 @@
         color: var(--highlight-color);
       }
     }
+  }
+
+  .scenario-description {
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: var(--readable-max-width);
+    margin: var(--space-m) auto;
   }
 </style>

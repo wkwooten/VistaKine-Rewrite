@@ -354,15 +354,6 @@
     margin-right: var(--space-xs);
   }
 
-  .keyword {
-    font-weight: 800; /* Make keywords bold */
-    color: var(--color-accent); /* Give keywords the accent color */
-    /* You could also add a background color if you like, e.g., */
-    /* background-color: rgba(var(--color-accent-rgb), 0.15); */
-    /* padding: 0.1em 0.3em; */
-    /* border-radius: var(--radius-sm); */
-  }
-
   /* Styles for wrapper and fullscreen behavior */
   .vis-hud-wrapper {
 		margin-block: var(--space-m);

@@ -40,6 +40,10 @@
     align-items: center;
     min-height: 100vh;
     /* padding: var(--space-xl) 0; */
-    color: var(--text-color);
+    color: var(--color-text-primary);
+  }
+
+  .chapter-content {
+    color: var(--color-text-primary);
   }
 </style>

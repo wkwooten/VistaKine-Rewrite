@@ -102,13 +102,13 @@
         {#if !navCollapsed}
           <div class="logo-with-text">
             <div class="icon-logo">
-              <Hexagon size={iconSize} color="var(--primary-color)" />
+              <Hexagon size={iconSize} color="var(--color-accent)" />
             </div>
             <h1>VistaKine</h1>
           </div>
         {:else}
           <div class="icon-logo">
-            <Hexagon size={32} color="var(--primary-color)" />
+            <Hexagon size={32} color="var(--color-accent)" />
           </div>
         {/if}
       </div>
@@ -118,7 +118,7 @@
   <div class="search">
     {#if !navCollapsed}
       <div class="search-input-container">
-        <Search size={iconSize} color="var(--text-color)" opacity="0.6" />
+        <Search size={iconSize} color="var(--color-text-primary)" opacity="0.6" />
         <input type="text" placeholder="Search textbook..." />
       </div>
     {:else}
@@ -228,12 +228,12 @@
 <style lang="scss">
   nav {
     height: 100vh;
-    background-color: var(--background-color);
+    background-color: var(--color-background);
     display: flex;
     flex-direction: column;
     padding: var(--space-xs) 0;
     top: 0;
-    border-right: 1.5px solid var(--border-color);
+    border-right: 1.5px solid var(--color-border);
     left: 0;
     z-index: 1001;
     overflow: hidden;
@@ -298,7 +298,7 @@
 
   .logo h1 {
     font-size: var(--step-1);
-    color: var(--primary-color);
+    color: var(--color-accent);
     margin: 0;
   }
 
@@ -316,7 +316,7 @@
 
   .search {
     padding: var(--space-xs);
-    border-block: 1px solid var(--border-color);
+    border-block: 1px solid var(--color-border);
     display: flex;
     justify-content: center;
   }
@@ -341,7 +341,7 @@
     width: 100%;
     padding: var(--space-xs);
     border-radius: 4px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
   }
 
   .icon-search {
@@ -371,7 +371,7 @@
     display: flex;
     align-items: center;
     padding: var(--space-xs) var(--space-m);
-    color: var(--text-color);
+    color: var(--color-text-primary);
     text-decoration: none;
     border-radius: 4px;
     position: relative;
@@ -392,7 +392,7 @@
 
     &:hover {
       text-decoration: underline;
-      color: var(--primary-color);
+      color: var(--color-accent);
     }
   }
 
@@ -402,7 +402,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--color-accent);
     min-width: 32px;
     min-height: 32px;
     width: 32px;
@@ -412,18 +412,18 @@
   .chapter-number {
     background-color: #e6effd;
     border-radius: 50%;
-    color: var(--primary-color);
+    color: var(--color-accent);
     font-weight: bold;
     &:hover {
       text-decoration: underline;
-      color: var(--primary-color);
+      color: var(--color-accent);
     }
   }
 
   .bottom-item {
     margin-top: auto;
     margin-bottom: 0 !important;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--color-border);
     padding-top: var(--space-xs);
   }
 
@@ -451,7 +451,7 @@
     &:hover {
       background-color: var(--chapter-bg);
       text-decoration: underline;
-      color: var(--primary-color);
+      color: var(--color-accent);
       transition: background-color 0.2s ease, color 0.2s ease;
     }
 

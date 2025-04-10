@@ -11,16 +11,18 @@
 
 // Global base styles
 body {
+  min-height: 100vh;
   font-family: var(--font-family-base);
-  color: var(--text-color);
+  color: var(--color-text-primary);
   @include typography.body;
-  background-color: var(--background-color);
-  line-height: 1.5;
+  background-color: var(--color-background);
+  line-height: 1.6;
   height: 100vh;
   width: 100vw;
   overflow-x: hidden;
   overflow-y: auto;
   scroll-behavior: smooth;
+  font-size: var(--step-0); // Base font size from Utopia
 }
 
 // Parallax background
@@ -40,7 +42,7 @@ body {
 // Default heading styles (Assuming heading includes are in typography or main)
 h1 {
   @include typography.heading-1;
-  color: var(--primary-color);
+  color: var(--color-accent);
 }
 
 h2 {
@@ -60,7 +62,7 @@ p {
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--color-accent);
   transition: all var(--transition-fast) ease-in-out;
 
   &:hover {
@@ -70,21 +72,6 @@ a {
 
 // Focus styles for accessibility
 :focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
-
-// Main App Layout Container - REMOVED
-// .app-container { ... }
-
-// Navigation Sidebar Area - REMOVED
-// .navigation { ... }
-
-// Main Content Area - REMOVED
-// .content { ... }
-
-// Mobile overlay (for sidebar) - REMOVED
-// .mobile-overlay { ... }
-
-// Responsive adjustments for smaller screens - REMOVED
-// @media (max-width: variables.$breakpoint-md) { ... }

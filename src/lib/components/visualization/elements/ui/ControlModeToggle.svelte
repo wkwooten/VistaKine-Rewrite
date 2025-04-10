@@ -93,7 +93,7 @@
 	.mode-menu button {
 		background: none;
 		border: none;
-		color: var(--text-color);
+		color: var(--color-text-primary);
 		padding: var(--space-2xs) var(--space-xs);
 		text-align: left;
 		cursor: pointer;

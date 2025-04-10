@@ -12,7 +12,7 @@
   onMount(() => {
     const computedStyle = getComputedStyle(document.documentElement)
     Stop1 = color || computedStyle.getPropertyValue('--sidebar-background').trim() || Stop1
-    Stop2 = computedStyle.getPropertyValue('--border-color').trim() || Stop2
+    Stop2 = computedStyle.getPropertyValue('--color-border').trim() || Stop2
   })
 
 </script>

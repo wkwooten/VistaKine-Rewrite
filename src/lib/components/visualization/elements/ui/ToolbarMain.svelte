@@ -4,8 +4,8 @@
 	import { isFBDMenuOpen } from '$lib/stores/uiStores'; // Import the store
 
 	// Props for customization (optional, but good practice)
-	export let backgroundColor: string = 'var(--glass-bg-color, rgba(255, 255, 255, 0.1))'; // Default background with fallback - UPDATED
-	export let textColor: string = 'var(--text-color)';          // Default text color
+	export let backgroundColor: string = 'var(--color-surface)'; // Default background
+	export let textColor: string = 'var(--color-text-primary)';          // Default text color
 	export let padding: string = 'var(--space-2xs)';                // Default padding, using Utopia fluid spacing
 	export let gap: string = 'var(--space-s)';                          // Default gap between items
 	export let borderRadius: string = 'var(--radius-sm)'; // Default border radius
@@ -48,7 +48,7 @@
 		display: flex;
 		align-items: center; /* Vertically center items */
 		z-index: 1000; /* Ensure it's above other content */
-		border: 1px solid var(--border-color,#ccc);
+		border: 1px solid var(--color-border,#ccc);
 		box-shadow: var(--shadow-sm);
 		border-radius: var(--radius-lg);
 
@@ -62,12 +62,12 @@
 	.placeholder-slot {
 		width: 30px;
 		height: 30px;
-		border: 1px dashed var(--border-color, #ccc);
+		border: 1px dashed var(--color-border, #ccc);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		font-size: 0.8em;
-		color: var(--text-muted-color, #888);
+		color: var(--color-text-secondary, #888);
 	}
 
 	/* Style for the toolbar buttons */
@@ -76,7 +76,7 @@
 		border: none;
 		padding: var(--space-3xs); /* Small padding */
 		margin: 0;
-		color: var(--primary-color); /* Inherit text color from toolbar */
+		color: var(--color-accent); /* Inherit text color from toolbar */
 		cursor: pointer;
 		display: inline-flex; /* Align icon nicely */
 		align-items: center;
@@ -86,12 +86,19 @@
 	}
 
 	.toolbar-button:hover {
-		background-color: var(--brand-hover-bg);
-		color: var(--brand-hover-color);
+		background-color: var(--color-accent-hover-bg);
+		color: var(--color-accent-light);
 	}
 
 	.fbd-toggle-button:focus {
 		outline: 2px solid var(--focus-ring-color);
 		outline-offset: 1px;
+	}
+
+	.button-label {
+		font-size: 0.75rem;
+		color: var(--color-text-secondary, #888);
+		margin-top: 2px;
+		text-align: center;
 	}
 </style>

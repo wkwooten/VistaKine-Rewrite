@@ -11,9 +11,9 @@
 			margin-top: var(--space-xl); // Space between wrapper and footer
 			padding: var(--space-m) var(--space-l);
 			text-align: center;
-			color: var(--text-light); // Lighter text color for footer
+			color: var(--color-text-secondary); // Lighter text color for footer
 			font-size: var(--step--1); // Smaller font size for footer
-			border-top: 1px solid var(--border-color); // Subtle top border
+			border-top: 1px solid var(--color-border); // Subtle top border
 
 			ul {
 					list-style: none;
@@ -25,8 +25,13 @@
 			}
 
 			a {
-					color: var(--text-light); // Lighter link color in footer
-					text-decoration: underline; // Underline for links in footer
+					color: var(--color-text-secondary); // Lighter link color in footer
+					text-decoration: none;
+					transition: color 0.2s ease;
+
+					&:hover {
+							color: var(--color-text-primary);
+					}
 			}
 	}
 </style>

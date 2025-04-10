@@ -157,10 +157,10 @@
     height: 100%;
     max-height: 500px;
     aspect-ratio: 16/9;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     transition: border-color 0.5s ease, box-shadow 0.5s ease;
-    background-color: var(--background-color);
+    background-color: var(--color-background);
   }
 
   .exercise-wrapper.complete {

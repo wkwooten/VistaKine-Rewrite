@@ -52,7 +52,7 @@
     /* Add any overall container styles if needed, e.g., margin */
     margin-bottom: var(--space-m);
     /* Optional: Add border/padding based on common use case */
-    border-left: 3px solid var(--chapter-color, var(--primary-color)); /* Use a variable or fallback */
+    border-left: 3px solid var(--chapter-color, var(--color-accent)); /* Use a variable or fallback */
   }
 
   .accordion-header {
@@ -70,7 +70,7 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--primary-color);
+      outline: 2px solid var(--color-accent);
       outline-offset: 2px;
     }
   }
@@ -100,7 +100,7 @@
     margin-top: var(--space-xs);
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
 
     @media (max-width: 768px) {
       margin-inline: var(--space-xs);

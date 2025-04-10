@@ -38,7 +38,7 @@
     .page-nav {
         margin-top: var(--space-xl); // Space above the nav
         padding: var(--space-m) var(--space-l);
-        border-top: 1px solid var(--border-color);
+        border-top: 1px solid var(--color-border);
         text-align: center; // Center align links for now
         width: 100%;
     }
@@ -53,14 +53,14 @@
     .nav-link {
         display: inline-flex;
         align-items: center;
-        color: var(--text-color);
+        color: var(--color-text-primary);
         text-decoration: none;
         padding: var(--space-s) var(--space-m);
         border-radius: var(--radius-md);
-        transition: background-color var(--transition-fast);
+        transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: var(--brand-hover-bg);
+            background-color: var(--color-accent-hover-bg);
         }
 
         &.prev {
@@ -82,7 +82,7 @@
     }
 
     .nav-link.disabled { // Add some basic styling for disabled state
-        color: var(--text-color-muted); // Example color
+        color: var(--color-text-secondary); // Example color
         pointer-events: none; // Make it non-interactive
         opacity: 0.6;
     }

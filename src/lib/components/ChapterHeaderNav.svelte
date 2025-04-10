@@ -20,12 +20,14 @@
   .chapter-header-nav {
     margin-top: var(--space-m);
     padding: var(--space-s);
-    /* border-top: 1px solid var(--background-color); */
+    /* border-top: 1px solid var(--color-background); */
   }
 
   nav {
+
+
     p {
-      color: var(--background-color);
+      color: white;
       font-size: var(--step-1);
       margin-bottom: var(--space-xs);
     }
@@ -49,7 +51,7 @@
     }
 
     a {
-      color: var(--background-color);
+      color: white;
       text-decoration: underline;
       padding: var(--space-xs) var(--space-s);
       border-radius: var(--radius-sm, 4px);
@@ -57,7 +59,7 @@
       font-size: var(--step-0, 0.875rem);
 
       &:hover {
-        background-color: var(--brand-hover-bg, rgba(0, 0, 0, 0.05));
+        background-color: var(--color-accent-hover-bg, rgba(0, 0, 0, 0.05));
       }
     }
   }

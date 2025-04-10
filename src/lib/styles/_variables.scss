@@ -1,73 +1,127 @@
-// Color Variables - Core
-$primary-color: #3b82f6;
-$text-color: #1f2937;
-$background-color: #f0f8ff;
-$sidebar-background: #f9fafb;
-$border-color: #64B5F6;
-// Add a lighter border color, e.g., a semi-transparent version of text color
-$border-color-light: rgba($text-color, 0.2);
+// src/lib/styles/_variables.scss
+// ==================================
+// Color System Refactor
+// ==================================
 
-// Color Variables - Brand/Accent
-$brand-primary: #1E88E5;
-$brand-accent: #64B5F6;
-$brand-accent-rgb: #90CAF9;
-$brand-accent-dark: #1565C0;
-$brand-text-dark: #212121;
-$brand-text-light: #37474F;
-$brand-border: #64B5F6;
-$brand-hover-bg: rgba($brand-accent, 0.15);
-$brand-hover-color: #90CAF9;
-$brand-active-bg: rgba($brand-primary, 0.08);
-$brand-text-on-dark: #F0F8FF;
-$brand-text-error: #d32f2f;
-$brand-bg-error: rgba($brand-text-error, 0.1);
-$brand-border-error: rgba($brand-text-error, 0.3);
+// ----------------------------------
+// Core Palette
+// Purpose: Base colors for UI structure, text, and backgrounds.
+// ----------------------------------
+$color-background: #f0f8ff;          // Main page background
+$color-surface: #f9fafb;             // Card/Sidebar/distinct element backgrounds
+$color-text-primary: #1f2937;        // Primary text color
+$color-text-secondary: #37474F; // Lighter text for secondary info (kept from brand)
+$color-border: #64B5F6;              // Default border color
+$color-border-light: rgba($color-text-primary, 0.2); // Subtle borders/dividers
+
+// ----------------------------------
+// Accent Palette
+// Purpose: Interactive elements, highlights, calls to action.
+// ----------------------------------
+$color-accent: #1E88E5;               // Primary interactive color (was $brand-primary)
+$color-accent-hover: #1565C0;         // Hover state for accent elements (was $brand-accent-dark)
+$color-accent-light: #64B5F6;         // Lighter accent variation (was $brand-accent)
+$color-accent-active-bg: rgba($color-accent, 0.08); // Background for active state (was $brand-active-bg)
+$color-accent-hover-bg: rgba($color-accent-light, 0.15); // Background for hover state (was $brand-hover-bg)
+
+
+// ----------------------------------
+// Functional Colors
+// Purpose: Specific UI states like success, error, warnings.
+// ----------------------------------
 $color-success: #10b981;
+$color-error: #d32f2f;
+$color-error-bg: rgba($color-error, 0.1);
+$color-error-border: rgba($color-error, 0.3);
+$color-text-on-dark: #F0F8FF; // Text used on dark/accent backgrounds
 
-
-
-// ui colors
-$ui-color-primary: #e9f5ff;
-$ui-color-secondary: #4590cd;
-$ui-color-tertiary: #e9f5ff;
-$ui-color-quaternary: #e9f5ff;
-$ui-color-quinary: #e9f5ff;
-
-
-// Axis Colors
-$axis-color-x: #EF5350; // A slightly desaturated Red
-$axis-color-y: #66BB6A; // A matching Green
-$axis-color-z: #2C8FFF; // A distinct Purple
-
-// Axis Colors with Transparency
-
-$axis-color-x-t75: rgba($axis-color-x, 0.75); // 75% transparent
+// ----------------------------------
+// Axis Colors (Used, Keep As Is)
+// ----------------------------------
+$axis-color-x: #EF5350;
+$axis-color-y: #66BB6A;
+$axis-color-z: #2C8FFF;
+// Transparent versions...
+$axis-color-x-t75: rgba($axis-color-x, 0.75);
 $axis-color-y-t75: rgba($axis-color-y, 0.75);
 $axis-color-z-t75: rgba($axis-color-z, 0.75);
-
-$axis-color-x-t50: rgba($axis-color-x, 0.5); // 50% transparent
+$axis-color-x-t50: rgba($axis-color-x, 0.5);
 $axis-color-y-t50: rgba($axis-color-y, 0.5);
 $axis-color-z-t50: rgba($axis-color-z, 0.5);
-
-$axis-color-x-t25: rgba($axis-color-x, 0.25); // 25% transparent
+$axis-color-x-t25: rgba($axis-color-x, 0.25);
 $axis-color-y-t25: rgba($axis-color-y, 0.25);
 $axis-color-z-t25: rgba($axis-color-z, 0.25);
 
 
-// Link Colors
-$brand-link-color: #1976D2;
-$brand-link-color-hover: #1565C0;
-$brand-link-color-visited: #5E35B1;
-$brand-link-color-active: #0D47A1;
+// ----------------------------------
+// Chapter Theme Colors (Used, Keep As Is)
+// Purpose: Defined via CSS variables directly in :root, SCSS vars not strictly needed here unless used elsewhere in SCSS.
+// We will define these directly as CSS variables below.
+// ----------------------------------
 
 
-// Keyword Colors
-$keyword-color: rgba($brand-accent-rgb, 0.15);
-$keyword-color-hover: #1565C0;
-$keyword-color-visited: #5E35B1;
-$keyword-color-active: #0D47A1;
+// ==================================
+// Commented Out / Deprecated Sections
+// These were largely unused and can likely be removed later.
+// ==================================
 
+/*
+// Color Variables - Core (Old)
+// $primary-color: #3b82f6; // Replaced by $color-accent or specific use case needed
+// $text-color: #1f2937; // Renamed to $color-text-primary
+// $background-color: #f0f8ff; // Renamed to $color-background
+// $sidebar-background: #f9fafb; // Renamed to $color-surface
+// $border-color: #64B5F6; // Renamed to $color-border
+// $border-color-light: rgba($text-color, 0.2); // Renamed to $color-border-light
 
+// Color Variables - Brand/Accent (Old / Consolidated)
+// $brand-primary: #1E88E5; // Renamed to $color-accent
+// $brand-accent: #64B5F6; // Renamed to $color-accent-light
+// $brand-accent-rgb: #90CAF9; // Can be derived if needed: rgba($color-accent-light, ...)
+// $brand-accent-dark: #1565C0; // Renamed to $color-accent-hover
+// $brand-text-dark: #212121; // Consider adding as $color-text-strong if needed
+// $brand-text-light: #37474F; // Renamed to $color-text-secondary
+// $brand-border: #64B5F6; // Use $color-border or $color-accent-light
+// $brand-hover-bg: rgba($brand-accent, 0.15); // Renamed to $color-accent-hover-bg
+// $brand-hover-color: #90CAF9; // Use $color-accent-light or specific context color
+// $brand-active-bg: rgba($brand-primary, 0.08); // Renamed to $color-accent-active-bg
+// $brand-text-on-dark: #F0F8FF; // Renamed to $color-text-on-dark
+// $brand-text-error: #d32f2f; // Renamed $color-error
+// $brand-bg-error: rgba($brand-text-error, 0.1); // Renamed $color-error-bg
+// $brand-border-error: rgba($brand-text-error, 0.3); // Renamed $color-error-border
+// $color-success: #10b981; // Renamed $color-success
+
+// ui colors (Unused)
+// $ui-color-primary: #e9f5ff;
+// $ui-color-secondary: #4590cd;
+// $ui-color-tertiary: #e9f5ff;
+// $ui-color-quaternary: #e9f5ff;
+// $ui-color-quinary: #e9f5ff;
+
+// Link Colors (Unused - Use Accent or Defaults)
+// $brand-link-color: #1976D2;
+// $brand-link-color-hover: #1565C0;
+// $brand-link-color-visited: #5E35B1;
+// $brand-link-color-active: #0D47A1;
+
+// Keyword Colors (Unused)
+// $keyword-color: rgba($brand-accent-rgb, 0.15);
+// $keyword-color-hover: #1565C0;
+// $keyword-color-visited: #5E35B1;
+// $keyword-color-active: #0D47A1;
+
+// Cover-Specific (Keep if cover component is complex and uses these heavily)
+// $cover-gradient-start: $brand-accent-dark; // Use $color-accent-hover
+// $cover-gradient-end: $brand-primary; // Use $color-accent
+// $cover-text: $brand-text-on-dark; // Use $color-text-on-dark
+// $cover-text-secondary: rgba(255, 255, 255, 0.85);
+// $cover-accent: $brand-accent; // Use $color-accent-light
+// $cover-accent-glow: rgba($brand-accent, 0.7); // Use rgba($color-accent-light, 0.7)
+// $cover-heading-gradient-start: #ffffff;
+// $cover-heading-gradient-end: rgba(255, 255, 255, 0.8);
+// $cover-button-primary: $brand-primary; // Use $color-accent
+// $cover-button-primary-hover: $brand-accent-dark; // Use $color-accent-hover
+*/
 
 // Typography
 $font-family-base: 'IBM Plex Sans', sans-serif;
@@ -108,18 +162,6 @@ $shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
 // UI States
 $state-selected-color: #007bff;
 
-// Cover-Specific
-$cover-gradient-start: $brand-accent-dark;
-$cover-gradient-end: $brand-primary;
-$cover-text: $brand-text-on-dark;
-$cover-text-secondary: rgba(255, 255, 255, 0.85);
-$cover-accent: $brand-accent;
-$cover-accent-glow: rgba($brand-accent, 0.7);
-$cover-heading-gradient-start: #ffffff;
-$cover-heading-gradient-end: rgba(255, 255, 255, 0.8);
-$cover-button-primary: $brand-primary;
-$cover-button-primary-hover: $brand-accent-dark;
-
 // Border radius - Migrated from old variables
 $radius-xs: 2px;
 $radius-sm: 4px;
@@ -129,9 +171,11 @@ $radius-xl: 12px;
 $radius-round: 50%;
 $radius-pill: 9999px;
 
+// ==================================
 // Export as CSS variables
+// ==================================
 :root {
-  // Utopia Fluid Type Steps
+  // Utopia Fluid Type Steps (Keep As Is)
   --step--2: clamp(0.7813rem, 0.7747rem + 0.0326vw, 0.8rem);
   --step--1: clamp(0.9375rem, 0.9158rem + 0.1087vw, 1rem);
   --step-0: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
@@ -141,103 +185,33 @@ $radius-pill: 9999px;
   --step-4: clamp(2.3328rem, 2.0827rem + 1.2504vw, 3.0518rem);
   --step-5: clamp(2.7994rem, 2.4462rem + 1.7658vw, 3.8147rem);
 
-  // Core colors
-  --primary-color: #{$primary-color};
-  --text-color: #{$text-color};
-  --background-color: #{$background-color};
-  --sidebar-background: #{$sidebar-background};
-  --border-color: #{$border-color};
-  --border-color-light: #{$border-color-light};
+  // Core Palette
+  --color-background: #{$color-background};
+  --color-surface: #{$color-surface};
+  --color-text-primary: #{$color-text-primary};
+  --color-text-secondary: #{$color-text-secondary};
+  --color-border: #{$color-border};
+  --color-border-light: #{$color-border-light};
 
-  // Typography (Base definitions)
-  --font-family-base: #{$font-family-base};
-  --font-family-heading: #{$font-family-heading};
+  // Accent Palette
+  --color-accent: #{$color-accent};
+  --color-accent-hover: #{$color-accent-hover};
+  --color-accent-light: #{$color-accent-light};
+  --color-accent-active-bg: #{$color-accent-active-bg};
+  --color-accent-hover-bg: #{$color-accent-hover-bg};
 
-  // Brand colors
-  --brand-primary: #{$brand-primary};
-  --brand-accent: #{$brand-accent};
-  --brand-accent-dark: #{$brand-accent-dark};
-  --brand-text-dark: #{$brand-text-dark};
-  --brand-text-light: #{$brand-text-light};
-  --brand-border: #{$brand-border};
-  --brand-hover-bg: #{$brand-hover-bg};
-  --brand-hover-color: #{$brand-hover-color};
-  --brand-active-bg: #{$brand-active-bg};
-  --brand-text-on-dark: #{$brand-text-on-dark};
-  --brand-text-error: #{$brand-text-error};
-  --brand-bg-error: #{$brand-bg-error};
-  --brand-border-error: #{$brand-border-error};
+
+  // Functional Colors
   --color-success: #{$color-success};
-
-  // Link colors
-  --link-color: #{$brand-link-color};
-  --link-color-hover: #{$brand-link-color-hover};
-  --link-color-visited: #{$brand-link-color-visited};
-  --link-color-active: #{$brand-link-color-active};
-
-  // Keyword colors
-  --keyword-color: #{$keyword-color};
-  --keyword-color-hover: #{$keyword-color-hover};
-  --keyword-color-visited: #{$keyword-color-visited};
-  --keyword-color-active: #{$keyword-color-active};
-
-  // Transitions
-  --transition-fast: #{$transition-fast};
-  --transition-normal: #{$transition-normal};
-  --transition-slow: #{$transition-slow};
-  --transition-slower: #{$transition-slower};
-  --transition-bezier: #{$transition-bezier};
-
-  // Dimensions
-  --max-content-width: #{$max-content-width};
-  --wide-content-width: #{$wide-content-width};
-  --readable-max-width: #{$readable-max-width};
-  --sidebar-width: #{$sidebar-width};
-  --sidebar-collapsed-width: #{$sidebar-collapsed-width};
-  --sidebar-width-full: #{$sidebar-width-full};
-  --sidebar-width-mini: #{$sidebar-width-mini};
-  --sidebar-transition-duration: #{$sidebar-transition-duration};
-  --sidebar-transition-timing: #{$sidebar-transition-timing};
-
-  // Shadows
-  --shadow-sm: #{$shadow-sm};
-  --shadow-md: #{$shadow-md};
-  --shadow-lg: #{$shadow-lg};
-
-  // UI States
-  --state-selected-color: #{$state-selected-color};
-
-  // Cover specific
-  --cover-gradient: linear-gradient(135deg, #{$cover-gradient-start}, #{$cover-gradient-end});
-  --cover-text: #{$cover-text};
-  --cover-text-secondary: #{$cover-text-secondary};
-  --cover-accent: #{$cover-accent};
-  --cover-accent-glow: #{$cover-accent-glow};
-  --cover-heading-gradient: linear-gradient(90deg, #{$cover-heading-gradient-start}, #{$cover-heading-gradient-end});
-  --cover-button-primary: #{$cover-button-primary};
-  --cover-button-primary-hover: #{$cover-button-primary-hover};
-
-  // Glassmorphism
-  --glass-bg-color: rgba(255, 255, 255, 0.25); /* Increased opacity */
-  --glass-backdrop-blur: blur(8px);
-  --glass-border-color: rgba(255, 255, 255, 0.3); /* Increased opacity */
-  --glass-border: 1px solid var(--glass-border-color);
-
-  // Border radius
-  --radius-xs: #{$radius-xs};
-  --radius-sm: #{$radius-sm};
-  --radius-md: #{$radius-md};
-  --radius-lg: #{$radius-lg};
-  --radius-xl: #{$radius-xl};
-  --radius-round: #{$radius-round};
-  --radius-pill: #{$radius-pill};
+  --color-error: #{$color-error};
+  --color-error-bg: #{$color-error-bg};
+  --color-error-border: #{$color-error-border};
+  --color-text-on-dark: #{$color-text-on-dark};
 
   // Axis Colors
   --axis-color-x: #{$axis-color-x};
   --axis-color-y: #{$axis-color-y};
   --axis-color-z: #{$axis-color-z};
-
-  // Axis Colors with Transparency
   --axis-color-x-t75: #{$axis-color-x-t75};
   --axis-color-y-t75: #{$axis-color-y-t75};
   --axis-color-z-t75: #{$axis-color-z-t75};
@@ -248,14 +222,73 @@ $radius-pill: 9999px;
   --axis-color-y-t25: #{$axis-color-y-t25};
   --axis-color-z-t25: #{$axis-color-z-t25};
 
-  // Chapter Theme Colors - Define as CSS variables
+  // Chapter Theme Colors (Defined directly as CSS vars)
   --chapter-color-1: #10b981;
   --chapter-color-light-1: #6ee7b7;
   --chapter-color-dark-1: #047857;
-
   --chapter-color-2: #007bff;
   --chapter-color-light-2: #67b3ff;
   --chapter-color-dark-2: #0056b3;
+  // Add more chapter themes here as needed...
+  // --chapter-color-3: ...;
+  // --chapter-color-light-3: ...;
+  // --chapter-color-dark-3: ...;
 
 
+  // Typography (Base definitions - Keep As Is)
+  --font-family-base: #{$font-family-base};
+  --font-family-heading: #{$font-family-heading};
+
+  // Transitions (Keep As Is)
+  --transition-fast: #{$transition-fast};
+  --transition-normal: #{$transition-normal};
+  --transition-slow: #{$transition-slow};
+  --transition-slower: #{$transition-slower};
+  --transition-bezier: #{$transition-bezier};
+
+  // Dimensions (Keep As Is)
+  --max-content-width: #{$max-content-width};
+  --wide-content-width: #{$wide-content-width};
+  --readable-max-width: #{$readable-max-width};
+  --sidebar-width: #{$sidebar-width};
+  --sidebar-collapsed-width: #{$sidebar-collapsed-width};
+  --sidebar-width-full: #{$sidebar-width-full};
+  --sidebar-width-mini: #{$sidebar-width-mini};
+  --sidebar-transition-duration: #{$sidebar-transition-duration};
+  --sidebar-transition-timing: #{$sidebar-transition-timing};
+
+  // Shadows (Keep As Is)
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+
+  // UI States (Keep As Is)
+  --state-selected-color: #{$state-selected-color}; // Maybe rename to --color-selected-bg or similar? Or use accent?
+
+  /*
+  // Cover specific (Commented out - Define locally in component or keep if used globally)
+  --cover-gradient: linear-gradient(135deg, var(--color-accent-hover), var(--color-accent));
+  --cover-text: var(--color-text-on-dark);
+  // --cover-text-secondary: (value removed) // This SCSS var is removed, comment out CSS var too
+  --cover-accent: var(--color-accent-light);
+  --cover-accent-glow: #{rgba($color-accent-light, 0.7)};
+  // --cover-heading-gradient: linear-gradient(90deg, (value removed), (value removed)); // SCSS vars removed, comment out
+  --cover-button-primary: var(--color-accent);
+  --cover-button-primary-hover: var(--color-accent-hover);
+  */
+
+  // Glassmorphism (Keep As Is - Uses CSS vars)
+  --glass-bg-color: rgba(255, 255, 255, 0.25);
+  --glass-backdrop-blur: blur(8px);
+  --glass-border-color: rgba(255, 255, 255, 0.3);
+  --glass-border: 1px solid var(--glass-border-color);
+
+  // Border radius (Keep As Is)
+  --radius-xs: #{$radius-xs};
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --radius-round: #{$radius-round};
+  --radius-pill: #{$radius-pill};
 }

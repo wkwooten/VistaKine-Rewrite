@@ -145,7 +145,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		background-color: rgba(var(--bg-secondary-rgb), 0.85);
-		color: var(--text-color);
+		color: var(--color-text-primary);
 		padding: var(--space-xs) var(--space-m);
 		border-radius: var(--radius-sm);
 		font-style: italic;
@@ -176,7 +176,7 @@
 		background-color: rgba(var(--bg-secondary-rgb), 0.95);
 		border-radius: var(--radius-sm);
 		/* max-width: 180px; Remove or adjust if needed */
-		color: var(--text-color);
+		color: white;
 		pointer-events: auto;
 		z-index: 10;
 
@@ -231,9 +231,9 @@
 			max-width: 60px; /* Limit input width */
 			padding: var(--space-2xs);
 			background-color: var(--bg-primary);
-			border: 1px solid var(--border-color);
+			border: 1px solid var(--color-border);
 			border-radius: var(--radius-xs);
-			color: var(--text-color);
+			color: var(--color-text-primary);
 			background-color: white;
 			text-align: center;
 		}

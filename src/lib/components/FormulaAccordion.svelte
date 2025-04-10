@@ -25,7 +25,7 @@
     font-size: 1.2em; /* Slightly larger than body, adjust as needed */
     font-weight: 600; /* Increased font weight */
     margin-bottom: var(--space-3xs); /* Add a small space below the label */
-    color: var(--text-color); /* Ensure consistent text color */
+    color: var(--color-text-primary); /* Ensure consistent text color */
   }
 
 
@@ -37,4 +37,8 @@
   }
 
   /* Add other styles specific only to FormulaAccordion if needed */
+  button {
+    text-align: left;
+    color: var(--color-text-primary); /* Ensure consistent text color */
+  }
 </style>

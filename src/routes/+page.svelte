@@ -65,7 +65,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    /* background: linear-gradient(135deg, var(--background-color) 0%, var(--sidebar-background) 100%);  */
+    /* background: linear-gradient(135deg, var(--color-background) 0%, var(--sidebar-background) 100%);  */
   }
 
   .hero-content {
@@ -75,13 +75,13 @@
     h1 {
       font-size: var(--step-5);
       margin-bottom: var(--space-xs);
-      color: var(--primary-color);
+      color: var(--color-accent);
     }
 
     .tagline {
       font-size: var(--step-1);
       margin-bottom: var(--space-l);
-      color: var(--text-color);
+      color: var(--color-text-primary);
       opacity: 0.8;
     }
   }
@@ -100,16 +100,15 @@
 
   .btn {
     display: inline-block;
-    padding: var(--space-xs) var(--space-l);
-    border-radius: 4px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    font-size: var(--step-0);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    color: var(--color-text-primary);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-decoration: none;
 
     &.primary {
-      background-color: var(--primary-color);
+      background-color: var(--color-accent);
       color: white;
       border: none;
 
@@ -121,8 +120,8 @@
 
     &.secondary {
       background-color: transparent;
-      color: var(--primary-color);
-      border: 1px solid var(--primary-color);
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
 
       &:hover {
         background-color: rgba(59, 130, 246, 0.1);
@@ -134,13 +133,13 @@
   .about {
     min-height: 100vh;
     padding: var(--space-xl) var(--space-m);
-    background-color: var(--background-color);
+    background-color: var(--color-background);
 
     h2 {
       font-size: var(--step-4);
       text-align: center;
       margin-bottom: var(--space-l);
-      color: var(--primary-color);
+      color: var(--color-accent);
     }
 
     .about-content {
@@ -170,7 +169,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 
     h3 {
-      color: var(--primary-color);
+      color: var(--color-accent);
       margin-bottom: var(--space-xs);
       font-size: var(--step-2);
     }

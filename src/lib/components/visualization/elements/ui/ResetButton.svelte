@@ -44,21 +44,19 @@
 
 	/* Add any button-specific styles here */
 	.reset-button {
-
 		padding: 0.5rem 1rem;
 		cursor: pointer;
 		z-index: 11;
 
 		padding: var(--space-xs-s);
 		border-radius: 50%;
-		color: var(--primary-color);
+		color: var(--color-accent);
 		cursor: pointer;
-		transition: background-color var(--transition-normal) var(--transition-bezier), border-color var(--transition-normal) var(--transition-bezier);
+		transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		box-shadow: var(--shadow-sm);
-
 
 		/* Glassmorphism */
 		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
@@ -66,16 +64,15 @@
 		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
 		/* border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15)); */
 
-
 		&:hover {
-			/* Adjust hover if needed - maybe slightly less transparent */
-			background-color: var(--brand-hover-bg); /* Revert to original hover or adjust */
-			color: var(--brand-hover-color)
+			background-color: var(--color-accent-hover-bg); /* Revert to original hover or adjust */
+			color: var(--color-accent-light);
+			transform: translateY(-1px);
 		}
 
-
 		&:active {
-			background-color: var(--brand-active-bg);
+			background-color: var(--color-accent-active-bg);
+			transform: translateY(0);
 		}
 	}
 

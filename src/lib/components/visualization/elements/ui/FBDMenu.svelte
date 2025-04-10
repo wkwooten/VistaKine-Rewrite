@@ -115,16 +115,16 @@
     width: 100%;
     padding: var(--space-3xs);
     margin-bottom: var(--space-xs);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     background-color: var(--subtle-bg);
-    color: var(--text-color);
+    color: var(--color-text-primary);
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
   .toggle-all-button:hover {
-    background-color: var(--brand-hover-bg);
-	color: var(--brand-hover-color);
+    background-color: var(--color-accent-hover-bg);
+	color: var(--color-accent-light);
   }
   .divider {
     border: none;
