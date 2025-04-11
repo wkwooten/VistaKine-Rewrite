@@ -131,11 +131,12 @@
             </button>
             <div class="speaker">{speaker}</div>
             <div class="message">{displayedText}</div>
-            {#if !isTyping && currentMessageIndex < messages.length -1}
-            <div class="click-to-continue">Click to continue...</div>
-            {:else if !isTyping && currentMessageIndex === messages.length - 1}
-            <div class="click-to-continue">Click to close</div>
-            {/if}
+            <div
+              class="click-to-continue"
+              class:active={!isTyping && messages.length > 0}
+            >
+              {!isTyping && currentMessageIndex === messages.length - 1 ? 'Click to close' : 'Click to continue...'}
+            </div>
         </div>
     {:else}
         <!-- Collapsed View -->
@@ -166,6 +167,8 @@
       .title {
         font-weight: bold;
         color: var(--color-text-primary);
+        font-family: var(--font-body);
+        line-height: 1.5;
       }
       /* Add other header styles if needed */
     }
@@ -226,6 +229,18 @@
       color: var(--color-text-secondary);
       align-self: flex-end;
       font-size: 0.9em;
+      /* Ensure it takes up space but is initially invisible */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      height: 1.2em; /* Approximate height to reserve space */
+      line-height: 1.2em;
+    }
+
+    /* Make it visible when active */
+    .click-to-continue.active {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* Collapse button within expanded view */
@@ -257,14 +272,28 @@
   .dialog-box.expanded {
     padding: 15px;
     margin: 0 auto;
-    max-width: 600px;
-    min-height: 80px;
+    /* max-width: 600px; */
+    min-height: 80px; /* Still useful as a baseline */
+    /* max-height: 300px; */
     text-align: left;
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     position: relative;
-    width: 600px;
+    /* Width determined by parent now */
+
+    .message {
+      flex-grow: 1; /* Allow message area to grow */
+      flex-shrink: 1; /* Allow message area to shrink */
+      overflow-y: auto; /* Enable scroll *only* on message */
+      max-height: 4.5em; /* Limit message height (approx 3 lines + padding) */
+      /* Adjust margin if needed based on surrounding elements */
+      margin-bottom: 5px; /* Space before continue prompt */
+    }
+
+    .speaker, .click-to-continue {
+       flex-shrink: 0; /* Prevent speaker/prompt from shrinking */
+    }
   }
 
   /* Collapsed styles */

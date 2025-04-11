@@ -232,9 +232,9 @@ $calibration-target-hit-color-light: #32CD32;   // limegreen
   */
 
   // Glassmorphism (Keep As Is - Uses CSS vars)
-  --glass-bg-color: #1A1A2E40;
+  --glass-bg-color: #f9fafb 90%;
   --glass-backdrop-blur: blur(8px);
-  --glass-border-color: rgba(255, 255, 255, 0.3);
+  --glass-border-color: var(--color-accent);
   --glass-border: 1px solid var(--glass-border-color);
 
   // Border radius (Keep As Is)

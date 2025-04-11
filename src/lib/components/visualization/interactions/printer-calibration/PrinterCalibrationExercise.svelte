@@ -5,6 +5,14 @@
   import { resetSceneRequested } from '$lib/stores/calibrationState';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
+  import { HTML } from '@threlte/extras';
+  import DialogBox from '../../elements/ui/DialogBox.svelte';
+  import {
+    dialogMessages,
+    showDialog,
+    speaker,
+    hideCalibrationDialog
+  } from '$lib/stores/calibrationState';
 
   // --- Printer Boundaries (Could potentially move to store if shared) ---
   const MIN_X = 0;
@@ -47,6 +55,12 @@
   function handleCalibrationComplete() {
     console.log("[Exercise] Calibration Complete event received!");
     isCalibrationComplete = true;
+  }
+
+  // --- Dialog Close Handler ---
+  function handleDialogClose() {
+    console.log(`[Exercise] Dialog close event received, hiding via store`);
+    hideCalibrationDialog();
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
@@ -135,6 +149,26 @@
   class:fullscreen={isFullscreen}
   class:complete={isCalibrationComplete}
 >
+  <h3 class="exercise-title">Calibrate the printer</h3>
+  <p class="exercise-description">
+    Help surya calibrate her 3D printer by moving the nozzle to the targets. Use the control panel to enter coordinates of target position then move the nozzle to the target.
+  </p>
+  <!-- Render DialogBox container OUTSIDE VisContainer when NOT fullscreen -->
+  {#if !isFullscreen}
+    <div class="dialog-above-vis">
+      {#if $showDialog && $dialogMessages.length > 0}
+        <DialogBox
+          messages={$dialogMessages}
+          show={true}
+          speaker={$speaker}
+          on:close={handleDialogClose}
+        />
+      {:else}
+        <p class="dialog-placeholder">...</p>
+      {/if}
+    </div>
+  {/if}
+
   <VisContainer>
     <PrinterCalibrationScene
       targets={activeTargets}
@@ -142,25 +176,32 @@
       on:stageComplete={goToStage2}
       on:allStagesComplete={handleCalibrationComplete}
     />
+    <HTML fullscreen pointerEvents="none">
+      <PrinterCalibrationHud
+        bind:isFullscreen
+        on:requestToggleFullscreen={toggleFullscreen}
+      />
+    </HTML>
   </VisContainer>
 
-  <PrinterCalibrationHud
-    bind:isFullscreen
-    on:requestToggleFullscreen={toggleFullscreen}
-  />
+  <!-- Render DialogBox INSIDE the wrapper (overlay) when fullscreen -->
+  {#if $showDialog && isFullscreen}
+    <div class="dialog-in-fullscreen">
+      <DialogBox
+        messages={$dialogMessages}
+        show={$showDialog}
+        speaker={$speaker}
+        on:close={handleDialogClose}
+      />
+    </div>
+  {/if}
 </div>
 
 <style>
   .exercise-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    max-height: 500px;
-    aspect-ratio: 16/9;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    transition: border-color 0.5s ease, box-shadow 0.5s ease;
-    background-color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    margin-block: var(--space-l);
   }
 
   .exercise-wrapper.complete {
@@ -178,24 +219,56 @@
 		border-radius: 0;
 		border: none;
 		z-index: 9999;
-		aspect-ratio: auto;
+    flex-direction: row;
+
     & > :global(.visualization-container) {
         width: 100%;
         height: 100%;
         max-height: 100vh;
         border: none;
         border-radius: 0;
-        aspect-ratio: auto;
+    }
+
+    & > .dialog-in-fullscreen {
+      position: absolute;
+      top: var(--space-m);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 600px;
+      z-index: 100;
     }
 	}
 
-  @media (max-width: 768px) {
-		.exercise-wrapper {
-      aspect-ratio: 9/16;
-    }
-		.exercise-wrapper.fullscreen {
-			aspect-ratio: auto;
-		}
-	}
+
+
+  /* Style for the dialog wrapper when it's above the visualization */
+  .dialog-above-vis {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 110px;
+    margin-bottom: var(--space-s);
+    position: relative;
+  }
+
+  /* Style for the placeholder */
+  .dialog-placeholder {
+    padding: 15px; /* Match DialogBox padding roughly */
+    color: var(--color-text-secondary);
+    font-style: italic;
+    text-align: center;
+    min-height: 80px; /* Match DialogBox min-height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* VisContainer adjustments when Dialog is above */
+  :global(.exercise-wrapper:not(.fullscreen)) > .visualization-container {
+      flex-grow: 1;
+      max-height: none;
+      height: auto;
+      min-height: 0;
+  }
 
 </style>

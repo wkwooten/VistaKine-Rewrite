@@ -124,8 +124,6 @@
             <p>Formulas will go here.</p>
           </FormulaAccordion>
 
-          <h3 class="subsection-title">Visualize it: Calibrating the 3D printer</h3>
-
           <div class="visualization-container">
              <PrinterCalibrationExercise />
           </div>
