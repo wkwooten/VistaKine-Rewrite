@@ -126,7 +126,7 @@
 
           <h3 class="subsection-title">Visualize it: Calibrating the 3D printer</h3>
 
-          <div style="position: relative;">
+          <div class="visualization-container">
              <PrinterCalibrationExercise />
           </div>
 
@@ -352,35 +352,5 @@
 
   .quiz input[type="radio"] { /* More specific input style */
     margin-right: var(--space-xs);
-  }
-
-  /* Styles for wrapper and fullscreen behavior */
-  .vis-hud-wrapper {
-		margin-block: var(--space-m);
-
-    /* Basic positioning is set inline */
-    &.fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      background-color: var(--bg-primary);
-      z-index: 9990;
-
-      /* Make direct child VisContainer fill the fullscreen wrapper */
-      :global(> .visualization-container) {
-        width: 100%;
-        height: 100%;
-        max-height: 100vh;
-        border-radius: 0;
-        border: none;
-        aspect-ratio: auto;
-        box-sizing: border-box;
-      }
-    }
   }
 </style>

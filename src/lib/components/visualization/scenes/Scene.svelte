@@ -1,10 +1,11 @@
 <script lang="ts">
   import { T, useTask } from '@threlte/core'
-  import { Environment, Grid, OrbitControls, SoftShadows, TransformControls, interactivity } from '@threlte/extras'
+  import { Environment, Stars, Grid, OrbitControls, interactivity } from '@threlte/extras'
   import type { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
   import { RigidBodyType } from '@dimforge/rapier3d-compat';
   import type { RigidBody as RapierRigidBody } from '@dimforge/rapier3d-compat'
   import { Vector3, Group, Quaternion, Euler } from 'three'
+  import { onMount } from 'svelte';
 
   import { isDragging } from '$lib/stores/draggingStore';
   import { followedObject } from '$lib/stores/followedObjectStore';
@@ -14,12 +15,35 @@
 
   interactivity()
 
-  // Props
-  export let controlMode: 'drag' | 'translate' = 'drag';
+  // Props using $props() for Runes mode
+  let { controlMode = 'drag' }: { controlMode?: 'drag' | 'translate' } = $props();
 
   // State & Refs
   let controls: ThreeOrbitControls | undefined = undefined;
   let previousFollowedObject: Group | null = null;
+
+  // State for scene colors (reactive)
+  let gridCellColor = $state('#ADD8E6'); // Default light mode
+  let gridSectionColor = $state('#64B5F6'); // Default light mode
+
+  // Fetch CSS variable colors on mount (client-side only)
+  onMount(() => {
+    const computedStyle = getComputedStyle(document.documentElement);
+    gridCellColor = computedStyle.getPropertyValue('--scene-grid-cell-color').trim() || gridCellColor;
+    gridSectionColor = computedStyle.getPropertyValue('--scene-grid-section-color').trim() || gridSectionColor;
+
+    // Optional: Add listener for theme changes if you have a manual toggle
+    // This example assumes you might have a custom event or observable for theme changes
+    // themeStore.subscribe(newTheme => { updateColors(); });
+	// Or using MutationObserver on <html> element's class/style attribute
+  });
+
+  // Function to update colors if needed (e.g., on theme toggle)
+  function updateColors() {
+	const computedStyle = getComputedStyle(document.documentElement);
+    gridCellColor = computedStyle.getPropertyValue('--scene-grid-cell-color').trim() || gridCellColor;
+    gridSectionColor = computedStyle.getPropertyValue('--scene-grid-section-color').trim() || gridSectionColor;
+  }
 
   // Cube Data
   const cubeData = [
@@ -79,8 +103,8 @@
     controls.update();
   });
 
-  // --- Reset Camera on Unfollow / Calculate Offset on Follow ---
-  $: {
+  // --- Reset Camera on Unfollow / Calculate Offset on Follow --- Effect
+  $effect(() => {
     const currentFollowed = $followedObject;
     if (previousFollowedObject && !currentFollowed) {
       // Stopped following
@@ -94,12 +118,12 @@
       // Started following
       console.log('[Scene.svelte] Started following object.');
     }
-    // Update previous state
+    // Update previous state - This happens *after* the logic runs for the current change
     previousFollowedObject = currentFollowed;
-  }
+  });
 
-  // --- Dynamically set maxDistance based on follow state ---
-  $: currentMaxDistance = $followedObject ? 10 : Infinity;
+  // --- Dynamically set maxDistance based on follow state --- Derived State
+  let currentMaxDistance = $derived($followedObject ? 10 : Infinity);
 
   // --- Scene Reset Function ---
 	export function resetScene() {
@@ -177,7 +201,7 @@
   near={10}
   far={50}
 /> -->
-<T.AmbientLight intensity={1} />
+<T.AmbientLight intensity={0.5} />
 <T.DirectionalLight
   castShadow
   position={[8, 20, -3]}
@@ -188,11 +212,12 @@
   fadeOrigin={new Vector3(0, 0, 0)}
   sectionsSize={10}
   sectionThickness={1}
-  cellColor='#ADD8E6'
-  sectionColor='#64B5F6'
+  cellColor={gridCellColor}
+  sectionColor={gridSectionColor}
   fadeDistance={150}
 />
 <Ground />
+
 
 <!-- Scene Objects -->
 {#each cubeData as cube, index (cube.id)}

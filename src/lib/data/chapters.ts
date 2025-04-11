@@ -7,6 +7,7 @@ export interface Chapter {
   title: string;
   slug: string;
   sections: Section[];
+  description?: string;
   prevChapter: { slug: string; title: string } | null;
   nextChapter: { slug: string; title: string } | null;
   chapterNumber: number;
@@ -17,6 +18,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Introduction',
     slug: 'understanding-3d-space',
+    description: 'Learn the fundamentals of 3D space, including coordinate systems, vectors, and reference frames, essential for describing motion.',
     sections: [
       { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
       { id: "vectors-in-space", title: "1.2 Vectors in 3D Space" },
@@ -29,6 +31,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Kinematics',
     slug: 'kinematics',
+    description: 'Explore the description of motion without considering its causes. Covers displacement, velocity, acceleration, and different types of motion.',
     sections: [
       { id: "displacement-velocity-acceleration", title: "2.1 Displacement, Velocity, and Acceleration" },
       { id: "uniform-motion", title: "2.2 Uniform Motion" },
@@ -42,6 +45,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Dynamics',
     slug: 'forces-and-motion',
+    description: 'Dive into the causes of motion by studying forces and Newton\'s laws. Understand how forces affect the movement of objects.',
     sections: [
       { id: "newtons-laws", title: "3.1 Newton's Laws" },
       { id: "newtons-laws-of-motion", title: "3.2 Newton's Laws of Motion" }
@@ -53,6 +57,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Advanced Topics',
     slug: 'advanced-topics',
+    description: 'Placeholder description for Advanced Topics.',
     sections: [
       { id: "advanced-section1", title: "4.1 Advanced Topic 1 - Placeholder" },
       { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" }
@@ -64,6 +69,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Motion Analysis',
     slug: 'motion-analysis',
+    description: 'Placeholder description for Motion Analysis.',
     sections: [
       { id: "motion-analysis-section1", title: "5.1 Motion Analysis 1 - Placeholder" },
       { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" }
@@ -75,6 +81,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Biomechanics',
     slug: 'biomechanics',
+    description: 'Placeholder description for Biomechanics.',
     sections: [
       { id: "biomechanics-section1", title: "6.1 Biomechanics 1 - Placeholder" },
       { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" }
@@ -86,6 +93,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Clinical Applications',
     slug: 'clinical-applications',
+    description: 'Placeholder description for Clinical Applications.',
     sections: [
       { id: "clinical-section1", title: "7.1 Clinical Applications 1 - Placeholder" },
       { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" }
@@ -97,6 +105,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Research Methods',
     slug: 'research-methods',
+    description: 'Placeholder description for Research Methods.',
     sections: [
       { id: "research-section1", title: "8.1 Research Methods 1 - Placeholder" },
       { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
@@ -130,11 +139,11 @@ export function getChapterBySlug(slug: string): Chapter | undefined {
   return chapters.find(chapter => chapter.slug === slug);
 }
 
-export function getAllChapters() {
+export function getAllChapters(): Chapter[] {
   return chapters;
 }
 
 // For simplified navigation needs (sidebar, TOC)
 export function getChapterList() {
-  return chapters.map(({ title, slug, sections }) => ({ title, slug, sections }));
+  return chapters.map(({ title, slug, sections, description }) => ({ title, slug, sections, description }));
 }

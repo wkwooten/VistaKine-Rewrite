@@ -81,7 +81,7 @@
         isTyping = false;
         console.log('[DialogBox] Finished typing.');
       }
-    }, 50);
+    }, 20);
   }
 
   // Renamed to handleExpandClick for clarity
@@ -156,7 +156,7 @@
     cursor: pointer;
     z-index: 11;
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease, top 0.2s ease, right 0.2s ease;
@@ -258,14 +258,13 @@
     padding: 15px;
     margin: 0 auto;
     max-width: 600px;
-    min-width: 30ch;
     min-height: 80px;
     text-align: left;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
     position: relative;
-    width: auto;
+    width: 600px;
   }
 
   /* Collapsed styles */
@@ -281,7 +280,7 @@
     justify-content: center;
     font-size: 1.5em;
     padding: 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-md);
     border-radius: 50%;
   }
 

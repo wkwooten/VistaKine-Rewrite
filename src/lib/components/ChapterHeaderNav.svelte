@@ -27,7 +27,7 @@
 
 
     p {
-      color: white;
+      color: var(--color-text-inverted);
       font-size: var(--step-1);
       margin-bottom: var(--space-xs);
     }
@@ -51,7 +51,7 @@
     }
 
     a {
-      color: white;
+      color: var(--color-text-inverted);
       text-decoration: underline;
       padding: var(--space-xs) var(--space-s);
       border-radius: var(--radius-sm, 4px);

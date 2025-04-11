@@ -65,6 +65,7 @@
 		"phosphor-svelte": "^3.0.1",
 		"postprocessing": "^6.37.1",
 		"svelte-katex": "^0.1.2",
+		"svelte-portal": "^2.2.1",
 		"utopia-core-scss": "^1.2.1"
 	}
 }

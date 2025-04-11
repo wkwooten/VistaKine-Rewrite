@@ -264,6 +264,11 @@
     }
   }
 
+  .icon {
+    background-color: var(--color-surface);
+  }
+
+
   .nav-header-container {
     display: flex;
     justify-content: center;
@@ -334,6 +339,8 @@
 
     input {
       padding-left: 32px;
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
     }
   }
 
@@ -483,6 +490,22 @@
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
     }
+  }
+
+  /* Add keyframes for the spin animation */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Add transition for smooth animation */
+  a.nav-item[href="/settings"] .icon :global(svg) {
+    transition: transform 0.4s ease-in-out;
+  }
+
+  /* Apply spin transformation on hover */
+  a.nav-item[href="/settings"]:hover .icon :global(svg) {
+    transform: rotate(360deg);
   }
 </style>
 

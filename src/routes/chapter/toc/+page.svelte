@@ -18,6 +18,9 @@
         <h2>
           <a href={`/chapter/${chapter.slug}`}>{chapter.title}</a>
         </h2>
+        {#if chapter.description}
+          <p class="description">{chapter.description}</p>
+        {/if}
 
         {#if chapter.sections && chapter.sections.length > 0}
           <ul class="sections">
@@ -94,5 +97,12 @@
         }
       }
     }
+  }
+
+  .description {
+    font-size: var(--step-0);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-m);
+    line-height: 1.6;
   }
 </style>

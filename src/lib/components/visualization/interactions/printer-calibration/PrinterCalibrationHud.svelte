@@ -176,23 +176,23 @@
 		background-color: rgba(var(--bg-secondary-rgb), 0.95);
 		border-radius: var(--radius-sm);
 		/* max-width: 180px; Remove or adjust if needed */
-		color: white;
+		color: var(--color-text-inverted);
 		pointer-events: auto;
 		z-index: 10;
 
 		#x-label {
 			background-color: var(--axis-color-x-t75);
-			color: white;
+			color: var(--color-text-inverted);
 		}
 
 		#y-label {
 			background-color: var(--axis-color-y-t75);
-			color: white;
+			color: var(--color-text-inverted);
 		}
 
 		#z-label {
 			background-color: var(--axis-color-z-t75);
-			color: white;
+			color: var(--color-text-inverted);
 		}
 
 
@@ -234,7 +234,7 @@
 			border: 1px solid var(--color-border);
 			border-radius: var(--radius-xs);
 			color: var(--color-text-primary);
-			background-color: white;
+			background-color: var(--color-text-inverted);
 			text-align: center;
 		}
 		button {
@@ -243,6 +243,8 @@
 			background-color: var(--color-accent);
 			color: var(--button-text-color);
 			border: none;
+			display: flex;
+			justify-content: center;
 			border-radius: var(--radius-sm);
 			cursor: pointer;
 			font-weight: bold;       /* Make text bolder */

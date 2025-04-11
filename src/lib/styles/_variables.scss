@@ -13,6 +13,8 @@ $color-text-primary: #1f2937;        // Primary text color
 $color-text-secondary: #37474F; // Lighter text for secondary info (kept from brand)
 $color-border: #64B5F6;              // Default border color
 $color-border-light: rgba($color-text-primary, 0.2); // Subtle borders/dividers
+$color-white: #ffffff;
+$color-text-inverted-light: $color-white; // Value for light mode
 
 // ----------------------------------
 // Accent Palette
@@ -59,69 +61,6 @@ $axis-color-z-t25: rgba($axis-color-z, 0.25);
 // We will define these directly as CSS variables below.
 // ----------------------------------
 
-
-// ==================================
-// Commented Out / Deprecated Sections
-// These were largely unused and can likely be removed later.
-// ==================================
-
-/*
-// Color Variables - Core (Old)
-// $primary-color: #3b82f6; // Replaced by $color-accent or specific use case needed
-// $text-color: #1f2937; // Renamed to $color-text-primary
-// $background-color: #f0f8ff; // Renamed to $color-background
-// $sidebar-background: #f9fafb; // Renamed to $color-surface
-// $border-color: #64B5F6; // Renamed to $color-border
-// $border-color-light: rgba($text-color, 0.2); // Renamed to $color-border-light
-
-// Color Variables - Brand/Accent (Old / Consolidated)
-// $brand-primary: #1E88E5; // Renamed to $color-accent
-// $brand-accent: #64B5F6; // Renamed to $color-accent-light
-// $brand-accent-rgb: #90CAF9; // Can be derived if needed: rgba($color-accent-light, ...)
-// $brand-accent-dark: #1565C0; // Renamed to $color-accent-hover
-// $brand-text-dark: #212121; // Consider adding as $color-text-strong if needed
-// $brand-text-light: #37474F; // Renamed to $color-text-secondary
-// $brand-border: #64B5F6; // Use $color-border or $color-accent-light
-// $brand-hover-bg: rgba($brand-accent, 0.15); // Renamed to $color-accent-hover-bg
-// $brand-hover-color: #90CAF9; // Use $color-accent-light or specific context color
-// $brand-active-bg: rgba($brand-primary, 0.08); // Renamed to $color-accent-active-bg
-// $brand-text-on-dark: #F0F8FF; // Renamed to $color-text-on-dark
-// $brand-text-error: #d32f2f; // Renamed $color-error
-// $brand-bg-error: rgba($brand-text-error, 0.1); // Renamed $color-error-bg
-// $brand-border-error: rgba($brand-text-error, 0.3); // Renamed $color-error-border
-// $color-success: #10b981; // Renamed $color-success
-
-// ui colors (Unused)
-// $ui-color-primary: #e9f5ff;
-// $ui-color-secondary: #4590cd;
-// $ui-color-tertiary: #e9f5ff;
-// $ui-color-quaternary: #e9f5ff;
-// $ui-color-quinary: #e9f5ff;
-
-// Link Colors (Unused - Use Accent or Defaults)
-// $brand-link-color: #1976D2;
-// $brand-link-color-hover: #1565C0;
-// $brand-link-color-visited: #5E35B1;
-// $brand-link-color-active: #0D47A1;
-
-// Keyword Colors (Unused)
-// $keyword-color: rgba($brand-accent-rgb, 0.15);
-// $keyword-color-hover: #1565C0;
-// $keyword-color-visited: #5E35B1;
-// $keyword-color-active: #0D47A1;
-
-// Cover-Specific (Keep if cover component is complex and uses these heavily)
-// $cover-gradient-start: $brand-accent-dark; // Use $color-accent-hover
-// $cover-gradient-end: $brand-primary; // Use $color-accent
-// $cover-text: $brand-text-on-dark; // Use $color-text-on-dark
-// $cover-text-secondary: rgba(255, 255, 255, 0.85);
-// $cover-accent: $brand-accent; // Use $color-accent-light
-// $cover-accent-glow: rgba($brand-accent, 0.7); // Use rgba($color-accent-light, 0.7)
-// $cover-heading-gradient-start: #ffffff;
-// $cover-heading-gradient-end: rgba(255, 255, 255, 0.8);
-// $cover-button-primary: $brand-primary; // Use $color-accent
-// $cover-button-primary-hover: $brand-accent-dark; // Use $color-accent-hover
-*/
 
 // Typography
 $font-family-base: 'IBM Plex Sans', sans-serif;
@@ -171,6 +110,20 @@ $radius-xl: 12px;
 $radius-round: 50%;
 $radius-pill: 9999px;
 
+// Scene element colors (light) - DEFINED HERE
+$scene-grid-cell-color-light: #ADD8E6;
+$scene-grid-section-color-light: $color-accent-light; // #64B5F6
+$scene-ground-color-light: #e0e0e0;
+
+// --- Calibration Scene Specific (Light) ---
+$calibration-nozzle-color-light: #4682b4; // steelblue
+$calibration-nozzle-edges-color-light: #ADD8E6;
+$calibration-height-indicator-color-light: #ADD8E6;
+$calibration-bed-color-light: $color-white; // white
+$calibration-bed-edges-color-light: #ADD8E6;
+$calibration-target-pending-color-light: #FFA500; // orange
+$calibration-target-hit-color-light: #32CD32;   // limegreen
+
 // ==================================
 // Export as CSS variables
 // ==================================
@@ -192,7 +145,8 @@ $radius-pill: 9999px;
   --color-text-secondary: #{$color-text-secondary};
   --color-border: #{$color-border};
   --color-border-light: #{$color-border-light};
-
+  --color-white: #{$color-white};
+  --color-text-inverted: #{$color-text-inverted-light};
   // Accent Palette
   --color-accent: #{$color-accent};
   --color-accent-hover: #{$color-accent-hover};
@@ -278,7 +232,7 @@ $radius-pill: 9999px;
   */
 
   // Glassmorphism (Keep As Is - Uses CSS vars)
-  --glass-bg-color: rgba(255, 255, 255, 0.25);
+  --glass-bg-color: #1A1A2E40;
   --glass-backdrop-blur: blur(8px);
   --glass-border-color: rgba(255, 255, 255, 0.3);
   --glass-border: 1px solid var(--glass-border-color);
@@ -291,4 +245,169 @@ $radius-pill: 9999px;
   --radius-xl: #{$radius-xl};
   --radius-round: #{$radius-round};
   --radius-pill: #{$radius-pill};
+
+  // Scene Elements (Light) - USED HERE
+  --scene-grid-cell-color: #{$scene-grid-cell-color-light};
+  --scene-grid-section-color: #{$scene-grid-section-color-light};
+  --scene-ground-color: #{$scene-ground-color-light};
+  --scene-ground-gradient-edge-color: #A9A9A9;
+
+  // Calibration Scene (Light) - Usage is now AFTER definition
+  --calibration-nozzle-color: #{$calibration-nozzle-color-light};
+  --calibration-nozzle-edges-color: #{$calibration-nozzle-edges-color-light};
+  --calibration-height-indicator-color: #{$calibration-height-indicator-color-light};
+  --calibration-bed-color: #{$calibration-bed-color-light};
+  --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
+  --calibration-target-pending-color: #{$calibration-target-pending-color-light};
+  --calibration-target-hit-color: #{$calibration-target-hit-color-light};
 }
+
+// ----------------------------------
+// Dark Mode Palette (Midnight Purple Theme)
+// ----------------------------------
+
+// --- Core Dark ---
+$color-dark-background: #1a1a2e;  // Very dark desaturated midnight blue/purple
+$color-dark-surface: #2a2844;     // Slightly lighter dark purple for cards/sidebars
+$color-dark-text-primary: #f0f8ff; // AliceBlue (re-using light bg) - very light for high contrast
+$color-dark-text-secondary: #a0a0c0; // Desaturated light purple/grey for secondary text
+$color-dark-border: #4d4a6d;       // Muted purple/grey border
+$color-dark-border-light: rgba($color-dark-text-primary, 0.1); // Very subtle divider
+$color-dark-text-inverted-dark: $color-dark-text-primary; // Value for dark mode (using light primary text)
+
+// --- Accent Dark ---
+$color-dark-accent: #a779e1;        // A brighter, vibrant lavender/purple for interaction
+$color-dark-accent-hover: #c099f0;  // Even brighter purple for hover
+$color-dark-accent-light: #7b4db8;  // A less saturated purple (can adjust if needed)
+$color-dark-accent-active-bg: rgba($color-dark-accent, 0.15);
+$color-dark-accent-hover-bg: rgba($color-dark-accent-hover, 0.1);
+$color-dark-accent-contrast: #48d1cc; // Vibrant Cyan/Teal
+
+// --- Functional Dark ---
+$color-dark-success: #2ecc71;        // Bright green
+$color-dark-error: #ff6b6b;          // Soft, bright red/pink
+$color-dark-error-bg: rgba($color-dark-error, 0.15);
+$color-dark-error-border: rgba($color-dark-error, 0.3);
+$color-dark-text-on-dark: $color-dark-text-primary; // Primary light text works here
+$color-dark-text-on-accent: #111; // Dark text might be needed on the bright dark-mode accents
+
+// --- Axis Dark (Brighter versions for visibility) ---
+$axis-dark-color-x: #ff7975; // Brighter Red
+$axis-dark-color-y: #82e0aa; // Brighter Green
+$axis-dark-color-z: #74bfff; // Brighter Blue
+$axis-dark-color-x-t75: rgba($axis-dark-color-x, 0.75);
+$axis-dark-color-y-t75: rgba($axis-dark-color-y, 0.75);
+$axis-dark-color-z-t75: rgba($axis-dark-color-z, 0.75);
+$axis-dark-color-x-t50: rgba($axis-dark-color-x, 0.5);
+$axis-dark-color-y-t50: rgba($axis-dark-color-y, 0.5);
+$axis-dark-color-z-t50: rgba($axis-dark-color-z, 0.5);
+$axis-dark-color-x-t25: rgba($axis-dark-color-x, 0.25);
+$axis-dark-color-y-t25: rgba($axis-dark-color-y, 0.25);
+$axis-dark-color-z-t25: rgba($axis-dark-color-z, 0.25);
+
+// Scene element colors (dark) - DEFINED HERE
+$scene-grid-cell-color-dark: $color-dark-text-secondary; // #a0a0c0 (Brighter for contrast)
+$scene-grid-section-color-dark: $color-dark-accent;      // #a779e1 (Even brighter accent)
+$scene-ground-color-dark: #2A2844;                       // Darker purple ground center
+$scene-ground-gradient-edge-dark: #24203d;                // Even darker purple ground edge
+
+// --- Calibration Scene Specific (Dark) ---
+$calibration-nozzle-color-dark: $color-dark-accent-contrast; // #48d1cc (Vibrant Cyan/Teal)
+$calibration-nozzle-edges-color-dark: $color-dark-border;     // #4d4a6d
+$calibration-height-indicator-color-dark: $color-dark-border; // #4d4a6d
+$calibration-bed-color-dark: $color-dark-surface;             // #2a2844
+$calibration-bed-edges-color-dark: $color-dark-border-light;  // rgba(dark-text, 0.1)
+$calibration-target-pending-color-dark: #FFD700; // gold (stands out on dark)
+$calibration-target-hit-color-dark: #50C878;    // emerald (brighter green)
+
+// ==================================
+// Export as CSS variables
+// ==================================
+:root {
+  // ... (existing :root block with light mode CSS variables) ...
+  --color-white: #{$color-white};
+  --color-text-inverted: #{$color-text-inverted-light};
+
+  // Scene Elements (Light) - USED HERE
+  --scene-grid-cell-color: #{$scene-grid-cell-color-light};
+  --scene-grid-section-color: #{$scene-grid-section-color-light};
+  --scene-ground-color: #{$scene-ground-color-light};
+  --scene-ground-gradient-edge-color: #A9A9A9;
+
+  // Calibration Scene (Light)
+  --calibration-nozzle-color: #{$calibration-nozzle-color-light};
+  --calibration-nozzle-edges-color: #{$calibration-nozzle-edges-color-light};
+  --calibration-height-indicator-color: #{$calibration-height-indicator-color-light};
+  --calibration-bed-color: #{$calibration-bed-color-light};
+  --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
+  --calibration-target-pending-color: #{$calibration-target-pending-color-light};
+  --calibration-target-hit-color: #{$calibration-target-hit-color-light};
+
+  // Accent Palette
+  // ... rest of light mode :root ...
+}
+
+// ==================================
+// Dark Mode Overrides
+// ==================================
+@media (prefers-color-scheme: dark) {
+  :root {
+    // -- Core Palette Override --
+    --color-background: #{$color-dark-background};
+    --color-surface: #{$color-dark-surface};
+    --color-text-primary: #{$color-dark-text-primary};
+    --color-text-secondary: #{$color-dark-text-secondary};
+    --color-border: #{$color-dark-border};
+    --color-border-light: #{$color-dark-border-light};
+    --color-text-inverted: #{$color-dark-text-inverted-dark};
+
+    // -- Accent Palette Override --
+    --color-accent: #{$color-dark-accent};
+    --color-accent-hover: #{$color-dark-accent-hover};
+    --color-accent-light: #{$color-dark-accent-light};
+    --color-accent-active-bg: #{$color-dark-accent-active-bg};
+    --color-accent-hover-bg: #{$color-dark-accent-hover-bg};
+
+    // -- Functional Colors Override --
+    --color-success: #{$color-dark-success};
+    --color-error: #{$color-dark-error};
+    --color-error-bg: #{$color-dark-error-bg};
+    --color-error-border: #{$color-dark-error-border};
+    --color-text-on-dark: #{$color-dark-text-on-dark};
+    // Consider adding --color-text-on-accent if needed: #{$color-dark-text-on-accent};
+
+    // -- Axis Colors Override --
+    --axis-color-x: #{$axis-dark-color-x};
+    --axis-color-y: #{$axis-dark-color-y};
+    --axis-color-z: #{$axis-dark-color-z};
+    --axis-color-x-t75: #{$axis-dark-color-x-t75};
+    --axis-color-y-t75: #{$axis-dark-color-y-t75};
+    --axis-color-z-t75: #{$axis-dark-color-z-t75};
+    --axis-color-x-t50: #{$axis-dark-color-x-t50};
+    --axis-color-y-t50: #{$axis-dark-color-y-t50};
+    --axis-color-z-t50: #{$axis-dark-color-z-t50};
+    --axis-color-x-t25: #{$axis-dark-color-x-t25};
+    --axis-color-y-t25: #{$axis-dark-color-y-t25};
+    --axis-color-z-t25: #{$axis-dark-color-z-t25};
+
+    // Scene Elements (Dark) - USED HERE
+    --scene-grid-cell-color: #{$scene-grid-cell-color-dark};
+    --scene-grid-section-color: #{$scene-grid-section-color-dark};
+    --scene-ground-color: #{$scene-ground-color-dark};
+    --scene-ground-gradient-edge-color: #{$scene-ground-gradient-edge-dark};
+
+    // Calibration Scene (Dark)
+    --calibration-nozzle-color: #{$calibration-nozzle-color-dark};
+    --calibration-nozzle-edges-color: #{$calibration-nozzle-edges-color-dark};
+    --calibration-height-indicator-color: #{$calibration-height-indicator-color-dark};
+    --calibration-bed-color: #{$calibration-bed-color-dark};
+    --calibration-bed-edges-color: #{$calibration-bed-edges-color-dark};
+    --calibration-target-pending-color: #{$calibration-target-pending-color-dark};
+    --calibration-target-hit-color: #{$calibration-target-hit-color-dark};
+  }
+}
+
+// Optional: Class for manual toggle
+// .dark-mode {
+//   // Copy variable overrides here
+// }

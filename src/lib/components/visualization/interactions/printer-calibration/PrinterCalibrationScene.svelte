@@ -34,9 +34,19 @@
   let { targets = [], currentStage = 1 } = $props<{ targets?: { id: string; x: number; y: number; z: number }[]; currentStage?: number }>();
 
   // --- Resolved CSS Color State ---
-  let xAxisColor = $state('red'); // Default fallback
+  let xAxisColor = $state('red');
   let yAxisColor = $state('lime');
   let zAxisColor = $state('blue');
+  // Calibration specific colors
+  let nozzleColor = $state('#4682b4');
+  let nozzleEdgesColor = $state('#ADD8E6');
+  let heightIndicatorColor = $state('#ADD8E6');
+  let bedColor = $state('#ffffff');
+  let bedEdgesColor = $state('#ADD8E6');
+  let gridCellColor = $state('#ADD8E6'); // Re-use scene grid color
+  let gridSectionColor = $state('#64B5F6'); // Re-use scene grid color
+  let targetPendingColor = $state('#FFA500');
+  let targetHitColor = $state('#32CD32');
 
   // --- Constants ---
   const cornerOriginOffset = new Vector3(-6, 1, -6);
@@ -188,11 +198,23 @@
 
   // --- Fetch CSS Variables on Mount ---
   onMount(() => {
-    // Fetch computed styles after component mounts
     const styles = getComputedStyle(document.documentElement);
-    xAxisColor = styles.getPropertyValue('--axis-color-x').trim() || 'red'; // Provide fallback
-    yAxisColor = styles.getPropertyValue('--axis-color-y').trim() || 'lime';
-    zAxisColor = styles.getPropertyValue('--axis-color-z').trim() || 'blue';
+    // Axis
+    xAxisColor = styles.getPropertyValue('--axis-color-x').trim() || xAxisColor;
+    yAxisColor = styles.getPropertyValue('--axis-color-y').trim() || yAxisColor;
+    zAxisColor = styles.getPropertyValue('--axis-color-z').trim() || zAxisColor;
+    // Calibration Scene
+    nozzleColor = styles.getPropertyValue('--calibration-nozzle-color').trim() || nozzleColor;
+    nozzleEdgesColor = styles.getPropertyValue('--calibration-nozzle-edges-color').trim() || nozzleEdgesColor;
+    heightIndicatorColor = styles.getPropertyValue('--calibration-height-indicator-color').trim() || heightIndicatorColor;
+    bedColor = styles.getPropertyValue('--calibration-bed-color').trim() || bedColor;
+    bedEdgesColor = styles.getPropertyValue('--calibration-bed-edges-color').trim() || bedEdgesColor;
+    gridCellColor = styles.getPropertyValue('--scene-grid-cell-color').trim() || gridCellColor; // Use scene grid var
+    gridSectionColor = styles.getPropertyValue('--scene-grid-section-color').trim() || gridSectionColor; // Use scene grid var
+    targetPendingColor = styles.getPropertyValue('--calibration-target-pending-color').trim() || targetPendingColor;
+    targetHitColor = styles.getPropertyValue('--calibration-target-hit-color').trim() || targetHitColor;
+
+    console.log('[PrinterCalibration] Fetched Colors:', { xAxisColor, yAxisColor, zAxisColor, nozzleColor, bedColor, targetPendingColor /* ... add others if needed */ });
 
     // Show initial dialog only if the store isn't already showing one (e.g., on reset)
     if (!get(showDialog)) { // Use get() for one-time read on the ACTUAL store
@@ -252,7 +274,7 @@
 
 <T.PerspectiveCamera
 	makeDefault
-	position={[0, 20, 5]}
+	position={[0, 30, 5]}
 >
 	<OrbitControls
 		enableZoom={true}
@@ -271,8 +293,8 @@
   <!-- Actual Nozzle Mesh, offset vertically -->
   <T.Mesh position.y={1}>
     <T.BoxGeometry args={[1, 2, 1]}/>
-    <T.MeshBasicMaterial color={"steelblue"} transparent={true} opacity={0.75} />
-    <Edges color='#ADD8E6' />
+    <T.MeshBasicMaterial color={nozzleColor} transparent={true} opacity={0.75} />
+    <Edges color={nozzleEdgesColor} />
   </T.Mesh>
 
   <!-- Height Indicator Cylinder -->
@@ -280,7 +302,7 @@
   {#if indicatorHeight > 0.01} // Only show if nozzle is noticeably above the bed
     <T.Mesh position.y={-indicatorHeight / 2}> // Position center relative to group origin (nozzle bottom)
       <T.CylinderGeometry args={[0.05, 0.05, indicatorHeight, 8]} />
-      <T.MeshBasicMaterial color="#ADD8E6" transparent={true} opacity={0.6} />
+      <T.MeshBasicMaterial color={heightIndicatorColor} transparent={true} opacity={0.6} />
     </T.Mesh>
   {/if}
 </T.Group>
@@ -291,13 +313,13 @@
 	sectionsSize={10}
 	gridSize={12}
 	sectionThickness={1}
-	cellColor='#ADD8E6'
-	sectionColor='#64B5F6'
+	cellColor={gridCellColor}
+	sectionColor={gridSectionColor}
 />
 <T.Mesh position.y={0.5}>
 	<T.BoxGeometry args={[12, 1, 12]}/>
-	<T.MeshBasicMaterial color={"white"} />
-	<Edges color='#ADD8E6' />
+	<T.MeshBasicMaterial color={bedColor} />
+	<Edges color={bedEdgesColor} />
 </T.Mesh>
 
 <!-- Axes Group at Corner -->
@@ -399,7 +421,7 @@
 <!-- Target Point Markers -->
 {#each targetDetails as target (target.id)}
   {@const isHit = hitTargets.has(target.id)}
-  {@const color = isHit ? 'lime' : 'orange'}
+  {@const color = isHit ? targetHitColor : targetPendingColor}
 
   <!-- Target Sphere -->
   <T.Mesh position={target.worldPos.toArray()}>
