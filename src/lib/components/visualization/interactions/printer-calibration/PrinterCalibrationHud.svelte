@@ -87,16 +87,4 @@
 		z-index: 10;
 	}
 
-	/* Removed styles for:
-	   .overlay-message (seems unused now? keeping comment just in case)
-	   .scene-controls (seems unused now? keeping comment just in case)
-	   .nozzle-control-panel
-	   .axis-inputs
-	   .axis-group
-	   label
-	   .axis-range
-	   input[type="number"]
-	   button
-	   .validation-error
-	*/
 </style>

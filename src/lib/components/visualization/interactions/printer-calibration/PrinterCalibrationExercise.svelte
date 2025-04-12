@@ -242,11 +242,11 @@
   }
 
   /* VisContainer adjustments when Dialog is above */
-  :global(.exercise-wrapper:not(.fullscreen)) > .visualization-container {
+  /* :global(.exercise-wrapper:not(.fullscreen)) > .visualization-container {
       flex-grow: 1;
       max-height: none;
       height: auto;
       min-height: 0;
-  }
+  } */
 
 </style>
