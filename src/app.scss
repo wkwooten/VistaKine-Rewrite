@@ -1,7 +1,7 @@
-@use '$lib/styles/typography';
-@use '$lib/styles/variables';
-@use '$lib/styles/main';
-@use '$lib/styles/katex-custom';
+// @use '$lib/styles/typography';
+// @use '$lib/styles/variables';
+// @use '$lib/styles/main';
+// @use '$lib/styles/katex-custom';
 // Import Google Fonts
 // @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700&display=swap'); // Added for Headers
@@ -40,22 +40,22 @@ body {
 }
 
 // Default heading styles (Assuming heading includes are in typography or main)
-h1 {
-  @include typography.heading-1;
-  color: var(--color-accent);
-}
+// h1 {
+//   @include typography.heading-1;
+//   color: var(--color-accent);
+// }
 
-h2 {
-  @include typography.heading-2;
-}
+// h2 {
+//   @include typography.heading-2;
+// }
 
-h3 {
-  @include typography.heading-3;
-}
+// h3 {
+//   @include typography.heading-3;
+// }
 
-h4 {
-  @include typography.heading-4;
-}
+// h4 {
+//   @include typography.heading-4;
+// }
 
 p {
   margin-bottom: var(--space-s);

@@ -238,6 +238,4 @@
     margin-bottom: var(--space-s);
     position: relative;
   }
-
-
 </style>
