@@ -192,7 +192,7 @@
   {/if}
 </div>
 
-<style lang="scss">
+<style>
   .exercise-wrapper {
     display: flex;
     flex-direction: column;
@@ -230,8 +230,6 @@
     }
 	}
 
-
-
   /* Style for the dialog wrapper when it's above the visualization */
   .dialog-above-vis {
     width: 100%;
@@ -241,12 +239,5 @@
     position: relative;
   }
 
-  /* VisContainer adjustments when Dialog is above */
-  /* :global(.exercise-wrapper:not(.fullscreen)) > .visualization-container {
-      flex-grow: 1;
-      max-height: none;
-      height: auto;
-      min-height: 0;
-  } */
 
 </style>
