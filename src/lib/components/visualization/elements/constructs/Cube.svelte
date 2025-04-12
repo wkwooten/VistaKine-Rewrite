@@ -16,7 +16,7 @@
 	import { selectedObject } from '$lib/stores/selectedObjectStore';
 	import { followedObject } from '$lib/stores/followedObjectStore';
 
-	// --- Use $props for Runes mode ---
+	// --- Use props for Runes mode ---
 	let {
 		color = '#2a2844',
 		scale = 1,

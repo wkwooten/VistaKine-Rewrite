@@ -192,7 +192,7 @@
   {/if}
 </div>
 
-<style>
+<style lang="scss">
   .exercise-wrapper {
     display: flex;
     flex-direction: column;
