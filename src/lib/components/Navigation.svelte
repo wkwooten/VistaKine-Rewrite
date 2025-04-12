@@ -491,7 +491,6 @@
       background-color: rgba(59, 130, 246, 0.1);
     }
   }
-
 </style>
 
 <!-- Add global style for body scroll lock -->
