@@ -492,21 +492,6 @@
     }
   }
 
-  /* Add keyframes for the spin animation */
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  /* Add transition for smooth animation */
-  a.nav-item[href="/settings"] .icon :global(svg) {
-    transition: transform 0.4s ease-in-out;
-  }
-
-  /* Apply spin transformation on hover */
-  a.nav-item[href="/settings"]:hover .icon :global(svg) {
-    transform: rotate(360deg);
-  }
 </style>
 
 <!-- Add global style for body scroll lock -->
