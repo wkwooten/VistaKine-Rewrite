@@ -143,33 +143,28 @@
 
 </script>
 
+<h3 class="exercise-title"><b>Visualize it:</b> Calibrating the Printer</h3>
+<p class="exercise-description">
+  Help surya calibrate her 3D printer by moving the nozzle to the targets. Use the control panel to enter coordinates of target position then move the nozzle to the target.
+</p>
 <div
   bind:this={exerciseWrapperElement}
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
-  class:complete={isCalibrationComplete}
 >
-  <h3 class="exercise-title">Calibrate the printer</h3>
-  <p class="exercise-description">
-    Help surya calibrate her 3D printer by moving the nozzle to the targets. Use the control panel to enter coordinates of target position then move the nozzle to the target.
-  </p>
-  <!-- Render DialogBox container OUTSIDE VisContainer when NOT fullscreen -->
-  {#if !isFullscreen}
+  <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
+  {#if $showDialog && !isFullscreen}
     <div class="dialog-above-vis">
-      {#if $showDialog && $dialogMessages.length > 0}
-        <DialogBox
-          messages={$dialogMessages}
-          show={true}
-          speaker={$speaker}
-          on:close={handleDialogClose}
-        />
-      {:else}
-        <p class="dialog-placeholder">...</p>
-      {/if}
+      <DialogBox
+        messages={$dialogMessages}
+        show={$showDialog}
+        speaker={$speaker}
+        on:close={handleDialogClose}
+      />
     </div>
   {/if}
 
-  <VisContainer>
+  <VisContainer isComplete={isCalibrationComplete}>
     <PrinterCalibrationScene
       targets={activeTargets}
       currentStage={currentStage}
@@ -204,12 +199,7 @@
     margin-block: var(--space-l);
   }
 
-  .exercise-wrapper.complete {
-	  box-shadow: var(--color-success) 2px 2px 10px 0;
-    border-color: var(--color-success);
-	}
-
-	.exercise-wrapper.fullscreen {
+  .exercise-wrapper.fullscreen {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -249,18 +239,6 @@
     min-height: 110px;
     margin-bottom: var(--space-s);
     position: relative;
-  }
-
-  /* Style for the placeholder */
-  .dialog-placeholder {
-    padding: 15px; /* Match DialogBox padding roughly */
-    color: var(--color-text-secondary);
-    font-style: italic;
-    text-align: center;
-    min-height: 80px; /* Match DialogBox min-height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   /* VisContainer adjustments when Dialog is above */

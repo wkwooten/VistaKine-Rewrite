@@ -71,45 +71,11 @@
 		align-items: flex-start; /* Align items like top message */
 	}
 
-	/* Make sure all control groups allow pointer events */
-	.top-panel,
-	.top-left-controls,
-	.top-right-controls {
-		pointer-events: auto;
-		z-index: 10;
-	}
-
-	/* Styles for nozzle-control-panel and its children are moved */
-
-	/* Top Panel adjustments */
-	.top-panel {
-		position: absolute;
-		top: var(--space-s);
-		left: var(--space-s);
-		right: var(--space-s); /* Span across the top */
-		display: flex;
-		justify-content: space-between; /* Push items to edges */
-		align-items: flex-start; /* Align items to the top */
-		pointer-events: none; /* Pass clicks through by default */
-		gap: var(--space-m); /* Space between elements */
-	}
-
-	/* Ensure control groups can be interacted with */
-	.top-left-controls,
-	.top-right-controls {
-		display: flex;
-		gap: var(--space-xs);
-		pointer-events: auto;
-		z-index: 10;
-		/* Allow shrinking if dialog is wide */
-		flex-shrink: 0;
-	}
-
 	/* New container for top-left buttons */
 	.hud-controls-top-left {
 		position: absolute;
-		top: var(--space-s);
-		left: var(--space-s);
+		top: 0;
+		left: 0;
 		z-index: 10;
 	}
 

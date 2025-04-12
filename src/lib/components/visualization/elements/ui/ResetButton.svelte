@@ -47,6 +47,7 @@
 		padding: 0.5rem 1rem;
 		cursor: pointer;
 		z-index: 11;
+		margin: var(--space-s);
 
 		padding: var(--space-xs-s);
 		border-radius: 50%;
@@ -57,9 +58,10 @@
 		align-items: center;
 		justify-content: center;
 		box-shadow: var(--shadow-sm);
-
 		/* Glassmorphism */
 		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
+		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
+
 		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
 		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
 		/* border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15)); */

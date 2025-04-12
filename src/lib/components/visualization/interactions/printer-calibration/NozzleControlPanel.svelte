@@ -32,6 +32,15 @@
 		console.log(`[NozzleControlPanel] Dispatching requestMove: X=${nozzleX}, Y=${nozzleY}, Z=${nozzleZ}`);
 		dispatch('requestMove', { x: nozzleX, y: nozzleY, z: nozzleZ });
 	}
+
+	// New handler for keydown events on inputs
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			// Prevent default form submission behavior if this were inside a form
+			event.preventDefault();
+			handleMoveRequest();
+		}
+	}
 </script>
 
 <!-- Bottom Right Input Controls -->
@@ -40,23 +49,23 @@
 		<div class="axis-group" id="x-label">
 			<label class="axis-label">
 				X <span class="axis-range">({MIN_X}-{MAX_X})</span>
-				<input type="number" bind:value={nozzleX} min={MIN_X} max={MAX_X} />
+				<input type="number" bind:value={nozzleX} min={MIN_X} max={MAX_X} onkeydown={handleKeydown} />
 			</label>
 		</div>
 		<div class="axis-group" id="y-label">
 			<label class="axis-label">
 				Y <span class="axis-range">({MIN_Y}-{MAX_Y})</span>
-				<input type="number" bind:value={nozzleY} min={MIN_Y} max={MAX_Y} />
+				<input type="number" bind:value={nozzleY} min={MIN_Y} max={MAX_Y} onkeydown={handleKeydown} />
 			</label>
 		</div>
 		<div class="axis-group" id="z-label">
 			<label class="axis-label">
 				Z <span class="axis-range">({MIN_Z}-{MAX_Z})</span>
-				<input type="number" bind:value={nozzleZ} min={MIN_Z} max={MAX_Z} />
+				<input type="number" bind:value={nozzleZ} min={MIN_Z} max={MAX_Z} onkeydown={handleKeydown} />
 			</label>
 		</div>
 	</div>
-	<button on:click={handleMoveRequest}>Move Nozzle</button>
+	<button onclick={handleMoveRequest}>Move Nozzle</button>
 	<!-- Removed validation message display, dialog handles it -->
 </div>
 

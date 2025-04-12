@@ -5,6 +5,10 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 
+	// --- Props ---
+	export let isComplete = false;
+
+	// --- State ---
 	let width: number;
 	let height: number;
 	let containerElement: HTMLDivElement;
@@ -13,6 +17,7 @@
 <div
 	bind:this={containerElement}
 	class="visualization-container"
+	class:complete={isComplete}
 	bind:clientWidth={width}
 	bind:clientHeight={height}
 >
@@ -42,5 +47,11 @@
 		@media (max-width: 768px) {
 			aspect-ratio: 9/16;
 		}
+	}
+
+	/* Added completion styles */
+	.visualization-container.complete {
+		box-shadow: var(--color-success) 2px 2px 10px 0;
+		border-color: var(--color-success);
 	}
 </style>

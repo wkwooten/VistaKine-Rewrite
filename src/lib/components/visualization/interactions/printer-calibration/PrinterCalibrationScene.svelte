@@ -13,7 +13,7 @@
     Text,
     HTML
   } from '@threlte/extras'
-  import { Vector3, Group, Quaternion, Euler, Vector2 } from 'three'
+  import { Vector3, Group, Quaternion, Euler, Vector2, Color } from 'three'
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { createEventDispatcher, onMount } from 'svelte';
@@ -45,8 +45,12 @@
   let bedEdgesColor = $state('#ADD8E6');
   let gridCellColor = $state('#ADD8E6'); // Re-use scene grid color
   let gridSectionColor = $state('#64B5F6'); // Re-use scene grid color
-  let targetPendingColor = $state('#FFA500');
-  let targetHitColor = $state('#32CD32');
+  // Target Sphere Colors (read from CSS)
+  let targetPendingColor = $state('#FFA500'); // Orange
+  let targetHitColor = $state('#32CD32');   // LimeGreen
+  // Target Label Colors (darker defaults, can be overridden by CSS)
+  let targetLabelPendingColor = $state('#FFA500'); // Darker Amber/Orange
+  let targetLabelHitColor = $state('#32CD32');   // Darker Green
 
   // --- Constants ---
   const cornerOriginOffset = new Vector3(-6, 1, -6);
@@ -75,11 +79,13 @@
     hitTargets = new Set();
   });
 
-  // Calculate World Positions for Targets (reactive) - USE $derived.by
+  // Calculate World Positions and store relative coords for Targets (reactive) - USE $derived.by
   const targetDetails = $derived.by(() => {
     return targets.map((target: { id: string; x: number; y: number; z: number }) => ({
       id: target.id,
-      relativeY: target.y,
+      x: target.x, // Store original relative X
+      y: target.y, // Store original relative Y (used to be relativeY)
+      z: target.z, // Store original relative Z
       worldPos: cornerOriginOffset.clone().add(new Vector3(target.x, target.y, target.z))
     }));
   });
@@ -90,11 +96,11 @@
     const currentNozzlePos = $animatedPosition;
     let newlyHit = false;
     // Add explicit type for target within the loop
-    targetDetails.forEach((target: { id: string; relativeY: number; worldPos: Vector3 }) => {
+    targetDetails.forEach((target: { id: string; x: number; y: number; z: number; worldPos: Vector3 }) => { // Update type here
       if (!hitTargets.has(target.id)) {
         let distance = Infinity;
         const targetWorldPos = target.worldPos; // Cache for logging clarity
-        if (target.relativeY === 0) {
+        if (target.y === 0) { // Check original relative Y
           // Calculate XZ distance for targets on the bed
           const nozzleXZ = new Vector2(currentNozzlePos.x, currentNozzlePos.z);
           const targetXZ = new Vector2(targetWorldPos.x, targetWorldPos.z);
@@ -211,10 +217,14 @@
     bedEdgesColor = styles.getPropertyValue('--calibration-bed-edges-color').trim() || bedEdgesColor;
     gridCellColor = styles.getPropertyValue('--scene-grid-cell-color').trim() || gridCellColor; // Use scene grid var
     gridSectionColor = styles.getPropertyValue('--scene-grid-section-color').trim() || gridSectionColor; // Use scene grid var
+    // Target Sphere Colors
     targetPendingColor = styles.getPropertyValue('--calibration-target-pending-color').trim() || targetPendingColor;
     targetHitColor = styles.getPropertyValue('--calibration-target-hit-color').trim() || targetHitColor;
+    // Target Label Colors (fetch overrides or use darker defaults)
+    targetLabelPendingColor = styles.getPropertyValue('--calibration-target-label-pending-color').trim() || targetLabelPendingColor;
+    targetLabelHitColor = styles.getPropertyValue('--calibration-target-label-hit-color').trim() || targetLabelHitColor;
 
-    console.log('[PrinterCalibration] Fetched Colors:', { xAxisColor, yAxisColor, zAxisColor, nozzleColor, bedColor, targetPendingColor /* ... add others if needed */ });
+    console.log('[PrinterCalibration] Fetched Colors:', { xAxisColor, yAxisColor, zAxisColor, nozzleColor, bedColor, targetPendingColor, targetHitColor, targetLabelPendingColor, targetLabelHitColor });
 
     // Show initial dialog only if the store isn't already showing one (e.g., on reset)
     if (!get(showDialog)) { // Use get() for one-time read on the ACTUAL store
@@ -421,21 +431,44 @@
 <!-- Target Point Markers -->
 {#each targetDetails as target (target.id)}
   {@const isHit = hitTargets.has(target.id)}
-  {@const color = isHit ? targetHitColor : targetPendingColor}
+  {@const sphereColor = isHit ? targetHitColor : targetPendingColor}
+  {@const labelColor = isHit ? targetLabelHitColor : targetLabelPendingColor}
+  {@const labelOffsetY = 0.7}
+  {@const labelOffsetZ = -0.}
+  {@const labelFontSize = 0.7}
+  {@const coordinateText = `(${target.x}, ${target.y}, ${target.z})`}
+  {@const outlineColor = '#FFFFFF'}
+  {@const outlineWidth = 0.03}
 
   <!-- Target Sphere -->
   <T.Mesh position={target.worldPos.toArray()}>
     <T.SphereGeometry args={[0.2]} />
-    <T.MeshBasicMaterial {color} />
+    <T.MeshBasicMaterial color={sphereColor} />
   </T.Mesh>
 
   <!-- Vertical Line for Stage 2 targets (Y > 0) -->
-  {#if target.relativeY > 0}
-    {@const lineHeight = target.worldPos.y - 1} // Height from bed surface (world Y=1) to target Y
-    {@const lineCenterY = 1 + lineHeight / 2} // Midpoint Y for cylinder position
+  {#if target.y > 0}
+    {@const lineColor = isHit ? targetHitColor : targetPendingColor}
+    {@const lineOpacity = isHit ? 1 : 0.5}
+    {@const lineHeight = target.worldPos.y - 1}
+    {@const lineCenterY = 1 + lineHeight / 2}
     <T.Mesh position={[target.worldPos.x, lineCenterY, target.worldPos.z]}>
       <T.CylinderGeometry args={[0.03, 0.03, lineHeight, 6]} />
-      <T.MeshBasicMaterial {color} transparent={!isHit} opacity={isHit ? 1 : 0.5} />
+      <T.MeshBasicMaterial color={lineColor} transparent={true} opacity={lineOpacity} />
     </T.Mesh>
   {/if}
+
+  <!-- Target Label (shows ID initially, coords when hit) -->
+  <Billboard position={[target.worldPos.x, target.worldPos.y + labelOffsetY, target.worldPos.z + labelOffsetZ]}>
+    <Text
+      text={isHit ? coordinateText : target.id}
+      fontSize={labelFontSize}
+      color={labelColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
+      {outlineColor}
+      {outlineWidth}
+    />
+  </Billboard>
 {/each}

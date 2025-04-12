@@ -120,14 +120,7 @@
         </div>
 
         <div class="section-core">
-          <FormulaAccordion>
-            <p>Formulas will go here.</p>
-          </FormulaAccordion>
-
-          <div class="visualization-container">
-             <PrinterCalibrationExercise />
-          </div>
-
+          <PrinterCalibrationExercise />
           <p>
             Think of a 3D printer. It uses three <span class="keyword">axes</span> (<span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z</span>) to pinpoint any location within its printing area. The intersection of these three <span class="keyword">axes</span> is called the <span class="keyword">origin</span>, typically represented as (0, 0, 0).
           </p>

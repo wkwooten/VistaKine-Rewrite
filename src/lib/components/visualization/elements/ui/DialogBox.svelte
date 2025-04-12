@@ -306,6 +306,7 @@
     min-width: unset;
     display: flex;
     align-items: center;
+    box-shadow: none;
     justify-content: center;
     font-size: 1.5em;
     padding: 0;

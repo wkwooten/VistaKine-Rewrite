@@ -38,6 +38,7 @@
 		display: flex; /* Use flex to center the icon */
 		align-items: center;
 		justify-content: center;
+		margin: var(--space-s);
 
 		/* Glassmorphism */
 		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
