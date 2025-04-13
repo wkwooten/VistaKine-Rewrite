@@ -29,37 +29,33 @@
 <style>
 	.fullscreen-button {
 		padding: var(--space-xs-s); /* Use Utopia fluid spacing */
-		border: none;
+		border: 1px solid var(--color-accent);
 		border-radius: 50%; /* Use variable for radius */
-		/* background-color: var(--color-accent); */ /* Original background */
 		color: var(--color-accent); /* Use appropriate text color */
 		cursor: pointer;
-		transition: background-color var(--transition-normal) var(--transition-bezier), border-color var(--transition-normal) var(--transition-bezier); /* Smooth transition - Added border-color */
+		/* Update transition to match ResetButton */
+		transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 		display: flex; /* Use flex to center the icon */
 		align-items: center;
 		justify-content: center;
 		margin: var(--space-s);
-
-		/* Glassmorphism */
-		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
-		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
-		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
-		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
+		background-color: var(--color-background); /* Set background color */
 		box-shadow: var(--shadow-sm);
 
+		/* Add hover state from ResetButton */
 		&:hover {
-			/* Adjust hover if needed - maybe slightly less transparent */
-			background-color: var(--color-accent-hover-bg); /* Revert to original hover or adjust */
+			background-color: var(--color-accent-hover-bg);
 			color: var(--color-accent-light);
+			transform: translateY(-1px);
+			/* Optional: Add border on hover if desired, or keep none */
+			/* border: 1px solid var(--color-accent-light); */
 		}
 
-		&:focus {
-			outline: 2px solid var(--color-accent-light); /* Focus style */
-			outline-offset: 1px;
-		}
-
+		/* Add active state from ResetButton */
 		&:active {
 			background-color: var(--color-accent-active-bg);
+			transform: translateY(0);
+			/* Optional: Adjust active border if needed */
 		}
 	}
 </style>

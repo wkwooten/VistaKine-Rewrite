@@ -1,8 +1,8 @@
 <script>
-  import { getAllChapters } from '$lib/data/chapters';
+  import { getChapterList } from '$lib/data/chapters';
 
   // Use centralized chapter data
-  const chapters = getAllChapters();
+  const chapters = getChapterList();
 </script>
 
 <svelte:head>

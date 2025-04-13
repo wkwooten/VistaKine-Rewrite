@@ -44,32 +44,31 @@
 
 	/* Add any button-specific styles here */
 	.reset-button {
-		padding: 0.5rem 1rem;
-		cursor: pointer;
-		z-index: 11;
-		margin: var(--space-s);
-
+		/* Consistent styles */
 		padding: var(--space-xs-s);
+		border: 1px solid var(--color-accent);
 		border-radius: 50%;
 		color: var(--color-accent);
+		background-color: var(--color-background);
 		cursor: pointer;
-		transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease;
+		transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Added border-color transition */
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		margin: var(--space-s);
 		box-shadow: var(--shadow-sm);
-		/* Glassmorphism */
-		background-color: var(--glass-bg-color, rgba(255, 255, 255, 0.1)); /* Use glass background */
-		border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15));
 
-		backdrop-filter: var(--glass-backdrop-blur, blur(8px));
-		-webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); /* Safari support */
-		/* border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.15)); */
+		/* Removed Glassmorphism */
+		/* backdrop-filter: var(--glass-backdrop-blur, blur(8px)); */
+		/* -webkit-backdrop-filter: var(--glass-backdrop-blur, blur(8px)); */
 
+		/* Consistent hover/active states */
 		&:hover {
-			background-color: var(--color-accent-hover-bg); /* Revert to original hover or adjust */
+			background-color: var(--color-accent-hover-bg);
 			color: var(--color-accent-light);
 			transform: translateY(-1px);
+			/* Optional: border change on hover */
+			/* border-color: var(--color-accent-light); */
 		}
 
 		&:active {
