@@ -95,23 +95,28 @@
     // Dependencies: $animatedPosition, targetDetails (which depends on targets)
     const currentNozzlePos = $animatedPosition;
     let newlyHit = false;
+    let firstTargetHitThisUpdate = false; // Flag to check if the *first* target was hit
+
     // Add explicit type for target within the loop
     targetDetails.forEach((target: { id: string; x: number; y: number; z: number; worldPos: Vector3 }) => { // Update type here
       if (!hitTargets.has(target.id)) {
         let distance = Infinity;
         const targetWorldPos = target.worldPos; // Cache for logging clarity
-        if (target.y === 0) { // Check original relative Y
+        if (target.y === 0 && currentStage === 1) { // Check relative Y AND ensure it's stage 1 for XZ check
           // Calculate XZ distance for targets on the bed
           const nozzleXZ = new Vector2(currentNozzlePos.x, currentNozzlePos.z);
           const targetXZ = new Vector2(targetWorldPos.x, targetWorldPos.z);
           distance = nozzleXZ.distanceTo(targetXZ);
         } else {
-          // Calculate 3D distance for targets with height (future)
+          // Calculate 3D distance for targets with height (Stage 2 or if Stage 1 had height)
           distance = currentNozzlePos.distanceTo(targetWorldPos);
         }
 
         if (distance < targetProximityThreshold) {
           console.log(`[PrinterCalibration] Hit target: ${target.id}`);
+          if (hitTargets.size === 0) { // Check if this is the very first target hit in the current set
+              firstTargetHitThisUpdate = true;
+          }
           hitTargets.add(target.id);
           hitTargets = new Set(hitTargets);
           newlyHit = true; // Flag that a hit occurred
@@ -119,30 +124,52 @@
       }
     });
 
-    // If a hit occurred, update the Set reactivity and check for stage completion
+    // Handle dialog and completion checks only if a target was hit
     if (newlyHit) {
-      if (hitTargets.size === targets.length && targets.length > 0) {
-        // Dispatch stageComplete for stage 1
-        if (currentStage === 1) {
-           console.log('[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog.');
-           showCalibrationDialog([
-               { speaker: 'Leo', message: "Alright, not bad, Surya! You managed the X and Z axes without *too* much trouble." },
-               { speaker: 'Surya', message: "Heh, piece of cake. What's next, rocket science?" },
-               { speaker: 'Leo', message: "Focus. Think you can handle adding height? Let's see you hit these next points, including the Y value." }
-           ]);
-           dispatch('stageComplete');
+        // Show feedback dialog ONLY if it was the FIRST target hit this update cycle
+        if (firstTargetHitThisUpdate) {
+            if (currentStage === 1) {
+                 showCalibrationDialog([
+                    { speaker: 'Surya', message: "Nice! Got the first one." },
+                    { speaker: 'Leo', message: "Position acquired. Remember, precision is key!" }
+                 ]);
+            } else if (currentStage === 2) {
+                 showCalibrationDialog([
+                    { speaker: 'Surya', message: "There we go, first 3D point!" },
+                    { speaker: 'Leo', message: "Y-coordinate confirmed. Keep that accuracy up." }
+                 ]);
+            }
         }
-        // Dispatch allStagesComplete for stage 2
-        else if (currentStage === 2) {
-           console.log('[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog.');
-           showCalibrationDialog([
-               { speaker: 'Leo', message: "Wow...I can't believe it... You actually got it perfectly calibrated." },
-               { speaker: 'Surya', message: "Told you! See? Hands-on beats staring at formulas any day." },
-               { speaker: 'Leo', message: "...Let's just say precision isn't so bad. Now the nozzle will know exactly where to go." }
-           ]);
-           dispatch('allStagesComplete');
+        // THEN, check for stage completion (if all targets are now hit)
+        else if (hitTargets.size === targets.length && targets.length > 0) {
+           // Dispatch stageComplete for stage 1
+           if (currentStage === 1) {
+              console.log('[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog.');
+              // Show dialog AFTER a brief delay to allow feedback dialog to show/clear if needed
+              setTimeout(() => {
+                showCalibrationDialog([
+                    { speaker: 'Leo', message: "Okay, that's much closer on the plane. The deviation is smaller now." },
+                    { speaker: 'Surya', message: "See? Told you it wasn't that complicated. Just needed a little hands-on touch." },
+                    { speaker: 'Leo', message: "Hmph. But for my multi-layer component, the *height* between layers needs to be exact. We need to calibrate the Y-axis too." },
+                    { speaker: 'Surya', message: "Right, can't have your masterpiece looking like a pancake tower. Time to add the third dimension! Let's hit these next points, getting the Y-value spot on." }
+                ]);
+                dispatch('stageComplete');
+              }, firstTargetHitThisUpdate ? 2500 : 0); // Add delay only if feedback was shown
+           }
+           // Dispatch allStagesComplete for stage 2
+           else if (currentStage === 2) {
+              console.log('[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog.');
+              // Show dialog AFTER a brief delay
+               setTimeout(() => {
+                 showCalibrationDialog([
+                    { speaker: 'Leo', message: "Excellent! The deviation is now within acceptable tolerances. My calculations should hold true with prints from this calibration. Thank you, Surya." },
+                    { speaker: 'Surya', message: "See? A little less theory, a little more doing. Now, what exactly *is* this super-precise thing you're printing anyway?" },
+                    { speaker: 'Leo', message: "It's... complicated. But essential. Let's just say it involves quantum foam." }
+                 ]);
+                 dispatch('allStagesComplete');
+               }, firstTargetHitThisUpdate ? 2500 : 0); // Add delay only if feedback was shown
+           }
         }
-      }
     }
   });
 
@@ -187,9 +214,9 @@
 
     // Show reset dialog via store
     showCalibrationDialog([
-        { speaker: 'Leo', message: "Alright, take two! Focus this time, Surya." },
-        { speaker: 'Surya', message: "Okay, okay, I'm focusing! No need to hover." },
-        { speaker: 'Leo', message: "Just guide the nozzle to that first target (T0) in the corner. You got this... probably." }
+        { speaker: 'Leo', message: "Okay, let's try this calibration again. Precision requires patience." },
+        { speaker: 'Surya', message: "Alright, alright, I'm ready. Point me to the first target, Leo." },
+        { speaker: 'Leo', message: "Just guide the nozzle to T0 in the corner. Smoothly, please." }
     ]);
 
     // Note: Stage reset is handled by the parent component dispatching the event
@@ -222,9 +249,10 @@
     // Show initial dialog only if the store isn't already showing one (e.g., on reset)
     if (!get(showDialog)) { // Use get() for one-time read on the ACTUAL store
         showCalibrationDialog([
-            { speaker: 'Leo', message: "Alright Surya, pop quiz time, but with hardware. We need to calibrate this printer so it knows its exact coordinates." },
-            { speaker: 'Surya', message: "Hardware quiz? My kind of test. Lay it on me." },
-            { speaker: 'Leo', message: "Think of it like teaching it basic geometry. See those targets? Your job is to move the nozzle using the controls and hit T0 first. Don't break anything." }
+            { speaker: 'Leo', message: "Surya, I need your help. I've read all the manuals, double-checked the kinematics equations, but I *cannot* get this printer dialed in precisely enough for my experiment!" },
+            { speaker: 'Surya', message: "Whoa, deep breaths, Leo! You're probably getting lost in the nanometers again. Calibration's important, but it's also about getting a feel for it." },
+            { speaker: 'Leo', message: "My first layer is practically floating! It's unacceptable." },
+            { speaker: 'Surya', message: "Okay, let's walk through it together. First things first, let's just get the basics right on the print bed (X and Z axes). Use the controls and get the nozzle over that first target (T0)." }
         ]);
     }
   });

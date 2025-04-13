@@ -19,8 +19,17 @@
       strong {
         font-weight: 600;
         font-style: normal;
-        color: var(--highlight-color);
+        /* color: var(--highlight-color); Removed generic highlight */
       }
+    }
+
+    /* Apply speaker-specific colors using data attributes */
+    :global(p[data-speaker="Surya"] strong) {
+      color: var(--surya-color, var(--color-accent)); /* Fallback to accent */
+    }
+
+    :global(p[data-speaker="Leo"] strong) {
+      color: var(--leo-color, var(--secondary-color)); /* Fallback to secondary */
     }
   }
 

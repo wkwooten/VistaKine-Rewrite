@@ -105,18 +105,23 @@
         <h2 class="section-title">1.1 Coordinate Systems</h2>
         <div class="section-intro">
           <Scenario>
-            <p><strong>Surya:</strong> Hey Leo, I'm trying to set up this new 3D printer, but I'm confused about how to tell it where to print.</p>
-            <p><strong>Leo:</strong> That's where <span class="keyword">coordinate systems</span> come in! They're like a map for <span class="keyword">3D space</span>.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Ah, but 'right there' isn't precise enough for a machine, Surya! It needs a common language, a <span class="keyword">coordinate system</span>, to know exactly where 'there' is in <span class="keyword">3D space</span>.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, like the grid lines on the build plate?</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Precisely! Think of it as a map. We use three perpendicular <span class="keyword">axes</span> – usually X for width, Z for depth, and Y for height – all meeting at a starting point called the <span class="keyword">origin</span> (0, 0, 0). Every point in the printer's volume has a unique X, Y, Z address.</p>
           </Scenario>
 
           <p>
-            <span class="keyword">Coordinate systems</span> are essential tools that allow us to precisely define the position of objects in <span class="keyword">space</span>.  They provide a framework for describing locations using numerical <span class="keyword">coordinates</span>.
+            Leo's right. Just like Surya discovered with her printer, simply pointing or saying "there" isn't enough when we need precision. How <em>do</em> we tell a machine, or even another person, exactly where something is located in space?
           </p>
           <p>
-            We encounter simplified versions of <span class="keyword">coordinate systems</span> in everyday life, such as when we use a map to navigate. A map uses a grid (latitude and longitude) to specify locations on the Earth's surface.
+            That's the job of <span class="keyword">coordinate systems</span>. They act like a universal address book for space, providing a clear, mathematical framework to define any position using numerical <span class="keyword">coordinates</span>.
           </p>
           <p>
-            In three-dimensional space, we extend this concept by adding a third <span class="keyword">axis</span>, allowing us to describe locations not just on a surface, but also above or below it.
+            We use simpler versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <span class="keyword">3D space</span>, like inside Surya's printer, we just add a third <span class="keyword">axis</span> (usually <span class="keyword">Y</span> for height) to describe positions fully – left/right (<span class="keyword">X</span>), forward/backward (<span class="keyword">Z</span>), and up/down (<span class="keyword">Y</span>).
+          </p>
+          <p>
+            We'll put this into practice shortly by helping Surya and Leo calibrate that 3D printer, precisely guiding its nozzle using these very coordinates.
           </p>
         </div>
 
@@ -172,8 +177,8 @@
 
         <div class="section-intro">
           <Scenario>
-            <p><strong>Surya:</strong> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of <span class="keyword">vectors</span>.</p>
-            <p><strong>Leo:</strong> <span class="keyword">Vectors</span> are perfect for that! They tell the arm both how far to move and in what <span class="keyword">direction</span>.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of <span class="keyword">vectors</span>.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> <span class="keyword">Vectors</span> are perfect for that! They tell the arm both how far to move and in what <span class="keyword">direction</span>.</p>
           </Scenario>
 
           <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
@@ -259,8 +264,8 @@
 
         <div class="section-intro">
           <Scenario>
-            <p><strong>Surya:</strong> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
-            <p><strong>Leo:</strong> That's because you're seeing it from a different <span class="keyword">reference frame</span>! It's like watching someone walk on a moving train.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> That's because you're seeing it from a different <span class="keyword">reference frame</span>! It's like watching someone walk on a moving train.</p>
           </Scenario>
 
           <FormulaAccordion>

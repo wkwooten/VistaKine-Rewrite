@@ -17,15 +17,15 @@
 		// Input Validation
 		if (nozzleX < MIN_X || nozzleX > MAX_X) {
 			// Pass data as DialogTurn[]
-			showCalibrationDialog([{ speaker: 'Leo', message: `Whoa there, cowboy! Trying to send the nozzle off the edge? Keep X between ${MIN_X} and ${MAX_X}.` }]);
+			showCalibrationDialog([{ speaker: 'Leo', message: `Careful, Surya! My calculations show that X value is outside the physical print area. It needs to be between ${MIN_X} and ${MAX_X}.` }]);
 			return;
 		}
 		if (nozzleY < MIN_Y || nozzleY > MAX_Y) {
-			showCalibrationDialog([{ speaker: 'Leo', message: `Surya, careful! The Y-axis needs to be between ${MIN_Y} and ${MAX_Y}. We don\'t want to crash the nozzleinto the bed or fly into space!` }]);
+			showCalibrationDialog([{ speaker: 'Surya', message: `Whoa, whoa! The Y-axis limit is ${MAX_Y}. We need to stay between ${MIN_Y} and ${MAX_Y}. We don't want to break my printer, its fragile!` }]);
 			return;
 		}
 		if (nozzleZ < MIN_Z || nozzleZ > MAX_Z) {
-			showCalibrationDialog([{ speaker: 'Leo', message: `Hey! You\'re drifting out of bounds on the Z-axis. Keep it between ${MIN_Z} and ${MAX_Z} to stay over the bed.` }]);
+			showCalibrationDialog([{ speaker: 'Leo', message: `That Z coordinate is problematic. We must remain within the ${MIN_Z} to ${MAX_Z} range for proper bed adhesion.` }]);
 			return;
 		}
 

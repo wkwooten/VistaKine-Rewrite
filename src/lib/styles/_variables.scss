@@ -124,6 +124,12 @@ $calibration-bed-edges-color-light: #ADD8E6;
 $calibration-target-pending-color-light: #FFA500; // orange
 $calibration-target-hit-color-light: #32CD32;   // limegreen
 
+// ----------------------------------
+// Character Colors
+// ----------------------------------
+$surya-color-light: #0D9488; // Teal 600
+$leo-color-light: #1E40AF;  // Blue 800
+
 // ==================================
 // Export as CSS variables
 // ==================================
@@ -260,6 +266,10 @@ $calibration-target-hit-color-light: #32CD32;   // limegreen
   --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
   --calibration-target-pending-color: #{$calibration-target-pending-color-light};
   --calibration-target-hit-color: #{$calibration-target-hit-color-light};
+
+  // Character Colors (Light)
+  --surya-color: #{$surya-color-light};
+  --leo-color: #{$leo-color-light};
 }
 
 // ----------------------------------
@@ -320,6 +330,12 @@ $calibration-bed-edges-color-dark: $color-dark-border-light;  // rgba(dark-text,
 $calibration-target-pending-color-dark: #FFD700; // gold (stands out on dark)
 $calibration-target-hit-color-dark: #50C878;    // emerald (brighter green)
 
+// ----------------------------------
+// Character Colors (Dark)
+// ----------------------------------
+$surya-color-dark: #5EEAD4; // Teal 300
+$leo-color-dark: #93C5FD;  // Blue 300
+
 // ==================================
 // Export as CSS variables
 // ==================================
@@ -342,6 +358,10 @@ $calibration-target-hit-color-dark: #50C878;    // emerald (brighter green)
   --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
   --calibration-target-pending-color: #{$calibration-target-pending-color-light};
   --calibration-target-hit-color: #{$calibration-target-hit-color-light};
+
+  // Character Colors (Light)
+  --surya-color: #{$surya-color-light};
+  --leo-color: #{$leo-color-light};
 
   // Accent Palette
   // ... rest of light mode :root ...
@@ -404,6 +424,10 @@ $calibration-target-hit-color-dark: #50C878;    // emerald (brighter green)
     --calibration-bed-edges-color: #{$calibration-bed-edges-color-dark};
     --calibration-target-pending-color: #{$calibration-target-pending-color-dark};
     --calibration-target-hit-color: #{$calibration-target-hit-color-dark};
+
+    // Character Colors (Dark)
+    --surya-color: #{$surya-color-dark};
+    --leo-color: #{$leo-color-dark};
   }
 }
 

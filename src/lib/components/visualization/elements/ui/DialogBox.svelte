@@ -166,7 +166,7 @@
                 <Minimize2 size={18} />
             </button>
             <!-- Display the dynamically updated currentSpeaker -->
-            <div class="speaker">{currentSpeaker}</div>
+            <div class="speaker" data-speaker={currentSpeaker}>{currentSpeaker}</div>
             <div class="message">{displayedText}</div>
             <!-- Updated active class condition -->
             <div
@@ -214,7 +214,6 @@
     .speaker {
       font-weight: bold;
       margin-bottom: 5px;
-      color: var(--color-accent);
       min-height: 1.2em; /* Reserve space even if empty initially */
     }
 
@@ -364,5 +363,14 @@
       background-color: var(--color-error, red);
       border-radius: 50%;
       border: 1px solid var(--color-surface);
+  }
+
+  /* Apply speaker-specific colors using data attributes */
+  :global(.speaker[data-speaker="Surya"]) {
+    color: var(--surya-color, var(--color-accent)); /* Fallback to accent */
+  }
+
+  :global(.speaker[data-speaker="Leo"]) {
+    color: var(--leo-color, var(--secondary-color)); /* Fallback to secondary */
   }
 </style>
