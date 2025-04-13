@@ -10,6 +10,7 @@
   import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import PrinterCalibrationExercise from '$lib/components/visualization/interactions/printer-calibration/PrinterCalibrationExercise.svelte';
+  import VectorBuilderExercise from '$lib/components/visualization/interactions/vector-builder/VectorBuilderExercise.svelte';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -184,9 +185,7 @@
             <p>Formulas will go here.</p>
           </FormulaAccordion>
 
-          <VisContainer currentSection={currentSection}>
-            <slot />
-          </VisContainer>
+          <VectorBuilderExercise />
 
           <p>
             A <span class="keyword">vector</span> in <span class="keyword">3D space</span> can be represented by its <span class="keyword">components</span> along the <span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z axes</span>.

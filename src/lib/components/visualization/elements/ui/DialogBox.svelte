@@ -108,9 +108,6 @@
       console.log(`[DialogBox] Advancing to message index ${currentMessageIndex}`);
       currentMessageIndex++;
       startTyping();
-    } else {
-      console.log('[DialogBox] Last message clicked, dispatching close.');
-      dispatch('close');
     }
   }
 
@@ -133,9 +130,9 @@
             <div class="message">{displayedText}</div>
             <div
               class="click-to-continue"
-              class:active={!isTyping && messages.length > 0}
+              class:active={!isTyping && currentMessageIndex < messages.length - 1}
             >
-              {!isTyping && currentMessageIndex === messages.length - 1 ? 'Click to close' : 'Click to continue...'}
+              Click to continue...
             </div>
         </div>
     {:else}
