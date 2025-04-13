@@ -9,7 +9,7 @@
 	import { fbdVisibilityStore, type FBDVisibilityState } from '$lib/stores/fbdStores'; // Import FBD visibility store
 
 
-	export let currentSection : Writable<string>;
+	export let currentSection: Writable<string>;
 	export let isFullscreen: boolean;
 	export let targetElement: HTMLDivElement;
 
@@ -18,8 +18,14 @@
 	let width: number;
 	let height: number;
 
-	function handleFullscreenToggle(event: CustomEvent<boolean>) {
-		isFullscreen = event.detail;
+	// Removed handleFullscreenToggle as the button only requests now
+	// function handleFullscreenToggle(event: CustomEvent<boolean>) {
+	// 	isFullscreen = event.detail;
+	// }
+
+	// Forward the request from the button to the parent component
+	function forwardFullscreenRequest() {
+		dispatch('requestToggle');
 	}
 
 	// $: console.log('Selected control mode in HudScene:', selectedControlMode); // Optional: Log changes
@@ -57,7 +63,7 @@
 			<FBDMenu />
 		</div>
 	{/if}
-	<FullscreenButton on:toggleFullscreen={handleFullscreenToggle} {isFullscreen} targetElement={targetElement}/>
+	<FullscreenButton on:requestToggle={forwardFullscreenRequest} {isFullscreen} />
 </div>
 
 

@@ -18,7 +18,7 @@
     id="sort-dropdown"
     class="dropdown-select"
     bind:value={selectedValue}
-    on:change={onChange}
+    onchange={onChange}
   >
     {#each options as option}
       <option value={option.value}>{option.label}</option>

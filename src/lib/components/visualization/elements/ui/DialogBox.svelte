@@ -151,17 +151,32 @@
     // Removed the close logic
   }
 
+  // Handle keydown for accessibility
+  function handleDialogKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault(); // Prevent default spacebar scrolling
+        handleDialogBodyClick();
+    }
+  }
+
   const dispatch = createEventDispatcher();
 </script>
 
 {#if show}
     {#if !isCollapsed}
         <!-- Expanded View -->
-        <div class="dialog-box expanded" on:click={handleDialogBodyClick}>
+        <div
+            class="dialog-box expanded"
+            onclick={handleDialogBodyClick}
+            onkeydown={handleDialogKeyDown}
+            role="button"
+            tabindex="0"
+            aria-live="polite"
+        >
              <button
                 class="collapse-button"
                 aria-label="Collapse dialog"
-                on:click|stopPropagation={() => { console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
+                onclick={(event) => { event.stopPropagation(); console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
             >
                 <Minimize2 size={18} />
             </button>
@@ -182,7 +197,7 @@
             class="dialog-box collapsed"
             class:has-unread={hasUnread}
             aria-label="Expand dialog {hasUnread ? '(New message)' : ''}"
-            on:click={handleExpandClick}
+            onclick={handleExpandClick}
         >
             <MessageCircle size={24} />
         </button>

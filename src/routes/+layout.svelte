@@ -69,7 +69,7 @@
 >
   <!-- Mobile Menu Button - MOVED here -->
   {#if isMobile}
-    <button class="mobile-menu-button" on:click={toggleMobileSidebar} aria-label="Open Menu" type="button">
+    <button class="mobile-menu-button" onclick={toggleMobileSidebar} aria-label="Open Menu" type="button">
       <Menu size={24} />
     </button >
   {/if}
@@ -79,7 +79,7 @@
     {#if !isMobile}
       <button
         class="sidebar-toggle-button"
-        on:click={toggleDesktopSidebar}
+        onclick={toggleDesktopSidebar}
         aria-label="Toggle Sidebar"
         title="Toggle Sidebar"
       >
@@ -93,7 +93,14 @@
   </aside >
 
   {#if isMobile && mobileNavOpen}
-    <div class="mobile-overlay active" on:click={closeMobileSidebar} role="button" tabindex="0" aria-label="Close Menu"></div>
+    <div
+        class="mobile-overlay active"
+        onclick={closeMobileSidebar}
+        onkeydown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); closeMobileSidebar(); } }}
+        role="button"
+        tabindex="0"
+        aria-label="Close Menu"
+    ></div>
   {/if}
 
   <main class="content">

@@ -19,7 +19,7 @@
   let { controlMode = 'drag' }: { controlMode?: 'drag' | 'translate' } = $props();
 
   // State & Refs
-  let controls: ThreeOrbitControls | undefined = undefined;
+  let controls = $state<ThreeOrbitControls | undefined>(undefined);
   let previousFollowedObject: Group | null = null;
 
   // State for scene colors (reactive)

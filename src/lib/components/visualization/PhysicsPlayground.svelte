@@ -15,8 +15,30 @@
 	let isFullscreen = false;
 	let containerElement: HTMLDivElement;
 
-	function handleFullscreenToggle(event: CustomEvent<boolean>) {
-		isFullscreen = event.detail;
+	async function handleFullscreenRequest() {
+		if (!document.fullscreenElement) {
+			try {
+				await containerElement.requestFullscreen();
+				isFullscreen = true;
+			} catch (err) {
+				if (err instanceof Error) {
+					console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+				} else {
+					console.error('An unknown error occurred during fullscreen request.', err);
+				}
+			}
+		} else {
+			try {
+				await document.exitFullscreen();
+				isFullscreen = false;
+			} catch (err) {
+				if (err instanceof Error) {
+					console.error(`Error attempting to exit full-screen mode: ${err.message} (${err.name})`);
+				} else {
+					console.error('An unknown error occurred during fullscreen exit.', err);
+				}
+			}
+		}
 	}
 
 	function forwardModeChange(event: CustomEvent<{ mode: 'drag' | 'translate' }>) {
@@ -34,11 +56,11 @@
 			{currentSection}
 			{isFullscreen}
 			targetElement={containerElement}
-			bind:selectedControlMode={controlMode}
 			on:modechange={forwardModeChange}
 			on:resetscene={handleResetScene}
+			on:requestToggle={handleFullscreenRequest}
 		>
-			<ToolBarMain />
+			<ToolBarMain bind:selectedMode={controlMode}/>
 		</HudScene>
 	</div>
 
