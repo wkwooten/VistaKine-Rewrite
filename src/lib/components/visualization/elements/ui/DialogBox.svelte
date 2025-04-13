@@ -2,19 +2,20 @@
   import { onMount, onDestroy } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { Minimize2, MessageCircle } from 'lucide-svelte'; // Import icons
+  import type { DialogTurn } from '$lib/stores/calibrationState'; // Import the type
 
-  export let messages: string[] = [];
-  export let show: boolean = false;
-  export let speaker: string = '';
+  // Use $props() for runes mode
+  let { turns = $bindable([]), show = $bindable(false) } = $props<{ turns?: DialogTurn[], show?: boolean }>();
 
-  let currentMessageIndex = 0;
-  let isTyping = false;
-  let displayedText = '';
+  let currentMessageIndex = $state(0);
+  let isTyping = $state(false);
+  let displayedText = $state('');
   let typingInterval: any;
+  let currentSpeaker = $state(''); // Add state for the current speaker
 
   // State for collapsed mode
-  let isCollapsed = false;
-  let hasUnread = false; // To show notification dot
+  let isCollapsed = $state(false);
+  let hasUnread = $state(false); // To show notification dot
 
   onDestroy(() => {
     if (typingInterval) {
@@ -22,56 +23,90 @@
     }
   });
 
-  let previousShow = false;
-  $: {
-    if (show && !previousShow && messages.length > 0) {
-      console.log('[DialogBox] Show became true, starting typing.');
-      currentMessageIndex = 0;
-      // Ensure it's not collapsed when shown initially or with new messages via show=true
-      isCollapsed = false;
-      hasUnread = false;
-      startTyping();
-    } else if (!show && previousShow) {
-      console.log('[DialogBox] Show became false, cleaning up.');
-      if (typingInterval) clearInterval(typingInterval);
-      isTyping = false;
-      displayedText = '';
-      isCollapsed = false; // Reset collapse state when hidden
-      hasUnread = false;
-    }
-    previousShow = show;
-  }
+  let previousShow = $state(false);
 
-  let previousMessages = messages;
-  $: if (show && messages !== previousMessages && messages.length > 0) {
-    console.log('[DialogBox] Messages changed while shown.');
-    currentMessageIndex = 0;
-    // If collapsed when messages change, mark as unread and don't restart typing
-    if (isCollapsed) {
-        console.log('[DialogBox] Marking as unread because collapsed.');
-        hasUnread = true;
-    } else {
-        console.log('[DialogBox] Restarting typing for new messages.');
-        hasUnread = false; // New messages being shown, so not unread
-        startTyping();
+  // Effect to handle showing/hiding AND ensuring turns are ready
+  $effect(() => {
+    // Make effect explicitly depend on show and turns
+    const shouldBeVisible = show;
+    const hasTurns = turns.length > 0;
+    const _index = currentMessageIndex; // Depend on index too? Maybe not needed.
+
+    console.log(`[DialogBox Effect] show: ${shouldBeVisible}, prev: ${previousShow}, hasTurns: ${hasTurns}, isTyping: ${isTyping}, displayed: ${displayedText !== ''}`);
+
+    if (shouldBeVisible && hasTurns) {
+        // If we should be visible and have turns...
+        // Start typing only if dialog just appeared OR if turns changed while visible and idle
+        if (!previousShow || (previousShow && !isTyping && displayedText === '')) {
+            // Check if previousShow is false (just appeared) or if we are currently idle (turns might have updated)
+            console.log('[DialogBox Effect] Conditions met, starting/restarting typing.');
+            currentMessageIndex = 0; // Reset index when starting with new/initial turns
+            isCollapsed = false;     // Ensure not collapsed when new dialog starts
+            hasUnread = false;
+            startTyping();
+        }
+    } else if (!shouldBeVisible && previousShow) {
+        // --- Cleanup when hidden --- >
+        console.log('[DialogBox Effect] Show became false, cleaning up.');
+        if (typingInterval) {
+            clearInterval(typingInterval);
+            typingInterval = null; // Clear interval ref
+        }
+        // Reset state only if it needs resetting
+        if (isTyping || displayedText !== '' || currentSpeaker !== '') {
+            isTyping = false;
+            displayedText = '';
+            currentSpeaker = '';
+            // Reset index when hiding? Safer to do it.
+            currentMessageIndex = 0;
+        }
+        isCollapsed = false; // Reset collapse state
+        hasUnread = false;
+        // <--- Cleanup ---
     }
-    previousMessages = messages;
-  }
+
+    // Update previousShow for the next run
+    previousShow = shouldBeVisible; // Use derived value
+  });
+
+  // REMOVED the complex effect that tried to handle turns changing while shown
+  // Advancing index is now solely handled by handleDialogBodyClick
 
   function startTyping() {
+    // Add logging to see the index being used
+    console.log(`[DialogBox] startTyping called for index: ${currentMessageIndex}`);
     if (typingInterval) clearInterval(typingInterval);
 
-    isTyping = true;
-    displayedText = '';
-    const currentMessage = messages[currentMessageIndex];
-    if (!currentMessage) {
-      console.error('[DialogBox] Attempted to type undefined message.');
+    // --- Guards --- >
+    // Ensure turns array is populated
+    if (!turns || turns.length === 0) {
+        console.warn('[DialogBox] startTyping called with empty turns array.');
+        isTyping = false;
+        return;
+    }
+    // Ensure index is valid for the current turns array
+    if (currentMessageIndex >= turns.length || currentMessageIndex < 0) {
+      console.error(`[DialogBox] startTyping called with invalid message index: ${currentMessageIndex} for turns length: ${turns.length}`);
+      isTyping = false;
+      return; // Stop execution if index is invalid
+    }
+    // <--- Guards ---
+
+    const currentTurn = turns[currentMessageIndex];
+    // Ensure the turn itself and the message property exist
+    if (!currentTurn || typeof currentTurn.message !== 'string') {
+      console.error('[DialogBox] Attempted to type invalid turn data.', currentTurn);
       isTyping = false;
       return;
     }
+
+    isTyping = true;
+    displayedText = '';
+    currentSpeaker = currentTurn.speaker; // Update speaker for the current turn
+    const currentMessage = currentTurn.message;
     let charIndex = 0;
 
-    console.log(`[DialogBox] Starting to type: "${currentMessage}"`);
+    console.log(`[DialogBox] Starting to type message from ${currentSpeaker}: "${currentMessage}"`);
     typingInterval = setInterval(() => {
       if (charIndex < currentMessage.length) {
         displayedText += currentMessage[charIndex];
@@ -89,26 +124,31 @@
       console.log('[DialogBox] Expanding dialog.');
       isCollapsed = false;
       hasUnread = false; // Clear unread on expand
-      // Potentially restart typing if needed, or assume user will click through
-      // If messages changed while collapsed, startTyping might be needed here
-      if(previousMessages !== messages) {
-          startTyping(); // Start typing the new message shown on expand
+      // If not currently typing when expanding, start typing the current message
+      if (!isTyping) {
+          console.log('[DialogBox] Starting/resuming typing on expand.');
+          startTyping();
       }
   }
 
   // Renamed to handleDialogBodyClick for clarity
   function handleDialogBodyClick() {
-    // This advances text or closes the box
+    // This advances text
     if (isTyping) {
       clearInterval(typingInterval);
-      displayedText = messages[currentMessageIndex];
+      // Ensure index is valid before accessing
+      if (currentMessageIndex < turns.length) {
+          displayedText = turns[currentMessageIndex].message;
+      }
       isTyping = false;
       console.log('[DialogBox] Skipped typing.');
-    } else if (currentMessageIndex < messages.length - 1) {
-      console.log(`[DialogBox] Advancing to message index ${currentMessageIndex}`);
-      currentMessageIndex++;
-      startTyping();
+    } else if (currentMessageIndex < turns.length - 1) {
+      console.log(`[DialogBox] Advancing from index ${currentMessageIndex} to ${currentMessageIndex + 1}`);
+      // Use assignment instead of ++ for potential reactivity clarity
+      currentMessageIndex = currentMessageIndex + 1;
+      startTyping(); // This will update speaker and message
     }
+    // Removed the close logic
   }
 
   const dispatch = createEventDispatcher();
@@ -118,19 +158,20 @@
     {#if !isCollapsed}
         <!-- Expanded View -->
         <div class="dialog-box expanded" on:click={handleDialogBodyClick}>
-             <!-- Use a button for semantics and accessibility -->
              <button
                 class="collapse-button"
                 aria-label="Collapse dialog"
                 on:click|stopPropagation={() => { console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
             >
-                <Minimize2 size={18} /> <!-- Use Minimize icon -->
+                <Minimize2 size={18} />
             </button>
-            <div class="speaker">{speaker}</div>
+            <!-- Display the dynamically updated currentSpeaker -->
+            <div class="speaker">{currentSpeaker}</div>
             <div class="message">{displayedText}</div>
+            <!-- Updated active class condition -->
             <div
               class="click-to-continue"
-              class:active={!isTyping && currentMessageIndex < messages.length - 1}
+              class:active={!isTyping && currentMessageIndex < turns.length - 1}
             >
               Click to continue...
             </div>
@@ -143,7 +184,7 @@
             aria-label="Expand dialog {hasUnread ? '(New message)' : ''}"
             on:click={handleExpandClick}
         >
-            <MessageCircle size={24} /> <!-- Use MessageCircle icon -->
+            <MessageCircle size={24} />
         </button>
     {/if}
 {/if}
@@ -174,6 +215,7 @@
       font-weight: bold;
       margin-bottom: 5px;
       color: var(--color-accent);
+      min-height: 1.2em; /* Reserve space even if empty initially */
     }
 
     .message {

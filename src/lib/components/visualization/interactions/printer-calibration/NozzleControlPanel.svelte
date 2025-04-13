@@ -16,15 +16,16 @@
 	function handleMoveRequest() {
 		// Input Validation
 		if (nozzleX < MIN_X || nozzleX > MAX_X) {
-			showCalibrationDialog([`Leo: Hold on, Surya! Remember, the X-axis only goes from ${MIN_X} to ${MAX_X} on this printer bed.`]);
+			// Pass data as DialogTurn[]
+			showCalibrationDialog([{ speaker: 'Leo', message: `Whoa there, cowboy! Trying to send the nozzle off the edge? Keep X between ${MIN_X} and ${MAX_X}.` }]);
 			return;
 		}
 		if (nozzleY < MIN_Y || nozzleY > MAX_Y) {
-			showCalibrationDialog([`Leo: Easy there! Keep the nozzle height (Y) between ${MIN_Y} and ${MAX_Y} so we don't hit the bed or go way too high.`]);
+			showCalibrationDialog([{ speaker: 'Leo', message: `Surya, careful! The Y-axis needs to be between ${MIN_Y} and ${MAX_Y}. We don\'t want to crash the nozzleinto the bed or fly into space!` }]);
 			return;
 		}
 		if (nozzleZ < MIN_Z || nozzleZ > MAX_Z) {
-			showCalibrationDialog([`Leo: Almost! The Z-axis (depth) needs to stay between ${MIN_Z} and ${MAX_Z} to be over the printing area.`]);
+			showCalibrationDialog([{ speaker: 'Leo', message: `Hey! You\'re drifting out of bounds on the Z-axis. Keep it between ${MIN_Z} and ${MAX_Z} to stay over the bed.` }]);
 			return;
 		}
 

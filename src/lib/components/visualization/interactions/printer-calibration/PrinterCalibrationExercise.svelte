@@ -2,17 +2,11 @@
   import VisContainer from '../../VisContainer.svelte';
   import PrinterCalibrationScene from './PrinterCalibrationScene.svelte';
   import PrinterCalibrationHud from './PrinterCalibrationHud.svelte';
-  import { resetSceneRequested } from '$lib/stores/calibrationState';
+  import { resetSceneRequested, dialogTurns, showDialog, hideCalibrationDialog } from '$lib/stores/calibrationState';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { HTML } from '@threlte/extras';
   import DialogBox from '../../elements/ui/DialogBox.svelte';
-  import {
-    dialogMessages,
-    showDialog,
-    speaker,
-    hideCalibrationDialog
-  } from '$lib/stores/calibrationState';
 
   // --- Printer Boundaries (Could potentially move to store if shared) ---
   const MIN_X = 0;
@@ -41,6 +35,9 @@
   let isFullscreen = $state(false);
   let exerciseWrapperElement: HTMLDivElement;
 
+  // Add a key that changes when dialog content should reset
+  let dialogKey = $state(0);
+
   // --- Derived State ---
   let activeTargets = $derived((currentStage === 1) ? stage1Targets : stage2Targets);
 
@@ -49,18 +46,14 @@
     if (currentStage === 1) {
       console.log("[Exercise] Stage 1 Complete event received! Starting Stage 2.");
       currentStage = 2;
+      dialogKey += 1; // Increment key on stage change
     }
   }
 
   function handleCalibrationComplete() {
     console.log("[Exercise] Calibration Complete event received!");
     isCalibrationComplete = true;
-  }
-
-  // --- Dialog Close Handler ---
-  function handleDialogClose() {
-    console.log(`[Exercise] Dialog close event received, hiding via store`);
-    hideCalibrationDialog();
+    dialogKey += 1; // Increment key on completion
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
@@ -137,8 +130,14 @@
       console.log('[Exercise] Resetting stage state due to store request.');
       currentStage = 1;
       isCalibrationComplete = false;
+      dialogKey += 1; // Increment key on reset
       // NOTE: The store flag ($resetSceneRequested) is reset by PrinterCalibrationScene
     }
+  });
+
+  // Increment key on mount for the initial dialog
+  onMount(() => {
+      dialogKey += 1;
   });
 
 </script>
@@ -155,12 +154,12 @@
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showDialog && !isFullscreen}
     <div class="dialog-above-vis">
-      <DialogBox
-        messages={$dialogMessages}
-        show={$showDialog}
-        speaker={$speaker}
-        on:close={handleDialogClose}
-      />
+      {#key dialogKey}
+        <DialogBox
+          turns={$dialogTurns}
+          show={$showDialog}
+        />
+      {/key}
     </div>
   {/if}
 
@@ -182,12 +181,12 @@
   <!-- Render DialogBox INSIDE the wrapper (overlay) when fullscreen -->
   {#if $showDialog && isFullscreen}
     <div class="dialog-in-fullscreen">
-      <DialogBox
-        messages={$dialogMessages}
-        show={$showDialog}
-        speaker={$speaker}
-        on:close={handleDialogClose}
-      />
+     {#key dialogKey}
+        <DialogBox
+          turns={$dialogTurns}
+          show={$showDialog}
+        />
+      {/key}
     </div>
   {/if}
 </div>

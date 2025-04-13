@@ -125,13 +125,21 @@
         // Dispatch stageComplete for stage 1
         if (currentStage === 1) {
            console.log('[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog.');
-           showCalibrationDialog(["Leo: Nice work on the first stage, Surya! You're getting the hang of X and Z.", "Now, let's add the height (Y) dimension. Try hitting these next few points."]);
+           showCalibrationDialog([
+               { speaker: 'Leo', message: "Alright, not bad, Surya! You managed the X and Z axes without *too* much trouble." },
+               { speaker: 'Surya', message: "Heh, piece of cake. What's next, rocket science?" },
+               { speaker: 'Leo', message: "Focus. Think you can handle adding height? Let's see you hit these next points, including the Y value." }
+           ]);
            dispatch('stageComplete');
         }
         // Dispatch allStagesComplete for stage 2
         else if (currentStage === 2) {
            console.log('[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog.');
-           showCalibrationDialog(["Leo: Awesome job, Surya! You nailed the calibration!", "The printer head knows exactly where it is in 3D space now. Ready to print something? 🎉"]);
+           showCalibrationDialog([
+               { speaker: 'Leo', message: "Wow...I can't believe it... You actually got it perfectly calibrated." },
+               { speaker: 'Surya', message: "Told you! See? Hands-on beats staring at formulas any day." },
+               { speaker: 'Leo', message: "...Let's just say precision isn't so bad. Now the nozzle will know exactly where to go." }
+           ]);
            dispatch('allStagesComplete');
         }
       }
@@ -178,28 +186,13 @@
     hitTargets = new Set(); // Reassign for reactivity
 
     // Show reset dialog via store
-    showCalibrationDialog(["Leo: Okay, let's try that again! Move the nozzle to hit the first target (T0) at the corner."]);
+    showCalibrationDialog([
+        { speaker: 'Leo', message: "Alright, take two! Focus this time, Surya." },
+        { speaker: 'Surya', message: "Okay, okay, I'm focusing! No need to hover." },
+        { speaker: 'Leo', message: "Just guide the nozzle to that first target (T0) in the corner. You got this... probably." }
+    ]);
 
     // Note: Stage reset is handled by the parent component dispatching the event
-  }
-
-  // --- Dialog API Function ---
-  // This can now be called directly from the HUD/Page using the store
-  // Keeping it here as an exported function might be redundant unless called internally.
-  // Consider removing if validation is fully handled before updating the store.
-  export function showValidationErrorInScene(errorType: 'x_bounds' | 'y_bounds' | 'z_bounds') {
-    console.log(`[PrinterCalibration] Showing validation error: ${errorType}`);
-    switch (errorType) {
-      case 'x_bounds':
-        showCalibrationDialog([`Leo: Hold on, Surya! Remember, the X-axis only goes from ${MIN_X} to ${MAX_X} on this printer bed.`]);
-        break;
-      case 'y_bounds':
-        showCalibrationDialog([`Leo: Easy there! Keep the nozzle height (Y) between ${MIN_Y} and ${MAX_Y} so we don't hit the bed or go way too high.`]);
-        break;
-      case 'z_bounds':
-        showCalibrationDialog([`Leo: Almost! The Z-axis (depth) needs to stay between ${MIN_Z} and ${MAX_Z} to be over the printing area.`]);
-        break;
-    }
   }
 
   // --- Fetch CSS Variables on Mount ---
@@ -229,9 +222,9 @@
     // Show initial dialog only if the store isn't already showing one (e.g., on reset)
     if (!get(showDialog)) { // Use get() for one-time read on the ACTUAL store
         showCalibrationDialog([
-            "Leo: Hey Surya! Let's get this printer calibrated.",
-            "The goal is to teach it exactly where its boundaries are.",
-            "See those target points on the bed? Use the controls below to move the nozzle and hit the first target (T0) at the corner."
+            { speaker: 'Leo', message: "Alright Surya, pop quiz time, but with hardware. We need to calibrate this printer so it knows its exact coordinates." },
+            { speaker: 'Surya', message: "Hardware quiz? My kind of test. Lay it on me." },
+            { speaker: 'Leo', message: "Think of it like teaching it basic geometry. See those targets? Your job is to move the nozzle using the controls and hit T0 first. Don't break anything." }
         ]);
     }
   });

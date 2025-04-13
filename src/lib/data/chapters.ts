@@ -1,149 +1,141 @@
+// Define the structure for a section within a chapter
 export interface Section {
   id: string;
   title: string;
 }
 
+// Define the structure for a chapter
 export interface Chapter {
   title: string;
   slug: string;
+  description: string;
   sections: Section[];
-  description?: string;
-  prevChapter: { slug: string; title: string } | null;
-  nextChapter: { slug: string; title: string } | null;
+  prevChapter: string | null; // Store slugs for prev/next
+  nextChapter: string | null;
   chapterNumber: number;
 }
 
 // Define all chapters with their data
 export const chapters: Chapter[] = [
   {
-    title: 'Introduction',
+    title: 'Understanding 3D Space',
     slug: 'understanding-3d-space',
-    description: 'Learn the fundamentals of 3D space, including coordinate systems, vectors, and reference frames, essential for describing motion.',
+    description: 'Introduction to coordinate systems and vectors.',
     sections: [
+      { id: "introduction", title: "Introduction" }, // Placeholder, adjust as needed
       { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
-      { id: "vectors-in-space", title: "1.2 Vectors in 3D Space" },
-      { id: "reference-frames", title: "1.3 Reference Frames" }
+      { id: "defining-vectors", title: "1.2 Defining Vectors" },
+      { id: "vector-components", title: "1.3 Vector Components" },
+      { id: "vector-operations", title: "1.4 Vector Operations" },
+      { id: "physical-vectors", title: "1.5 Physical Vector Quantities" }
     ],
     prevChapter: null,
-    nextChapter: null, // Filled in by initialize function
+    nextChapter: 'kinematics',
     chapterNumber: 1
   },
   {
     title: 'Kinematics',
     slug: 'kinematics',
-    description: 'Explore the description of motion without considering its causes. Covers displacement, velocity, acceleration, and different types of motion.',
+    description: 'Describing motion in 1D, 2D, and 3D.',
     sections: [
-      { id: "displacement-velocity-acceleration", title: "2.1 Displacement, Velocity, and Acceleration" },
-      { id: "uniform-motion", title: "2.2 Uniform Motion" },
-      { id: "non-uniform-motion", title: "2.3 Non-Uniform Motion" },
-      { id: "projectile-motion", title: "2.4 Projectile Motion" }
+      // Add section IDs for Kinematics later
+      // Example: { id: "displacement-velocity", title: "2.1 Displacement & Velocity" }
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'understanding-3d-space',
+    nextChapter: 'dynamics',
     chapterNumber: 2
   },
   {
     title: 'Dynamics',
-    slug: 'forces-and-motion',
-    description: 'Dive into the causes of motion by studying forces and Newton\'s laws. Understand how forces affect the movement of objects.',
+    slug: 'dynamics',
+    description: "Newton's Laws, Forces, and Free Body Diagrams.",
     sections: [
-      { id: "newtons-laws", title: "3.1 Newton's Laws" },
-      { id: "newtons-laws-of-motion", title: "3.2 Newton's Laws of Motion" }
+      // Add section IDs for Dynamics later
+      // Example: { id: "newtons-laws", title: "3.1 Newton's Laws" }
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'kinematics',
+    nextChapter: 'energy',
     chapterNumber: 3
   },
   {
-    title: 'Advanced Topics',
-    slug: 'advanced-topics',
-    description: 'Placeholder description for Advanced Topics.',
+    title: 'Work, Energy, and Power',
+    slug: 'energy',
+    description: 'Understanding energy conservation and transfer.',
     sections: [
-      { id: "advanced-section1", title: "4.1 Advanced Topic 1 - Placeholder" },
-      { id: "advanced-section2", title: "4.2 Advanced Topic 2 - Placeholder" }
+      // Add section IDs for Energy later
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'dynamics',
+    nextChapter: 'momentum',
     chapterNumber: 4
   },
   {
-    title: 'Motion Analysis',
-    slug: 'motion-analysis',
-    description: 'Placeholder description for Motion Analysis.',
+    title: 'Momentum and Collisions',
+    slug: 'momentum',
+    description: 'Exploring momentum conservation and collisions.',
     sections: [
-      { id: "motion-analysis-section1", title: "5.1 Motion Analysis 1 - Placeholder" },
-      { id: "motion-analysis-section2", title: "5.2 Motion Analysis 2 - Placeholder" }
+      // Add section IDs for Momentum later
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'energy',
+    nextChapter: 'circular-motion',
     chapterNumber: 5
   },
   {
-    title: 'Biomechanics',
-    slug: 'biomechanics',
-    description: 'Placeholder description for Biomechanics.',
+    title: 'Circular Motion and Gravitation',
+    slug: 'circular-motion',
+    description: 'Analyzing circular paths and gravitational forces.',
     sections: [
-      { id: "biomechanics-section1", title: "6.1 Biomechanics 1 - Placeholder" },
-      { id: "biomechanics-section2", title: "6.2 Biomechanics 2 - Placeholder" }
+      // Add section IDs for Circular Motion later
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'momentum',
+    nextChapter: 'rotational-motion',
     chapterNumber: 6
   },
   {
-    title: 'Clinical Applications',
-    slug: 'clinical-applications',
-    description: 'Placeholder description for Clinical Applications.',
+    title: 'Rotational Motion',
+    slug: 'rotational-motion',
+    description: 'Introduction to torque and angular momentum.',
     sections: [
-      { id: "clinical-section1", title: "7.1 Clinical Applications 1 - Placeholder" },
-      { id: "clinical-section2", title: "7.2 Clinical Applications 2 - Placeholder" }
+      // Add section IDs for Rotational Motion later
     ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
+    prevChapter: 'circular-motion',
+    nextChapter: null, // This is the last chapter for now
     chapterNumber: 7
-  },
-  {
-    title: 'Research Methods',
-    slug: 'research-methods',
-    description: 'Placeholder description for Research Methods.',
-    sections: [
-      { id: "research-section1", title: "8.1 Research Methods 1 - Placeholder" },
-      { id: "research-section2", title: "8.2 Research Methods 2 - Placeholder" }
-    ],
-    prevChapter: null, // Filled in by initialize function
-    nextChapter: null,  // Filled in by initialize function
-    chapterNumber: 8
   }
+  // Add more chapters as needed
 ];
 
-// Initialize the previous and next chapter references
-function initializeChapterNavigation() {
-  for (let i = 0; i < chapters.length; i++) {
-    // Set previous chapter (null for first chapter)
-    chapters[i].prevChapter = i > 0
-      ? { slug: chapters[i-1].slug, title: chapters[i-1].title }
-      : null;
+// Function to initialize next/prev chapter links - uncomment and adapt if needed
+// function initializeChapterLinks(): void {
+//   for (let i = 0; i < chapters.length; i++) {
+//     if (i > 0) {
+//       chapters[i].prevChapter = chapters[i - 1].slug;
+//     }
+//     if (i < chapters.length - 1) {
+//       chapters[i].nextChapter = chapters[i + 1].slug;
+//     }
+//   }
+// }
 
-    // Set next chapter (null for last chapter)
-    chapters[i].nextChapter = i < chapters.length - 1
-      ? { slug: chapters[i+1].slug, title: chapters[i+1].title }
-      : null;
-  }
-}
-
-// Initialize navigation on module load
-initializeChapterNavigation();
+// // Initialize the links when the module loads
+// initializeChapterLinks();
 
 // Helper functions to get chapter data
 export function getChapterBySlug(slug: string): Chapter | undefined {
   return chapters.find(chapter => chapter.slug === slug);
 }
 
-export function getAllChapters(): Chapter[] {
-  return chapters;
+export function getChapterByNumber(chapterNumber: number): Chapter | undefined {
+  return chapters.find(chapter => chapter.chapterNumber === chapterNumber);
 }
 
-// For simplified navigation needs (sidebar, TOC)
+// For simplified navigation needs (sidebar, TOC) - returns a structure Navigation.svelte can use
 export function getChapterList() {
-  return chapters.map(({ title, slug, sections, description }) => ({ title, slug, sections, description }));
+  // Note: This returns a slightly different structure than the main Chapter interface
+  // It maps sections to {id, title} which Navigation.svelte expects
+  return chapters.map(({ title, slug, sections, description }) => ({
+    title,
+    slug,
+    sections: sections.map(sec => ({ id: sec.id, title: sec.title })),
+    description // Include description if needed by the component
+  }));
 }

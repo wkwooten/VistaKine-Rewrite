@@ -1,9 +1,17 @@
 import { writable } from 'svelte/store';
 
+// Define the structure for a single dialog turn
+export interface DialogTurn {
+	speaker: string;
+	message: string;
+}
+
 // --- State ---
-export const dialogMessages = writable<string[]>([]);
+// Rename dialogMessages to dialogTurns and update type
+export const dialogTurns = writable<DialogTurn[]>([]);
 export const showDialog = writable<boolean>(false);
-export const speaker = writable<string>('');
+// Remove the speaker store as it will be derived from the turns
+// export const speaker = writable<string>('');
 
 // --- Actions / Functions ---
 // We'll implement these functions within the components that handle the logic.
@@ -17,18 +25,18 @@ export const resetSceneRequested = writable<boolean>(false); // Use a simple boo
 // Scene -> UI Communication (Directly use the state writables above)
 
 // Helper to simplify showing dialogs from the scene
-export function showCalibrationDialog(messagesToShow: string[], speakerName: string = 'Leo') {
-	speaker.set(speakerName);
-	dialogMessages.set(messagesToShow);
+// Update function to accept DialogTurn[] and remove speakerName parameter
+export function showCalibrationDialog(turnsToShow: DialogTurn[]) {
+	// speaker.set(speakerName); // Removed
+	dialogTurns.set(turnsToShow);
 	showDialog.set(true);
 }
 
 // Helper to hide dialog (can be called by UI or Scene)
 export function hideCalibrationDialog() {
 	showDialog.set(false);
-	// Optional: Clear messages when hiding
-	// dialogMessages.set([]);
-	// speaker.set('');
+	// Optional: Clear turns when hiding
+	// dialogTurns.set([]);
 }
 
 // --- Constants (Consider moving MIN/MAX here if used widely) ---

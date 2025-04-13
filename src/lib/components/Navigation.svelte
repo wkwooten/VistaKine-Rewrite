@@ -469,6 +469,11 @@
     }
   }
 
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   .chevron {
     margin-left: auto;
     padding: var(--space-2xs);
