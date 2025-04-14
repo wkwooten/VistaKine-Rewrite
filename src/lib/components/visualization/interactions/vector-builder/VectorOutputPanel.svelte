@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { vectorData, xAxisColor, yAxisColor, zAxisColor } from '$lib/stores/vectorBuilderState';
+  import {
+    vectorData,
+    xAxisColor, yAxisColor, zAxisColor,
+    // Import the delta visibility states
+    showDeltaX, showDeltaY, showDeltaZ
+  } from '$lib/stores/vectorBuilderState';
 
   // Use $props() for runes mode
   let { extraClass = '' } = $props<{ extraClass?: string }>();
@@ -16,18 +21,21 @@
   <div class="output-section">
 		<h4>Vector Properties</h4>
     {#if $vectorData}
-      <!-- Display components vertically -->
+      <!-- Display components vertically with toggles -->
       <p class="component">
         <span class="label" style="color: {$xAxisColor}">ΔX:</span>
         <span class="value" style="color: {$xAxisColor}">{formatNum($vectorData.components.dx)}</span>
+        <input type="checkbox" class="delta-toggle" bind:checked={$showDeltaX} title="Toggle ΔX visibility" style="accent-color: {$xAxisColor};" />
       </p>
       <p class="component">
         <span class="label" style="color: {$yAxisColor}">ΔY:</span>
         <span class="value" style="color: {$yAxisColor}">{formatNum($vectorData.components.dy)}</span>
+        <input type="checkbox" class="delta-toggle" bind:checked={$showDeltaY} title="Toggle ΔY visibility" style="accent-color: {$yAxisColor};" />
       </p>
       <p class="component">
         <span class="label" style="color: {$zAxisColor}">ΔZ:</span>
         <span class="value" style="color: {$zAxisColor}">{formatNum($vectorData.components.dz)}</span>
+        <input type="checkbox" class="delta-toggle" bind:checked={$showDeltaZ} title="Toggle ΔZ visibility" style="accent-color: {$zAxisColor};" />
       </p>
       <p class="magnitude">
         <span class="label">Magnitude:</span>
@@ -92,6 +100,22 @@
   .output-section .value {
     /* Add styles if needed, e.g., specific font-weight or slight offset */
     margin-left: var(--space-3xs);
+    display: inline-block; /* Ensure it takes space */
+    min-width: 3em; /* Give some space for the value */
+    text-align: right;
+  }
+
+  /* Styles for the component line */
+  .component {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  /* Styles for the checkbox toggle */
+  .delta-toggle {
+    margin-left: auto; /* Push checkbox to the right */
+    cursor: pointer;
   }
 
 </style>

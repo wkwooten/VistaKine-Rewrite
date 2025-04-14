@@ -90,6 +90,11 @@ export const traceVectorRequested = writable<boolean>(false);
 // Flag to trigger a reset
 export const resetVectorBuilderRequested = writable<boolean>(false);
 
+// Flags to control visibility of delta component lines
+export const showDeltaX = writable<boolean>(false);
+export const showDeltaY = writable<boolean>(false);
+export const showDeltaZ = writable<boolean>(false);
+
 // --- Dialog State (using DialogTurn) --- //
 export const vectorBuilderDialogTurns = writable<DialogTurn[]>([]);
 export const showVectorBuilderDialog = writable<boolean>(false);

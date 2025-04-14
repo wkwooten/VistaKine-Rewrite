@@ -8,7 +8,7 @@
     Billboard,
     Text,
   } from '@threlte/extras';
-  import { Vector3, Color, ArrowHelper } from 'three';
+  import { Vector3, Color, ArrowHelper, BufferGeometry, LineSegments, LineDashedMaterial, BufferAttribute } from 'three';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { onMount } from 'svelte';
@@ -19,7 +19,8 @@
     nozzleColor, nozzleEdgesColor, heightIndicatorColor,
     bedColor, bedEdgesColor, gridCellColor, gridSectionColor,
     vectorColor, startPointColor, endPointColor,
-    showVectorDialog
+    showVectorDialog,
+    showDeltaX, showDeltaY, showDeltaZ
   } from '$lib/stores/vectorBuilderState';
 
   // --- Constants (reuse from calibration/state) ---
@@ -37,7 +38,7 @@
     }
   });
 
-  // --- Derived World Positions --- //
+  // --- Derived World Positions & Delta Points (Reordered) --- //
   let vectorStartWorld = $derived.by(() => {
     const start = $vectorData?.start;
     if (!start) return null;
@@ -49,6 +50,56 @@
     if (!end) return null;
     return cornerOriginOffset.clone().add(new Vector3(end.x, end.y, end.z));
   });
+
+  // Intermediate points for delta lines (defined AFTER world points)
+  let deltaIntermediateXY = $derived.by(() => {
+      if (!vectorStartWorld || !vectorEndWorld) return null;
+      return new Vector3(vectorEndWorld.x, vectorStartWorld.y, vectorStartWorld.z);
+  });
+  let deltaIntermediateYZ = $derived.by(() => {
+      if (!vectorStartWorld || !vectorEndWorld) return null;
+      // This point is where X and Y deltas are complete, before Z delta starts
+      return new Vector3(vectorEndWorld.x, vectorEndWorld.y, vectorStartWorld.z);
+  });
+
+  // --- Derived Label Data (defined AFTER intermediate points) ---
+  let deltaLabelXData = $derived.by(() => {
+    // Use derived values directly inside $derived.by
+    if ($showDeltaX && deltaIntermediateXY && $vectorData && vectorStartWorld) {
+      const midPointX = vectorStartWorld.clone().lerp(deltaIntermediateXY, 0.5);
+      const labelTextX = `ΔX: ${$vectorData.components.dx.toFixed(2)}`;
+      return { position: midPointX, text: labelTextX };
+    }
+    return null;
+  });
+
+  let deltaLabelYData = $derived.by(() => {
+    // Use derived values directly inside $derived.by
+    if ($showDeltaY && deltaIntermediateXY && deltaIntermediateYZ && $vectorData) {
+      const midPointY = deltaIntermediateXY.clone().lerp(deltaIntermediateYZ, 0.5);
+      const labelTextY = `ΔY: ${$vectorData.components.dy.toFixed(2)}`;
+      return { position: midPointY, text: labelTextY };
+    }
+    return null;
+  });
+
+  let deltaLabelZData = $derived.by(() => {
+    // Use derived values directly inside $derived.by
+    if ($showDeltaZ && deltaIntermediateYZ && vectorEndWorld && $vectorData) {
+      const midPointZ = deltaIntermediateYZ.clone().lerp(vectorEndWorld, 0.5);
+      const labelTextZ = `ΔZ: ${$vectorData.components.dz.toFixed(2)}`;
+      return { position: midPointZ, text: labelTextZ };
+    }
+    return null;
+  });
+
+  // --- Refs for Delta Lines ---
+  let lineX = $state<LineSegments | undefined>(undefined); // Initialize with undefined
+  let lineY = $state<LineSegments | undefined>(undefined); // Initialize with undefined
+  let lineZ = $state<LineSegments | undefined>(undefined); // ADDED: Missing lineZ ref
+  let geometryX = $state<BufferGeometry | undefined>(undefined); // ADDED: Missing geometryX ref
+  let geometryY = $state<BufferGeometry | undefined>(undefined); // ADDED: Missing geometryY ref
+  let geometryZ = $state<BufferGeometry | undefined>(undefined);
 
   // --- Visual Helper Data Generation (Copied from PrinterCalibrationScene) ---
   const gridNumbers: { text: string, x: number, z: number, axis: 'x' | 'z' }[] = [];
@@ -146,6 +197,35 @@
         { speaker: 'Surya', message: 'Got it. Start point... end point... So the vector is just the straight line between them?' },
         { speaker: 'Leo', message: 'Precisely! And it has both a direction and a length, or magnitude. Enter some points and see.' }
     ]);
+  });
+
+  // --- Helper Function for Line Points ---
+  const linePoints = (start: Vector3, end: Vector3) => new Float32Array([...start.toArray(), ...end.toArray()]);
+
+  // --- Effect to compute line distances --- //
+  $effect(() => {
+    if (lineX && geometryX && vectorStartWorld && deltaIntermediateXY) {
+      const positionsX = linePoints(vectorStartWorld, deltaIntermediateXY);
+      geometryX.setAttribute('position', new BufferAttribute(positionsX, 3));
+      geometryX.attributes.position.needsUpdate = true; // Mark attribute for update
+      lineX.computeLineDistances();
+    }
+  });
+  $effect(() => {
+    if (lineY && geometryY && deltaIntermediateXY && deltaIntermediateYZ) {
+       const positionsY = linePoints(deltaIntermediateXY, deltaIntermediateYZ);
+       geometryY.setAttribute('position', new BufferAttribute(positionsY, 3));
+       geometryY.attributes.position.needsUpdate = true; // Mark attribute for update
+       lineY.computeLineDistances();
+    }
+  });
+  $effect(() => {
+    if (lineZ && geometryZ && deltaIntermediateYZ && vectorEndWorld) {
+       const positionsZ = linePoints(deltaIntermediateYZ, vectorEndWorld);
+       geometryZ.setAttribute('position', new BufferAttribute(positionsZ, 3));
+       geometryZ.attributes.position.needsUpdate = true; // Mark attribute for update
+       lineZ.computeLineDistances();
+    }
   });
 
 </script>
@@ -347,4 +427,85 @@
         depthTest={false}
       />
   </Billboard>
+
+  <!-- Correct Delta Component Lines (Conditional & Refactored) -->
+  {@const dashSize = 0.2}
+  {@const gapSize = 0.1}
+
+  <!-- Delta Component Lines (Conditional & Refactored) -->
+  {#if showDeltaX && showDeltaY && showDeltaZ && $vectorData}
+    {@const deltaIntermediateXY = vectorStartWorld.clone().lerp(vectorEndWorld, 0.5)}
+    {@const deltaIntermediateYZ = deltaIntermediateXY.clone().lerp(vectorEndWorld, 0.5)}
+    <T.LineSegments>
+      <T.Line position={[vectorStartWorld.x, vectorStartWorld.y, vectorStartWorld.z]} end={[deltaIntermediateXY.x, deltaIntermediateXY.y, deltaIntermediateXY.z]} color={$xAxisColor} />
+      <T.Line position={[deltaIntermediateXY.x, deltaIntermediateXY.y, deltaIntermediateXY.z]} end={[deltaIntermediateYZ.x, deltaIntermediateYZ.y, deltaIntermediateYZ.z]} color={$yAxisColor} />
+      <T.Line position={[deltaIntermediateYZ.x, deltaIntermediateYZ.y, deltaIntermediateYZ.z]} end={[vectorEndWorld.x, vectorEndWorld.y, vectorEndWorld.z]} color={$zAxisColor} />
+    </T.LineSegments>
+  {/if}
+
+  <!-- Delta Component Labels (Billboard Text) -->
+  {@const deltaLabelFontSize = 0.5}
+  {@const deltaLabelOffsetY = 0.3} // Offset slightly from the line
+
+  <!-- Use derived label data -->
+  {#if deltaLabelXData}
+    <Billboard position={[deltaLabelXData.position.x, deltaLabelXData.position.y + deltaLabelOffsetY, deltaLabelXData.position.z]}>
+      <Text
+        text={deltaLabelXData.text}
+        fontSize={deltaLabelFontSize}
+        color={$xAxisColor}
+        anchorX="center"
+        anchorY="middle"
+      />
+    </Billboard>
+  {/if}
+
+  {#if deltaLabelYData}
+     <Billboard position={[deltaLabelYData.position.x, deltaLabelYData.position.y + deltaLabelOffsetY, deltaLabelYData.position.z]}>
+       <Text
+        text={deltaLabelYData.text}
+        fontSize={deltaLabelFontSize}
+        color={$yAxisColor}
+        anchorX="center"
+        anchorY="middle"
+      />
+    </Billboard>
+  {/if}
+
+  {#if deltaLabelZData}
+     <Billboard position={[deltaLabelZData.position.x, deltaLabelZData.position.y + deltaLabelOffsetY, deltaLabelZData.position.z]}>
+       <Text
+        text={deltaLabelZData.text}
+        fontSize={deltaLabelFontSize}
+        color={$zAxisColor}
+        anchorX="center"
+        anchorY="middle"
+      />
+    </Billboard>
+  {/if}
+
+  <!-- Delta X Line -->
+  {#if showDeltaX && deltaIntermediateXY}
+    <T.LineSegments bind:ref={lineX}>
+      <T.BufferGeometry bind:ref={geometryX} />
+      <T.LineDashedMaterial color={$xAxisColor} dashSize={dashSize} gapSize={gapSize} />
+    </T.LineSegments>
+  {/if}
+
+  <!-- Delta Y Line -->
+  {#if showDeltaY && deltaIntermediateXY && deltaIntermediateYZ}
+    <T.LineSegments bind:ref={lineY}>
+      <T.BufferGeometry bind:ref={geometryY} />
+      <T.LineDashedMaterial color={$yAxisColor} dashSize={dashSize} gapSize={gapSize} />
+    </T.LineSegments>
+  {/if}
+
+  <!-- Delta Z Line -->
+  {#if showDeltaZ && deltaIntermediateYZ && vectorEndWorld}
+    <T.LineSegments bind:ref={lineZ}>
+      <T.BufferGeometry bind:ref={geometryZ} />
+      <T.LineDashedMaterial color={$zAxisColor} dashSize={dashSize} gapSize={gapSize} />
+    </T.LineSegments>
+  {/if}
+
 {/if}

@@ -3,9 +3,12 @@
     startCoordsRaw, endCoordsRaw,
     startCoordsNum, endCoordsNum, // Import derived stores for validation
     vectorData, traceVectorRequested,
-    xAxisColor, yAxisColor, zAxisColor // Import color stores
+    xAxisColor, yAxisColor, zAxisColor, // Import color stores
   } from '$lib/stores/vectorBuilderState';
   import { get } from 'svelte/store';
+  // Import a Toggle component if available, otherwise use checkbox
+  // Assuming a simple checkbox for now
+  // import Toggle from '$lib/components/ui/Toggle.svelte'; // Example path
 
   // Use $props() for runes mode
   let { extraClass = '' } = $props<{ extraClass?: string }>();

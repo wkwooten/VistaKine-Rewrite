@@ -386,6 +386,10 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
   font-weight: 600;
   color: var(--color-accent); /* Give keywords the accent color */
   /* Add any other base keyword styles here */
+  &:hover {
+   text-decoration: underline dashed;
+   cursor: help;
+  }
 }
 
 .chapter-header .keyword {

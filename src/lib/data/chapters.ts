@@ -22,12 +22,11 @@ export const chapters: Chapter[] = [
     slug: 'understanding-3d-space',
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
-      { id: "introduction", title: "Introduction" }, // Placeholder, adjust as needed
+      { id: "introduction", title: "Introduction" },
       { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
-      { id: "defining-vectors", title: "1.2 Defining Vectors" },
-      { id: "vector-components", title: "1.3 Vector Components" },
-      { id: "vector-operations", title: "1.4 Vector Operations" },
-      { id: "physical-vectors", title: "1.5 Physical Vector Quantities" }
+      { id: "vectors-and-components", title: "1.2 Vectors and Components" },
+      { id: "vector-operations", title: "1.3 Vector Operations" },
+      { id: "physical-vectors", title: "1.4 Physical Vector Quantities" }
     ],
     prevChapter: null,
     nextChapter: 'kinematics',
