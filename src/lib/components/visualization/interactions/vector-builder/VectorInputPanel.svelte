@@ -217,7 +217,7 @@
   /* Remove old label styles */
   /* Remove input border styling that conflicts */
   .axis-input-group input[type="number"] {
-      width: 5ch; /* Increased width from 4ch to 5ch */
+      width: 3ch; /* Reduced width from 5ch to 3ch */
       padding: var(--space-3xs); /* Adjust padding */
       font-size: 1em;
       background-color: var(--color-background); /* Grey background */
@@ -228,11 +228,14 @@
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inset shadow */
       transition: box-shadow 0.2s ease;
 
+      /* Hide spinners for Webkit browsers */
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
           -webkit-appearance: none;
           margin: 0;
       }
+      /* Hide spinners for Firefox */
+      -moz-appearance: textfield;
   }
 
   /* Styling for focus state - apply to group */

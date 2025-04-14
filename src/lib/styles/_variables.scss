@@ -189,10 +189,6 @@ $leo-color-light: #1E40AF;  // Blue 800
   --chapter-color-2: #007bff;
   --chapter-color-light-2: #67b3ff;
   --chapter-color-dark-2: #0056b3;
-  // Add more chapter themes here as needed...
-  // --chapter-color-3: ...;
-  // --chapter-color-light-3: ...;
-  // --chapter-color-dark-3: ...;
 
 
   // Typography (Base definitions - Keep As Is)
@@ -225,17 +221,6 @@ $leo-color-light: #1E40AF;  // Blue 800
   // UI States (Keep As Is)
   --state-selected-color: #{$state-selected-color}; // Maybe rename to --color-selected-bg or similar? Or use accent?
 
-  /*
-  // Cover specific (Commented out - Define locally in component or keep if used globally)
-  --cover-gradient: linear-gradient(135deg, var(--color-accent-hover), var(--color-accent));
-  --cover-text: var(--color-text-on-dark);
-  // --cover-text-secondary: (value removed) // This SCSS var is removed, comment out CSS var too
-  --cover-accent: var(--color-accent-light);
-  --cover-accent-glow: #{rgba($color-accent-light, 0.7)};
-  // --cover-heading-gradient: linear-gradient(90deg, (value removed), (value removed)); // SCSS vars removed, comment out
-  --cover-button-primary: var(--color-accent);
-  --cover-button-primary-hover: var(--color-accent-hover);
-  */
 
   // Glassmorphism (Keep As Is - Uses CSS vars)
   --glass-bg-color: #f9fafb 90%;

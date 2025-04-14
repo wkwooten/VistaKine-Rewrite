@@ -147,22 +147,25 @@
 	}
 
 	.axis-input-group input[type="number"] {
-		width: 5ch; /* Consistent width */
-		padding: var(--space-3xs);
+		width: 3ch; /* Reduced width */
+		padding: var(--space-3xs); /* Adjust padding */
 		font-size: 1em;
-		background-color: var(--color-background);
-		border-radius: var(--radius-sm);
+		background-color: var(--color-background); /* Grey background */
+		border-radius: var(--radius-sm); /* Rounded corners for input */
 		color: var(--color-text-primary);
 		text-align: right;
-		border: none;
-		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+		border: none; /* Remove default border */
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inset shadow */
 		transition: box-shadow 0.2s ease;
 
+		/* Hide spinners for Webkit browsers */
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			-webkit-appearance: none;
 			margin: 0;
 		}
+		/* Hide spinners for Firefox */
+		-moz-appearance: textfield;
 	}
 
 	/* Focus state */

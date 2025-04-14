@@ -91,14 +91,15 @@
   });
 </script>
 
-<h3>Vector Builder Exercise</h3>
-<p>Define a start and end point to create and visualize a vector.</p>
-
 <div
   bind:this={exerciseWrapperElement}
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
 >
+  <!-- Moved title and description inside -->
+  <h3>Vector Builder Exercise</h3>
+  <p>Define a start and end point to create and visualize a vector.</p>
+
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showVectorBuilderDialog && !isFullscreen}
     <div class="dialog-above-vis">
@@ -149,9 +150,31 @@
   .exercise-wrapper {
     display: flex;
     flex-direction: column;
-    margin-block: var(--space-l);
     position: relative; /* Needed for potential absolute children like Dialog */
+    /* Add border, background, padding */
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-secondary);
+    padding: var(--space-m) var(--space-xs); /* Adjusted padding */
+    margin-bottom: var(--space-l); /* Add margin-bottom */
   }
+
+  /* --- Styles for moved title/description --- */
+  .exercise-wrapper > h3 { /* Target h3 directly */
+      font-size: var(--step-2); /* Slightly smaller */
+      font-weight: 600;
+      margin-bottom: var(--space-s); /* Space below title */
+      /* Resetting potential global heading margins */
+      margin-top: 0;
+  }
+  .exercise-wrapper > p:first-of-type { /* Target first p */
+      font-size: var(--step-0);
+      margin-bottom: var(--space-m); /* Space below description */
+      color: var(--color-text-secondary);
+       /* Resetting potential global paragraph margins */
+      margin-top: 0;
+  }
+  /* ------------------------------------------- */
 
   /* Ensure VisContainer allows pointer events on children */
   :global(.visualization-container) {
@@ -186,6 +209,12 @@
     border: none;
     z-index: 9999;
     flex-direction: row; /* Ensure layout works with overlay */
+
+    /* Hide title and description when fullscreen */
+    & > h3,
+    & > p:first-of-type {
+        display: none;
+    }
 
     & > :global(.visualization-container) {
       width: 100%;

@@ -18,8 +18,8 @@
 
 <style lang="scss">
   .section-review {
-    margin-top: var(--space-m);
-    margin-bottom: var(--space-m);
+    /* Removed margin-top: var(--space-m); */
+    /* Removed margin-bottom: var(--space-m); */
   }
 
   /* Style for the icon within the accordion header - reuse existing class */

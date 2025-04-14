@@ -35,7 +35,6 @@
 <style lang="scss">
   /* Styles for quiz */
   .quiz {
-    margin-top: var(--space-m);
     padding: var(--space-l); /* Increased padding a bit */
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);

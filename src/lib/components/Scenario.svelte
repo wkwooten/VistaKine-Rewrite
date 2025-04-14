@@ -5,11 +5,11 @@
 <style lang="scss">
   /* Styles for scenario */
   .scenario {
-    margin-bottom: var(--space-m);
     padding: var(--space-s) var(--space-m);
     border: 1px solid var(--color-border);
     background-color: var(--bg-alt);
     border-radius: var(--radius-md);
+    margin-bottom: var(--space-l);
 
     p {
       margin-bottom: var(--space-xs);

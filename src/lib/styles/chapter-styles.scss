@@ -163,8 +163,9 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   max-width: var(--wide-content-width);
 
   @media (max-width: variables.$breakpoint-md) {
-    padding: var(--space-m) var(--space-3xs); /* Reduced padding for medium screens */
-    gap: var(--space-xl);
+    padding: 0; /* Remove padding for medium screens */
+    border: none; /* Remove border for medium screens */
+    gap: var(--space-l); /* Adjust gap if needed */
   }
 }
 

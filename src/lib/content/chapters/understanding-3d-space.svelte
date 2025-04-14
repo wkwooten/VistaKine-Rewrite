@@ -212,3 +212,31 @@
     </section>
   </div>
 </div>
+
+<style lang="scss">
+    /* Import spacing if not global - adjust path as needed */
+    /* @import '$lib/styles/_spacing.scss'; */
+
+    /* Consistent Chapter Spacing */
+    .chapter-header { margin-bottom: var(--space-xl); }
+    .content-section + .content-section { margin-top: var(--space-2xl); }
+    .page-content > .content-section:first-child { margin-top: 0; }
+
+    .readable-content {
+        /* Spacing between major blocks (intro, core, review) */
+        & > * + * { margin-top: var(--space-l); }
+        & > .section-intro + .section-core { margin-top: var(--space-xl); }
+        & > .section-core + .section-review { margin-top: var(--space-xl); }
+
+        /* --- Spacing WITHIN intro and core --- */
+        .section-intro,
+        .section-core {
+            /* Apply medium margin-top to ANY element following another element */
+            & > * + * {
+                margin-top: var(--space-m);
+            }
+
+            /* REMOVED all other specific rules from here */
+        }
+    }
+</style>
