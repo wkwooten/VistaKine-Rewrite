@@ -20,7 +20,6 @@
 
   // Define Stage 1 target points (relative to corner origin)
   const stage1Targets = [
-    { id: 't0', x: 0, y: 0, z: 0 }, // Default corner target
     { id: 't1', x: 12, y: 0, z: 0 },
     { id: 't2', x: 2, y: 0, z: 4 },
     { id: 't3', x: 7, y: 0, z: 10 }
