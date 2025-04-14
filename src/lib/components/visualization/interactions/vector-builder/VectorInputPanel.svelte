@@ -39,8 +39,8 @@
       <legend>Start Point (X1, Y1, Z1)</legend>
       <div class="coord-inputs">
         <!-- X Input Group -->
-        <div class="axis-input-group" style="background-color: {$xAxisColor};" class:invalid={startInteracted.x && $startCoordsNum === null}>
-          <span class="axis-label">X</span>
+        <div class="axis-input-group" style="border-color: {$xAxisColor};" class:invalid={startInteracted.x && $startCoordsNum === null}>
+          <span class="axis-label" style="color: {$xAxisColor};">X</span>
           <input
             type="number"
             step="1"
@@ -51,8 +51,8 @@
           />
         </div>
         <!-- Y Input Group -->
-        <div class="axis-input-group" style="background-color: {$yAxisColor};" class:invalid={startInteracted.y && $startCoordsNum === null}>
-           <span class="axis-label">Y</span>
+        <div class="axis-input-group" style="border-color: {$yAxisColor};" class:invalid={startInteracted.y && $startCoordsNum === null}>
+           <span class="axis-label" style="color: {$yAxisColor};">Y</span>
            <input
             type="number"
             step="1"
@@ -63,8 +63,8 @@
           />
         </div>
         <!-- Z Input Group -->
-        <div class="axis-input-group" style="background-color: {$zAxisColor};" class:invalid={startInteracted.z && $startCoordsNum === null}>
-           <span class="axis-label">Z</span>
+        <div class="axis-input-group" style="border-color: {$zAxisColor};" class:invalid={startInteracted.z && $startCoordsNum === null}>
+           <span class="axis-label" style="color: {$zAxisColor};">Z</span>
            <input
             type="number"
             step="1"
@@ -81,8 +81,8 @@
       <legend>End Point (X2, Y2, Z2)</legend>
       <div class="coord-inputs">
         <!-- X Input Group -->
-        <div class="axis-input-group" style="background-color: {$xAxisColor};" class:invalid={endInteracted.x && $endCoordsNum === null}>
-          <span class="axis-label">X</span>
+        <div class="axis-input-group" style="border-color: {$xAxisColor};" class:invalid={endInteracted.x && $endCoordsNum === null}>
+          <span class="axis-label" style="color: {$xAxisColor};">X</span>
           <input
             type="number"
             step="1"
@@ -93,8 +93,8 @@
           />
         </div>
         <!-- Y Input Group -->
-        <div class="axis-input-group" style="background-color: {$yAxisColor};" class:invalid={endInteracted.y && $endCoordsNum === null}>
-          <span class="axis-label">Y</span>
+        <div class="axis-input-group" style="border-color: {$yAxisColor};" class:invalid={endInteracted.y && $endCoordsNum === null}>
+          <span class="axis-label" style="color: {$yAxisColor};">Y</span>
           <input
             type="number"
             step="1"
@@ -105,8 +105,8 @@
           />
         </div>
         <!-- Z Input Group -->
-        <div class="axis-input-group" style="background-color: {$zAxisColor};" class:invalid={endInteracted.z && $endCoordsNum === null}>
-          <span class="axis-label">Z</span>
+        <div class="axis-input-group" style="border-color: {$zAxisColor};" class:invalid={endInteracted.z && $endCoordsNum === null}>
+          <span class="axis-label" style="color: {$zAxisColor};">Z</span>
           <input
             type="number"
             step="1"
@@ -139,8 +139,9 @@
     flex-direction: column;
     gap: var(--space-xs);
     padding: var(--space-xs);
-    /* border: 1px solid var(--color-border); */
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
+		margin-block: var(--space-s);
     background-color: var(--color-surface-overlay);
     pointer-events: auto;
     user-select: none; /* Disable text selection */
@@ -170,9 +171,20 @@
     gap: var(--space-2xs);
 
     legend {
-        padding: 0 var(--space-xs);
-        font-size: 0.9em;
-        color: var(--color-text-tertiary);
+        /* --- Updated Styles --- */
+        background-color: var(--color-surface); /* Use theme surface color */
+        color: var(--color-text-secondary); /* Use secondary text color */
+        border-radius: var(--radius-pill); /* Use theme variable for capsule shape */
+        padding: var(--space-2xs) var(--space-s); /* Adjust padding (vertical, horizontal) */
+        margin-left: var(--space-xs); /* Indent slightly from the left edge */
+        margin-bottom: var(--space-3xs); /* Add a little space below the legend */
+        line-height: 1.2; /* Adjust line height for padding */
+        display: inline-block; /* Treat as block for background/padding */
+        max-width: max-content; /* Prevent stretching */
+        font-weight: 500; /* Slightly bolder */
+        font-size: 0.9em; /* Keep font size */
+        border: 1px solid var(--color-border-light); /* Add a subtle border for definition */
+        /* --- End Updated Styles --- */
     }
   }
 
@@ -190,12 +202,12 @@
       border-radius: var(--radius-md); /* Rounded corners for the group */
       padding: var(--space-3xs) var(--space-2xs); /* Padding inside the group */
       gap: var(--space-2xs); /* Gap between label and input */
-      border: 2px solid transparent; /* Base border, transparent */
+      border: 2px solid; /* Base border, now solid - color set inline */
+      background-color: transparent; /* Ensure background is transparent */
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .axis-label {
-      color: white;
       font-weight: 600;
       font-size: 0.9em;
       min-width: 1em; /* Ensure label takes some space */
@@ -205,7 +217,7 @@
   /* Remove old label styles */
   /* Remove input border styling that conflicts */
   .axis-input-group input[type="number"] {
-      width: 4ch; /* Keep width small */
+      width: 5ch; /* Increased width from 4ch to 5ch */
       padding: var(--space-3xs); /* Adjust padding */
       font-size: 1em;
       background-color: var(--color-background); /* Grey background */
@@ -231,7 +243,7 @@
 
   /* Styling for invalid state - apply to group */
   .axis-input-group.invalid {
-       border-color: var(--color-error) !important; /* Use !important to override transparency */
+       border-color: var(--color-error) !important; /* Use !important to override inline style */
        box-shadow: 0 0 0 1px var(--color-error);
   }
 

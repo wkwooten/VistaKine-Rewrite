@@ -22,35 +22,6 @@
   // Props using Svelte 5 runes
   let { chapterSections = [] } = $props<{ chapterSections?: any[] }>(); // Assuming chapterSections is optional array, adjust type as needed
 
-  // --- Printer Boundaries (Constants could be moved to store if needed elsewhere) ---
-  const MIN_X = 0;
-  const MAX_X = 12;
-  const MIN_Y = 0;
-  const MAX_Y = 10;
-  const MIN_Z = 0;
-  const MAX_Z = 12;
-
-  // Define Stage 1 target points (relative to corner origin)
-  const stage1Targets = [
-    { id: 't0', x: 0, y: 0, z: 0 }, // Default corner target
-    { id: 't1', x: 12, y: 0, z: 0 },
-    { id: 't2', x: 2, y: 0, z: 4 },
-    { id: 't3', x: 7, y: 0, z: 10 }
-  ];
-
-  // Define Stage 2 target points (relative to corner origin)
-  const stage2Targets = [
-    { id: 't4', x: 1, y: 3, z: 1 },
-    { id: 't5', x: 8, y: 5, z: 8 },
-    { id: 't6', x: 11, y: 2, z: 11 }
-  ];
-
-  // State for current stage
-  let currentStage = 1;
-
-  // Derived variable for active targets
-  let activeTargets = $derived((currentStage === 1) ? stage1Targets : stage2Targets);
-
   // State for completion
   let isCalibrationComplete = false;
 
@@ -59,15 +30,6 @@
 
   // Ref for positioning wrapper
   let visWrapperElement: HTMLDivElement;
-
-  // Function to advance to the next stage - Dialog handled by child
-  function goToStage2() {
-    if (currentStage === 1) {
-      console.log("[Parent] Stage 1 Complete event received! Starting Stage 2.");
-      currentStage = 2;
-      // No dialog logic here anymore
-    }
-  }
 
   // Function to mark completion - Dialog handled by child
   function handleCalibrationComplete() {
@@ -126,7 +88,9 @@
         </div>
 
         <div class="section-core">
-          <PrinterCalibrationExercise />
+          <PrinterCalibrationExercise
+            on:calibrationComplete={handleCalibrationComplete}
+          />
           <p>
             Think of a 3D printer. It uses three <span class="keyword">axes</span> (<span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z</span>) to pinpoint any location within its printing area. The intersection of these three <span class="keyword">axes</span> is called the <span class="keyword">origin</span>, typically represented as (0, 0, 0).
           </p>
@@ -186,9 +150,6 @@
         </div>
 
         <div class="section-core">
-          <FormulaAccordion>
-            <p>Formulas will go here.</p>
-          </FormulaAccordion>
 
           <VectorBuilderExercise />
 

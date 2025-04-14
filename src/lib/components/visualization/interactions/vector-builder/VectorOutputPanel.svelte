@@ -34,8 +34,23 @@
         <span class="value">{formatNum($vectorData.magnitude)}</span>
       </p>
     {:else}
-      <p class="component-placeholder">Components: (Enter valid points)</p>
-      <p class="magnitude"><span class="label">Magnitude:</span> <span class="value">--</span></p>
+      <!-- Mirror the structure of the 'if' block for consistency -->
+      <p class="component">
+        <span class="label" style="color: {$xAxisColor}">ΔX:</span>
+        <span class="value" style="color: {$xAxisColor}">--</span>
+      </p>
+      <p class="component">
+        <span class="label" style="color: {$yAxisColor}">ΔY:</span>
+        <span class="value" style="color: {$yAxisColor}">--</span>
+      </p>
+      <p class="component">
+        <span class="label" style="color: {$zAxisColor}">ΔZ:</span>
+        <span class="value" style="color: {$zAxisColor}">--</span>
+      </p>
+      <p class="magnitude">
+        <span class="label">Magnitude:</span>
+        <span class="value">--</span>
+      </p>
     {/if}
   </div>
 

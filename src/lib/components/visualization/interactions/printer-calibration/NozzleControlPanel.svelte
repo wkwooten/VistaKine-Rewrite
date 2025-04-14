@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { showCalibrationDialog, MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z } from '$lib/stores/calibrationState';
+	// Axis colors are assumed to be global CSS variables (--axis-color-x, etc.)
 
 	// --- State ---
 	let nozzleX = $state(MIN_X);
@@ -44,148 +45,143 @@
 	}
 </script>
 
-<!-- Bottom Right Input Controls -->
+<!-- Replicate structure from VectorInputPanel -->
 <div class="nozzle-control-panel">
-	<div class="axis-inputs">
-		<div class="axis-group" id="x-label">
-			<label class="axis-label">
-				X <span class="axis-range">({MIN_X}-{MAX_X})</span>
-				<input type="number" bind:value={nozzleX} min={MIN_X} max={MAX_X} onkeydown={handleKeydown} />
-			</label>
+	<h4>Control Nozzle</h4>
+	<div class="coord-inputs">
+		<!-- X Input Group -->
+		<div class="axis-input-group" style="border-color: var(--axis-color-x);">
+			<span class="axis-label" style="color: var(--axis-color-x);">X</span>
+			<input
+				type="number"
+				bind:value={nozzleX}
+				min={MIN_X}
+				max={MAX_X}
+				onkeydown={handleKeydown}
+				placeholder="X"
+			/>
 		</div>
-		<div class="axis-group" id="y-label">
-			<label class="axis-label">
-				Y <span class="axis-range">({MIN_Y}-{MAX_Y})</span>
-				<input type="number" bind:value={nozzleY} min={MIN_Y} max={MAX_Y} onkeydown={handleKeydown} />
-			</label>
+		<!-- Y Input Group -->
+		<div class="axis-input-group" style="border-color: var(--axis-color-y);">
+			<span class="axis-label" style="color: var(--axis-color-y);">Y</span>
+			<input
+				type="number"
+				bind:value={nozzleY}
+				min={MIN_Y}
+				max={MAX_Y}
+				onkeydown={handleKeydown}
+				placeholder="Y"
+			/>
 		</div>
-		<div class="axis-group" id="z-label">
-			<label class="axis-label">
-				Z <span class="axis-range">({MIN_Z}-{MAX_Z})</span>
-				<input type="number" bind:value={nozzleZ} min={MIN_Z} max={MAX_Z} onkeydown={handleKeydown} />
-			</label>
+		<!-- Z Input Group -->
+		<div class="axis-input-group" style="border-color: var(--axis-color-z);">
+			<span class="axis-label" style="color: var(--axis-color-z);">Z</span>
+			<input
+				type="number"
+				bind:value={nozzleZ}
+				min={MIN_Z}
+				max={MAX_Z}
+				onkeydown={handleKeydown}
+				placeholder="Z"
+			/>
 		</div>
 	</div>
-	<button onclick={handleMoveRequest}>Move Nozzle</button>
+	<div class="controls-section">
+		<button onclick={handleMoveRequest}>Move Nozzle</button>
+	</div>
 	<!-- Removed validation message display, dialog handles it -->
 </div>
 
 <style lang="scss">
+	/* Adapted styles from VectorInputPanel */
 	.nozzle-control-panel {
-		position: absolute;
-		bottom: var(--space-s);
-		right: var(--space-s);
 		display: flex;
-		flex-direction: column; /* Stack axis inputs and button */
-		gap: var(--space-s); /* Gap between inputs row and button */
-		padding: var(--space-s);
-		background-color: rgba(var(--bg-secondary-rgb), 0.95);
-		border-radius: var(--radius-sm);
-		/* max-width: 180px; Remove or adjust if needed */
-		color: var(--color-text-inverted);
+		flex-direction: column;
+		gap: var(--space-xs);
+		padding: var(--space-xs);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		background-color: var(--color-surface-overlay);
 		pointer-events: auto;
-		z-index: 10;
+		user-select: none; /* Disable text selection */
+		-webkit-user-select: none; /* Safari */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE/Edge */
+		/* Removed absolute positioning */
+	}
 
-		#x-label {
-			background-color: var(--axis-color-x-t75);
-			color: var(--color-text-inverted);
-			border-radius: var(--radius-xs); // Add radius for consistency
-			padding-bottom: var(--space-3xs); // Add some bottom padding inside label bg
+	h4 {
+		margin-bottom: var(--space-2xs);
+		color: var(--color-text-secondary);
+		font-weight: 600;
+		font-size: 1.1em;
+	}
+
+	/* Removed old .axis-inputs styles */
+
+	/* Copied/Adapted from VectorInputPanel */
+	.coord-inputs {
+		display: grid;
+		grid-template-columns: repeat(3, max-content); /* Arrange X, Y, Z groups */
+		gap: var(--space-xs); /* Gap between X, Y, Z groups */
+		justify-content: center; /* Center the groups if space allows */
+	}
+
+	.axis-input-group {
+		display: flex;
+		align-items: center;
+		border-radius: var(--radius-md);
+		padding: var(--space-3xs) var(--space-2xs);
+		gap: var(--space-2xs);
+		border: 2px solid; /* Color set inline via style */
+		background-color: transparent;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	.axis-label {
+		font-weight: 600;
+		font-size: 0.9em;
+		min-width: 1em;
+		text-align: center;
+		/* Color set inline via style */
+	}
+
+	.axis-input-group input[type="number"] {
+		width: 5ch; /* Consistent width */
+		padding: var(--space-3xs);
+		font-size: 1em;
+		background-color: var(--color-background);
+		border-radius: var(--radius-sm);
+		color: var(--color-text-primary);
+		text-align: right;
+		border: none;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+		transition: box-shadow 0.2s ease;
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
 		}
+	}
 
-		#y-label {
-			background-color: var(--axis-color-y-t75);
-			color: var(--color-text-inverted);
-			border-radius: var(--radius-xs); // Add radius for consistency
-			padding-bottom: var(--space-3xs); // Add some bottom padding inside label bg
-		}
+	/* Focus state */
+	.axis-input-group:focus-within {
+		box-shadow: 0 0 3px 1px var(--color-accent-light);
+	}
 
-		#z-label {
-			background-color: var(--axis-color-z-t75);
-			color: var(--color-text-inverted);
-			border-radius: var(--radius-xs); // Add radius for consistency
-			padding-bottom: var(--space-3xs); // Add some bottom padding inside label bg
-		}
+	/* No specific invalid state styling needed here like VectorInputPanel */
 
-
-		.axis-inputs {
-			display: flex;
-			justify-content: space-between; /* Space out axis groups */
-			gap: var(--space-xs);
-		}
-
-		.axis-group {
-			display: flex; /* Use flex for label content alignment */
-			flex-direction: column;
-			align-items: center; /* Center label text and input */
-			/* Removed border-radius from group, apply to label background instead */
-			flex: 1; /* Allow groups to share space */
-			padding-top: var(--space-3xs); // Add padding inside group if needed
-		}
-
-		label.axis-label { // Make selector more specific
-			font-size: 0.9em;
-			font-weight: bold;
-			text-align: center;
-			margin-bottom: var(--space-3xs);
-			width: 100%; // Ensure label takes full width of group for background
-			padding: var(--space-3xs) 0; // Add some vertical padding within label background
-			border-radius: var(--radius-xs); // Apply radius here
-		}
-
-		.axis-range {
-			font-size: 0.8em;
-			font-weight: normal;
-			display: block; /* Ensure range is on its own line or handled differently */
-			color: var(--text-secondary); /* Dim the range text */
-			margin-top: 2px; // Add small space above range text
-		}
-
-		input[type="number"] {
-			/* width: 100%; Inherited flex item sizing will handle this */
-			max-width: 60px; /* Limit input width */
-			padding: var(--space-2xs);
-			background-color: var(--bg-primary);
-			border: 1px solid var(--color-border);
-			border-radius: var(--radius-xs);
-			color: var(--color-text-primary);
-			/* background-color: var(--color-text-inverted); Input background should likely be standard */
-			text-align: center;
-			margin-top: var(--space-3xs); // Add space between range and input
-		}
+	/* Controls Section */
+	.controls-section {
+		display: flex;
+		gap: var(--space-xs);
+		justify-content: flex-end;
 
 		button {
-			width: 100%; /* Make button take full width of panel */
-			padding: var(--space-s); /* Increased padding */
-			background-color: var(--color-accent);
-			color: var(--button-text-color);
-			border: none;
-			display: flex;
-			justify-content: center;
-			align-items: center; // Vertically center text
-			border-radius: var(--radius-sm);
-			cursor: pointer;
-			font-weight: bold;       /* Make text bolder */
-			font-size: 1rem;         /* Ensure a readable size */
-			text-transform: uppercase; /* Uppercase text */
-			letter-spacing: 0.5px;   /* Slight letter spacing */
-			transition:
-				background-color 0.2s ease,
-				transform 0.1s ease-out; /* Added transform to transition */
-
-			&:hover {
-				background-color: var(--color-accent-hover);
-				/* Optional: subtle lift effect */
-				/* transform: translateY(-1px); */
-			}
-
-			&:active {
-				/* Assuming --color-accent-active is defined or use a darker shade */
-				background-color: var(--color-accent-active, color-mix(in srgb, var(--color-accent), black 15%));
-				transform: scale(0.98); /* Push down effect */
-				transition-duration: 0.05s; /* Make active transition faster */
-			}
+			padding: var(--space-2xs) var(--space-s);
+			font-size: 0.95em;
+			/* Use default button styles from theme */
 		}
-		/* Removed validation-error style block as messages use DialogBox */
 	}
 </style>

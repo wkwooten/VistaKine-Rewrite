@@ -2,11 +2,36 @@
   import VisContainer from '../../VisContainer.svelte';
   import PrinterCalibrationScene from './PrinterCalibrationScene.svelte';
   import PrinterCalibrationHud from './PrinterCalibrationHud.svelte';
-  import { resetSceneRequested, dialogTurns, showDialog, hideCalibrationDialog } from '$lib/stores/calibrationState';
+  import NozzleControlPanel from './NozzleControlPanel.svelte';
+  import {
+    resetSceneRequested,
+    dialogTurns,
+    showDialog,
+    hideCalibrationDialog,
+    requestedNozzlePosition
+  } from '$lib/stores/calibrationState';
   import { onMount, onDestroy } from 'svelte';
   import { browser } from '$app/environment';
   import { HTML } from '@threlte/extras';
   import DialogBox from '../../elements/ui/DialogBox.svelte';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
+
+  // Define Stage 1 target points (relative to corner origin)
+  const stage1Targets = [
+    { id: 't0', x: 0, y: 0, z: 0 }, // Default corner target
+    { id: 't1', x: 12, y: 0, z: 0 },
+    { id: 't2', x: 2, y: 0, z: 4 },
+    { id: 't3', x: 7, y: 0, z: 10 }
+  ];
+
+  // Define Stage 2 target points (relative to corner origin)
+  const stage2Targets = [
+    { id: 't4', x: 1, y: 3, z: 1 },
+    { id: 't5', x: 8, y: 5, z: 8 },
+    { id: 't6', x: 11, y: 2, z: 11 }
+  ];
 
   // --- Printer Boundaries (Could potentially move to store if shared) ---
   const MIN_X = 0;
@@ -15,19 +40,6 @@
   const MAX_Y = 10;
   const MIN_Z = 0;
   const MAX_Z = 12;
-
-  // --- Define Stage Targets ---
-  const stage1Targets = [
-    { id: 't1', x: 12, y: 0, z: 0 },
-    { id: 't2', x: 2, y: 0, z: 4 },
-    { id: 't3', x: 7, y: 0, z: 10 }
-  ];
-
-  const stage2Targets = [
-    { id: 't4', x: 1, y: 3, z: 1 },
-    { id: 't5', x: 8, y: 5, z: 8 },
-    { id: 't6', x: 11, y: 2, z: 11 }
-  ];
 
   // --- Core Exercise State ---
   let currentStage = $state(1);
@@ -54,6 +66,14 @@
     console.log("[Exercise] Calibration Complete event received!");
     isCalibrationComplete = true;
     dialogKey += 1; // Increment key on completion
+    dispatch('calibrationComplete');
+  }
+
+  // Handler for the NozzleControlPanel event when not fullscreen
+  function handlePanelMoveRequest(event: CustomEvent<{ x: number; y: number; z: number }>) {
+      const { x, y, z } = event.detail;
+      console.log(`[Exercise] Handling requestMove event from outside panel: X=${x}, Y=${y}, Z=${z}`);
+      requestedNozzlePosition.set({ x, y, z });
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
@@ -163,6 +183,13 @@
     </div>
   {/if}
 
+  <!-- Render NozzleControlPanel OUTSIDE VisContainer when NOT fullscreen -->
+  {#if !isFullscreen}
+      <div class="control-panel-outside-vis">
+          <NozzleControlPanel on:requestMove={handlePanelMoveRequest} />
+      </div>
+  {/if}
+
   <VisContainer isComplete={isCalibrationComplete}>
     <PrinterCalibrationScene
       targets={activeTargets}
@@ -196,6 +223,20 @@
     display: flex;
     flex-direction: column;
     margin-block: var(--space-l);
+    position: relative; /* Added for absolute positioning context */
+  }
+
+  /* Add order to VisContainer */
+  :global(.visualization-container) {
+      order: 1;
+  }
+
+  /* Style for the control panel when it's outside the visualization */
+  .control-panel-outside-vis {
+      width: 100%; /* Take full width */
+      box-sizing: border-box;
+      margin-block: var(--space-s); /* Space below the panel */
+      order: 2; /* Ensure it comes after the VisContainer in default flow */
   }
 
   .exercise-wrapper.fullscreen {
@@ -207,7 +248,7 @@
 		max-height: 100vh;
 		border-radius: 0;
 		border: none;
-		z-index: 9999;
+		z-index: 100;
     flex-direction: row;
 
     & > :global(.visualization-container) {
@@ -226,6 +267,11 @@
       width: 90%;
       max-width: 600px;
       z-index: 100;
+    }
+
+    /* Hide the outside panel when fullscreen */
+    & > .control-panel-outside-vis {
+        display: none;
     }
 	}
 

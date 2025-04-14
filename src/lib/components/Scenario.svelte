@@ -7,9 +7,9 @@
   .scenario {
     margin-bottom: var(--space-m);
     padding: var(--space-s) var(--space-m);
-    border-left: 3px solid var(--secondary-color);
+    border: 1px solid var(--color-border);
     background-color: var(--bg-alt);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    border-radius: var(--radius-md);
 
     p {
       margin-bottom: var(--space-xs);

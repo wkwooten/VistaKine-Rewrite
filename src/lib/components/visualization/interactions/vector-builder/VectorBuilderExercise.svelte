@@ -2,6 +2,7 @@
   import VisContainer from '../../VisContainer.svelte';
   import VectorBuilderScene from './VectorBuilderScene.svelte';
   import VectorBuilderHud from './VectorBuilderHud.svelte';
+  import VectorInputPanel from './VectorInputPanel.svelte';
   import { HTML } from '@threlte/extras';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -110,6 +111,14 @@
     </div>
   {/if}
 
+  <!-- Render VectorInputPanel OUTSIDE VisContainer when NOT fullscreen -->
+  {#if !isFullscreen}
+    <div class="input-panel-outside-vis">
+        <VectorInputPanel />
+    </div>
+  {/if}
+
+
   <VisContainer>
     <VectorBuilderScene />
 
@@ -147,7 +156,23 @@
   /* Ensure VisContainer allows pointer events on children */
   :global(.visualization-container) {
     pointer-events: auto;
+    order: 1; /* Ensure VisContainer comes first in default flow */
   }
+
+  /* Style for the input panel when it's outside the visualization */
+  .input-panel-outside-vis {
+    width: 100%; /* Take full width */
+    box-sizing: border-box;
+    margin-bottom: var(--space-s); /* Space below the panel */
+    order: 2; /* Ensure it comes after the VisContainer in default flow */
+  }
+
+  /* Adjust exercise-wrapper for non-fullscreen */
+  .exercise-wrapper:not(.fullscreen) {
+      display: flex;
+      flex-direction: column; /* Stack elements vertically */
+  }
+
 
   /* Add styles for fullscreen mode */
   .exercise-wrapper.fullscreen {
@@ -179,6 +204,11 @@
       max-width: 600px; /* Adjust as needed */
       z-index: 100; /* Ensure dialog is above HUD */
       pointer-events: auto; /* Allow dialog interaction */
+    }
+
+    /* Hide the outside panel when fullscreen */
+    & > .input-panel-outside-vis {
+        display: none;
     }
   }
 

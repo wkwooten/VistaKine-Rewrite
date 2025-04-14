@@ -53,8 +53,10 @@
 		<FullscreenButton bind:isFullscreen on:requestToggle={handleRequestToggle} />
 	</div>
 
-	<!-- Bottom Right Input Controls - Replaced with Component -->
-	<NozzleControlPanel on:requestMove={handleNozzleMoveRequest} />
+	<!-- Bottom Right Input Controls - Render only when fullscreen -->
+	{#if isFullscreen}
+		<NozzleControlPanel on:requestMove={handleNozzleMoveRequest} />
+	{/if}
 	<!-- Removed old nozzle-control-panel div -->
 </div>
 

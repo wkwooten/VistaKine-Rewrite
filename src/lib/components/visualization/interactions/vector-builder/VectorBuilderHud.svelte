@@ -41,7 +41,10 @@
   </div>
 
   <!-- Position Panels Directly using extraClass prop -->
-  <VectorInputPanel extraClass="vector-input-positioned" />
+  <!-- Only render Input Panel in HUD when fullscreen -->
+  {#if isFullscreen}
+    <VectorInputPanel extraClass="vector-input-positioned" />
+  {/if}
   <VectorOutputPanel extraClass="vector-output-positioned" />
 
 </div>
@@ -74,6 +77,7 @@
     position: absolute;
     bottom: var(--space-s);
     right: var(--space-s);
+    border: none;
     /* width: 320px; /* Remove fixed width */
     max-width: 90%;
     z-index: 10;
