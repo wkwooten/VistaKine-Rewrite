@@ -11,6 +11,7 @@
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import PrinterCalibrationExercise from '$lib/components/visualization/interactions/printer-calibration/PrinterCalibrationExercise.svelte';
   import VectorBuilderExercise from '$lib/components/visualization/interactions/vector-builder/VectorBuilderExercise.svelte';
+  import { coordinateQuizData, vectorQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -37,7 +38,6 @@
     isCalibrationComplete = true;
     // No dialog logic here anymore
   }
-
 </script>
 
 <div class="chapter-wrapper">
@@ -103,25 +103,7 @@
         </div>
 
         <SectionReview>
-          <Quiz>
-            <div class="quiz-question-group">
-              <p>Which <span class="keyword">axis</span> represents <span class="keyword">depth</span> in a 3D Cartesian <span class="keyword">coordinate system</span>?</p>
-              <form class="multiple-choice-question">
-                <label><input type="radio" name="q1" value="a"> <span class="keyword">x</span></label>
-                <label><input type="radio" name="q1" value="b"> <span class="keyword">y</span></label>
-                <label><input type="radio" name="q1" value="c"> <span class="keyword">z</span></label>
-              </form>
-            </div>
-
-            <div class="quiz-question-group">
-              <p>If you move a point only along the <span class="keyword">y-axis</span>, what changes?</p>
-              <form>
-                <label><input type="radio" name="q2" value="a"> Its <span class="keyword">horizontal</span> position</label>
-                <label><input type="radio" name="q2" value="b"> Its <span class="keyword">vertical</span> position</label>
-                <label><input type="radio" name="q2" value="c"> Its <span class="keyword">depth</span></label>
-              </form>
-            </div>
-          </Quiz>
+          <Quiz questions={coordinateQuizData} />
         </SectionReview>
       </div>
     </section>
@@ -187,25 +169,7 @@
         </div>
 
         <SectionReview>
-          <Quiz>
-            <div class="quiz-question-group">
-              <p>A <span class="keyword">vector</span> pointing directly upwards has:</p>
-              <form class="multiple-choice-question">
-                <label><input type="radio" name="q3" value="a"> Only <span class="keyword">magnitude</span></label>
-                <label><input type="radio" name="q3" value="b"> Only <span class="keyword">direction</span></label>
-                <label><input type="radio" name="q3" value="c"> Both <span class="keyword">magnitude</span> and <span class="keyword">direction</span></label>
-              </form>
-            </div>
-
-            <div class="quiz-question-group">
-              <p>If you double the <span class="keyword">magnitude</span> of a <span class="keyword">vector</span>, what happens to its length?</p>
-              <form class="multiple-choice-question">
-                <label><input type="radio" name="q4" value="a"> It halves</label>
-                <label><input type="radio" name="q4" value="b"> It doubles</label>
-                <label><input type="radio" name="q4" value="c"> It stays the same</label>
-              </form>
-            </div>
-          </Quiz>
+          <Quiz questions={vectorQuizData} />
         </SectionReview>
       </div>
     </section>
@@ -248,65 +212,3 @@
     </section>
   </div>
 </div>
-
-<style lang="scss">
-  /* Styles for Quiz questions - scoped to understanding-3d-space.svelte */
-  .quiz { // Keep quiz container styles here if needed for understanding-3d-space context
-    counter-reset: question-counter; /* Keep counter reset here as it's quiz-specific */
-  }
-
-  .quiz-question-group {
-    margin-bottom: var(--space-l);
-    padding-left: var(--space-s);
-    border-left: 2px solid var(--color-accent);
-  }
-
-  .quiz-question-group > p { /* More specific selector for question text */
-    font-weight: 700;
-    margin-bottom: var(--space-xs);
-    &::before {
-      counter-increment: question-counter;
-      content: counter(question-counter) ". ";
-      display: inline-block;
-      margin-right: var(--space-2xs);
-      font-weight: 800;
-      color: var(--color-accent);
-      /* background-color: red; // Removed test style */
-    }
-  }
-
-  .multiple-choice-question {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2xs);
-    margin-left: var(--space-s);
-  }
-
-  /* Removed general p style - causing global font-weight change */
-  /* p {
-    font-weight: 600;
-    margin-bottom: var(--space-xs);
-  } */
-
-  /* More specific form and label styles - targeting quiz forms */
-  .quiz form {
-    margin-top: var(--space-2xs);
-    margin-bottom: 0;
-  }
-
-  .quiz label {
-    display: block;
-    margin-bottom: var(--space-2xs);
-    padding: var(--space-m);
-    border-radius: var(--radius-md);
-    background-color: var(--bg-secondary);
-
-    &:hover {
-      background-color: var(--bg-hover);
-    }
-  }
-
-  .quiz input[type="radio"] { /* More specific input style */
-    margin-right: var(--space-xs);
-  }
-</style>
