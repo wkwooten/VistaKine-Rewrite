@@ -43,9 +43,11 @@
 		height: 100%;
 		position: relative;
 		transition: border-color 0.5s ease;
+		overflow: hidden;
 
 		@media (max-width: 768px) {
-			aspect-ratio: 9/16;
+			aspect-ratio: auto;
+			height: 450px;
 		}
 	}
 
