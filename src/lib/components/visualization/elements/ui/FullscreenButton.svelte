@@ -28,7 +28,7 @@
 
 <style>
 	.fullscreen-button {
-		padding: var(--space-xs-s); /* Use Utopia fluid spacing */
+		padding: var(--space-s); /* Use Utopia fluid spacing */
 		border: 1px solid var(--color-accent);
 		border-radius: 50%; /* Use variable for radius */
 		color: var(--color-accent); /* Use appropriate text color */
@@ -39,7 +39,7 @@
 		align-items: center;
 		justify-content: center;
 		margin: var(--space-s);
-		background-color: var(--color-background); /* Set background color */
+		background-color: var(--color-surface); /* Set background color */
 		box-shadow: var(--shadow-sm);
 
 		/* Add hover state from ResetButton */

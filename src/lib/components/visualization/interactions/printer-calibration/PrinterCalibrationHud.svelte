@@ -54,23 +54,31 @@
 	</div>
 
 	<!-- Bottom Right Input Controls - Render only when fullscreen -->
-	{#if isFullscreen}
-		<NozzleControlPanel on:requestMove={handleNozzleMoveRequest} />
-	{/if}
+
 	<!-- Removed old nozzle-control-panel div -->
 </div>
+
+{#if isFullscreen}
+<div class="nozzle-control-panel-container">
+	<NozzleControlPanel on:requestMove={handleNozzleMoveRequest} />
+</div>
+{/if}
 
 <style lang="scss">
 	.calibration-hud-container {
 		/* Width/Height determined by HTML component's projection */
-		padding: var(--space-s);
-		padding-left: calc(var(--space-s) + 70px); /* Adjust based on Gizmo size */
-		padding-bottom: calc(var(--space-s) + 70px); /* Adjust based on Gizmo size */
+		width: 100%;
+		height: 100%;
+		/* Remove padding to allow controls at edges */
+        /* padding: var(--space-s); */
+        /* padding-left: calc(var(--space-s) + 70px); */ /* Remove */
+        /* padding-bottom: calc(var(--space-s) + 70px); */ /* Remove */
 		box-sizing: border-box;
 		/* Use flex to potentially align groups if needed, but positioning is absolute */
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start; /* Align items like top message */
+		display: block; /* Changed from flex to block as children are absolute */
+		position: relative; /* Needed for absolute children */
+        /* justify-content: space-between; */ /* Remove */
+        /* align-items: flex-start; */ /* Remove */
 	}
 
 	/* New container for top-left buttons */
@@ -79,13 +87,17 @@
 		top: 0;
 		left: 0;
 		z-index: 10;
+        display: flex; /* Use flex for horizontal layout */
+        flex-direction: row; /* Explicitly horizontal */
+        /* height: 100%; */ /* Remove */
+        /* width: 100%; */ /* Remove */
+        /* Buttons have their own margin, so no extra padding needed here */
 	}
 
-	/* Ensure NozzleControlPanel still has pointer-events and z-index */
-	/* (It should have these internally, but doesn't hurt to ensure here if needed */
-	:global(.nozzle-control-panel) {
-		/* Position is already absolute bottom/right internally */
-		pointer-events: auto;
+	.nozzle-control-panel-container {
+		position: absolute;
+		bottom: var(--space-s);
+		right: var(--space-s);
 		z-index: 10;
 	}
 

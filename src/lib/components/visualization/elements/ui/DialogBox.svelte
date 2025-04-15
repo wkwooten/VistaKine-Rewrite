@@ -178,7 +178,7 @@
                 aria-label="Collapse dialog"
                 onclick={(event) => { event.stopPropagation(); console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
             >
-                <Minimize2 size={18} />
+                <Minimize2 size={24} />
             </button>
             <!-- Display the dynamically updated currentSpeaker -->
             <div class="speaker" data-speaker={currentSpeaker}>{currentSpeaker}</div>
@@ -329,7 +329,7 @@
     min-height: 80px; /* Still useful as a baseline */
     /* max-height: 300px; */
     text-align: left;
-    box-shadow: var(--shadow-lg);
+    /* box-shadow: var(--shadow-lg); */
     display: flex;
     flex-direction: column;
     position: relative;
@@ -354,17 +354,29 @@
     position: absolute;
     top: var(--space-s);
     right: var(--space-s);
-    width: 45px;
-    height: 45px;
     min-width: unset;
     display: flex;
     align-items: center;
-    box-shadow: none;
+    box-shadow: var(--shadow-sm); /* Match buttons */
     justify-content: center;
-    font-size: 1.5em;
-    padding: 0;
-    box-shadow: var(--shadow-md);
-    border-radius: 50%;
+    padding: var(--space-s); /* Ensure no padding with fixed size */
+    border-radius: 50%; /* Match buttons */
+    border: 1px solid var(--color-accent); /* Match buttons */
+    background-color: var(--color-surface); /* Match buttons */
+    color: var(--color-accent); /* Match buttons */
+    transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Match buttons */
+
+    &:hover { /* Add hover */
+        background-color: var(--color-accent-hover-bg);
+        color: var(--color-accent-light);
+        border-color: var(--color-accent);
+        transform: translateY(-1px);
+    }
+
+    &:active { /* Add active */
+        background-color: var(--color-accent-active-bg);
+        transform: translateY(0);
+    }
   }
 
   /* Unread indicator dot */

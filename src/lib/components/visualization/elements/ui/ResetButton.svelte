@@ -49,7 +49,7 @@
 		border: 1px solid var(--color-accent);
 		border-radius: 50%;
 		color: var(--color-accent);
-		background-color: var(--color-background);
+		background-color: var(--color-surface);
 		cursor: pointer;
 		transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Added border-color transition */
 		display: flex;

@@ -198,7 +198,17 @@
       on:stageComplete={goToStage2}
       on:allStagesComplete={handleCalibrationComplete}
     />
-    <HTML fullscreen pointerEvents="none">
+    <HTML fullscreen>
+      {#if $showDialog && isFullscreen}
+        <div class="dialog-in-fullscreen">
+         {#key dialogKey}
+            <DialogBox
+              turns={$dialogTurns}
+              show={$showDialog}
+            />
+          {/key}
+        </div>
+      {/if}
       <PrinterCalibrationHud
         bind:isFullscreen
         on:requestToggleFullscreen={toggleFullscreen}
@@ -207,16 +217,6 @@
   </VisContainer>
 
   <!-- Render DialogBox INSIDE the wrapper (overlay) when fullscreen -->
-  {#if $showDialog && isFullscreen}
-    <div class="dialog-in-fullscreen">
-     {#key dialogKey}
-        <DialogBox
-          turns={$dialogTurns}
-          show={$showDialog}
-        />
-      {/key}
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -276,6 +276,7 @@
 		z-index: 100;
     flex-direction: row;
     padding: 0; /* Remove padding in fullscreen */
+    pointer-events: auto; /* Ensure wrapper passes events */
 
     /* Hide title and description when fullscreen */
     & > .exercise-title,
@@ -292,14 +293,16 @@
         aspect-ratio: auto; /* Override aspect ratio in fullscreen */
     }
 
-    & > .dialog-in-fullscreen {
+    /* Target as descendant, not direct child */
+    & .dialog-in-fullscreen {
       position: absolute;
       top: var(--space-m);
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
       max-width: 600px;
-      z-index: 100;
+      z-index: 1000; /* Increased z-index */
+      pointer-events: auto; /* Ensure wrapper allows clicks */
     }
 
     /* Hide the outside panel when fullscreen */
@@ -310,7 +313,6 @@
 
   /* Style for the dialog wrapper when it's above the visualization */
   .dialog-above-vis {
-    width: 100%;
     box-sizing: border-box;
     min-height: 110px;
     margin-bottom: var(--space-s);
