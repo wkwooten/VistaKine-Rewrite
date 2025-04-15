@@ -19,7 +19,6 @@
 
   const iconSize = 18;
 
-  let desktopSidebarExpanded = $sidebarExpanded; // Local state for desktop
   let isMobile = false; // State to track mobile viewport
   let bodyClassApplied = false; // Track if class is applied
 
@@ -49,9 +48,8 @@
     mediaQuery.addEventListener('change', handleResize);
     window.addEventListener('resize', handleResize); // Also listen to resize
 
-    const unsubscribeSidebar = sidebarExpanded.subscribe(value => {
-      desktopSidebarExpanded = value;
-      updateBodyScroll(); // Update on sidebar state change
+    const unsubscribeSidebar = sidebarExpanded.subscribe(() => {
+       updateBodyScroll();
     });
 
     // Initial check
@@ -90,13 +88,13 @@
     }
   }
 
-  // Use desktopSidebarExpanded directly for conditional rendering logic
-  $: navCollapsed = !desktopSidebarExpanded;
+  // Use store value directly
+  $: navCollapsed = !$sidebarExpanded;
 
 </script>
 
 <!-- Navigation -->
-<nav class:collapsed={navCollapsed} style="--sidebar-width: {desktopSidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
+<nav class:collapsed={navCollapsed} style="--sidebar-width: {$sidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
       <div class="logo">
@@ -131,8 +129,8 @@
 
   <div class="nav-content">
     <ul class="nav-items">
-      <li class:is-active={$page.url.pathname === '/chapter/toc'}>
-        <a href="/chapter/toc" class="nav-item">
+      <li>
+        <a href="/chapter/toc" class="nav-item" class:is-active={$page.url.pathname === '/chapter/toc'}>
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
@@ -181,8 +179,7 @@
                 aria-label={expandedChapter === chapter.slug ? `Collapse ${chapter.title} sections` : `Expand ${chapter.title} sections`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon lucide lucide-chevron-right">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
+                  <path d="m9 18 6-6-6-6"/></svg>
               </div>
             {/if}
           </div>
@@ -204,8 +201,8 @@
         </li>
       {/each}
 
-      <li class:is-active={$page.url.pathname === '/physics-pg'}>
-        <a href="/physics-pg" class="nav-item">
+      <li>
+        <a href="/physics-pg" class="nav-item" class:is-active={$page.url.pathname === '/physics-pg'}>
           <div class="icon">
             <Shapes size={iconSize} />
           </div>
@@ -219,8 +216,8 @@
   </div>
 
   <ul class="bottom-item">
-    <li class:is-active={$page.url.pathname === '/glossary'}>
-      <a href="/glossary" class="nav-item">
+    <li>
+      <a href="/glossary" class="nav-item" class:is-active={$page.url.pathname === '/glossary'}>
         <div class="icon">
           <List size={iconSize} />
         </div>
@@ -229,8 +226,8 @@
         {/if}
       </a>
     </li>
-    <li class:is-active={$page.url.pathname === '/settings'}>
-      <a href="/settings" class="nav-item">
+    <li>
+      <a href="/settings" class="nav-item" class:is-active={$page.url.pathname === '/settings'}>
         <div class="icon">
           <Settings size={iconSize} />
       </div>
@@ -516,8 +513,8 @@
     }
   }
 
-  /* Add style for active non-chapter items */
-  li.is-active > .nav-item:not(.chapter-item) {
+  /* Update style selector for active non-chapter items */
+  a.nav-item.is-active {
      background-color: rgba(59, 130, 246, 0.1); /* Match hover style */
   }
 

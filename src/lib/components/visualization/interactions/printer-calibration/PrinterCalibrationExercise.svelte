@@ -267,12 +267,15 @@
 		top: 0;
 		left: 0;
 		width: 100vw;
-		height: 100vh;
-		max-height: 100vh;
+		height: 100vh; /* Fallback */
+        height: -webkit-fill-available; /* Use available height */
+		max-height: 100vh; /* Fallback */
+        max-height: -webkit-fill-available; /* Use available height */
 		border-radius: 0;
 		border: none;
 		z-index: 100;
     flex-direction: row;
+    padding: 0; /* Remove padding in fullscreen */
 
     /* Hide title and description when fullscreen */
     & > .exercise-title,
@@ -282,8 +285,9 @@
 
     & > :global(.visualization-container) {
         width: 100%;
-        height: 100%;
-        max-height: 100vh;
+        height: 100%; /* Keep this as 100% to fill parent */
+        /* max-height: 100vh; */
+        max-height: 100%; /* Use parent's max-height implicitly */
         border: none;
         border-radius: 0;
     }
