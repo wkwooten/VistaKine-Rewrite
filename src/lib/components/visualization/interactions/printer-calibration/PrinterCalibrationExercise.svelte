@@ -286,10 +286,10 @@
     & > :global(.visualization-container) {
         width: 100%;
         height: 100%; /* Keep this as 100% to fill parent */
-        /* max-height: 100vh; */
         max-height: 100%; /* Use parent's max-height implicitly */
         border: none;
         border-radius: 0;
+        aspect-ratio: auto; /* Override aspect ratio in fullscreen */
     }
 
     & > .dialog-in-fullscreen {
