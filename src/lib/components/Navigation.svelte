@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
   import { Hexagon, BookOpen, Settings, Search, ChevronRight, List, Shapes } from 'lucide-svelte';
   import { onMount, onDestroy } from 'svelte';
@@ -130,7 +131,7 @@
 
   <div class="nav-content">
     <ul class="nav-items">
-      <li>
+      <li class:is-active={$page.url.pathname === '/chapter/toc'}>
         <a href="/chapter/toc" class="nav-item">
           <div class="icon">
             <BookOpen size={iconSize} />
@@ -158,9 +159,9 @@
                on:click={(event) => {
                    if (navCollapsed) {
                        event.preventDefault(); // Prevent default navigation initially
+                       event.stopPropagation(); // Stop event from bubbling to parent div
                        $sidebarExpanded = true; // Expand sidebar
                        expandedChapter = chapter.slug; // Expand the accordion for this chapter
-                       // Navigate programmatically after setting state
                        if (browser) {
                            window.location.href = event.currentTarget.href;
                        }
@@ -203,7 +204,7 @@
         </li>
       {/each}
 
-      <li>
+      <li class:is-active={$page.url.pathname === '/physics-pg'}>
         <a href="/physics-pg" class="nav-item">
           <div class="icon">
             <Shapes size={iconSize} />
@@ -218,7 +219,7 @@
   </div>
 
   <ul class="bottom-item">
-    <li>
+    <li class:is-active={$page.url.pathname === '/glossary'}>
       <a href="/glossary" class="nav-item">
         <div class="icon">
           <List size={iconSize} />
@@ -228,7 +229,7 @@
         {/if}
       </a>
     </li>
-    <li>
+    <li class:is-active={$page.url.pathname === '/settings'}>
       <a href="/settings" class="nav-item">
         <div class="icon">
           <Settings size={iconSize} />
@@ -513,6 +514,17 @@
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
     }
+  }
+
+  /* Add style for active non-chapter items */
+  li.is-active > .nav-item:not(.chapter-item) {
+     background-color: rgba(59, 130, 246, 0.1); /* Match hover style */
+  }
+
+  /* Keep existing chapter-specific active styles */
+  .nav-chapter-group.is-active > .chapter-item {
+    /* Existing styles for active chapters */
+    background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1)); /* Example fallback */
   }
 </style>
 

@@ -6,7 +6,7 @@
 
 <div class="chapter-header-nav">
   <nav>
-    <p>Jump to section</p>
+    <p>Jump to a section</p>
     <ul>
       {#each chapterSections as section}
         <li>
