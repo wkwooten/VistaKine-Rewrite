@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
+  import { ChevronsRight } from 'lucide-svelte';
   // Props definition
-  export let chapterSections = [];
+  export let chapterSections: { id: string; title: string }[] = [];
 </script>
 
 <div class="chapter-header-nav">
@@ -9,6 +10,7 @@
     <ul>
       {#each chapterSections as section}
         <li>
+          <ChevronsRight size={20} />
           <a href={`#${section.id}`}>{section.title}</a>
         </li>
       {/each}
@@ -46,21 +48,25 @@
     }
 
     li {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3xs);
+      padding: var(--space-xs) var(--space-s);
       margin: 0;
       border-radius: var(--radius-sm);
+      transition: background-color 0.2s ease;
+      &:hover {
+        background-color: var(--color-accent-hover-bg, rgba(0, 0, 0, 0.05));
+      }
     }
 
     a {
       color: var(--color-text-inverted);
       text-decoration: underline;
-      padding: var(--space-xs) var(--space-s);
       border-radius: var(--radius-sm, 4px);
-      transition: background-color 0.2s ease;
       font-size: var(--step-0, 0.875rem);
 
-      &:hover {
-        background-color: var(--color-accent-hover-bg, rgba(0, 0, 0, 0.05));
-      }
+
     }
   }
 </style>

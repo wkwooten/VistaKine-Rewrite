@@ -109,7 +109,7 @@
     </section>
 
     <section
-      id="vectors-in-space"
+      id="vectors-and-components"
       class="content-section"
       data-section="1.2"
       use:intersect={{
@@ -119,7 +119,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <h2 class="section-title">1.2 Vectors in 3D Space</h2>
+        <h2 class="section-title">1.2 Vectors and Components</h2>
 
         <div class="section-intro">
           <Scenario>
@@ -175,7 +175,7 @@
     </section>
 
     <section
-      id="reference-frames"
+      id="vector-operations"
       class="content-section"
       data-section="1.3"
       use:intersect={{
@@ -185,7 +185,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <h2 class="section-title">1.3 Reference Frames</h2>
+        <h2 class="section-title">1.3 Vector Operations</h2>
 
         <div class="section-intro">
           <Scenario>
@@ -214,9 +214,6 @@
 </div>
 
 <style lang="scss">
-    /* Import spacing if not global - adjust path as needed */
-    /* @import '$lib/styles/_spacing.scss'; */
-
     /* Consistent Chapter Spacing */
     .chapter-header { margin-bottom: var(--space-xl); }
     .content-section + .content-section { margin-top: var(--space-2xl); }

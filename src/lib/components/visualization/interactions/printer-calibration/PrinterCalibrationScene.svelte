@@ -252,7 +252,7 @@
             { speaker: 'Leo', message: "Surya, I need your help. I've read all the manuals, double-checked the kinematics equations, but I *cannot* get this printer dialed in precisely enough for my experiment!" },
             { speaker: 'Surya', message: "Whoa, deep breaths, Leo! You're probably getting lost in the nanometers again. Calibration's important, but it's also about getting a feel for it." },
             { speaker: 'Leo', message: "My first layer is practically floating! It's unacceptable." },
-            { speaker: 'Surya', message: "Okay, let's walk through it together. First things first, let's just get the basics right on the print bed (X and Z axes). Use the controls and get the nozzle over that first target (T0)." }
+            { speaker: 'Surya', message: "Okay, let's walk through it together. First things first, let's just get the basics right on the print bed (X and Z axes). Try using the controls to get the nozzle over the points." }
         ]);
     }
   });
@@ -458,8 +458,6 @@
   {@const labelOffsetZ = -0.}
   {@const labelFontSize = 0.7}
   {@const coordinateText = `(${target.x}, ${target.y}, ${target.z})`}
-  {@const outlineColor = '#FFFFFF'}
-  {@const outlineWidth = 0.03}
 
   <!-- Target Sphere -->
   <T.Mesh position={target.worldPos.toArray()}>
@@ -488,8 +486,6 @@
       anchorX="center"
       anchorY="middle"
       depthTest={false}
-      {outlineColor}
-      {outlineWidth}
     />
   </Billboard>
 {/each}

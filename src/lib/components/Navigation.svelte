@@ -153,7 +153,21 @@
             aria-expanded={expandedChapter === chapter.slug}
             aria-controls={`sections-${chapter.slug}`}
           >
-            <a href={`/chapter/${chapter.slug}`} class="chapter-number" on:click|preventDefault="{() => {if(navCollapsed) {$sidebarExpanded = true;}}}">{index + 1}</a>
+            <a href={`/chapter/${chapter.slug}`}
+               class="chapter-number"
+               on:click={(event) => {
+                   if (navCollapsed) {
+                       event.preventDefault(); // Prevent default navigation initially
+                       $sidebarExpanded = true; // Expand sidebar
+                       expandedChapter = chapter.slug; // Expand the accordion for this chapter
+                       // Navigate programmatically after setting state
+                       if (browser) {
+                           window.location.href = event.currentTarget.href;
+                       }
+                   }
+                   // If sidebar is already expanded, allow default link behavior
+               }}
+            >{index + 1}</a>
             {#if !navCollapsed}
               <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
               <div
