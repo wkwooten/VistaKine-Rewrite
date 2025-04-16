@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import FullscreenButton from '../../elements/ui/FullscreenButton.svelte';
   import ResetButton from '../../elements/ui/ResetButton.svelte';
+  import DialogBox from '../../elements/ui/DialogBox.svelte';
   import VectorInputPanel from './VectorInputPanel.svelte';
   import VectorOutputPanel from './VectorOutputPanel.svelte';
   import {
@@ -9,6 +10,8 @@
     endCoordsRaw,
     vectorData,
     resetVectorBuilderRequested,
+    showVectorBuilderDialog,
+    vectorBuilderDialogTurns,
     MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
   } from '$lib/stores/vectorBuilderState';
 
@@ -17,7 +20,7 @@
 
   const dispatch = createEventDispatcher();
 
-  // Function to handle reset - Stays here as it resets both inputs and scene
+  // Function to handle reset
   function handleResetScene() {
     console.log(`[VectorBuilderHud] Requesting reset via store`);
     startCoordsRaw.set({ x: '0', y: '0', z: '0' });
@@ -33,18 +36,27 @@
 
 </script>
 
-<div class="hud-container">
+<div class="hud-container" class:fullscreen-active={isFullscreen}>
   <!-- Top Left Controls -->
   <div class="hud-controls-top-left">
       <ResetButton on:click={handleResetScene} />
       <FullscreenButton bind:isFullscreen on:requestToggle={handleRequestToggleFullscreen} />
   </div>
 
-  <!-- Position Panels Directly using extraClass prop -->
-  <!-- Only render Input Panel in HUD when fullscreen -->
+  <!-- Conditionally render DialogBox directly inside HUD -->
+  {#if $showVectorBuilderDialog && isFullscreen}
+      <DialogBox
+          turns={$vectorBuilderDialogTurns}
+          bind:show={$showVectorBuilderDialog}
+      />
+  {/if}
+
+  <!-- Input Panel - Bottom Right -->
   {#if isFullscreen}
     <VectorInputPanel extraClass="vector-input-positioned" />
   {/if}
+
+  <!-- Output Panel - Mid Left -->
   <VectorOutputPanel extraClass="vector-output-positioned" />
 
 </div>
@@ -57,8 +69,25 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 10;
-    /* Remove background/border from root container */
-    font-size: 0.85em; /* Keep base size */
+    font-size: 0.85em;
+  }
+
+  /* Position the DialogBox only when HUD is in fullscreen */
+  .fullscreen-active :global(.dialog-box.expanded) {
+      position: absolute;
+      top: var(--space-m);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 600px;
+      z-index: 1000;
+  }
+
+  .fullscreen-active :global(.dialog-box.collapsed) {
+      position: absolute;
+      top: var(--space-s);
+      right: var(--space-s);
+      z-index: 11;
   }
 
   .hud-controls-top-left {
@@ -70,28 +99,26 @@
     pointer-events: auto;
   }
 
-  /* Remove .main-hud-content-wrapper */
-
   /* Positioning for Input Panel */
   :global(.vector-input-positioned) {
     position: absolute;
     bottom: var(--space-s);
     right: var(--space-s);
     border: none;
-    /* width: 320px; /* Remove fixed width */
     max-width: 90%;
     z-index: 10;
+    pointer-events: auto;
   }
 
   /* Positioning for Output Panel */
   :global(.vector-output-positioned) {
     position: absolute;
-    top: 50%; /* Center vertically */
+    top: 50%;
     left: var(--space-s);
-    transform: translateY(-50%); /* Fine-tune vertical centering */
-    /* width: 200px; /* Remove fixed width */
+    transform: translateY(-50%);
     max-width: 40%;
     z-index: 10;
+    pointer-events: auto;
   }
 
 </style>

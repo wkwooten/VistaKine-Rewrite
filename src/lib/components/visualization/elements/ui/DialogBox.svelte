@@ -209,7 +209,7 @@
   .dialog-box {
     cursor: pointer;
     z-index: 11;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
@@ -324,9 +324,8 @@
   /* Expanded styles */
   .dialog-box.expanded {
     padding: 15px;
-    margin: 0 auto;
     /* max-width: 600px; */
-    min-height: 80px; /* Still useful as a baseline */
+    /* min-height: 80px;  */
     /* max-height: 300px; */
     text-align: left;
     /* box-shadow: var(--shadow-lg); */

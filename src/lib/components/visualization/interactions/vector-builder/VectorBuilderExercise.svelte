@@ -128,18 +128,6 @@
             bind:isFullscreen
             on:requestToggleFullscreen={toggleFullscreen}
         />
-
-      <!-- Render DialogBox INSIDE the HTML overlay when fullscreen -->
-      {#if $showVectorBuilderDialog && isFullscreen}
-        <div class="dialog-in-fullscreen">
-         {#key dialogKey}
-            <DialogBox
-              turns={$vectorBuilderDialogTurns}
-              bind:show={$showVectorBuilderDialog}
-            />
-          {/key}
-        </div>
-      {/if}
     </HTML>
 
   </VisContainer>
@@ -229,17 +217,11 @@
       aspect-ratio: auto; /* Override aspect ratio in fullscreen */
     }
 
-    /* Target as descendant, not direct child */
-    & .dialog-in-fullscreen {
-      position: absolute;
-      top: var(--space-m);
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 600px; /* Adjust as needed */
-      z-index: 10000; /* Increased z-index (higher than wrapper) */
-      pointer-events: auto; /* Allow dialog interaction */
-    }
+    /* Target expanded dialog as descendant, use :global() for nested classes */
+    /* Removed rule for .dialog-in-fullscreen */
+
+    /* Position collapsed dialog separately in top-right using :global() */
+    /* Removed rule for .dialog-box.collapsed */
 
     /* Hide the outside panel when fullscreen */
     & > .input-panel-outside-vis {
@@ -249,7 +231,7 @@
 
   /* Style for the dialog wrapper when it's above the visualization */
   .dialog-above-vis {
-    /* width: 100%; */
+    width: 100%;
     box-sizing: border-box;
     min-height: 110px; /* Adjust based on DialogBox content */
     margin-bottom: var(--space-s);

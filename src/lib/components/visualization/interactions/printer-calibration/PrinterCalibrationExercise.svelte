@@ -199,16 +199,6 @@
       on:allStagesComplete={handleCalibrationComplete}
     />
     <HTML fullscreen>
-      {#if $showDialog && isFullscreen}
-        <div class="dialog-in-fullscreen">
-         {#key dialogKey}
-            <DialogBox
-              turns={$dialogTurns}
-              show={$showDialog}
-            />
-          {/key}
-        </div>
-      {/if}
       <PrinterCalibrationHud
         bind:isFullscreen
         on:requestToggleFullscreen={toggleFullscreen}
@@ -293,19 +283,6 @@
         aspect-ratio: auto; /* Override aspect ratio in fullscreen */
     }
 
-    /* Target as descendant, not direct child */
-    & .dialog-in-fullscreen {
-      position: absolute;
-      top: var(--space-m);
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 600px;
-      z-index: 1000; /* Increased z-index */
-      pointer-events: auto; /* Ensure wrapper allows clicks */
-    }
-
-    /* Hide the outside panel when fullscreen */
     & > .control-panel-outside-vis {
         display: none;
     }
@@ -314,7 +291,6 @@
   /* Style for the dialog wrapper when it's above the visualization */
   .dialog-above-vis {
     box-sizing: border-box;
-    min-height: 110px;
     margin-bottom: var(--space-s);
     position: relative;
   }
