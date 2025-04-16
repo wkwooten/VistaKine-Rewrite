@@ -98,7 +98,7 @@
 >
   <!-- Moved title and description inside -->
   <h3>Vector Builder Exercise</h3>
-  <p>Define a start and end point to create and visualize a vector.</p>
+  <p>In the interactive visualization below, you can define your own vector in 3D space. Play around with its start and end points and see how the arrow changes length and direction.</p>
 
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showVectorBuilderDialog && !isFullscreen}

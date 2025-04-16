@@ -12,6 +12,7 @@
   import PrinterCalibrationExercise from '$lib/components/visualization/interactions/printer-calibration/PrinterCalibrationExercise.svelte';
   import VectorBuilderExercise from '$lib/components/visualization/interactions/vector-builder/VectorBuilderExercise.svelte';
   import { coordinateQuizData, vectorQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
+  import Katex from 'svelte-katex';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -144,9 +145,14 @@
             <li>The <strong>orientation</strong> of the arrow (which way it points) represents the vector's <span class="keyword">direction</span>.</li>
             <li>The arrow starts at a point called the <strong>tail</strong> (or origin of the vector) and ends at the <strong>head</strong> (or terminal point).</li>
           </ul>
-          <p>
-            Let's make this concrete. In the interactive visualization below, you can define your own vector in 3D space. Play around with its start and end points and see how the arrow changes.
-          </p>
+
+          <FormulaAccordion>
+            <p>The length, or <span class="keyword">magnitude</span>, of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> is found using the 3D Pythagorean theorem:</p>
+            <p>
+                <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}'}</Katex>
+            </p>
+            <p>(We'll explore how to calculate this soon!)</p>
+          </FormulaAccordion>
 
           <VectorBuilderExercise />
 
@@ -154,11 +160,73 @@
             Notice how changing the start or end points changes both the length (magnitude) and orientation (direction) of the arrow. This arrow gives us a clear visual intuition for a vector. But how do we describe it precisely using numbers? That's where <span class="keyword">components</span> come in.
           </p>
 
-          <!-- Content for Components & Component Notation will go here -->
-          <!-- ... -->
-          <!-- Content for Unit Vector Notation will go here -->
-          <!-- ... -->
-          <!-- Content for Magnitude will go here -->
+          <h3>Describing Vectors Precisely: Components & Notation</h3>
+          <p>
+            While the arrow gives us a visual, we need numbers to work with vectors mathematically or in code. We do this by breaking the vector down into its <span class="keyword">components</span> along the X, Y, and Z axes.
+          </p>
+          <p>
+            Imagine drawing lines from the vector's head straight down (or up) to the xy-plane, and then from that point parallel to the axes back to the origin. The distances traveled along each axis represent the vector's components: <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>. They tell us "how much" of the vector points along each respective axis.
+          </p>
+          <p>
+            If you know the coordinates of the vector's tail <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and its head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex>, you can easily calculate the components:
+          </p>
+          <ul>
+            <li><Katex>{'\\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
+            <li><Katex>{'\\textcolor{#66BB6A}{V_y} = y_2 - y_1'}</Katex> (Change in Y)</li>
+            <li><Katex>{'\\textcolor{#2C8FFF}{V_z} = z_2 - z_1'}</Katex> (Change in Z)</li>
+          </ul>
+          <p>
+            The standard way to write a vector using its components is with angle brackets or parentheses. Both are common:
+          </p>
+          <ul>
+            <li>Angle Bracket Notation: <Katex>{'\\vec{V} = \\langle \\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z} \\rangle'}</Katex></li>
+            <li>Parentheses Notation: <Katex>{'\\vec{V} = (\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z})'}</Katex></li>
+          </ul>
+          <p>
+            In the <span class="keyword">Vector Builder</span> exercise above, look at the output panel. As you move the vector's start and end points, you'll see the <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex> components update automatically, along with the vector shown in component notation. This numerical representation is crucial for calculations.
+          </p>
+
+          <h3>An Alternative Language: Unit Vector Notation</h3>
+          <p>
+            Besides component form <Katex>{'\\langle V_x, V_y, V_z \\rangle'}</Katex>, there's another very common and useful way to write vectors, especially in physics and engineering. This method uses <span class="keyword">unit vectors</span>.
+          </p>
+          <p>
+            A <span class="keyword">unit vector</span> is simply a vector with a magnitude (length) of exactly 1. They are incredibly useful for indicating direction. We have three special standard unit vectors, often called the <span class="keyword">standard basis vectors</span>, that point along the positive X, Y, and Z axes:
+          </p>
+          <ul>
+            <li><Katex>{'\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} = \\langle 1, 0, 0 \\rangle'}</Katex> (Points 1 unit along the positive X-axis)</li>
+            <li><Katex>{'\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} = \\langle 0, 1, 0 \\rangle'}</Katex> (Points 1 unit along the positive Y-axis)</li>
+            <li><Katex>{'\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}} = \\langle 0, 0, 1 \\rangle'}</Katex> (Points 1 unit along the positive Z-axis)</li>
+          </ul>
+          <p>
+             (Note: Sometimes you'll see these written as bold letters **i**, **j**, **k** without the "hat" <Katex>{'\\hat{}'}</Katex> symbol.)
+          </p>
+          <p>
+            Using these basis vectors, we can express *any* vector <Katex>{'\\vec{V}'}</Katex> as a sum (a "linear combination") of its components multiplied by their corresponding unit vectors:
+          </p>
+          <p>
+             <Katex displayMode>{'\\vec{V} = \\textcolor{#EF5350}{V_x}\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} + \\textcolor{#66BB6A}{V_y}\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + \\textcolor{#2C8FFF}{V_z}\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}'}</Katex>
+          </p>
+          <p>
+            This form clearly shows how much of the vector <Katex>{'\\vec{V}'}</Katex> extends along each primary axis direction. For example, the vector <Katex>{'\\langle 2, -3, 5 \\rangle'}</Katex> can also be written as <Katex>{'2\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} - 3\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + 5\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}'}</Katex>.
+          </p>
+
+          <h4>Notation in Different Fields</h4>
+          <p>
+            You might encounter vectors represented differently depending on the context:
+          </p>
+          <ul>
+            <li><strong>Physics & Engineering:</strong> Often favor the <Katex>{'\\hat{\\mathbf{i}}, \\hat{\\mathbf{j}}, \\hat{\\mathbf{k}}'}</Katex> notation. It's great for expressing physical quantities like forces, velocities, or electric fields where direction is paramount and breaking things down by axis is common.</li>
+            <li><strong>Computer Science & Graphics:</strong> Frequently use the component form <Katex>{'\\langle x, y, z \\rangle'}</Katex> or <Katex>{'(x, y, z)'}</Katex>. Here, vectors are often treated as data structures representing points, directions, or offsets in 3D space for calculations in games, simulations, or data visualization.</li>
+          </ul>
+          <p>
+            It's important to remember that these are just different ways of writing down the <strong>same mathematical concept</strong>: a quantity with both magnitude and direction. Being comfortable with both notations is helpful!
+          </p>
+          <p>
+            The <span class="keyword">Vector Builder</span> visualization can help you see this connection. While it currently shows component form, imagine a toggle that could also display the equivalent unit vector notation for the vector you build.
+          </p>
+
+          <!-- Content for Magnitude calculation details will go here -->
           <!-- ... -->
           <!-- Guided Calculation for Magnitude -->
           <!-- ... -->
