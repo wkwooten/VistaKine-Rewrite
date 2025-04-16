@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { T, useTask } from '@threlte/core';
+  import { T, useTask, useThrelte } from '@threlte/core';
   import {
     OrbitControls,
     Grid,
@@ -8,7 +8,12 @@
     Billboard,
     Text,
   } from '@threlte/extras';
-  import { Vector3, Color, ArrowHelper, BufferGeometry, LineSegments, LineDashedMaterial, BufferAttribute } from 'three';
+  import { Vector3, Vector2, Color, ArrowHelper, BufferGeometry, LineSegments, LineDashedMaterial, BufferAttribute } from 'three';
+  // Import new line classes
+  import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
+  import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+  import { Line2 } from 'three/examples/jsm/lines/Line2.js';
+
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { onMount } from 'svelte';
@@ -23,9 +28,15 @@
     showDeltaX, showDeltaY, showDeltaZ
   } from '$lib/stores/vectorBuilderState';
 
+  // --- Threlte Hook ---
+  const { size } = useThrelte();
+
   // --- Constants (reuse from calibration/state) ---
   const cornerOriginOffset = new Vector3(-6, 1, -6); // Consistent with PrinterCalibrationScene
   const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
+  const dashSize = 0.2;
+  const gapSize = 0.1;
+  const deltaLineWidth = 3; // New constant for line width
 
   // --- State ---
   // Animated nozzle position
@@ -94,12 +105,12 @@
   });
 
   // --- Refs for Delta Lines ---
-  let lineX = $state<LineSegments | undefined>(undefined); // Initialize with undefined
-  let lineY = $state<LineSegments | undefined>(undefined); // Initialize with undefined
-  let lineZ = $state<LineSegments | undefined>(undefined); // ADDED: Missing lineZ ref
-  let geometryX = $state<BufferGeometry | undefined>(undefined); // ADDED: Missing geometryX ref
-  let geometryY = $state<BufferGeometry | undefined>(undefined); // ADDED: Missing geometryY ref
-  let geometryZ = $state<BufferGeometry | undefined>(undefined);
+  let lineX = $state<Line2 | undefined>(undefined); // Initialize with undefined
+  let lineY = $state<Line2 | undefined>(undefined); // Initialize with undefined
+  let lineZ = $state<Line2 | undefined>(undefined); // ADDED: Missing lineZ ref
+  let materialX = $state<LineMaterial | undefined>(undefined); // ADDED: Missing materialX ref
+  let materialY = $state<LineMaterial | undefined>(undefined); // ADDED: Missing materialY ref
+  let materialZ = $state<LineMaterial | undefined>(undefined);
 
   // --- Visual Helper Data Generation (Copied from PrinterCalibrationScene) ---
   const gridNumbers: { text: string, x: number, z: number, axis: 'x' | 'z' }[] = [];
@@ -132,6 +143,130 @@
   const zLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(0, 0, zAxisLength + labelOffset));
 
   // --- Effects --- //
+  // Initialize Lines and Materials ONCE
+  $effect(() => {
+    // Check if already initialized AND size is valid
+    if (!lineX && $size.width > 0 && $size.height > 0) {
+      console.log('[VectorScene] Creating Line2 instances...');
+      // X Line
+      const geomX = new LineGeometry();
+      const matX = new LineMaterial({ // Create with let/const
+        color: $xAxisColor,
+        linewidth: deltaLineWidth,
+        resolution: new Vector2($size.width, $size.height),
+        dashed: true,
+        dashScale: 1,
+        dashSize: dashSize,
+        gapSize: gapSize,
+      });
+      const lnX = new Line2(geomX, matX); // Create with let/const
+      // Assign to state variables *once*
+      materialX = matX;
+      lineX = lnX;
+
+      // Y Line
+      const geomY = new LineGeometry();
+      const matY = new LineMaterial({
+        color: $yAxisColor,
+        linewidth: deltaLineWidth,
+        resolution: new Vector2($size.width, $size.height),
+        dashed: true,
+        dashScale: 1,
+        dashSize: dashSize,
+        gapSize: gapSize,
+      });
+      const lnY = new Line2(geomY, matY);
+      materialY = matY;
+      lineY = lnY;
+
+      // Z Line
+      const geomZ = new LineGeometry();
+      const matZ = new LineMaterial({
+        color: $zAxisColor,
+        linewidth: deltaLineWidth,
+        resolution: new Vector2($size.width, $size.height),
+        dashed: true,
+        dashScale: 1,
+        dashSize: dashSize,
+        gapSize: gapSize,
+      });
+      const lnZ = new Line2(geomZ, matZ);
+      materialZ = matZ;
+      lineZ = lnZ;
+    }
+
+    // Cleanup remains the same, runs when dependencies change OR component unmounts
+    return () => {
+      // Check if objects exist before disposing
+      if (lineX) { // If lineX exists, others likely do too, but check individually is safer if needed
+        console.log('[VectorScene] Cleaning up Line2 instances...');
+        lineX.geometry.dispose();
+        materialX?.dispose(); // materialX should exist if lineX does
+        lineX = undefined; // Reset state
+        materialX = undefined;
+      }
+      if (lineY) {
+        lineY.geometry.dispose();
+        materialY?.dispose();
+        lineY = undefined;
+        materialY = undefined;
+      }
+      if (lineZ) {
+        lineZ.geometry.dispose();
+        materialZ?.dispose();
+        lineZ = undefined;
+        materialZ = undefined;
+      }
+    };
+  });
+
+  // Update Line Positions
+  $effect(() => {
+    if (lineX && vectorStartWorld && deltaIntermediateXY) {
+      const positionsX = [...vectorStartWorld.toArray(), ...deltaIntermediateXY.toArray()];
+      (lineX.geometry as LineGeometry).setPositions(positionsX);
+      lineX.computeLineDistances();
+    }
+  });
+
+  $effect(() => {
+    if (lineY && deltaIntermediateXY && deltaIntermediateYZ) {
+      const positionsY = [...deltaIntermediateXY.toArray(), ...deltaIntermediateYZ.toArray()];
+      (lineY.geometry as LineGeometry).setPositions(positionsY);
+       lineY.computeLineDistances();
+    }
+  });
+
+  $effect(() => {
+    if (lineZ && deltaIntermediateYZ && vectorEndWorld) {
+      const positionsZ = [...deltaIntermediateYZ.toArray(), ...vectorEndWorld.toArray()];
+      (lineZ.geometry as LineGeometry).setPositions(positionsZ);
+       lineZ.computeLineDistances();
+    }
+  });
+
+  // Update Material Resolution on Resize
+  $effect(() => {
+    if (materialX && materialY && materialZ && $size.width > 0 && $size.height > 0) {
+      // Use Vector2
+      const res = new Vector2($size.width, $size.height);
+      materialX.resolution = res;
+      materialY.resolution = res;
+      materialZ.resolution = res;
+    }
+  });
+
+  // Update Material Colors
+  $effect(() => {
+    if (materialX) materialX.color = new Color($xAxisColor);
+  });
+  $effect(() => {
+    if (materialY) materialY.color = new Color($yAxisColor);
+  });
+  $effect(() => {
+    if (materialZ) materialZ.color = new Color($zAxisColor);
+  });
+
   // React to trace requests
   $effect(() => {
     if ($traceVectorRequested) {
@@ -204,26 +339,23 @@
 
   // --- Effect to compute line distances --- //
   $effect(() => {
-    if (lineX && geometryX && vectorStartWorld && deltaIntermediateXY) {
+    if (lineX && materialX && vectorStartWorld && deltaIntermediateXY) {
       const positionsX = linePoints(vectorStartWorld, deltaIntermediateXY);
-      geometryX.setAttribute('position', new BufferAttribute(positionsX, 3));
-      geometryX.attributes.position.needsUpdate = true; // Mark attribute for update
+      (lineX.geometry as LineGeometry).setPositions(positionsX);
       lineX.computeLineDistances();
     }
   });
   $effect(() => {
-    if (lineY && geometryY && deltaIntermediateXY && deltaIntermediateYZ) {
+    if (lineY && materialY && deltaIntermediateXY && deltaIntermediateYZ) {
        const positionsY = linePoints(deltaIntermediateXY, deltaIntermediateYZ);
-       geometryY.setAttribute('position', new BufferAttribute(positionsY, 3));
-       geometryY.attributes.position.needsUpdate = true; // Mark attribute for update
+       (lineY.geometry as LineGeometry).setPositions(positionsY);
        lineY.computeLineDistances();
     }
   });
   $effect(() => {
-    if (lineZ && geometryZ && deltaIntermediateYZ && vectorEndWorld) {
+    if (lineZ && materialZ && deltaIntermediateYZ && vectorEndWorld) {
        const positionsZ = linePoints(deltaIntermediateYZ, vectorEndWorld);
-       geometryZ.setAttribute('position', new BufferAttribute(positionsZ, 3));
-       geometryZ.attributes.position.needsUpdate = true; // Mark attribute for update
+       (lineZ.geometry as LineGeometry).setPositions(positionsZ);
        lineZ.computeLineDistances();
     }
   });
@@ -484,28 +616,15 @@
     </Billboard>
   {/if}
 
-  <!-- Delta X Line -->
-  {#if showDeltaX && deltaIntermediateXY}
-    <T.LineSegments bind:ref={lineX}>
-      <T.BufferGeometry bind:ref={geometryX} />
-      <T.LineDashedMaterial color={$xAxisColor} dashSize={dashSize} gapSize={gapSize} />
-    </T.LineSegments>
+  <!-- Delta Lines (Refactored to use Line2) -->
+  {#if showDeltaX && lineX}
+    <T is={lineX} />
   {/if}
-
-  <!-- Delta Y Line -->
-  {#if showDeltaY && deltaIntermediateXY && deltaIntermediateYZ}
-    <T.LineSegments bind:ref={lineY}>
-      <T.BufferGeometry bind:ref={geometryY} />
-      <T.LineDashedMaterial color={$yAxisColor} dashSize={dashSize} gapSize={gapSize} />
-    </T.LineSegments>
+  {#if showDeltaY && lineY}
+    <T is={lineY} />
   {/if}
-
-  <!-- Delta Z Line -->
-  {#if showDeltaZ && deltaIntermediateYZ && vectorEndWorld}
-    <T.LineSegments bind:ref={lineZ}>
-      <T.BufferGeometry bind:ref={geometryZ} />
-      <T.LineDashedMaterial color={$zAxisColor} dashSize={dashSize} gapSize={gapSize} />
-    </T.LineSegments>
+  {#if showDeltaZ && lineZ}
+    <T is={lineZ} />
   {/if}
 
 {/if}

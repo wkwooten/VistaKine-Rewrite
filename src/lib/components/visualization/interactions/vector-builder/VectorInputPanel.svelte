@@ -4,6 +4,8 @@
     startCoordsNum, endCoordsNum, // Import derived stores for validation
     vectorData, traceVectorRequested,
     xAxisColor, yAxisColor, zAxisColor, // Import color stores
+    // Import MIN/MAX constants for clamping
+    MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z
   } from '$lib/stores/vectorBuilderState';
   import { get } from 'svelte/store';
   // Import a Toggle component if available, otherwise use checkbox
@@ -32,6 +34,43 @@
         traceVectorRequested.set(true);
     }
   }
+
+  // --- Clamping Effects ---
+  // Effect for Start Point Clamping
+  $effect(() => {
+    const raw = $startCoordsRaw;
+    const x = parseFloat(raw.x ?? '');
+    const y = parseFloat(raw.y ?? '');
+    const z = parseFloat(raw.z ?? '');
+
+    if (!isNaN(x) && (x < MIN_X || x > MAX_X)) {
+      startCoordsRaw.update(current => ({ ...current, x: String(Math.max(MIN_X, Math.min(MAX_X, x))) }));
+    }
+    if (!isNaN(y) && (y < MIN_Y || y > MAX_Y)) {
+      startCoordsRaw.update(current => ({ ...current, y: String(Math.max(MIN_Y, Math.min(MAX_Y, y))) }));
+    }
+    if (!isNaN(z) && (z < MIN_Z || z > MAX_Z)) {
+      startCoordsRaw.update(current => ({ ...current, z: String(Math.max(MIN_Z, Math.min(MAX_Z, z))) }));
+    }
+  });
+
+  // Effect for End Point Clamping
+  $effect(() => {
+    const raw = $endCoordsRaw;
+    const x = parseFloat(raw.x ?? '');
+    const y = parseFloat(raw.y ?? '');
+    const z = parseFloat(raw.z ?? '');
+
+    if (!isNaN(x) && (x < MIN_X || x > MAX_X)) {
+      endCoordsRaw.update(current => ({ ...current, x: String(Math.max(MIN_X, Math.min(MAX_X, x))) }));
+    }
+    if (!isNaN(y) && (y < MIN_Y || y > MAX_Y)) {
+      endCoordsRaw.update(current => ({ ...current, y: String(Math.max(MIN_Y, Math.min(MAX_Y, y))) }));
+    }
+    if (!isNaN(z) && (z < MIN_Z || z > MAX_Z)) {
+      endCoordsRaw.update(current => ({ ...current, z: String(Math.max(MIN_Z, Math.min(MAX_Z, z))) }));
+    }
+  });
 
 </script>
 

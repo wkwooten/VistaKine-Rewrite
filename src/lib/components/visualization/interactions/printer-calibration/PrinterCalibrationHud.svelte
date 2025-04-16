@@ -4,7 +4,6 @@
 	import ResetButton from '../../elements/ui/ResetButton.svelte';
 	import DialogBox from '../../elements/ui/DialogBox.svelte';
 	import {
-		requestedNozzlePosition,
 		resetSceneRequested,
 		showDialog,
 		dialogTurns,
@@ -12,17 +11,12 @@
 	import NozzleControlPanel from './NozzleControlPanel.svelte';
 
 	// --- Props ---
-	export let isFullscreen = false;
+	// Use $props for all props in runes mode
+	let { isFullscreen = $bindable(false), relativeNozzleX = $bindable(), relativeNozzleY = $bindable(), relativeNozzleZ = $bindable() } = $props();
 
-	// --- Local State (Nozzle state moved to child) ---
+	// --- Local State (Nozzle state passed down) ---
 
 	// --- Event Handlers ---
-	function handleNozzleMoveRequest(event: CustomEvent<{ x: number; y: number; z: number }>) {
-		const { x, y, z } = event.detail;
-		console.log(`[CalibrationHud] Handling requestMove event: X=${x}, Y=${y}, Z=${z}`);
-		requestedNozzlePosition.set({ x, y, z });
-	}
-
 	function handleResetScene() {
 		console.log(`[CalibrationHud] Requesting reset via store`);
 		resetSceneRequested.set(true);
@@ -55,7 +49,11 @@
 	<!-- Bottom Right Input Controls Container -->
 	{#if isFullscreen}
 		<div class="nozzle-control-panel-container">
-			<NozzleControlPanel on:requestMove={handleNozzleMoveRequest} />
+			<NozzleControlPanel
+				bind:x={relativeNozzleX}
+				bind:y={relativeNozzleY}
+				bind:z={relativeNozzleZ}
+			/>
 		</div>
 	{/if}
 

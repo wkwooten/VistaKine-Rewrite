@@ -49,6 +49,12 @@
   // Add a key that changes when dialog content should reset
   let dialogKey = $state(0);
 
+  // STATE MOVED HERE: Nozzle position state, bound to controls
+  const initialRelativePosition = { x: 0, y: 5, z: 0 };
+  let relativeNozzleX = $state(initialRelativePosition.x);
+  let relativeNozzleY = $state(initialRelativePosition.y);
+  let relativeNozzleZ = $state(initialRelativePosition.z);
+
   // --- Derived State ---
   let activeTargets = $derived((currentStage === 1) ? stage1Targets : stage2Targets);
 
@@ -66,13 +72,6 @@
     isCalibrationComplete = true;
     dialogKey += 1; // Increment key on completion
     dispatch('calibrationComplete');
-  }
-
-  // Handler for the NozzleControlPanel event when not fullscreen
-  function handlePanelMoveRequest(event: CustomEvent<{ x: number; y: number; z: number }>) {
-      const { x, y, z } = event.detail;
-      console.log(`[Exercise] Handling requestMove event from outside panel: X=${x}, Y=${y}, Z=${z}`);
-      requestedNozzlePosition.set({ x, y, z });
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
@@ -150,6 +149,10 @@
       currentStage = 1;
       isCalibrationComplete = false;
       dialogKey += 1; // Increment key on reset
+      // Reset nozzle state here
+      relativeNozzleX = initialRelativePosition.x;
+      relativeNozzleY = initialRelativePosition.y;
+      relativeNozzleZ = initialRelativePosition.z;
       // NOTE: The store flag ($resetSceneRequested) is reset by PrinterCalibrationScene
     }
   });
@@ -184,10 +187,14 @@
     </div>
   {/if}
 
-  <!-- Render NozzleControlPanel OUTSIDE VisContainer when NOT fullscreen -->
+  <!-- RESTORED: Render NozzleControlPanel OUTSIDE VisContainer when NOT fullscreen -->
   {#if !isFullscreen}
       <div class="control-panel-outside-vis">
-          <NozzleControlPanel on:requestMove={handlePanelMoveRequest} />
+          <NozzleControlPanel
+            bind:x={relativeNozzleX}
+            bind:y={relativeNozzleY}
+            bind:z={relativeNozzleZ}
+          />
       </div>
   {/if}
 
@@ -195,12 +202,18 @@
     <PrinterCalibrationScene
       targets={activeTargets}
       currentStage={currentStage}
+      {relativeNozzleX}
+      {relativeNozzleY}
+      {relativeNozzleZ}
       on:stageComplete={goToStage2}
       on:allStagesComplete={handleCalibrationComplete}
     />
     <HTML fullscreen>
       <PrinterCalibrationHud
         bind:isFullscreen
+        bind:relativeNozzleX
+        bind:relativeNozzleY
+        bind:relativeNozzleZ
         on:requestToggleFullscreen={toggleFullscreen}
       />
     </HTML>

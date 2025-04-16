@@ -31,7 +31,20 @@
   const dispatch = createEventDispatcher();
 
   // --- Props (using $props) ---
-  let { targets = [], currentStage = 1 } = $props<{ targets?: { id: string; x: number; y: number; z: number }[]; currentStage?: number }>();
+  let {
+    targets = [],
+    currentStage = 1,
+    // Receive nozzle coords as props from parent (Exercise)
+    relativeNozzleX = 0,
+    relativeNozzleY = 5,
+    relativeNozzleZ = 0
+  } = $props<{
+    targets?: { id: string; x: number; y: number; z: number }[];
+    currentStage?: number;
+    relativeNozzleX?: number;
+    relativeNozzleY?: number;
+    relativeNozzleZ?: number;
+  }>();
 
   // --- Resolved CSS Color State ---
   let xAxisColor = $state('red');
@@ -55,9 +68,16 @@
   // --- Constants ---
   const cornerOriginOffset = new Vector3(-6, 1, -6);
   const targetProximityThreshold = 0.3; // How close the nozzle needs to be
-  const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
+  const initialRelativePosition = new Vector3(0, 5, 0); // Store initial relative position
+  const initialWorldPosition = cornerOriginOffset.clone().add(initialRelativePosition);
 
   // --- Core State ---
+  // REMOVED: State for the input fields now passed as props
+  // let relativeNozzleX = $state(initialRelativePosition.x);
+  // let relativeNozzleY = $state(initialRelativePosition.y);
+  // let relativeNozzleZ = $state(initialRelativePosition.z);
+
+  // Tweened state for the visual representation
   const animatedPosition = tweened(initialWorldPosition, {
     duration: 500, // Animation duration in ms
     easing: cubicOut, // Apply easing
@@ -70,6 +90,15 @@
   let hitTargets = $state(new Set<string>());
 
   // --- Reactive Logic ---
+  // Effect to update the tweened visual position based on the bound relative state
+  $effect(() => {
+    // Dependencies: relativeNozzleX, relativeNozzleY, relativeNozzleZ
+    // Calculate the target world position from the current relative state
+    const targetWorldPosition = cornerOriginOffset.clone().add(new Vector3(relativeNozzleX, relativeNozzleY, relativeNozzleZ));
+    console.log(`[PrinterCalibration] Relative state changed. Setting animated target world pos to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`);
+    animatedPosition.set(targetWorldPosition);
+  });
+
   // Reset hitTargets when targets prop changes (new stage) - USE $effect
   $effect(() => {
     // This effect runs whenever 'targets' changes.
@@ -173,16 +202,6 @@
     }
   });
 
-  // React to move requests from the store
-  $effect(() => {
-    const requestedPos = $requestedNozzlePosition;
-    if (requestedPos) {
-      console.log(`[PrinterCalibration] Store requested move to relative: ${requestedPos.x}, ${requestedPos.y}, ${requestedPos.z}`);
-      setTargetPosition(requestedPos.x, requestedPos.y, requestedPos.z);
-      requestedNozzlePosition.set(null); // Reset store value after processing
-    }
-  });
-
   // React to reset requests from the store
   $effect(() => {
     if ($resetSceneRequested) {
@@ -192,22 +211,14 @@
     }
   });
 
-  // --- API Functions ---
-  export function setTargetPosition(x: number, y: number, z: number) {
-    console.log(`[PrinterCalibration] Received target relative to corner: ${x}, ${y}, ${z}`);
-    // Calculate world position by adding offset to the relative input
-    const targetWorldPosition = cornerOriginOffset.clone().add(new Vector3(x, y, z));
-    console.log(`[PrinterCalibration] Setting animated target to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`);
-    // Set the target for the tweened store
-    animatedPosition.set(targetWorldPosition);
-  }
-
   // Internal reset logic, called by store effect or potentially other internal needs
   function resetSceneInternal() {
     console.log('[PrinterCalibration] Resetting scene...');
-    // Reset nozzle position to initial state
-    const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
-    animatedPosition.set(initialWorldPosition, { duration: 0 }); // Reset immediately
+    // Resetting relative state is now handled by the parent (Exercise) component.
+    // We just need to reset the visual position immediately.
+    // Calculate initial world position based on default props or a fixed initial state
+    const resetWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0)); // Use fixed initial
+    animatedPosition.set(resetWorldPosition, { duration: 0 }); // Reset immediately
 
     // Reset hit targets
     hitTargets = new Set(); // Reassign for reactivity
@@ -300,7 +311,6 @@
 
 </script>
 
-<!-- Basic Lighting -->
 <T.AmbientLight intensity={1} />
 
 <T.PerspectiveCamera

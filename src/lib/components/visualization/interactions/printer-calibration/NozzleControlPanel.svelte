@@ -3,46 +3,48 @@
 	import { showCalibrationDialog, MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z } from '$lib/stores/calibrationState';
 	// Axis colors are assumed to be global CSS variables (--axis-color-x, etc.)
 
-	// --- State ---
-	let nozzleX = $state(MIN_X);
-	let nozzleY = $state(5);
-	let nozzleZ = $state(MIN_Z);
-	// Removed validationMessage, dialog store handles messages directly
+	// --- Props ---
+	// Use $bindable for two-way binding with the parent
+	// Add explicit types
+	let {
+		x = $bindable<number>(MIN_X),
+		y = $bindable<number>(5),
+		z = $bindable<number>(MIN_Z)
+	} = $props<{ x?: number; y?: number; z?: number }>();
 
-	// --- Event Dispatcher ---
+	// --- Event Dispatcher (Potentially remove if direct binding handles everything) ---
 	// Define the type for the dispatched event detail
-	const dispatch = createEventDispatcher<{ requestMove: { x: number; y: number; z: number } }>();
+	// const dispatch = createEventDispatcher<{ requestMove: { x: number; y: number; z: number } }>(); // Keep if needed for other actions
 
-	// --- Event Handlers ---
-	function handleMoveRequest() {
-		// Input Validation
-		if (nozzleX < MIN_X || nozzleX > MAX_X) {
-			// Pass data as DialogTurn[]
+	// --- Validation Effect ---
+	// Runs whenever x, y, or z changes due to binding
+	$effect(() => {
+		// Validate X
+		if (x < MIN_X || x > MAX_X) {
 			showCalibrationDialog([{ speaker: 'Leo', message: `Careful, Surya! My calculations show that X value is outside the physical print area. It needs to be between ${MIN_X} and ${MAX_X}.` }]);
-			return;
+			// Optional: Clamp or revert value here if needed
+			x = Math.max(MIN_X, Math.min(MAX_X, x));
+			return; // Stop further checks if one fails
 		}
-		if (nozzleY < MIN_Y || nozzleY > MAX_Y) {
+		// Validate Y
+		if (y < MIN_Y || y > MAX_Y) {
 			showCalibrationDialog([{ speaker: 'Surya', message: `Whoa, whoa! The Y-axis limit is ${MAX_Y}. We need to stay between ${MIN_Y} and ${MAX_Y}. We don't want to break my printer, its fragile!` }]);
+			y = Math.max(MIN_Y, Math.min(MAX_Y, y));
 			return;
 		}
-		if (nozzleZ < MIN_Z || nozzleZ > MAX_Z) {
+		// Validate Z
+		if (z < MIN_Z || z > MAX_Z) {
 			showCalibrationDialog([{ speaker: 'Leo', message: `That Z coordinate is problematic. We must remain within the ${MIN_Z} to ${MAX_Z} range for proper bed adhesion.` }]);
+			z = Math.max(MIN_Z, Math.min(MAX_Z, z));
 			return;
 		}
 
-		// If valid, dispatch the event for the parent (HUD) to handle
-		console.log(`[NozzleControlPanel] Dispatching requestMove: X=${nozzleX}, Y=${nozzleY}, Z=${nozzleZ}`);
-		dispatch('requestMove', { x: nozzleX, y: nozzleY, z: nozzleZ });
-	}
+		// Optional: If validation passes and we still needed dispatch for some reason
+		// console.log(`[NozzleControlPanel] Values updated via binding: X=${x}, Y=${y}, Z=${z}`);
+		// dispatch('requestMove', { x: x, y: y, z: z });
+	});
 
-	// New handler for keydown events on inputs
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			// Prevent default form submission behavior if this were inside a form
-			event.preventDefault();
-			handleMoveRequest();
-		}
-	}
+	// Removed handleMoveRequest and handleKeydown functions
 </script>
 
 <!-- Replicate structure from VectorInputPanel -->
@@ -54,10 +56,9 @@
 			<span class="axis-label" style="color: var(--axis-color-x);">X</span>
 			<input
 				type="number"
-				bind:value={nozzleX}
+				bind:value={x}
 				min={MIN_X}
 				max={MAX_X}
-				onkeydown={handleKeydown}
 				placeholder="X"
 			/>
 		</div>
@@ -66,10 +67,9 @@
 			<span class="axis-label" style="color: var(--axis-color-y);">Y</span>
 			<input
 				type="number"
-				bind:value={nozzleY}
+				bind:value={y}
 				min={MIN_Y}
 				max={MAX_Y}
-				onkeydown={handleKeydown}
 				placeholder="Y"
 			/>
 		</div>
@@ -78,17 +78,14 @@
 			<span class="axis-label" style="color: var(--axis-color-z);">Z</span>
 			<input
 				type="number"
-				bind:value={nozzleZ}
+				bind:value={z}
 				min={MIN_Z}
 				max={MAX_Z}
-				onkeydown={handleKeydown}
 				placeholder="Z"
 			/>
 		</div>
 	</div>
-	<div class="controls-section">
-		<button onclick={handleMoveRequest}>Move Nozzle</button>
-	</div>
+	<!-- Removed controls-section with the button -->
 	<!-- Removed validation message display, dialog handles it -->
 </div>
 
@@ -107,7 +104,6 @@
 		-webkit-user-select: none; /* Safari */
 		-moz-user-select: none; /* Firefox */
 		-ms-user-select: none; /* IE/Edge */
-		/* Removed absolute positioning */
 	}
 
 	h4 {
@@ -116,12 +112,10 @@
 		font-weight: 600;
 		font-size: 1.1em;
 	}
-
-	/* Removed old .axis-inputs styles */
-
 	/* Copied/Adapted from VectorInputPanel */
 	.coord-inputs {
 		display: grid;
+		margin-bottom: var(--space-s);
 		grid-template-columns: repeat(3, max-content); /* Arrange X, Y, Z groups */
 		gap: var(--space-xs); /* Gap between X, Y, Z groups */
 		justify-content: center; /* Center the groups if space allows */
@@ -175,16 +169,5 @@
 
 	/* No specific invalid state styling needed here like VectorInputPanel */
 
-	/* Controls Section */
-	.controls-section {
-		display: flex;
-		gap: var(--space-xs);
-		justify-content: flex-end;
-
-		button {
-			padding: var(--space-2xs) var(--space-s);
-			font-size: 0.95em;
-			/* Use default button styles from theme */
-		}
-	}
+	/* Removed controls-section styles */
 </style>

@@ -123,49 +123,47 @@
 
         <div class="section-intro">
           <Scenario>
-            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> I'm trying to program this robot arm to move to a specific point, but it needs instructions in terms of <span class="keyword">vectors</span>.</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> <span class="keyword">Vectors</span> are perfect for that! They tell the arm both how far to move and in what <span class="keyword">direction</span>.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, I get the coordinates from last section – like (3, 2, 5). But now I'm trying to program this robot arm to *move* from one point to another. Just knowing the destination coordinates isn't enough, is it? It needs to know the *path* or the *push*.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! You've hit on why we need <span class="keyword">vectors</span>. Think about kicking a soccer ball. You don't just care *where* it lands; you care about *how hard* you kicked it and *in what direction*. That combination – magnitude (how hard) and direction (where) – is what a vector describes.</p>
+             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, coordinates tell us a location, like a spot on the printer bed. Vectors tell us how to *get* somewhere, or how much force to apply, or how fast something is moving and in what direction?</p>
+             <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> You got it! Coordinates are like pins on a map. Vectors are like the arrows drawn on the map showing a specific journey or force.</p>
           </Scenario>
 
-          <p>Imagine you're kicking a soccer ball. How can we describe its motion?</p>
-          <p><span class="keyword">Vectors</span> show us both how *hard* you kick (<span class="keyword">magnitude</span>) and *where* you kick it (<span class="keyword">direction</span>).</p>
+          <p>
+            Leo's right. Sometimes just knowing a location isn't enough. We often need to describe quantities that have both a size (or <span class="keyword">magnitude</span>) and a direction. Think about temperature – it's just a number (like 25°C). That's called a <span class="keyword">scalar</span>. But think about pushing a box – you push with a certain strength (<span class="keyword">magnitude</span>) in a specific direction. That push is a <span class="keyword">force</span>, a perfect example of a <span class="keyword">vector</span>. Other examples include <span class="keyword">velocity</span> (speed in a direction) and <span class="keyword">displacement</span> (change in position).
+          </p>
         </div>
 
         <div class="section-core">
+          <h3>Visualizing Vectors: Arrows in Space</h3>
+          <p>
+            So, how do we picture these vectors? The most common way is using an arrow in our 3D coordinate system (like the one we saw with the printer calibration).
+          </p>
+          <ul>
+            <li>The <strong>length</strong> of the arrow represents the vector's <span class="keyword">magnitude</span> (how big it is – e.g., how strong the push, how fast the speed).</li>
+            <li>The <strong>orientation</strong> of the arrow (which way it points) represents the vector's <span class="keyword">direction</span>.</li>
+            <li>The arrow starts at a point called the <strong>tail</strong> (or origin of the vector) and ends at the <strong>head</strong> (or terminal point).</li>
+          </ul>
+          <p>
+            Let's make this concrete. In the interactive visualization below, you can define your own vector in 3D space. Play around with its start and end points and see how the arrow changes.
+          </p>
 
           <VectorBuilderExercise />
 
           <p>
-            A <span class="keyword">vector</span> in <span class="keyword">3D space</span> can be represented by its <span class="keyword">components</span> along the <span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z axes</span>.
-          </p>
-          <p>
-            For example, a <span class="keyword">vector</span> pointing from the <span class="keyword">origin</span> to the point (2, 3, 4) has <span class="keyword">components</span> <span class="keyword">x</span>=2, <span class="keyword">y</span>=3, and <span class="keyword">z</span>=4.
-          </p>
-          <p>
-            The <span class="keyword">magnitude</span> of the <span class="keyword">vector</span> represents its length, and can be calculated using the <span class="keyword">Pythagorean theorem</span> in 3D.
+            Notice how changing the start or end points changes both the length (magnitude) and orientation (direction) of the arrow. This arrow gives us a clear visual intuition for a vector. But how do we describe it precisely using numbers? That's where <span class="keyword">components</span> come in.
           </p>
 
-          <GuidedCalculation>
-            <p>The initial <span class="keyword">velocity</span> of the soccer ball is 50 m/s at an <span class="keyword">angle</span> of 30 degrees above the <span class="keyword">horizontal</span>.</p>
-            <form>
-              <label>
-                1. What is the <span class="keyword">horizontal</span> component of the <span class="keyword">velocity</span>? (Vx = V * cos(θ))<br>
-                Vx = <input type="number" name="vx"> m/s
-              </label>
-              <label>
-                2. What is the <span class="keyword">vertical</span> component of the <span class="keyword">velocity</span>? (Vy = V * sin(θ))<br>
-                Vy = <input type="number" name="vy"> m/s
-              </label>
-              <label>
-                3. Assuming no air resistance, how long will the ball be in the air? (t = 2 * Vy / g, where g = 9.8 m/s²)<br>
-                t = <input type="number" name="t"> s
-              </label>
-              <label>
-                4. How far will the ball travel <span class="keyword">horizontally</span>? (Range = Vx * t)<br>
-                Range = <input type="number" name="range"> m
-              </label>
-            </form>
-          </GuidedCalculation>
+          <!-- Content for Components & Component Notation will go here -->
+          <!-- ... -->
+          <!-- Content for Unit Vector Notation will go here -->
+          <!-- ... -->
+          <!-- Content for Magnitude will go here -->
+          <!-- ... -->
+          <!-- Guided Calculation for Magnitude -->
+          <!-- ... -->
+          <!-- Content for Looking Ahead will go here -->
+          <!-- ... -->
         </div>
 
         <SectionReview>
