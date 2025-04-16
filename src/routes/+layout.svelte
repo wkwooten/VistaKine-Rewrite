@@ -12,13 +12,33 @@
 
   let mobileNavOpen = false;
   let isMobile = false;
+  let lgBreakpointValue = 1024; // Default fallback (numeric)
 
   onMount(() => {
     parallaxBackground();
 
+    if (browser) {
+        // Read the CSS custom property once on mount
+        try {
+            const styles = getComputedStyle(document.documentElement);
+            const bpValueString = styles.getPropertyValue('--breakpoint-lg').trim();
+            if (bpValueString) {
+                // Parse the value (remove "px" and convert to number)
+                const parsedValue = parseInt(bpValueString, 10);
+                if (!isNaN(parsedValue)) {
+                    lgBreakpointValue = parsedValue;
+                }
+            }
+        } catch (error) {
+            console.error("Error reading --breakpoint-lg CSS variable:", error);
+            // Keep fallback value
+        }
+    }
+
     function checkMobile() {
       if (browser) {
-        isMobile = window.innerWidth <= 768;
+        // Use the retrieved (or fallback) breakpoint value
+        isMobile = window.innerWidth <= lgBreakpointValue;
         if (!isMobile && mobileNavOpen) {
           mobileNavOpen = false;
         }
@@ -109,6 +129,8 @@
 </div >
 
 <style lang="scss">
+  @use '$lib/styles/variables' as variables;
+
   .app-container {
     height: 100vh;
     width: 100%;
@@ -145,7 +167,7 @@
       width: 110px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: variables.$breakpoint-lg) {
       position: fixed;
       top: 0;
       left: 0;
@@ -203,7 +225,7 @@
           color: var(--color-accent);
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: variables.$breakpoint-lg) {
         // display: none;
       }
   }
@@ -215,7 +237,7 @@
     overflow-y: auto;
     padding-inline: var(--space-m);
 
-    @media (max-width: 768px) {
+    @media (max-width: variables.$breakpoint-lg) {
       margin-left: 0;
       padding: 5px;
     }

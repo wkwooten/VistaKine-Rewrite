@@ -162,7 +162,8 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   gap: var(--space-xl);
   max-width: var(--wide-content-width);
 
-  @media (max-width: variables.$breakpoint-md) {
+  /* Apply mobile padding/border styles up to lg breakpoint */
+  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
     padding: 0; /* Remove padding for medium screens */
     border: none; /* Remove border for medium screens */
     gap: var(--space-l); /* Adjust gap if needed */
@@ -241,12 +242,13 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
     opacity: 0.7;
   }
 
-  @media (max-width: variables.$breakpoint-md) {
+  /* Apply mobile padding styles up to lg breakpoint */
+  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
     padding: var(--space-s);
     margin-bottom: var(--space-xl);
   }
 
-  @media (max-width: variables.$breakpoint-sm) {
+  @media (max-width: variables.$breakpoint-lg) {
     margin-left: 0;
     padding: var(--space-xs);
     margin-bottom: var(--space-l);
@@ -263,7 +265,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   max-width: 1200px;
   margin: 0 auto;
 
-  @media (max-width: variables.$breakpoint-md) {
+  @media (max-width: variables.$breakpoint-lg) {
     padding-top: var(--space-xs);
   }
 }
@@ -283,7 +285,8 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   padding-inline: var(--space-s);
   margin-inline: var(--space-m);
 
-  @media (max-width: variables.$breakpoint-md) {
+  /* Apply mobile padding styles up to lg breakpoint */
+  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
     margin-inline: 0;
     padding-inline: 0;
   }
@@ -321,8 +324,9 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   box-sizing: border-box;
 
   /* Responsive adjustments */
-  @media (max-width: variables.$breakpoint-md) {
-    padding-inline: var(--space-xs); /* Reduced horizontal padding for medium screens */
+  /* Apply mobile padding styles up to lg breakpoint */
+  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
+    padding-inline: var(--space-xs); /* Reduced horizontal padding */
   }
 
   @media (max-width: variables.$breakpoint-sm) {
@@ -337,11 +341,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 }
 
 /* Media Queries */
-@media (min-width: variables.$breakpoint-md) {
-  .content-section {
-    grid-template-columns: 2fr 1fr;
-  }
-}
+/* @media (min-width: variables.$breakpoint-md) { ... } */
 
 /* Sidebar Navigation Styling */
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .nav-item.chapter-item:hover {

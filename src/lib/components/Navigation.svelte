@@ -37,7 +37,17 @@
   }
 
   onMount(() => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)'); // Example breakpoint
+    let lgBreakpointValue = '1024px'; // Default fallback
+    if (browser) {
+        // Read the CSS custom property
+        const styles = getComputedStyle(document.documentElement);
+        const bpValue = styles.getPropertyValue('--breakpoint-lg').trim();
+        if (bpValue) { // Use the value if found
+            lgBreakpointValue = bpValue;
+        }
+    }
+
+    const mediaQuery = window.matchMedia(`(max-width: ${lgBreakpointValue})`); // Use dynamic value
     isMobile = mediaQuery.matches;
 
     const handleResize = () => {
