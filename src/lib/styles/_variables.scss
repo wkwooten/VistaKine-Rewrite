@@ -20,7 +20,7 @@ $color-text-inverted-light: $color-white; // Value for light mode
 // Accent Palette
 // Purpose: Interactive elements, highlights, calls to action.
 // ----------------------------------
-$color-accent: #0F4676;               // Primary interactive color (was $brand-primary)
+$color-accent: #192784;               // Primary interactive color (was $brand-primary)
 $color-accent-hover: #1565C0;         // Hover state for accent elements (was $brand-accent-dark)
 $color-accent-light: #64B5F6;         // Lighter accent variation (was $brand-accent)
 $color-accent-active-bg: rgba($color-accent, 0.08); // Background for active state (was $brand-active-bg)
@@ -40,9 +40,9 @@ $color-text-on-dark: #F0F8FF; // Text used on dark/accent backgrounds
 // ----------------------------------
 // Axis Colors (Used, Keep As Is)
 // ----------------------------------
-$axis-color-x: #EF5350;
-$axis-color-y: #66BB6A;
-$axis-color-z: #2C8FFF;
+$axis-color-x: #C62828; // Darker Red for light mode contrast
+$axis-color-y: #2E7D32; // Darker Green for light mode contrast
+$axis-color-z: #1565C0; // Darker Blue for light mode contrast
 // Transparent versions...
 $axis-color-x-t75: rgba($axis-color-x, 0.75);
 $axis-color-y-t75: rgba($axis-color-y, 0.75);
@@ -287,9 +287,9 @@ $color-dark-text-on-dark: $color-dark-text-primary; // Primary light text works 
 $color-dark-text-on-accent: #111; // Dark text might be needed on the bright dark-mode accents
 
 // --- Axis Dark (Brighter versions for visibility) ---
-$axis-dark-color-x: #ff7975; // Brighter Red
-$axis-dark-color-y: #82e0aa; // Brighter Green
-$axis-dark-color-z: #74bfff; // Brighter Blue
+$axis-dark-color-x: #FF5252; // Adjusted Bright Red
+$axis-dark-color-y: #69F0AE; // Adjusted Bright Green
+$axis-dark-color-z: #448AFF; // Adjusted Bright Blue
 $axis-dark-color-x-t75: rgba($axis-dark-color-x, 0.75);
 $axis-dark-color-y-t75: rgba($axis-dark-color-y, 0.75);
 $axis-dark-color-z-t75: rgba($axis-dark-color-z, 0.75);

@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     startCoordsRaw, endCoordsRaw,
-    startCoordsNum, endCoordsNum, // Import derived stores for validation
     vectorData, traceVectorRequested,
     xAxisColor, yAxisColor, zAxisColor, // Import color stores
     // Import MIN/MAX constants for clamping
@@ -14,10 +13,6 @@
 
   // Use $props() for runes mode
   let { extraClass = '' } = $props<{ extraClass?: string }>();
-
-  // --- Interaction Tracking for Validation Styling ---
-  let startInteracted = $state({ x: false, y: false, z: false });
-  let endInteracted = $state({ x: false, y: false, z: false });
 
   // --- Input Sanitization ---
   function handleIntegerInput(event: Event) {
@@ -81,38 +76,35 @@
       <legend>Start Point (X1, Y1, Z1)</legend>
       <div class="coord-inputs">
         <!-- X Input Group -->
-        <div class="axis-input-group" style="border-color: {$xAxisColor};" class:invalid={startInteracted.x && $startCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$xAxisColor};">
           <span class="axis-label" style="color: {$xAxisColor};">X</span>
           <input
             type="number"
             step="1"
             bind:value={$startCoordsRaw.x}
             oninput={handleIntegerInput}
-            onblur={() => startInteracted.x = true}
             placeholder="0"
           />
         </div>
         <!-- Y Input Group -->
-        <div class="axis-input-group" style="border-color: {$yAxisColor};" class:invalid={startInteracted.y && $startCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$yAxisColor};">
            <span class="axis-label" style="color: {$yAxisColor};">Y</span>
            <input
             type="number"
             step="1"
             bind:value={$startCoordsRaw.y}
             oninput={handleIntegerInput}
-            onblur={() => startInteracted.y = true}
             placeholder="0"
           />
         </div>
         <!-- Z Input Group -->
-        <div class="axis-input-group" style="border-color: {$zAxisColor};" class:invalid={startInteracted.z && $startCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$zAxisColor};">
            <span class="axis-label" style="color: {$zAxisColor};">Z</span>
            <input
             type="number"
             step="1"
             bind:value={$startCoordsRaw.z}
             oninput={handleIntegerInput}
-            onblur={() => startInteracted.z = true}
             placeholder="0"
           />
         </div>
@@ -123,39 +115,36 @@
       <legend>End Point (X2, Y2, Z2)</legend>
       <div class="coord-inputs">
         <!-- X Input Group -->
-        <div class="axis-input-group" style="border-color: {$xAxisColor};" class:invalid={endInteracted.x && $endCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$xAxisColor};">
           <span class="axis-label" style="color: {$xAxisColor};">X</span>
           <input
             type="number"
             step="1"
             bind:value={$endCoordsRaw.x}
             oninput={handleIntegerInput}
-            onblur={() => endInteracted.x = true}
-            placeholder="X"
+            placeholder="0"
           />
         </div>
         <!-- Y Input Group -->
-        <div class="axis-input-group" style="border-color: {$yAxisColor};" class:invalid={endInteracted.y && $endCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$yAxisColor};">
           <span class="axis-label" style="color: {$yAxisColor};">Y</span>
           <input
             type="number"
             step="1"
             bind:value={$endCoordsRaw.y}
             oninput={handleIntegerInput}
-            onblur={() => endInteracted.y = true}
-            placeholder="Y"
+            placeholder="0"
           />
         </div>
         <!-- Z Input Group -->
-        <div class="axis-input-group" style="border-color: {$zAxisColor};" class:invalid={endInteracted.z && $endCoordsNum === null}>
+        <div class="axis-input-group" style="border-color: {$zAxisColor};">
           <span class="axis-label" style="color: {$zAxisColor};">Z</span>
           <input
             type="number"
             step="1"
             bind:value={$endCoordsRaw.z}
             oninput={handleIntegerInput}
-            onblur={() => endInteracted.z = true}
-            placeholder="Z"
+            placeholder="0"
           />
         </div>
       </div>

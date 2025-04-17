@@ -81,7 +81,7 @@
             That's the job of <span class="keyword">coordinate systems</span>. They act like a universal address book for space, providing a clear, mathematical framework to define any position using numerical <span class="keyword">coordinates</span>.
           </p>
           <p>
-            We use simpler versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <span class="keyword">3D space</span>, like inside Surya's printer, we just add a third <span class="keyword">axis</span> (usually <span class="keyword">Y</span> for height) to describe positions fully – left/right (<span class="keyword">X</span>), forward/backward (<span class="keyword">Z</span>), and up/down (<span class="keyword">Y</span>).
+            We use simpler, 2D versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <span class="keyword">3D space</span>, like inside Surya's printer, we just add a third <span class="keyword">axis</span> (usually <span class="keyword">Y</span> for height) to describe positions fully – left/right (<span class="keyword">X</span>), forward/backward (<span class="keyword">Z</span>), and up/down (<span class="keyword">Y</span>).
           </p>
           <p>
             We'll put this into practice shortly by helping Surya and Leo calibrate that 3D printer, precisely guiding its nozzle using these very coordinates.
