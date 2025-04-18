@@ -8,10 +8,10 @@
 // Purpose: Base colors for UI structure, text, and backgrounds.
 // ----------------------------------
 $color-background: #f0f8ff;          // Main page background
-$color-surface: #f9fafb;             // Card/Sidebar/distinct element backgrounds
+$color-surface: #fefeff;             // Card/Sidebar/distinct element backgrounds
 $color-text-primary: #1f2937;        // Primary text color
 $color-text-secondary: #37474F; // Lighter text for secondary info (kept from brand)
-$color-border: #64B5F6;              // Default border color
+$color-border: #5351EF;              // Default border color
 $color-border-light: rgba($color-text-primary, 0.2); // Subtle borders/dividers
 $color-white: #ffffff;
 $color-text-inverted-light: $color-white; // Value for light mode
@@ -20,7 +20,7 @@ $color-text-inverted-light: $color-white; // Value for light mode
 // Accent Palette
 // Purpose: Interactive elements, highlights, calls to action.
 // ----------------------------------
-$color-accent: #192784;               // Primary interactive color (was $brand-primary)
+$color-accent: #5351EF;               // Primary interactive color (was $brand-primary)
 $color-accent-hover: #1565C0;         // Hover state for accent elements (was $brand-accent-dark)
 $color-accent-light: #64B5F6;         // Lighter accent variation (was $brand-accent)
 $color-accent-active-bg: rgba($color-accent, 0.08); // Background for active state (was $brand-active-bg)
