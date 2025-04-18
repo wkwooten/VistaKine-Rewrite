@@ -106,9 +106,15 @@
   // Use store value directly
   $: navCollapsed = !$sidebarExpanded;
 
-  // Reactively update expanded chapter if global store changes *after* initial load
-  $: if ($currentChapter && $currentChapter !== expandedChapter) {
-    expandedChapter = $currentChapter;
+  // Add a reactive block to handle chapter changes *after* initial load
+  let previousChapter: string | null = $currentChapter; // Track previous value
+  $: {
+    if ($currentChapter && $currentChapter !== previousChapter) {
+      // If the current chapter store changes to a new non-null value,
+      // automatically expand the corresponding accordion.
+      expandedChapter = $currentChapter;
+    }
+    previousChapter = $currentChapter;
   }
 
 </script>
