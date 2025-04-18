@@ -66,6 +66,8 @@
   function closeMobileSidebar() {
     mobileNavOpen = false;
   }
+
+  $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
 </script>
 
 <!-- Mobile Menu Button - REMOVED from here -->
@@ -95,7 +97,7 @@
   {/if}
 
   <aside class="navigation" class:collapsed={!$sidebarExpanded} class:mobile-open={mobileNavOpen}>
-    <Navigation />
+    <Navigation {currentChapterSlug} />
     {#if !isMobile}
       <button
         class="sidebar-toggle-button"

@@ -8,6 +8,9 @@
   import { browser } from '$app/environment';
   import { getChapterList } from '$lib/data/chapters';
 
+  // Add prop for initial chapter slug
+  export let currentChapterSlug: string | null = null;
+
   $: console.log('Navigation.svelte - currentChapter store value:', $currentChapter);
 
   export let chapters = getChapterList();
@@ -76,7 +79,9 @@
     };
   });
 
-  let expandedChapter: string | null = null;
+  // Initialize expandedChapter with the prop value from the layout
+  let expandedChapter: string | null = currentChapterSlug;
+
   function toggleChapterSections(chapterSlug: string): void {
     expandedChapter = expandedChapter === chapterSlug ? null : chapterSlug;
   }
@@ -101,8 +106,8 @@
   // Use store value directly
   $: navCollapsed = !$sidebarExpanded;
 
-  // Reactively set the expanded chapter based on the global currentChapter store
-  $: if ($currentChapter) {
+  // Reactively update expanded chapter if global store changes *after* initial load
+  $: if ($currentChapter && $currentChapter !== expandedChapter) {
     expandedChapter = $currentChapter;
   }
 
