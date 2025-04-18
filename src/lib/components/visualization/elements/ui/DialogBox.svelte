@@ -5,7 +5,15 @@
   import type { DialogTurn } from '$lib/stores/calibrationState'; // Import the type
 
   // Use $props() for runes mode
-  let { turns = $bindable([]), show = $bindable(false) } = $props<{ turns?: DialogTurn[], show?: boolean }>();
+  let {
+    turns = $bindable([]),
+    show = $bindable(false),
+    isFullscreen = false // <-- Add the new prop
+  } = $props<{
+    turns?: DialogTurn[],
+    show?: boolean,
+    isFullscreen?: boolean // <-- Define the type
+  }>();
 
   let currentMessageIndex = $state(0);
   let isTyping = $state(false);
@@ -173,13 +181,15 @@
             tabindex="0"
             aria-live="polite"
         >
-             <button
-                class="collapse-button"
-                aria-label="Collapse dialog"
-                onclick={(event) => { event.stopPropagation(); console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
-            >
-                <Minimize2 size={24} />
-            </button>
+             {#if isFullscreen}
+                 <button
+                    class="collapse-button"
+                    aria-label="Collapse dialog"
+                    onclick={(event) => { event.stopPropagation(); console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
+                 >
+                     <Minimize2 size={24} />
+                 </button>
+             {/if}
             <!-- Display the dynamically updated currentSpeaker -->
             <div class="speaker" data-speaker={currentSpeaker}>{currentSpeaker}</div>
             <div class="message">{displayedText}</div>
@@ -246,7 +256,7 @@
       gap: var(--space-xs);
       padding: var(--space-s);
       overflow-y: auto;
-      max-height: 300px; /* Limit height */
+      /* max-height: 300px;  */
 
       label {
         font-size: 0.9em;
@@ -339,7 +349,6 @@
       flex-grow: 1; /* Allow message area to grow */
       flex-shrink: 1; /* Allow message area to shrink */
       overflow-y: auto; /* Enable scroll *only* on message */
-      max-height: 4.5em; /* Limit message height (approx 3 lines + padding) */
       /* Adjust margin if needed based on surrounding elements */
       margin-bottom: 5px; /* Space before continue prompt */
     }

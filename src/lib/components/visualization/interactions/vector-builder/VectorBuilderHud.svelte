@@ -48,6 +48,7 @@
       <DialogBox
           turns={$vectorBuilderDialogTurns}
           bind:show={$showVectorBuilderDialog}
+          isFullscreen={isFullscreen}
       />
   {/if}
 

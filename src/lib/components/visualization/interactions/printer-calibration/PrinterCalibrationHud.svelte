@@ -43,6 +43,7 @@
 		<DialogBox
 			turns={$dialogTurns}
 			bind:show={$showDialog}
+			isFullscreen={isFullscreen}
 		/>
 	{/if}
 
