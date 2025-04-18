@@ -42,7 +42,6 @@ body {
 // Default heading styles (Assuming heading includes are in typography or main)
 h1 {
   @include typography.heading-1;
-  color: var(--color-accent);
 }
 
 h2 {

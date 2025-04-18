@@ -33,10 +33,95 @@ const glossaryData: GlossaryData = [
         sectionRef: "coordinate-systems"
       },
       {
+        term: "Axes",
+        definition: "Plural of Axis. The reference lines used in a coordinate system.",
+        sectionRef: "coordinate-systems"
+      },
+      {
         term: "Vector",
         definition: "A quantity with both magnitude and direction.",
-        sectionRef: "vectors-in-space"
+        sectionRef: "vectors-and-components"
       },
+      {
+        term: "Origin",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Coordinates",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "X-Axis",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Horizontal",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Y-Axis",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Vertical",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Z-Axis",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Depth",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Right-Handed Coordinate System",
+        definition: "Definition needed.",
+        sectionRef: "coordinate-systems"
+      },
+      {
+        term: "Magnitude",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Scalar",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Direction",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Components",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Unit Vectors",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Standard Basis Vectors",
+        definition: "Definition needed.",
+        sectionRef: "vectors-and-components"
+      },
+      {
+        term: "Reference Frame",
+        definition: "Definition needed.",
+        sectionRef: "vector-operations"
+      }
     ]
   },
   {

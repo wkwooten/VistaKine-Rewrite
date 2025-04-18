@@ -101,6 +101,11 @@
   // Use store value directly
   $: navCollapsed = !$sidebarExpanded;
 
+  // Reactively set the expanded chapter based on the global currentChapter store
+  $: if ($currentChapter) {
+    expandedChapter = $currentChapter;
+  }
+
 </script>
 
 <!-- Navigation -->

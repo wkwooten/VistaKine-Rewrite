@@ -324,15 +324,16 @@
   /* Expanded styles */
   .dialog-box.expanded {
     padding: 15px;
-    /* max-width: 600px; */
-    /* min-height: 80px;  */
-    /* max-height: 300px; */
+    height: 200px;
     text-align: left;
     /* box-shadow: var(--shadow-lg); */
     display: flex;
     flex-direction: column;
     position: relative;
-    /* Width determined by parent now */
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
 
     .message {
       flex-grow: 1; /* Allow message area to grow */

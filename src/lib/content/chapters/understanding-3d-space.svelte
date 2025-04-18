@@ -13,6 +13,7 @@
   import VectorBuilderExercise from '$lib/components/visualization/interactions/vector-builder/VectorBuilderExercise.svelte';
   import { coordinateQuizData, vectorQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
   import Katex from 'svelte-katex';
+  import Keyword from '$lib/components/Keyword.svelte';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -45,8 +46,8 @@
   <header class="chapter-header">
     <h1>Chapter 1: <br> Understanding 3D Space</h1>
     <p class="chapter-intro">
-      This chapter introduces the fundamental concepts of <span class="keyword">three-dimensional space</span> and
-      <span class="keyword">coordinate systems</span>, essential for understanding <span class="keyword">kinematics</span> and <span class="keyword">dynamics</span>.
+      This chapter introduces the fundamental concepts of <Keyword term="3D Space" /> and
+      <Keyword term="coordinate systems" />, essential for understanding <Keyword term="kinematics" /> and <Keyword term="dynamics" />.
     </p>
 
     <!-- Add the optional header navigation -->
@@ -69,19 +70,19 @@
         <div class="section-intro">
           <Scenario>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Ah, but 'right there' isn't precise enough for a machine, Surya! It needs a common language, a <span class="keyword">coordinate system</span>, to know exactly where 'there' is in <span class="keyword">3D space</span>.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Ah, but 'right there' isn't precise enough for a machine, Surya! It needs a common language, a <Keyword term="coordinate system" />, to know exactly where 'there' is in <Keyword term="3D space" />.</p>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, like the grid lines on the build plate?</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Precisely! Think of it as a map. We use three perpendicular <span class="keyword">axes</span> – usually X for width, Z for depth, and Y for height – all meeting at a starting point called the <span class="keyword">origin</span> (0, 0, 0). Every point in the printer's volume has a unique X, Y, Z address.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Precisely! Think of it as a map. We use three perpendicular <Keyword term="axes" /> – usually X for width, Z for depth, and Y for height – all meeting at a starting point called the <Keyword term="origin" /> (0, 0, 0). Every point in the printer's volume has a unique X, Y, Z address.</p>
           </Scenario>
 
           <p>
             Leo's right. Just like Surya discovered with her printer, simply pointing or saying "there" isn't enough when we need precision. How <em>do</em> we tell a machine, or even another person, exactly where something is located in space?
           </p>
           <p>
-            That's the job of <span class="keyword">coordinate systems</span>. They act like a universal address book for space, providing a clear, mathematical framework to define any position using numerical <span class="keyword">coordinates</span>.
+            That's the job of <Keyword term="coordinate systems" />. They act like a universal address book for space, providing a clear, mathematical framework to define any position using numerical <Keyword term="coordinates" />.
           </p>
           <p>
-            We use simpler, 2D versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <span class="keyword">3D space</span>, like inside Surya's printer, we just add a third <span class="keyword">axis</span> (usually <span class="keyword">Y</span> for height) to describe positions fully – left/right (<span class="keyword">X</span>), forward/backward (<span class="keyword">Z</span>), and up/down (<span class="keyword">Y</span>).
+            We use simpler, 2D versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <Keyword term="3D space" />, like inside Surya's printer, we just add a third <Keyword term="axis" /> (usually <Keyword term="Y" /> for height) to describe positions fully – left/right (<Keyword term="X" />), forward/backward (<Keyword term="Z" />), and up/down (<Keyword term="Y" />).
           </p>
           <p>
             We'll put this into practice shortly by helping Surya and Leo calibrate that 3D printer, precisely guiding its nozzle using these very coordinates.
@@ -93,13 +94,13 @@
             on:calibrationComplete={handleCalibrationComplete}
           />
           <p>
-            Think of a 3D printer. It uses three <span class="keyword">axes</span> (<span class="keyword">x</span>, <span class="keyword">y</span>, and <span class="keyword">z</span>) to pinpoint any location within its printing area. The intersection of these three <span class="keyword">axes</span> is called the <span class="keyword">origin</span>, typically represented as (0, 0, 0).
+            Think of a 3D printer. It uses three <Keyword term="axes" /> (<Keyword term="x" />, <Keyword term="y" />, and <Keyword term="z" />) to pinpoint any location within its printing area. The intersection of these three <Keyword term="axes" /> is called the <Keyword term="origin" />, typically represented as (0, 0, 0).
           </p>
           <p>
-            The <span class="keyword">x-axis</span> usually represents <span class="keyword">horizontal</span> movement, the <span class="keyword">y-axis</span> represents <span class="keyword">vertical</span> movement, and the <span class="keyword">z-axis</span> represents <span class="keyword">depth</span>, forming a <span class="keyword">right-handed coordinate system</span>.
+            The <Keyword term="x-axis" /> usually represents horizontal movement, the <Keyword term="y-axis" /> represents vertical movement, and the <Keyword term="z-axis" /> represents depth, forming a <Keyword term="right-handed coordinate system" />.
           </p>
           <p>
-            By combining <span class="keyword">coordinates</span> along these <span class="keyword">axes</span> – positive or negative distances from the <span class="keyword">origin</span> – we can specify any point in <span class="keyword">3D space</span>, giving us a powerful way to describe and manipulate objects.
+            By combining <Keyword term="coordinates" /> along these <Keyword term="axes" /> – positive or negative distances from the <Keyword term="origin" /> – we can specify any point in <Keyword term="3D space" />, giving us a powerful way to describe and manipulate objects.
           </p>
         </div>
 
@@ -125,13 +126,13 @@
         <div class="section-intro">
           <Scenario>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, I get the coordinates from last section – like (3, 2, 5). But now I'm trying to program this robot arm to *move* from one point to another. Just knowing the destination coordinates isn't enough, is it? It needs to know the *path* or the *push*.</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! You've hit on why we need <span class="keyword">vectors</span>. Think about kicking a soccer ball. You don't just care *where* it lands; you care about *how hard* you kicked it and *in what direction*. That combination – magnitude (how hard) and direction (where) – is what a vector describes.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! You've hit on why we need <Keyword term="vectors" />. Think about kicking a soccer ball. You don't just care *where* it lands; you care about *how hard* you kicked it and *in what direction*. That combination – magnitude (how hard) and direction (where) – is what a vector describes.</p>
              <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, coordinates tell us a location, like a spot on the printer bed. Vectors tell us how to *get* somewhere, or how much force to apply, or how fast something is moving and in what direction?</p>
              <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> You got it! Coordinates are like pins on a map. Vectors are like the arrows drawn on the map showing a specific journey or force.</p>
           </Scenario>
 
           <p>
-            Leo's right. Sometimes just knowing a location isn't enough. We often need to describe quantities that have both a size (or <span class="keyword">magnitude</span>) and a direction. Think about temperature – it's just a number (like 25°C). That's called a <span class="keyword">scalar</span>. But think about pushing a box – you push with a certain strength (<span class="keyword">magnitude</span>) in a specific direction. That push is a <span class="keyword">force</span>, a perfect example of a <span class="keyword">vector</span>. Other examples include <span class="keyword">velocity</span> (speed in a direction) and <span class="keyword">displacement</span> (change in position).
+            Leo's right. Sometimes just knowing a location isn't enough. We often need to describe quantities that have both a size (or <Keyword term="magnitude" />) and a direction. Think about temperature – it's just a number (like 25°C). That's called a <Keyword term="scalar" />. But think about pushing a box – you push with a certain strength (<Keyword term="magnitude" />) in a specific direction. That push is a <Keyword term="force" />, a perfect example of a <Keyword term="vector" />. Other examples include <Keyword term="velocity" /> (speed in a direction) and <Keyword term="displacement" /> (change in position).
           </p>
         </div>
 
@@ -141,13 +142,13 @@
             So, how do we picture these vectors? The most common way is using an arrow in our 3D coordinate system (like the one we saw with the printer calibration).
           </p>
           <ul>
-            <li>The <strong>length</strong> of the arrow represents the vector's <span class="keyword">magnitude</span> (how big it is – e.g., how strong the push, how fast the speed).</li>
-            <li>The <strong>orientation</strong> of the arrow (which way it points) represents the vector's <span class="keyword">direction</span>.</li>
+            <li>The <strong>length</strong> of the arrow represents the vector's <Keyword term="magnitude" /> (how big it is – e.g., how strong the push, how fast the speed).</li>
+            <li>The <strong>orientation</strong> of the arrow (which way it points) represents the vector's <Keyword term="direction" />.</li>
             <li>The arrow starts at a point called the <strong>tail</strong> (or origin of the vector) and ends at the <strong>head</strong> (or terminal point).</li>
           </ul>
 
           <FormulaAccordion>
-            <p>The length, or <span class="keyword">magnitude</span>, of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> is found using the 3D Pythagorean theorem:</p>
+            <p>The length, or <Keyword term="magnitude" />, of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> is found using the 3D Pythagorean theorem:</p>
             <p>
                 <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}'}</Katex>
             </p>
@@ -157,12 +158,12 @@
           <VectorBuilderExercise />
 
           <p>
-            Notice how changing the start or end points changes both the length (magnitude) and orientation (direction) of the arrow. This arrow gives us a clear visual intuition for a vector. But how do we describe it precisely using numbers? That's where <span class="keyword">components</span> come in.
+            Notice how changing the start or end points changes both the length (magnitude) and orientation (direction) of the arrow. This arrow gives us a clear visual intuition for a vector. But how do we describe it precisely using numbers? That's where <Keyword term="components" /> come in.
           </p>
 
           <h3>Describing Vectors Precisely: Components & Notation</h3>
           <p>
-            While the arrow gives us a visual, we need numbers to work with vectors mathematically or in code. We do this by breaking the vector down into its <span class="keyword">components</span> along the X, Y, and Z axes.
+            While the arrow gives us a visual, we need numbers to work with vectors mathematically or in code. We do this by breaking the vector down into its <Keyword term="components" /> along the X, Y, and Z axes.
           </p>
           <p>
             Imagine drawing lines from the vector's head straight down (or up) to the xy-plane, and then from that point parallel to the axes back to the origin. The distances traveled along each axis represent the vector's components: <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>. They tell us "how much" of the vector points along each respective axis.
@@ -183,15 +184,15 @@
             <li>Parentheses Notation: <Katex>{'\\vec{V} = (\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z})'}</Katex></li>
           </ul>
           <p>
-            In the <span class="keyword">Vector Builder</span> exercise above, look at the output panel. As you move the vector's start and end points, you'll see the <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex> components update automatically, along with the vector shown in component notation. This numerical representation is crucial for calculations.
+            In the <Keyword term="Vector Builder" /> exercise above, look at the output panel. As you move the vector's start and end points, you'll see the <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex> components update automatically, along with the vector shown in component notation. This numerical representation is crucial for calculations.
           </p>
 
           <h3>An Alternative Language: Unit Vector Notation</h3>
           <p>
-            Besides component form <Katex>{'\\langle V_x, V_y, V_z \\rangle'}</Katex>, there's another very common and useful way to write vectors, especially in physics and engineering. This method uses <span class="keyword">unit vectors</span>.
+            Besides component form <Katex>{'\\langle V_x, V_y, V_z \\rangle'}</Katex>, there's another very common and useful way to write vectors, especially in physics and engineering. This method uses <Keyword term="unit vectors" />.
           </p>
           <p>
-            A <span class="keyword">unit vector</span> is simply a vector with a magnitude (length) of exactly 1. They are incredibly useful for indicating direction. We have three special standard unit vectors, often called the <span class="keyword">standard basis vectors</span>, that point along the positive X, Y, and Z axes:
+            A <Keyword term="unit vector" /> is simply a vector with a magnitude (length) of exactly 1. They are incredibly useful for indicating direction. We have three special standard unit vectors, often called the <Keyword term="standard basis vectors" />, that point along the positive X, Y, and Z axes:
           </p>
           <ul>
             <li><Katex>{'\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} = \\langle 1, 0, 0 \\rangle'}</Katex> (Points 1 unit along the positive X-axis)</li>
@@ -223,7 +224,7 @@
             It's important to remember that these are just different ways of writing down the <strong>same mathematical concept</strong>: a quantity with both magnitude and direction. Being comfortable with both notations is helpful!
           </p>
           <p>
-            The <span class="keyword">Vector Builder</span> visualization can help you see this connection. While it currently shows component form, imagine a toggle that could also display the equivalent unit vector notation for the vector you build.
+            The <Keyword term="Vector Builder" /> visualization can help you see this connection. While it currently shows component form, imagine a toggle that could also display the equivalent unit vector notation for the vector you build.
           </p>
 
           <!-- Content for Magnitude calculation details will go here -->
@@ -256,7 +257,7 @@
         <div class="section-intro">
           <Scenario>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> That's because you're seeing it from a different <span class="keyword">reference frame</span>! It's like watching someone walk on a moving train.</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> That's because you're seeing it from a different <Keyword term="reference frame" />! It's like watching someone walk on a moving train.</p>
           </Scenario>
 
           <FormulaAccordion>
@@ -266,12 +267,12 @@
 
         <div class="section-core">
           <p>
-            A <span class="keyword">reference frame</span> is a <span class="keyword">coordinate system</span> attached to an observer, providing a perspective
-            from which to measure position, <span class="keyword">velocity</span>, and other physical quantities.
+            A <Keyword term="reference frame" /> is a <Keyword term="coordinate system" /> attached to an observer, providing a perspective
+            from which to measure position, <Keyword term="velocity" />, and other physical quantities.
           </p>
           <p>
-            This section explores how measurements change when observed from different <span class="keyword">reference frames</span>,
-            laying the groundwork for understanding relative motion in <span class="keyword">kinematics</span>.
+            This section explores how measurements change when observed from different <Keyword term="reference frames" />,
+            laying the groundwork for understanding relative motion in <Keyword term="kinematics" />.
           </p>
         </div>
       </div>

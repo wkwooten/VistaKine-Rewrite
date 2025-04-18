@@ -315,7 +315,7 @@
       nozzleColor.set(styles.getPropertyValue('--calibration-nozzle-color').trim() || get(nozzleColor));
       nozzleEdgesColor.set(styles.getPropertyValue('--calibration-nozzle-edges-color').trim() || get(nozzleEdgesColor));
       heightIndicatorColor.set(styles.getPropertyValue('--calibration-height-indicator-color').trim() || get(heightIndicatorColor));
-      bedColor.set(styles.getPropertyValue('--calibration-bed-color').trim() || get(bedColor));
+      bedColor.set(styles.getPropertyValue('--color-surface').trim() || get(bedColor));
       bedEdgesColor.set(styles.getPropertyValue('--calibration-bed-edges-color').trim() || get(bedEdgesColor));
       gridCellColor.set(styles.getPropertyValue('--scene-grid-cell-color').trim() || get(gridCellColor));
       gridSectionColor.set(styles.getPropertyValue('--scene-grid-section-color').trim() || get(gridSectionColor));

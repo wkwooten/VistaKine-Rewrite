@@ -244,7 +244,7 @@
     nozzleColor = styles.getPropertyValue('--calibration-nozzle-color').trim() || nozzleColor;
     nozzleEdgesColor = styles.getPropertyValue('--calibration-nozzle-edges-color').trim() || nozzleEdgesColor;
     heightIndicatorColor = styles.getPropertyValue('--calibration-height-indicator-color').trim() || heightIndicatorColor;
-    bedColor = styles.getPropertyValue('--calibration-bed-color').trim() || bedColor;
+    bedColor = styles.getPropertyValue('--color-surface').trim() || bedColor;
     bedEdgesColor = styles.getPropertyValue('--calibration-bed-edges-color').trim() || bedEdgesColor;
     gridCellColor = styles.getPropertyValue('--scene-grid-cell-color').trim() || gridCellColor; // Use scene grid var
     gridSectionColor = styles.getPropertyValue('--scene-grid-section-color').trim() || gridSectionColor; // Use scene grid var
