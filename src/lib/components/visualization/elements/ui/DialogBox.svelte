@@ -1,31 +1,31 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import { createEventDispatcher } from 'svelte';
-  import { Minimize2, MessageCircle } from 'lucide-svelte'; // Import icons
-  import type { DialogTurn } from '$lib/stores/calibrationState'; // Import the type
+  import { Minimize2, MessageCircle } from 'lucide-svelte';
+  import type { DialogTurn } from '$lib/stores/calibrationState';
 
-  // Use $props() for runes mode
   let {
     turns = $bindable([]),
     show = $bindable(false),
-    isFullscreen = false // <-- Add the new prop
+    isFullscreen = false
   } = $props<{
     turns?: DialogTurn[],
     show?: boolean,
-    isFullscreen?: boolean // <-- Define the type
+    isFullscreen?: boolean
   }>();
 
   let currentMessageIndex = $state(0);
   let isTyping = $state(false);
   let displayedText = $state('');
   let typingInterval: any;
-  let currentSpeaker = $state(''); // Add state for the current speaker
+  let currentSpeaker = $state('');
 
   // State for collapsed mode
   let isCollapsed = $state(false);
-  let hasUnread = $state(false); // To show notification dot
+  let hasUnread = $state(false);
 
   onDestroy(() => {
+    // Ensure typing interval is cleared when component is destroyed
     if (typingInterval) {
       clearInterval(typingInterval);
     }
@@ -33,20 +33,18 @@
 
   let previousShow = $state(false);
 
-  // Effect to handle showing/hiding AND ensuring turns are ready
+  // Effect to handle the lifecycle of the dialog based on `show` and `turns`.
+  // This controls when typing starts and handles cleanup when the dialog is hidden.
   $effect(() => {
-    // Make effect explicitly depend on show and turns
     const shouldBeVisible = show;
     const hasTurns = turns.length > 0;
-    const _index = currentMessageIndex; // Depend on index too? Maybe not needed.
 
     console.log(`[DialogBox Effect] show: ${shouldBeVisible}, prev: ${previousShow}, hasTurns: ${hasTurns}, isTyping: ${isTyping}, displayed: ${displayedText !== ''}`);
 
     if (shouldBeVisible && hasTurns) {
-        // If we should be visible and have turns...
         // Start typing only if dialog just appeared OR if turns changed while visible and idle
+        // This prevents restarting typing if `turns` updates mid-message.
         if (!previousShow || (previousShow && !isTyping && displayedText === '')) {
-            // Check if previousShow is false (just appeared) or if we are currently idle (turns might have updated)
             console.log('[DialogBox Effect] Conditions met, starting/restarting typing.');
             currentMessageIndex = 0; // Reset index when starting with new/initial turns
             isCollapsed = false;     // Ensure not collapsed when new dialog starts
@@ -54,67 +52,59 @@
             startTyping();
         }
     } else if (!shouldBeVisible && previousShow) {
-        // --- Cleanup when hidden --- >
+        // Cleanup state and interval when dialog is hidden
         console.log('[DialogBox Effect] Show became false, cleaning up.');
         if (typingInterval) {
             clearInterval(typingInterval);
-            typingInterval = null; // Clear interval ref
+            typingInterval = null;
         }
-        // Reset state only if it needs resetting
         if (isTyping || displayedText !== '' || currentSpeaker !== '') {
             isTyping = false;
             displayedText = '';
             currentSpeaker = '';
-            // Reset index when hiding? Safer to do it.
-            currentMessageIndex = 0;
+            currentMessageIndex = 0; // Reset index on hide
         }
-        isCollapsed = false; // Reset collapse state
+        isCollapsed = false;
         hasUnread = false;
-        // <--- Cleanup ---
     }
 
-    // Update previousShow for the next run
-    previousShow = shouldBeVisible; // Use derived value
+    // Track previous `show` state for edge detection on next run
+    previousShow = shouldBeVisible;
   });
 
-  // REMOVED the complex effect that tried to handle turns changing while shown
-  // Advancing index is now solely handled by handleDialogBodyClick
-
+  // Starts the typing animation for the message at `currentMessageIndex`.
   function startTyping() {
-    // Add logging to see the index being used
     console.log(`[DialogBox] startTyping called for index: ${currentMessageIndex}`);
-    if (typingInterval) clearInterval(typingInterval);
+    if (typingInterval) clearInterval(typingInterval); // Clear any existing interval
 
-    // --- Guards --- >
-    // Ensure turns array is populated
+    // --- Guard Clauses ---
+    // Prevent errors if `turns` is empty or index is out of bounds.
     if (!turns || turns.length === 0) {
         console.warn('[DialogBox] startTyping called with empty turns array.');
         isTyping = false;
         return;
     }
-    // Ensure index is valid for the current turns array
     if (currentMessageIndex >= turns.length || currentMessageIndex < 0) {
       console.error(`[DialogBox] startTyping called with invalid message index: ${currentMessageIndex} for turns length: ${turns.length}`);
       isTyping = false;
-      return; // Stop execution if index is invalid
+      return;
     }
-    // <--- Guards ---
-
     const currentTurn = turns[currentMessageIndex];
-    // Ensure the turn itself and the message property exist
     if (!currentTurn || typeof currentTurn.message !== 'string') {
       console.error('[DialogBox] Attempted to type invalid turn data.', currentTurn);
       isTyping = false;
       return;
     }
+    // --- End Guards ---
 
     isTyping = true;
     displayedText = '';
-    currentSpeaker = currentTurn.speaker; // Update speaker for the current turn
+    currentSpeaker = currentTurn.speaker;
     const currentMessage = currentTurn.message;
     let charIndex = 0;
 
     console.log(`[DialogBox] Starting to type message from ${currentSpeaker}: "${currentMessage}"`);
+    // Interval to append characters one by one
     typingInterval = setInterval(() => {
       if (charIndex < currentMessage.length) {
         displayedText += currentMessage[charIndex];
@@ -124,45 +114,43 @@
         isTyping = false;
         console.log('[DialogBox] Finished typing.');
       }
-    }, 20);
+    }, 20); // Typing speed interval
   }
 
-  // Renamed to handleExpandClick for clarity
+  // Handles clicks on the collapsed dialog icon.
   function handleExpandClick() {
       console.log('[DialogBox] Expanding dialog.');
       isCollapsed = false;
-      hasUnread = false; // Clear unread on expand
-      // If not currently typing when expanding, start typing the current message
+      hasUnread = false;
+      // If dialog was idle, start typing the current message upon expansion.
       if (!isTyping) {
           console.log('[DialogBox] Starting/resuming typing on expand.');
           startTyping();
       }
   }
 
-  // Renamed to handleDialogBodyClick for clarity
+  // Handles clicks on the main expanded dialog body.
   function handleDialogBodyClick() {
-    // This advances text
     if (isTyping) {
+      // Skip the typing animation to the end.
       clearInterval(typingInterval);
-      // Ensure index is valid before accessing
-      if (currentMessageIndex < turns.length) {
+      if (currentMessageIndex < turns.length) { // Ensure index is valid
           displayedText = turns[currentMessageIndex].message;
       }
       isTyping = false;
       console.log('[DialogBox] Skipped typing.');
     } else if (currentMessageIndex < turns.length - 1) {
+      // Advance to the next message turn if available.
       console.log(`[DialogBox] Advancing from index ${currentMessageIndex} to ${currentMessageIndex + 1}`);
-      // Use assignment instead of ++ for potential reactivity clarity
       currentMessageIndex = currentMessageIndex + 1;
-      startTyping(); // This will update speaker and message
+      startTyping(); // Start typing the new message
     }
-    // Removed the close logic
   }
 
-  // Handle keydown for accessibility
+  // Handles keyboard interaction for accessibility (Enter/Space to advance).
   function handleDialogKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault(); // Prevent default spacebar scrolling
+        event.preventDefault(); // Prevent spacebar scrolling
         handleDialogBodyClick();
     }
   }
@@ -185,15 +173,14 @@
                  <button
                     class="collapse-button"
                     aria-label="Collapse dialog"
-                    onclick={(event) => { event.stopPropagation(); console.log('[DialogBox] Collapse button clicked.'); isCollapsed = true; }}
+                    onclick={(event) => { event.stopPropagation(); isCollapsed = true; }}
                  >
                      <Minimize2 size={24} />
                  </button>
              {/if}
-            <!-- Display the dynamically updated currentSpeaker -->
             <div class="speaker" data-speaker={currentSpeaker}>{currentSpeaker}</div>
             <div class="message">{displayedText}</div>
-            <!-- Updated active class condition -->
+            <!-- Indicator shown when typing is finished and more messages remain -->
             <div
               class="click-to-continue"
               class:active={!isTyping && currentMessageIndex < turns.length - 1}
@@ -215,26 +202,15 @@
 {/if}
 
 <style lang="scss">
-  /* Base styles common to both (z-index, etc.) */
+  /* Base styles common to both expanded and collapsed states */
   .dialog-box {
     cursor: pointer;
-    z-index: 11;
+    z-index: 11; /* Above most scene elements, below specific overlays */
     border-radius: var(--radius-lg);
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     transition: width 0.2s ease, height 0.2s ease, min-width 0.2s ease, padding 0.2s ease, top 0.2s ease, right 0.2s ease;
-
-    /* Nested styles for expanded content */
-    .dialog-header {
-      .title {
-        font-weight: bold;
-        color: var(--color-text-primary);
-        font-family: var(--font-body);
-        line-height: 1.5;
-      }
-      /* Add other header styles if needed */
-    }
 
     .speaker {
       font-weight: bold;
@@ -244,69 +220,31 @@
 
     .message {
       margin-bottom: 10px;
-      flex-grow: 1;
-      min-height: 3em;
+      flex-grow: 1; /* Allow message area to fill space in flex container */
+      min-height: 3em; /* Ensure a minimum height for short messages */
       font-family: var(--font-body);
       line-height: 1.5;
     }
 
-    .dialog-content {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      padding: var(--space-s);
-      overflow-y: auto;
-      /* max-height: 300px;  */
-
-      label {
-        font-size: 0.9em;
-        color: var(--color-text-secondary);
-        margin-bottom: 0.25rem;
-      }
-
-      input[type='range'] + span {
-        font-size: 0.8em;
-        color: var(--color-text-secondary);
-        min-width: 2.5em; // Ensure space for value
-        text-align: right;
-        display: inline-block;
-      }
-    }
-
-    .action-buttons button {
-      padding: 0.5em 1em;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      background-color: var(--color-surface);
-      color: var(--color-text-primary);
-      transition: background-color 0.2s;
-    }
-
-    .action-buttons button:hover {
-      background-color: var(--color-accent-hover-bg);
-    }
+    /* Unused dialog-content styles removed */
 
     .click-to-continue {
       font-style: italic;
       color: var(--color-text-secondary);
       align-self: flex-end;
       font-size: 0.9em;
-      /* Ensure it takes up space but is initially invisible */
-      opacity: 0;
+      opacity: 0; /* Hidden by default */
       pointer-events: none;
       transition: opacity 0.2s ease;
-      height: 1.2em; /* Approximate height to reserve space */
+      height: 1.2em; /* Reserve space to prevent layout shift */
       line-height: 1.2em;
     }
 
-    /* Make it visible when active */
     .click-to-continue.active {
-      opacity: 1;
+      opacity: 1; /* Visible when active */
       pointer-events: auto;
     }
 
-    /* Collapse button within expanded view */
     .collapse-button {
       position: absolute;
       top: 5px;
@@ -325,7 +263,7 @@
     }
   }
 
-  /* Make sure the expanded/collapsed box itself captures pointer events */
+  /* Ensure the component captures pointer events in both states */
   .dialog-box.expanded,
   .dialog-box.collapsed {
     pointer-events: auto;
@@ -334,61 +272,61 @@
   /* Expanded styles */
   .dialog-box.expanded {
     padding: 15px;
-    height: 200px;
+    height: 200px; /* Fixed height to prevent layout shifts */
     text-align: left;
-    /* box-shadow: var(--shadow-lg); */
     display: flex;
     flex-direction: column;
-    position: relative;
+    position: relative; /* Needed for absolute positioning of collapse button */
+    /* Disable text selection */
     user-select: none !important;
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
     -ms-user-select: none !important;
 
     .message {
-      flex-grow: 1; /* Allow message area to grow */
-      flex-shrink: 1; /* Allow message area to shrink */
-      overflow-y: auto; /* Enable scroll *only* on message */
-      /* Adjust margin if needed based on surrounding elements */
+      flex-grow: 1; /* Take available vertical space */
+      flex-shrink: 1; /* Allow shrinking if content exceeds fixed height */
+      overflow-y: auto; /* Enable scrolling *within* the message area if needed */
       margin-bottom: 5px; /* Space before continue prompt */
     }
 
+    /* Prevent speaker/prompt from shrinking, ensuring visibility */
     .speaker, .click-to-continue {
-       flex-shrink: 0; /* Prevent speaker/prompt from shrinking */
+       flex-shrink: 0;
     }
   }
 
   /* Collapsed styles */
   .dialog-box.collapsed {
-    position: absolute;
+    position: absolute; /* Positioned via parent or global styles */
     top: var(--space-s);
     right: var(--space-s);
     min-width: unset;
     display: flex;
     align-items: center;
-    box-shadow: var(--shadow-sm); /* Match buttons */
     justify-content: center;
-    padding: var(--space-s); /* Ensure no padding with fixed size */
-    border-radius: 50%; /* Match buttons */
-    border: 1px solid var(--color-accent); /* Match buttons */
-    background-color: var(--color-surface); /* Match buttons */
-    color: var(--color-accent); /* Match buttons */
-    transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Match buttons */
+    padding: var(--space-s);
+    border-radius: 50%; /* Circular button style */
+    border: 1px solid var(--color-accent);
+    background-color: var(--color-surface);
+    color: var(--color-accent);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 
-    &:hover { /* Add hover */
+    &:hover {
         background-color: var(--color-accent-hover-bg);
         color: var(--color-accent-light);
         border-color: var(--color-accent);
         transform: translateY(-1px);
     }
 
-    &:active { /* Add active */
+    &:active {
         background-color: var(--color-accent-active-bg);
         transform: translateY(0);
     }
   }
 
-  /* Unread indicator dot */
+  /* Unread indicator dot for collapsed state */
   .dialog-box.collapsed.has-unread::after {
       content: '';
       position: absolute;
@@ -396,9 +334,9 @@
       right: 3px;
       width: 10px;
       height: 10px;
-      background-color: var(--color-error, red);
+      background-color: var(--color-error, red); /* Use theme variable or fallback */
       border-radius: 50%;
-      border: 1px solid var(--color-surface);
+      border: 1px solid var(--color-surface); /* Border for contrast */
   }
 
   /* Apply speaker-specific colors using data attributes */

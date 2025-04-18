@@ -398,3 +398,17 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
 .chapter-header .keyword {
   color: white;
 }
+
+.section-header-content {
+  margin-bottom: var(--space-l); // Add space before the main section intro/core
+}
+
+.section-description {
+  font-size: var(--step-0); // Slightly smaller than body text? Or keep same?
+  color: var(--color-text-muted); // Use a muted color to differentiate from main content
+  font-style: italic; // Optional: make it italic
+  margin-top: var(--space-xs); // Ensure some space above if title margin-bottom removed
+  margin-bottom: 0; // Remove default paragraph bottom margin
+  padding-inline: var(--space-s); // Align with title padding
+  max-width: 65ch; // Keep it readable
+}

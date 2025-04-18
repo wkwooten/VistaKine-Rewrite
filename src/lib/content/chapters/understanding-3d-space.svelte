@@ -66,7 +66,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <h2 class="section-title">1.1 Coordinate Systems</h2>
+        <div class="section-header-content"> <h2 class="section-title">1.1 Coordinate Systems</h2> <p class="section-description"> Learn how coordinate systems (X, Y, Z axes, origin) provide a universal language to define precise locations in 3D space, crucial for tasks like 3D printing. </p> </div>
         <div class="section-intro">
           <Scenario>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
@@ -121,7 +121,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <h2 class="section-title">1.2 Vectors and Components</h2>
+        <div class="section-header-content"> <h2 class="section-title">1.2 Vectors and Components</h2> <p class="section-description"> Discover vectors, quantities with both magnitude and direction, and how we represent them visually (arrows) and numerically (components, unit vectors) to describe movement, forces, and more. </p> </div>
 
         <div class="section-intro">
           <Scenario>
@@ -252,7 +252,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <h2 class="section-title">1.3 Vector Operations</h2>
+        <div class="section-header-content"> <h2 class="section-title">1.3 Vector Operations</h2> <p class="section-description"> Explore fundamental operations like vector addition, subtraction, and scalar multiplication, essential tools for combining and manipulating vector quantities in kinematic analysis. </p> </div>
 
         <div class="section-intro">
           <Scenario>

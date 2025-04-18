@@ -16,13 +16,20 @@
 	// Define the type for the dispatched event detail
 	// const dispatch = createEventDispatcher<{ requestMove: { x: number; y: number; z: number } }>(); // Keep if needed for other actions
 
+	// --- Input step value ---
+	const step = 1; // Adjust this value as needed
+
 	// --- Validation Effect ---
-	// Runs whenever x, y, or z changes due to binding
+	// Runs whenever x, y, or z changes due to binding or button clicks
 	$effect(() => {
+		// Ensure value is a number before validation
+		x = Number(x);
+		y = Number(y);
+		z = Number(z);
+
 		// Validate X
 		if (x < MIN_X || x > MAX_X) {
 			showCalibrationDialog([{ speaker: 'Leo', message: `Careful, Surya! My calculations show that X value is outside the physical print area. It needs to be between ${MIN_X} and ${MAX_X}.` }]);
-			// Optional: Clamp or revert value here if needed
 			x = Math.max(MIN_X, Math.min(MAX_X, x));
 			return; // Stop further checks if one fails
 		}
@@ -49,40 +56,52 @@
 
 <!-- Replicate structure from VectorInputPanel -->
 <div class="nozzle-control-panel">
-	<h4>Control Nozzle</h4>
+	<h4>Nozzle Control Panel</h4>
 	<div class="coord-inputs">
 		<!-- X Input Group -->
 		<div class="axis-input-group" style="border-color: var(--axis-color-x);">
 			<span class="axis-label" style="color: var(--axis-color-x);">X</span>
-			<input
-				type="number"
-				bind:value={x}
-				min={MIN_X}
-				max={MAX_X}
-				placeholder="X"
-			/>
+			<div class="input-stepper">
+				<button class="stepper-button" onclick={() => x = Number(x) + step}>+</button>
+				<input
+					type="number"
+					bind:value={x}
+					min={MIN_X}
+					max={MAX_X}
+					placeholder="X"
+				/>
+				<button class="stepper-button" onclick={() => x = Number(x) - step}>-</button>
+			</div>
 		</div>
 		<!-- Y Input Group -->
 		<div class="axis-input-group" style="border-color: var(--axis-color-y);">
 			<span class="axis-label" style="color: var(--axis-color-y);">Y</span>
-			<input
-				type="number"
-				bind:value={y}
-				min={MIN_Y}
-				max={MAX_Y}
-				placeholder="Y"
-			/>
+			<div class="input-stepper">
+				<button class="stepper-button" onclick={() => y = Number(y) + step}>+</button>
+				<input
+					type="number"
+					bind:value={y}
+					min={MIN_Y}
+					max={MAX_Y}
+					placeholder="Y"
+				/>
+				<button class="stepper-button" onclick={() => y = Number(y) - step}>-</button>
+			</div>
 		</div>
 		<!-- Z Input Group -->
 		<div class="axis-input-group" style="border-color: var(--axis-color-z);">
 			<span class="axis-label" style="color: var(--axis-color-z);">Z</span>
-			<input
-				type="number"
-				bind:value={z}
-				min={MIN_Z}
-				max={MAX_Z}
-				placeholder="Z"
-			/>
+			<div class="input-stepper">
+				<button class="stepper-button" onclick={() => z = Number(z) + step}>+</button>
+				<input
+					type="number"
+					bind:value={z}
+					min={MIN_Z}
+					max={MAX_Z}
+					placeholder="Z"
+				/>
+				<button class="stepper-button" onclick={() => z = Number(z) - step}>-</button>
+			</div>
 		</div>
 	</div>
 	<!-- Removed controls-section with the button -->
@@ -117,7 +136,7 @@
 		display: grid;
 		margin-bottom: var(--space-s);
 		grid-template-columns: repeat(3, max-content); /* Arrange X, Y, Z groups */
-		gap: var(--space-xs); /* Gap between X, Y, Z groups */
+		gap: var(--space-s); /* Increased gap slightly */
 		justify-content: center; /* Center the groups if space allows */
 	}
 
@@ -138,19 +157,28 @@
 		min-width: 1em;
 		text-align: center;
 		/* Color set inline via style */
+		align-self: center; /* Align label with the center of the input-stepper */
 	}
 
-	.axis-input-group input[type="number"] {
-		width: 3ch; /* Reduced width */
-		padding: var(--space-3xs); /* Adjust padding */
+	.input-stepper {
+		display: flex;
+		flex-direction: column; /* Stack buttons and input vertically */
+		align-items: center; /* Center items horizontally */
+		gap: var(--space-3xs); /* Gap between buttons and input */
+	}
+
+	.input-stepper input[type="number"] {
+		width: 4ch; /* Slightly wider to accommodate +/- buttons */
+		padding: var(--space-3xs) var(--space-2xs); /* Adjust padding */
 		font-size: 1em;
 		background-color: var(--color-background); /* Grey background */
 		border-radius: var(--radius-sm); /* Rounded corners for input */
 		color: var(--color-text-primary);
-		text-align: right;
+		text-align: center; /* Center text */
 		border: none; /* Remove default border */
 		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inset shadow */
 		transition: box-shadow 0.2s ease;
+		order: 2; /* Place input between buttons */
 
 		/* Hide spinners for Webkit browsers */
 		&::-webkit-outer-spin-button,
@@ -160,6 +188,41 @@
 		}
 		/* Hide spinners for Firefox */
 		-moz-appearance: textfield;
+	}
+
+	.stepper-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: calc(4ch + 2 * var(--space-2xs)); /* Match input width + padding */
+		height: auto; /* Adjust height */
+		padding: var(--space-3xs); /* Small padding */
+		font-size: 1.1em; /* Slightly larger font for +/- */
+		font-weight: bold;
+		line-height: 1;
+		color: var(--color-text-secondary);
+		background-color: var(--color-surface);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		transition: background-color 0.2s ease, color 0.2s ease;
+
+		&:first-child {
+			order: 1; /* Place '+' button on top */
+		}
+
+		&:last-child {
+			order: 3; /* Place '-' button on bottom */
+		}
+
+		&:hover {
+			background-color: var(--color-surface-hover);
+			color: var(--color-text-primary);
+		}
+
+		&:active {
+			background-color: var(--color-surface-active);
+		}
 	}
 
 	/* Focus state */
