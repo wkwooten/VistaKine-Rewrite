@@ -217,7 +217,7 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   padding-bottom: var(--space-3xl);
   margin-bottom: var(--space-xl);
   background-color: var(--color-surface);
-
+  box-shadow: var(--shadow-lg);
   // Top Section Number (using ::after)
   &::after {
     content: attr(data-section);
@@ -284,7 +284,6 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   gap: var(--space-3xl);
   padding-inline: var(--space-s);
   margin-inline: var(--space-m);
-
   /* Apply mobile padding styles up to lg breakpoint */
   @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
     margin-inline: 0;

@@ -7,20 +7,23 @@
 // Core Palette
 // Purpose: Base colors for UI structure, text, and backgrounds.
 // ----------------------------------
+//#F8F9FA
 $color-background: #f0f8ff;          // Main page background
 $color-surface: #fefeff;             // Card/Sidebar/distinct element backgrounds
 $color-text-primary: #1f2937;        // Primary text color
 $color-text-secondary: #37474F; // Lighter text for secondary info (kept from brand)
-$color-border: #5351EF;              // Default border color
-$color-border-light: rgba($color-text-primary, 0.2); // Subtle borders/dividers
 $color-white: #ffffff;
 $color-text-inverted-light: $color-white; // Value for light mode
+$parallax-background-color: #1e65c821;
+
 
 // ----------------------------------
 // Accent Palette
 // Purpose: Interactive elements, highlights, calls to action.
 // ----------------------------------
-$color-accent: #5351EF;               // Primary interactive color (was $brand-primary)
+$color-accent: #007bff;               // Primary interactive color (was $brand-primary)
+$color-border: rgba($color-accent, 0.2);              // Default border color
+$color-border-light: rgba($color-border, 0.2); // Subtle borders/dividers
 $color-accent-hover: #1565C0;         // Hover state for accent elements (was $brand-accent-dark)
 $color-accent-light: #64B5F6;         // Lighter accent variation (was $brand-accent)
 $color-accent-active-bg: rgba($color-accent, 0.08); // Background for active state (was $brand-active-bg)
@@ -135,14 +138,15 @@ $leo-color-light: #1E40AF;  // Blue 800
 // ==================================
 :root {
   // Utopia Fluid Type Steps (Keep As Is)
-  --step--2: clamp(0.7813rem, 0.7747rem + 0.0326vw, 0.8rem);
-  --step--1: clamp(0.9375rem, 0.9158rem + 0.1087vw, 1rem);
-  --step-0: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
-  --step-1: clamp(1.35rem, 1.2761rem + 0.3696vw, 1.5625rem);
-  --step-2: clamp(1.62rem, 1.5041rem + 0.5793vw, 1.9531rem);
-  --step-3: clamp(1.944rem, 1.771rem + 0.8651vw, 2.4414rem);
-  --step-4: clamp(2.3328rem, 2.0827rem + 1.2504vw, 3.0518rem);
-  --step-5: clamp(2.7994rem, 2.4462rem + 1.7658vw, 3.8147rem);
+  --step--2: clamp(0.7901rem, 0.7867rem + 0.0172vw, 0.8rem);
+  --step--1: clamp(0.8889rem, 0.8502rem + 0.1932vw, 1rem);
+  --step-0: clamp(1rem, 0.913rem + 0.4348vw, 1.25rem);
+  --step-1: clamp(1.125rem, 0.9728rem + 0.7609vw, 1.5625rem);
+  --step-2: clamp(1.2656rem, 1.0265rem + 1.1957vw, 1.9531rem);
+  --step-3: clamp(1.4238rem, 1.0699rem + 1.7697vw, 2.4414rem);
+  --step-4: clamp(1.6018rem, 1.0975rem + 2.5217vw, 3.0518rem);
+  --step-5: clamp(1.802rem, 1.102rem + 3.5003vw, 3.8147rem);
+  --step-5: clamp(1.802rem, 1.102rem + 3.5003vw, 3.8147rem);
 
   // Core Palette
   --color-background: #{$color-background};
@@ -153,6 +157,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --color-border-light: #{$color-border-light};
   --color-white: #{$color-white};
   --color-text-inverted: #{$color-text-inverted-light};
+  --parallax-background-color: #{$parallax-background-color};
   // Accent Palette
   --color-accent: #{$color-accent};
   --color-accent-hover: #{$color-accent-hover};
@@ -269,6 +274,7 @@ $color-dark-text-secondary: #a0a0c0; // Desaturated light purple/grey for second
 $color-dark-border: #4d4a6d;       // Muted purple/grey border
 $color-dark-border-light: rgba($color-dark-text-primary, 0.1); // Very subtle divider
 $color-dark-text-inverted-dark: $color-dark-text-primary; // Value for dark mode (using light primary text)
+$color-dark-parallax-background-color: #1e64c813;
 
 // --- Accent Dark ---
 $color-dark-accent: #a779e1;        // A brighter, vibrant lavender/purple for interaction
@@ -365,6 +371,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --color-border: #{$color-dark-border};
     --color-border-light: #{$color-dark-border-light};
     --color-text-inverted: #{$color-dark-text-inverted-dark};
+    --parallax-background-color: #{$color-dark-parallax-background-color};
 
     // -- Accent Palette Override --
     --color-accent: #{$color-dark-accent};

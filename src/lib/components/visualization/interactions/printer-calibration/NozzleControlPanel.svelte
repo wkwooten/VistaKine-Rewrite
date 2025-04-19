@@ -62,7 +62,7 @@
 		<div class="axis-input-group" style="border-color: var(--axis-color-x);">
 			<span class="axis-label" style="color: var(--axis-color-x);">X</span>
 			<div class="input-stepper">
-				<button class="stepper-button" onclick={() => x = Number(x) + step}>+</button>
+				<button class="stepper-button" onclick={() => x = Number(x) + step} aria-label="Increase X">+</button>
 				<input
 					type="number"
 					bind:value={x}
@@ -70,14 +70,14 @@
 					max={MAX_X}
 					placeholder="X"
 				/>
-				<button class="stepper-button" onclick={() => x = Number(x) - step}>-</button>
+				<button class="stepper-button" onclick={() => x = Number(x) - step} aria-label="Decrease X">-</button>
 			</div>
 		</div>
 		<!-- Y Input Group -->
 		<div class="axis-input-group" style="border-color: var(--axis-color-y);">
 			<span class="axis-label" style="color: var(--axis-color-y);">Y</span>
 			<div class="input-stepper">
-				<button class="stepper-button" onclick={() => y = Number(y) + step}>+</button>
+				<button class="stepper-button" onclick={() => y = Number(y) + step} aria-label="Increase Y">+</button>
 				<input
 					type="number"
 					bind:value={y}
@@ -85,14 +85,14 @@
 					max={MAX_Y}
 					placeholder="Y"
 				/>
-				<button class="stepper-button" onclick={() => y = Number(y) - step}>-</button>
+				<button class="stepper-button" onclick={() => y = Number(y) - step} aria-label="Decrease Y">-</button>
 			</div>
 		</div>
 		<!-- Z Input Group -->
 		<div class="axis-input-group" style="border-color: var(--axis-color-z);">
 			<span class="axis-label" style="color: var(--axis-color-z);">Z</span>
 			<div class="input-stepper">
-				<button class="stepper-button" onclick={() => z = Number(z) + step}>+</button>
+				<button class="stepper-button" onclick={() => z = Number(z) + step} aria-label="Increase Z">+</button>
 				<input
 					type="number"
 					bind:value={z}
@@ -100,7 +100,7 @@
 					max={MAX_Z}
 					placeholder="Z"
 				/>
-				<button class="stepper-button" onclick={() => z = Number(z) - step}>-</button>
+				<button class="stepper-button" onclick={() => z = Number(z) - step} aria-label="Decrease Z">-</button>
 			</div>
 		</div>
 	</div>
@@ -136,7 +136,7 @@
 		display: grid;
 		margin-bottom: var(--space-s);
 		grid-template-columns: repeat(3, max-content); /* Arrange X, Y, Z groups */
-		gap: var(--space-s); /* Increased gap slightly */
+		gap: var(--space-xs); /* Gap between X, Y, Z groups */
 		justify-content: center; /* Center the groups if space allows */
 	}
 
@@ -145,7 +145,7 @@
 		align-items: center;
 		border-radius: var(--radius-md);
 		padding: var(--space-3xs) var(--space-2xs);
-		gap: var(--space-2xs);
+		gap: var(--space-2xs); // Revert gap
 		border: 2px solid; /* Color set inline via style */
 		background-color: transparent;
 		transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -167,37 +167,39 @@
 		gap: var(--space-3xs); /* Gap between buttons and input */
 	}
 
+	/* Input field styling */
 	.input-stepper input[type="number"] {
-		width: 4ch; /* Slightly wider to accommodate +/- buttons */
-		padding: var(--space-3xs) var(--space-2xs); /* Adjust padding */
+		width: 4ch; /* Slightly wider input */
+		padding: var(--space-3xs) var(--space-2xs); /* Padding */
 		font-size: 1em;
-		background-color: var(--color-background); /* Grey background */
-		border-radius: var(--radius-sm); /* Rounded corners for input */
+		background-color: var(--color-background);
+		border-radius: var(--radius-sm);
 		color: var(--color-text-primary);
 		text-align: center; /* Center text */
-		border: none; /* Remove default border */
-		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inset shadow */
+		border: none;
+		box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 		transition: box-shadow 0.2s ease;
 		order: 2; /* Place input between buttons */
 
-		/* Hide spinners for Webkit browsers */
+		/* Hide spinners */
 		&::-webkit-outer-spin-button,
 		&::-webkit-inner-spin-button {
 			-webkit-appearance: none;
 			margin: 0;
 		}
-		/* Hide spinners for Firefox */
 		-moz-appearance: textfield;
 	}
 
+	/* Stepper button styling */
 	.stepper-button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: calc(4ch + 2 * var(--space-2xs)); /* Match input width + padding */
-		height: auto; /* Adjust height */
-		padding: var(--space-3xs); /* Small padding */
-		font-size: 1.1em; /* Slightly larger font for +/- */
+		/* Make button width match input width exactly */
+		width: 4ch; /* Changed from calc(...) */
+		height: auto; /* Adjust height based on content/padding */
+		padding: var(--space-3xs); /* Padding for touch area */
+		font-size: 1.1em; /* Make +/- slightly larger */
 		font-weight: bold;
 		line-height: 1;
 		color: var(--color-text-secondary);
@@ -230,7 +232,7 @@
 		box-shadow: 0 0 3px 1px var(--color-accent-light);
 	}
 
-	/* No specific invalid state styling needed here like VectorInputPanel */
+	/* Removed specific vertical stepper styles */
 
 	/* Removed controls-section styles */
 </style>

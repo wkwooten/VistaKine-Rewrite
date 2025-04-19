@@ -45,7 +45,7 @@
 	/* Add any button-specific styles here */
 	.reset-button {
 		/* Consistent styles */
-		padding: var(--space-xs-s);
+		padding: var(--space-s);
 		border: 1px solid var(--color-accent);
 		border-radius: 50%;
 		color: var(--color-accent);
