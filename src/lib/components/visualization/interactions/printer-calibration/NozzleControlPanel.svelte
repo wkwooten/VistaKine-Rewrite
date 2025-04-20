@@ -138,11 +138,14 @@
 		grid-template-columns: repeat(3, max-content); /* Arrange X, Y, Z groups */
 		gap: var(--space-xs); /* Gap between X, Y, Z groups */
 		justify-content: center; /* Center the groups if space allows */
+		align-items: start; /* Align wrapped groups to the top */
 	}
 
 	.axis-input-group {
 		display: flex;
 		align-items: center;
+		flex-wrap: wrap; /* Allow label and stepper to wrap */
+		justify-content: center; /* Center items when wrapped */
 		border-radius: var(--radius-md);
 		padding: var(--space-3xs) var(--space-2xs);
 		gap: var(--space-2xs); // Revert gap
@@ -157,7 +160,7 @@
 		min-width: 1em;
 		text-align: center;
 		/* Color set inline via style */
-		align-self: center; /* Align label with the center of the input-stepper */
+		flex-basis: 100%; /* Encourage label to take full width when wrapped */
 	}
 
 	.input-stepper {

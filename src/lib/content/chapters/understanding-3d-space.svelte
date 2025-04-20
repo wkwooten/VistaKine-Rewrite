@@ -76,16 +76,21 @@
           </Scenario>
 
           <p>
-            Leo's right. Just like Surya discovered with her printer, simply pointing or saying "there" isn't enough when we need precision. How <em>do</em> we tell a machine, or even another person, exactly where something is located in space?
+            Precision matters, especially for machines. Simple pointing doesn't work. How do we communicate exact locations in space?
           </p>
           <p>
-            That's the job of <Keyword term="coordinate systems" />. They act like a universal address book for space, providing a clear, mathematical framework to define any position using numerical <Keyword term="coordinates" />.
+            <Keyword term="Coordinate systems" /> provide the answer. They act as a universal address book for space, using numerical <Keyword term="coordinates" /> within a defined framework.
           </p>
           <p>
-            We use simpler, 2D versions constantly, like map grids (latitude/longitude) pinpointing locations on Earth. For <Keyword term="3D space" />, like inside Surya's printer, we just add a third <Keyword term="axis" /> (usually <Keyword term="Y" /> for height) to describe positions fully – left/right (<Keyword term="X" />), forward/backward (<Keyword term="Z" />), and up/down (<Keyword term="Y" />).
+            We use 2D systems daily (like map grids). For 3D space (like inside a printer), we add a third <Keyword term="axis" /> (often <Keyword term="Y" /> for height) to fully describe positions:
           </p>
+          <ul>
+            <li><Keyword term="X" />: Left/Right</li>
+            <li><Keyword term="Z" />: Forward/Backward</li>
+            <li><Keyword term="Y" />: Up/Down</li>
+          </ul>
           <p>
-            We'll put this into practice shortly by helping Surya and Leo calibrate that 3D printer, precisely guiding its nozzle using these very coordinates.
+            Let's apply this by helping Surya and Leo calibrate their 3D printer using these coordinates.
           </p>
         </div>
 
@@ -94,13 +99,17 @@
             on:calibrationComplete={handleCalibrationComplete}
           />
           <p>
-            Think of a 3D printer. It uses three <Keyword term="axes" /> (<Keyword term="x" />, <Keyword term="y" />, and <Keyword term="z" />) to pinpoint any location within its printing area. The intersection of these three <Keyword term="axes" /> is called the <Keyword term="origin" />, typically represented as (0, 0, 0).
+            A 3D printer illustrates this well. It uses three <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />) to locate points in its print area.
           </p>
+          <ul>
+            <li>The intersection of these axes is the <Keyword term="origin" />, denoted as (0, 0, 0).</li>
+            <li>The <Keyword term="X-axis" /> typically represents horizontal movement (width).</li>
+            <li>The <Keyword term="Y-axis" /> typically represents vertical movement (height).</li>
+            <li>The <Keyword term="Z-axis" /> typically represents depth.</li>
+            <li>These axes usually form a <Keyword term="right-handed coordinate system" />.</li>
+          </ul>
           <p>
-            The <Keyword term="x-axis" /> usually represents horizontal movement, the <Keyword term="y-axis" /> represents vertical movement, and the <Keyword term="z-axis" /> represents depth, forming a <Keyword term="right-handed coordinate system" />.
-          </p>
-          <p>
-            By combining <Keyword term="coordinates" /> along these <Keyword term="axes" /> – positive or negative distances from the <Keyword term="origin" /> – we can specify any point in <Keyword term="3D space" />, giving us a powerful way to describe and manipulate objects.
+            By specifying a distance along each <Keyword term="axis" /> (positive or negative from the <Keyword term="origin" />), we define a unique point in <Keyword term="3D space" />. This allows precise description and manipulation.
           </p>
         </div>
 
@@ -125,114 +134,112 @@
 
         <div class="section-intro">
           <Scenario>
-            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, I get the coordinates from last section – like (3, 2, 5). But now I'm trying to program this robot arm to *move* from one point to another. Just knowing the destination coordinates isn't enough, is it? It needs to know the *path* or the *push*.</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! You've hit on why we need <Keyword term="vectors" />. Think about kicking a soccer ball. You don't just care *where* it lands; you care about *how hard* you kicked it and *in what direction*. That combination – magnitude (how hard) and direction (where) – is what a vector describes.</p>
-             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, coordinates tell us a location, like a spot on the printer bed. Vectors tell us how to *get* somewhere, or how much force to apply, or how fast something is moving and in what direction?</p>
-             <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> You got it! Coordinates are like pins on a map. Vectors are like the arrows drawn on the map showing a specific journey or force.</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, I get coordinates – like (3, 2, 5). But how do I tell a robot arm to *move*? Knowing the start and end isn't enough, right?</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! That's where <Keyword term="vectors" /> come in. Think of kicking a ball: you need both *how hard* (magnitude) and *in what direction*. A vector captures both.</p>
+             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, coordinates = location, vectors = movement, force, or velocity (speed + direction)?</p>
+             <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> You got it! Coordinates are map pins. Vectors are arrows showing the journey or force.</p>
           </Scenario>
 
           <p>
-            Leo's right. Sometimes just knowing a location isn't enough. We often need to describe quantities that have both a size (or <Keyword term="magnitude" />) and a direction. Think about temperature – it's just a number (like 25°C). That's called a <Keyword term="scalar" />. But think about pushing a box – you push with a certain strength (<Keyword term="magnitude" />) in a specific direction. That push is a <Keyword term="force" />, a perfect example of a <Keyword term="vector" />. Other examples include <Keyword term="velocity" /> (speed in a direction) and <Keyword term="displacement" /> (change in position).
+            Sometimes, location isn't the whole story. We often need quantities with both size (<Keyword term="magnitude" />) and direction.
           </p>
+          <ul>
+              <li><strong><Keyword term="Scalar" />:</strong> Has magnitude only (e.g., temperature: 25°C).</li>
+              <li><strong><Keyword term="Vector" />:</strong> Has magnitude and direction (e.g., pushing a box: strength + direction).</li>
+          </ul>
+           <p>
+            Examples of vectors include <Keyword term="force" />, <Keyword term="velocity" /> (speed in a specific direction), and <Keyword term="displacement" /> (change in position).
+           </p>
         </div>
 
         <div class="section-core">
           <h3>Visualizing Vectors: Arrows in Space</h3>
           <p>
-            So, how do we picture these vectors? The most common way is using an arrow in our 3D coordinate system (like the one we saw with the printer calibration).
+            How do we picture vectors? Typically, with an arrow in a 3D coordinate system.
           </p>
           <ul>
-            <li>The <strong>length</strong> of the arrow represents the vector's <Keyword term="magnitude" /> (how big it is – e.g., how strong the push, how fast the speed).</li>
-            <li>The <strong>orientation</strong> of the arrow (which way it points) represents the vector's <Keyword term="direction" />.</li>
-            <li>The arrow starts at a point called the <strong>tail</strong> (or origin of the vector) and ends at the <strong>head</strong> (or terminal point).</li>
+            <li><strong>Length:</strong> Represents the vector's <Keyword term="magnitude" /> (size, strength, speed).</li>
+            <li><strong>Orientation:</strong> Represents the vector's <Keyword term="direction" />.</li>
+            <li><strong>Tail:</strong> The starting point of the arrow.</li>
+            <li><strong>Head:</strong> The ending point (tip) of the arrow.</li>
           </ul>
 
           <FormulaAccordion>
-            <p>The length, or <Keyword term="magnitude" />, of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> is found using the 3D Pythagorean theorem:</p>
+            <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\vec{V}'}</Katex> with components <Katex>{'\textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>
             <p>
-                <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}'}</Katex>
+                <Katex displayMode>{'||\vec{V}|| = \sqrt{\textcolor{#EF5350}{V_x}^2 + \textcolor{#66BB6A}{V_y}^2 + \textcolor{#2C8FFF}{V_z}^2}'}</Katex>
             </p>
-            <p>(We'll explore how to calculate this soon!)</p>
+            <p>(Calculation details coming soon!)</p>
           </FormulaAccordion>
 
           <VectorBuilderExercise />
 
           <p>
-            Notice how changing the start or end points changes both the length (magnitude) and orientation (direction) of the arrow. This arrow gives us a clear visual intuition for a vector. But how do we describe it precisely using numbers? That's where <Keyword term="components" /> come in.
+            Changing the arrow's start or end points alters its length and direction. This visual helps, but for precision, we need numbers: <Keyword term="components" />.
           </p>
 
           <h3>Describing Vectors Precisely: Components & Notation</h3>
           <p>
-            While the arrow gives us a visual, we need numbers to work with vectors mathematically or in code. We do this by breaking the vector down into its <Keyword term="components" /> along the X, Y, and Z axes.
+            To work with vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
           </p>
           <p>
-            Imagine drawing lines from the vector's head straight down (or up) to the xy-plane, and then from that point parallel to the axes back to the origin. The distances traveled along each axis represent the vector's components: <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>. They tell us "how much" of the vector points along each respective axis.
-          </p>
-          <p>
-            If you know the coordinates of the vector's tail <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and its head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex>, you can easily calculate the components:
+            Calculate components using the tail <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex> coordinates:
           </p>
           <ul>
-            <li><Katex>{'\\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
-            <li><Katex>{'\\textcolor{#66BB6A}{V_y} = y_2 - y_1'}</Katex> (Change in Y)</li>
-            <li><Katex>{'\\textcolor{#2C8FFF}{V_z} = z_2 - z_1'}</Katex> (Change in Z)</li>
+            <li><Katex>{'\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
+            <li><Katex>{'\textcolor{#66BB6A}{V_y} = y_2 - y_1'}</Katex> (Change in Y)</li>
+            <li><Katex>{'\textcolor{#2C8FFF}{V_z} = z_2 - z_1'}</Katex> (Change in Z)</li>
           </ul>
           <p>
-            The standard way to write a vector using its components is with angle brackets or parentheses. Both are common:
+            Common notations for vector <Katex>{'\vec{V}'}</Katex> using components:
           </p>
           <ul>
-            <li>Angle Bracket Notation: <Katex>{'\\vec{V} = \\langle \\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z} \\rangle'}</Katex></li>
-            <li>Parentheses Notation: <Katex>{'\\vec{V} = (\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z})'}</Katex></li>
+            <li>Angle Bracket Notation: <Katex>{'\vec{V} = \langle \textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z} \rangle'}</Katex></li>
+            <li>Parentheses Notation: <Katex>{'\vec{V} = (\textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z})'}</Katex></li>
           </ul>
           <p>
-            In the <Keyword term="Vector Builder" /> exercise above, look at the output panel. As you move the vector's start and end points, you'll see the <Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, and <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex> components update automatically, along with the vector shown in component notation. This numerical representation is crucial for calculations.
+            The <Keyword term="Vector Builder" /> exercise shows these components and notation update as you adjust the vector. This numerical form is vital for calculations.
           </p>
 
           <h3>An Alternative Language: Unit Vector Notation</h3>
           <p>
-            Besides component form <Katex>{'\\langle V_x, V_y, V_z \\rangle'}</Katex>, there's another very common and useful way to write vectors, especially in physics and engineering. This method uses <Keyword term="unit vectors" />.
+            Another common way to write vectors, especially in physics/engineering, uses <Keyword term="unit vectors" />.
           </p>
           <p>
-            A <Keyword term="unit vector" /> is simply a vector with a magnitude (length) of exactly 1. They are incredibly useful for indicating direction. We have three special standard unit vectors, often called the <Keyword term="standard basis vectors" />, that point along the positive X, Y, and Z axes:
+            A <Keyword term="unit vector" /> has a magnitude of exactly 1 and indicates direction. The <Keyword term="standard basis vectors" /> point along the positive axes:
           </p>
           <ul>
-            <li><Katex>{'\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} = \\langle 1, 0, 0 \\rangle'}</Katex> (Points 1 unit along the positive X-axis)</li>
-            <li><Katex>{'\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} = \\langle 0, 1, 0 \\rangle'}</Katex> (Points 1 unit along the positive Y-axis)</li>
-            <li><Katex>{'\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}} = \\langle 0, 0, 1 \\rangle'}</Katex> (Points 1 unit along the positive Z-axis)</li>
+            <li><Katex>{'\textcolor{#EF5350}{\hat{\mathbf{i}}} = \langle 1, 0, 0 \rangle'}</Katex> (Positive X-axis direction)</li>
+            <li><Katex>{'\textcolor{#66BB6A}{\hat{\mathbf{j}}} = \langle 0, 1, 0 \rangle'}</Katex> (Positive Y-axis direction)</li>
+            <li><Katex>{'\textcolor{#2C8FFF}{\hat{\mathbf{k}}} = \langle 0, 0, 1 \rangle'}</Katex> (Positive Z-axis direction)</li>
           </ul>
           <p>
-             (Note: Sometimes you'll see these written as bold letters **i**, **j**, **k** without the "hat" <Katex>{'\\hat{}'}</Katex> symbol.)
+             (Note: Sometimes written as bold **i**, **j**, **k** without the hat <Katex>{'\hat{}'}</Katex>.)
           </p>
           <p>
-            Using these basis vectors, we can express *any* vector <Katex>{'\\vec{V}'}</Katex> as a sum (a "linear combination") of its components multiplied by their corresponding unit vectors:
+            Any vector <Katex>{'\vec{V}'}</Katex> can be written as a sum ("linear combination") of components times their corresponding unit vectors:
           </p>
           <p>
-             <Katex displayMode>{'\\vec{V} = \\textcolor{#EF5350}{V_x}\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} + \\textcolor{#66BB6A}{V_y}\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + \\textcolor{#2C8FFF}{V_z}\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}'}</Katex>
+             <Katex displayMode>{'\vec{V} = \textcolor{#EF5350}{V_x}\textcolor{#EF5350}{\hat{\mathbf{i}}} + \textcolor{#66BB6A}{V_y}\textcolor{#66BB6A}{\hat{\mathbf{j}}} + \textcolor{#2C8FFF}{V_z}\textcolor{#2C8FFF}{\hat{\mathbf{k}}}'}</Katex>
           </p>
           <p>
-            This form clearly shows how much of the vector <Katex>{'\\vec{V}'}</Katex> extends along each primary axis direction. For example, the vector <Katex>{'\\langle 2, -3, 5 \\rangle'}</Katex> can also be written as <Katex>{'2\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} - 3\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + 5\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}'}</Katex>.
+            This clearly shows the vector's extent along each axis. Example: <Katex>{'\langle 2, -3, 5 \rangle'}</Katex> is also <Katex>{'2\textcolor{#EF5350}{\hat{\mathbf{i}}} - 3\textcolor{#66BB6A}{\hat{\mathbf{j}}} + 5\textcolor{#2C8FFF}{\hat{\mathbf{k}}}'}</Katex>.
           </p>
 
           <h4>Notation in Different Fields</h4>
           <p>
-            You might encounter vectors represented differently depending on the context:
+            Vector representation varies by field:
           </p>
           <ul>
-            <li><strong>Physics & Engineering:</strong> Often favor the <Katex>{'\\hat{\\mathbf{i}}, \\hat{\\mathbf{j}}, \\hat{\\mathbf{k}}'}</Katex> notation. It's great for expressing physical quantities like forces, velocities, or electric fields where direction is paramount and breaking things down by axis is common.</li>
-            <li><strong>Computer Science & Graphics:</strong> Frequently use the component form <Katex>{'\\langle x, y, z \\rangle'}</Katex> or <Katex>{'(x, y, z)'}</Katex>. Here, vectors are often treated as data structures representing points, directions, or offsets in 3D space for calculations in games, simulations, or data visualization.</li>
+            <li><strong>Physics & Engineering:</strong> Often use <Katex>{'\hat{\mathbf{i}}, \hat{\mathbf{j}}, \hat{\mathbf{k}}'}</Katex> notation (good for forces, velocities).</li>
+            <li><strong>Computer Science & Graphics:</strong> Often use component form <Katex>{'\langle x, y, z \rangle'}</Katex> or <Katex>{'(x, y, z)'}</Katex> (good for points, directions in code).</li>
           </ul>
           <p>
-            It's important to remember that these are just different ways of writing down the <strong>same mathematical concept</strong>: a quantity with both magnitude and direction. Being comfortable with both notations is helpful!
+            Both notations represent the same concept: a quantity with magnitude and direction. Familiarity with both is useful.
           </p>
           <p>
-            The <Keyword term="Vector Builder" /> visualization can help you see this connection. While it currently shows component form, imagine a toggle that could also display the equivalent unit vector notation for the vector you build.
+            The <Keyword term="Vector Builder" /> shows component form; imagine it could also show the equivalent unit vector notation.
           </p>
-
-          <!-- Content for Magnitude calculation details will go here -->
-          <!-- ... -->
-          <!-- Guided Calculation for Magnitude -->
-          <!-- ... -->
-          <!-- Content for Looking Ahead will go here -->
-          <!-- ... -->
         </div>
 
         <SectionReview>
@@ -255,26 +262,184 @@
         <div class="section-header-content"> <h2 class="section-title">1.3 Vector Operations</h2> <p class="section-description"> Explore fundamental operations like vector addition, subtraction, and scalar multiplication, essential tools for combining and manipulating vector quantities in kinematic analysis. </p> </div>
 
         <div class="section-intro">
+          <h3>Introduction: Why Operate on Vectors?</h3>
+          <p>
+            Vectors often need to be combined or manipulated to understand physical situations. For example, how do multiple forces acting on an object combine? Or how do we describe a change in velocity? This section introduces the fundamental operations used to work with vectors. We'll look at both the visual intuition (graphical methods) and the precise calculations using components.
+          </p>
+          <!-- Scenario kept, content can be adjusted later if needed -->
           <Scenario>
-            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> I'm watching a video of a car moving, but it's hard to tell how fast it's actually going.</p>
-            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> That's because you're seeing it from a different <Keyword term="reference frame" />! It's like watching someone walk on a moving train.</p>
-          </Scenario>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, vectors describe movement like <Katex>{"\\vec{v}"}</Katex> or forces like <Katex>{"\\vec{F}"}</Katex>. But what if there are *multiple* forces, or something changes speed *and* direction?</p>
+            <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Great question! That's exactly why we need vector operations. They give us the mathematical tools to combine vectors (like adding forces) or scale them (like relating force to acceleration).</p>
+           </Scenario>
 
-          <FormulaAccordion>
-            <p>Formulas will go here.</p>
-          </FormulaAccordion>
         </div>
 
         <div class="section-core">
+          <h3>Vector Addition and Subtraction</h3>
+          <p>These operations help us find the net effect of combining vectors or the difference between two vector states.</p>
+
+          <h4>Addition</h4>
+          <h5>Concept</h5>
           <p>
-            A <Keyword term="reference frame" /> is a <Keyword term="coordinate system" /> attached to an observer, providing a perspective
-            from which to measure position, <Keyword term="velocity" />, and other physical quantities.
+            Graphically, we combine vectors by placing them head-to-tail. The resulting vector (the "sum" or "resultant") goes from the tail of the first vector to the head of the last vector.
           </p>
           <p>
-            This section explores how measurements change when observed from different <Keyword term="reference frames" />,
-            laying the groundwork for understanding relative motion in <Keyword term="kinematics" />.
+             Numerically, we add the corresponding components of the vectors:
+             <Katex displayMode>
+               {"\\vec{A} + \\vec{B} = \\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
+             </Katex>
+          </p>
+          <h5>Utility</h5>
+           <ul>
+             <li>Finding the <Keyword term="resultant displacement" /> after multiple movements.</li>
+             <li>Calculating the <Keyword term="net force" /> when multiple forces act on an object.</li>
+             <li>Determining <Keyword term="relative velocity" /> (e.g., the velocity of an object relative to a moving observer).</li>
+           </ul>
+
+          <h4>Subtraction</h4>
+          <h5>Concept</h5>
+           <p>
+             Subtracting a vector <Katex>{"\\vec{B}"}</Katex> from <Katex>{"\\vec{A}"}</Katex> is the same as adding the negative of <Katex>{"\\vec{B}"}</Katex> (a vector with the same magnitude but opposite direction).
+           </p>
+          <p>
+            Numerically, we subtract the corresponding components:
+            <Katex displayMode>
+              {"\\vec{A} - \\vec{B} = \\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
+            </Katex>
+          </p>
+           <p>
+             Graphically, subtraction <Katex>{"\\vec{A} - \\vec{B}"}</Katex> is often visualized by placing the vectors tail-to-tail. The resultant vector points from the head of <Katex>{"\\vec{B}"}</Katex> to the head of <Katex>{"\\vec{A}"}</Katex>. This shows the change needed to get from <Katex>{"\\vec{B}"}</Katex> to <Katex>{"\\vec{A}"}</Katex> (since <Katex>{"\\vec{B} + (\\vec{A} - \\vec{B}) = \\vec{A}"}</Katex>).
+           </p>
+          <h5>Utility</h5>
+          <ul>
+            <li>Finding the change in velocity (<Keyword term="acceleration" /> is related to this): <Katex>{"\\Delta\\vec{v} = \\vec{v}_f - \\vec{v}_i"}</Katex>.</li>
+            <li>Determining relative position vectors.</li>
+          </ul>
+
+          <!-- Placeholder for Addition/Subtraction Visualization -->
+          <!--
+            <VectorOperationVisualization type="addition-subtraction">
+              Allows users to define two vectors A and B.
+              Visualizes A, B (head-to-tail for sum), and Resultant A+B.
+              Shows component calculations.
+              Toggle to visualize A-B (tail-to-tail or adding -B).
+            </VectorOperationVisualization>
+          -->
+           <p><em>(Interactive visualization for vector addition/subtraction will be added here.)</em></p>
+
+
+          <h3>Scalar Multiplication</h3>
+          <p>This operation scales a vector, changing its magnitude and potentially reversing its direction.</p>
+          <h4>Concept</h4>
+          <p>
+            Multiplying a vector <Katex>{"\\vec{A}"}</Katex> by a scalar (a regular number) <Katex>c</Katex> multiplies each component by <Katex>c</Katex>:
+            <Katex displayMode>
+              {"c\\vec{A} = \\langle cA_x, cA_y, cA_z \\rangle"}
+            </Katex>
+          </p>
+          <ul>
+             <li>If <Katex>{"c > 0"}</Katex>, the vector's magnitude is scaled by <Katex>c</Katex>, and its direction remains the same.</li>
+             <li>If <Katex>{"c < 0"}</Katex>, the vector's magnitude is scaled by <Katex>{"|c|"}</Katex>, and its direction is reversed (flipped 180°).</li>
+             <li>If <Katex>{"c = 0"}</Katex>, the result is the zero vector <Katex>{"\\langle 0, 0, 0 \\rangle"}</Katex>.</li>
+          </ul>
+          <h4>Utility</h4>
+          <ul>
+             <li>Relating <Keyword term="force" /> and <Keyword term="acceleration" /> via mass (<Katex>{"\\vec{F} = m\\vec{a}"}</Katex>).</li>
+             <li>Relating <Keyword term="velocity" /> and <Keyword term="momentum" /> via mass (<Katex>{"\\vec{p} = m\\vec{v}"}</Katex>).</li>
+             <li>Creating <Keyword term="unit vectors" />: A unit vector <Katex>{"\\hat{u}"}</Katex> in the same direction as <Katex>{"\\vec{u}"}</Katex> is found by <Katex>{"\\hat{u} = \\frac{1}{\\|\\vec{u}\\|}\\vec{u}"}</Katex>. This involves scalar multiplication by <Katex>{"1/\\|\\vec{u}\\|"}</Katex>.</li>
+          </ul>
+
+          <!-- Placeholder for Scalar Multiplication Visualization -->
+          <!--
+            <VectorOperationVisualization type="scalar-multiplication">
+              Shows a base vector A.
+              Slider/input for scalar c.
+              Visualizes c*A, showing scaling and direction flip.
+              Displays component calculation.
+            </VectorOperationVisualization>
+          -->
+           <p><em>(Interactive visualization for scalar multiplication will be added here.)</em></p>
+
+
+          <h3>Dot Product (Scalar Product)</h3>
+          <p>The dot product combines two vectors to produce a single scalar value. It relates to how much one vector points along the direction of another.</p>
+          <h4>Concept</h4>
+          <p>
+            The dot product of vectors <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex> is defined in two ways:
+          </p>
+          <ol>
+             <li>Geometrically: <Katex>{"\\vec{A} \\cdot \\vec{B} = \\|\\vec{A}\\| \\|\\vec{B}\\| \\cos \\theta"}</Katex>, where <Katex>{"\\theta"}</Katex> is the angle between the vectors when placed tail-to-tail (<Katex>{"0 \\le \\theta \\le 180^\\circ"}</Katex>).</li>
+             <li>Algebraically (using components): <Katex>{"\\vec{A} \\cdot \\vec{B} = A_x B_x + A_y B_y + A_z B_z"}</Katex>.</li>
+          </ol>
+           <p>Key properties:</p>
+           <ul>
+             <li>If the vectors are perpendicular (<Katex>{"\\theta = 90^\\circ"}</Katex>), <Katex>{"\\cos 90^\\circ = 0"}</Katex>, so their dot product is 0.</li>
+             <li>If the vectors are parallel (<Katex>{"\\theta = 0^\\circ"}</Katex>), <Katex>{"\\cos 0^\\circ = 1"}</Katex>, the dot product is the product of their magnitudes: <Katex>{"\\|\\vec{A}\\| \\|\\vec{B}\\|"}</Katex>.</li>
+             <li>If they point in opposite directions (<Katex>{"\\theta = 180^\\circ"}</Katex>), <Katex>{"\\cos 180^\\circ = -1"}</Katex>, the dot product is <Katex>{"-\\|\\vec{A}\\| \\|\\vec{B}\\|"}</Katex>.</li>
+             <li>The dot product is commutative: <Katex>{"\\vec{A} \\cdot \\vec{B} = \\vec{B} \\cdot \\vec{A}"}</Katex>.</li>
+           </ul>
+          <h4>Utility</h4>
+          <p>Brief examples of where the dot product is used:</p>
+          <ul>
+             <li>Calculating <Keyword term="Work" /> done by a constant force: <Katex>{"W = \\vec{F} \\cdot \\vec{d}"}</Katex>.</li>
+             <li>Finding the angle between two vectors: <Katex>{"\\theta = \\arccos\\left(\\frac{\\vec{A} \\cdot \\vec{B}}{\\|\\vec{A}\\| \\|\\vec{B}\\|}\\right)"}</Katex>.</li>
+             <li>Determining the <Keyword term="projection" /> of one vector onto another (finding the component of one vector along the direction of another).</li>
+          </ul>
+
+          <!-- Placeholder for Dot Product Visualization -->
+           <p><em>(Optional visualization for the dot product concept might be added here.)</em></p>
+
+
+          <h3>Cross Product (Vector Product)</h3>
+          <p>The cross product combines two vectors in 3D space to produce a new *vector* that is perpendicular to both original vectors. This operation is inherently three-dimensional.</p>
+          <h4>Concept</h4>
+           <p>
+             The cross product of <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>, denoted <Katex>{"\\vec{A} \\times \\vec{B}"}</Katex>, results in a vector <Katex>{"\\vec{C}"}</Katex>.
+           </p>
+           <ul>
+             <li><strong>Magnitude:</strong> The magnitude of the resulting vector is <Katex>{"\\|\\vec{A} \\times \\vec{B}\\| = \\|\\vec{A}\\| \\|\\vec{B}\\| \\sin \\theta"}</Katex>, where <Katex>{"\\theta"}</Katex> is the angle between <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex> (<Katex>{"0 \\le \\theta \\le 180^\\circ"}</Katex>). This magnitude is equal to the area of the parallelogram formed by <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>.</li>
+             <li><strong>Direction:</strong> The direction of <Katex>{"\\vec{C} = \\vec{A} \\times \\vec{B}"}</Katex> is perpendicular to the plane containing <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>, determined by the <Keyword term="Right-Hand Rule" />. (Point fingers of right hand along <Katex>{"\\vec{A}"}</Katex>, curl towards <Katex>{"\\vec{B}"}</Katex>; thumb points in direction of <Katex>{"\\vec{A} \\times \\vec{B}"}</Katex>).</li>
+           </ul>
+           <p>Key properties:</p>
+           <ul>
+             <li>The cross product is zero if the vectors are parallel or anti-parallel (<Katex>{"\\sin 0^\\circ = \\sin 180^\\circ = 0"}</Katex>).</li>
+             <li>The cross product is anti-commutative: <Katex>{"\\vec{A} \\times \\vec{B} = -(\\vec{B} \\times \\vec{A})"}</Katex>. Switching the order reverses the direction of the resulting vector.</li>
+             <li>The component calculation is more complex: <br>
+               <Katex displayMode>
+                 {"\\vec{A} \\times \\vec{B} = \\langle (A_y B_z - A_z B_y), (A_z B_x - A_x B_z), (A_x B_y - A_y B_x) \\rangle"}
+               </Katex>
+               (Often computed using determinants, but we'll focus on the geometric meaning here).
+             </li>
+           </ul>
+          <h4>Utility</h4>
+          <p>Brief examples of where the cross product is used:</p>
+          <ul>
+            <li>Calculating <Keyword term="Torque" />: <Katex>{"\\vec{\\tau} = \\vec{r} \\times \\vec{F}"}</Katex>.</li>
+            <li>Calculating <Keyword term="Angular Momentum" />: <Katex>{"\\vec{L} = \\vec{r} \\times \\vec{p}"}</Katex>.</li>
+            <li>Calculating the magnetic force on a moving charge: <Katex>{"\\vec{F}_B = q(\\vec{v} \\times \\vec{B})"}</Katex>.</li>
+            <li>Finding a vector normal (perpendicular) to a plane defined by two vectors.</li>
+          </ul>
+
+          <!-- Placeholder for Cross Product Visualization -->
+          <p><em>(Optional visualization for the cross product concept, possibly including the Right-Hand Rule, might be added here.)</em></p>
+
+          <h3>Conclusion</h3>
+          <p>
+             Vector addition, subtraction, scalar multiplication, the dot product, and the cross product are the fundamental mathematical tools for working with vector quantities. Understanding how to combine and manipulate vectors numerically and conceptually is crucial for analyzing motion, forces, and other physical phenomena in 3D space, which we will explore further in subsequent chapters.
           </p>
         </div>
+
+        <!-- Formula Accordion kept, content can be added later -->
+        <FormulaAccordion>
+           <p>Key formulas for vector operations will be summarized here.</p>
+        </FormulaAccordion>
+
+        <!-- Section Review can be added later -->
+        <!--
+        <SectionReview>
+          <Quiz questions={vectorOpsQuizData} />
+        </SectionReview>
+        -->
       </div>
     </section>
   </div>

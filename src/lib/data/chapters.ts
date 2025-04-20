@@ -22,10 +22,10 @@ export const chapters: Chapter[] = [
     slug: 'understanding-3d-space',
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
+      { id: "introduction", title: "Introduction" },
       { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
       { id: "vectors-and-components", title: "1.2 Vectors and Components" },
-      { id: "vector-operations", title: "1.3 Vector Operations" },
-      { id: "physical-vectors", title: "1.4 Physical Vector Quantities" }
+      { id: "vector-operations", title: "1.3 Vector Operations" }
     ],
     prevChapter: null,
     nextChapter: 'kinematics',

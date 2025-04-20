@@ -627,4 +627,17 @@
     <T is={lineZ} />
   {/if}
 
+  <!-- Magnitude Label -->
+  {@const midpointPosVec = vectorStartWorld.clone().add(vectorEndWorld).multiplyScalar(0.5)}
+  <Billboard position={midpointPosVec.add(new Vector3(0, 0.4, 0)).toArray()}>
+    <Text
+      text={'Magnitude: ' + $vectorData.magnitude.toFixed(2)}
+      color={$vectorColor}
+      fontSize={0.5}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
+    />
+  </Billboard>
+
 {/if}

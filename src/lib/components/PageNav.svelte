@@ -1,7 +1,10 @@
-<script>
-    // Changed to accept chapter data instead of section data
-    export let prevChapter = null;
-    export let nextChapter = null;
+<script lang="ts">
+    // Define a type for the expected chapter link structure
+    type ChapterLink = { slug: string; title: string } | null;
+
+    // Use the type for the props
+    export let prevChapter: ChapterLink = null;
+    export let nextChapter: ChapterLink = null;
 </script>
 
 <nav class="page-nav">
