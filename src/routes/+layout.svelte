@@ -151,13 +151,15 @@
   }
 
   .navigation {
-    flex-shrink: 0;
     display: flex;
     align-items: stretch;
     height: 100vh;
     z-index: 1001;
     width: 330px;
     transition: width var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
+    position: fixed;
+    top: 0;
+    left: 0;
 
     & > :first-child {
         flex-grow: 1;
@@ -237,10 +239,18 @@
     height: 100%;
     overflow-y: auto;
     padding-inline: var(--space-m);
+    margin-left: 330px;
+    transition: margin-left var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
 
     @media (max-width: variables.$breakpoint-lg) {
       margin-left: 0;
       padding: 5px;
+    }
+  }
+
+  @media (min-width: calc(#{variables.$breakpoint-lg} + 1px)) {
+    .app-container.sidebar-collapsed .content {
+      margin-left: 110px;
     }
   }
 

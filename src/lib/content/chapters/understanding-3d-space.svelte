@@ -14,6 +14,7 @@
   import { coordinateQuizData, vectorQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
   import Katex from 'svelte-katex';
   import Keyword from '$lib/components/Keyword.svelte';
+  import AxisExplorer from '$lib/components/visualization/AxisExplorer.svelte';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -76,21 +77,33 @@
           </Scenario>
 
           <p>
-            Precision matters, especially for machines. Simple pointing doesn't work. How do we communicate exact locations in space?
+            Giving simple directions like "5 steps forward, 3 steps left" works well on a flat surface (2D). But how do you describe reaching for a high shelf or pinpointing a drone? You need a third dimension – height!
           </p>
           <p>
-            <Keyword term="Coordinate systems" /> provide the answer. They act as a universal address book for space, using numerical <Keyword term="coordinates" /> within a defined framework.
+            To map locations precisely in the space around us, we use three reference lines, or <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />), which meet at a single point called the <Keyword term="origin" />. This <Keyword term="Cartesian coordinate system" /> is the standard map for <Keyword term="3D space" />. Engineers typically orient these using a <Keyword term="right-handed coordinate system" /> convention.
           </p>
           <p>
-            We use 2D systems daily (like map grids). For 3D space (like inside a printer), we add a third <Keyword term="axis" /> (often <Keyword term="Y" /> for height) to fully describe positions:
+            Let's explore this system:
+          </p>
+          <figure>
+            <AxisExplorer />
+            <figcaption>
+              Use your mouse to rotate (left-click drag), pan (right-click drag), and zoom (scroll wheel) the view.
+            </figcaption>
+          </figure>
+          <p>
+              Notice how the <span style="color: var(--axis-color-x);">X (Red)</span>, <span style="color: var(--axis-color-y);">Y (Green)</span>, and <span style="color: var(--axis-color-z);">Z (Blue)</span> axes represent the three dimensions, all meeting at the <Keyword term="Origin"/> at (0,0,0).
+          </p>
+          <p>
+            Now, let's see this system in action with a 3D printer. Imagine a device with a small nozzle that needs to move *very precisely* to build objects layer by layer. How does it know where to go? It uses those same axes!
           </p>
           <ul>
-            <li><Keyword term="X" />: Left/Right</li>
-            <li><Keyword term="Z" />: Forward/Backward</li>
-            <li><Keyword term="Y" />: Up/Down</li>
+            <li>The <Keyword term="X-axis" /> guides movement left and right (width).</li>
+            <li>The <Keyword term="Z-axis" /> guides movement forward and backward (depth).</li>
+            <li>The <Keyword term="Y-axis" /> guides movement up and down (height).</li>
           </ul>
           <p>
-            Let's apply this by helping Surya and Leo calibrate their 3D printer using these coordinates.
+             Remember, the point where these axes meet is the <Keyword term="origin" />, the reference point (0, 0, 0). By telling the printer exactly how far to travel along each axis from this origin (e.g., "move 50 units along X, 20 units along Y, 30 units along Z"), it reaches a unique point in its workspace. These axes typically form a <Keyword term="right-handed coordinate system" />, a standard orientation used in engineering. This precise control is key! Let's help Surya and Leo master this system by calibrating their machine.
           </p>
         </div>
 
@@ -99,17 +112,7 @@
             on:calibrationComplete={handleCalibrationComplete}
           />
           <p>
-            A 3D printer illustrates this well. It uses three <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />) to locate points in its print area.
-          </p>
-          <ul>
-            <li>The intersection of these axes is the <Keyword term="origin" />, denoted as (0, 0, 0).</li>
-            <li>The <Keyword term="X-axis" /> typically represents horizontal movement (width).</li>
-            <li>The <Keyword term="Y-axis" /> typically represents vertical movement (height).</li>
-            <li>The <Keyword term="Z-axis" /> typically represents depth.</li>
-            <li>These axes usually form a <Keyword term="right-handed coordinate system" />.</li>
-          </ul>
-          <p>
-            By specifying a distance along each <Keyword term="axis" /> (positive or negative from the <Keyword term="origin" />), we define a unique point in <Keyword term="3D space" />. This allows precise description and manipulation.
+            Think back to the calibration exercise. By inputting specific <Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" /> coordinates, you directed the printer nozzle to precise locations within its 3D workspace. You saw firsthand how the <Keyword term="X-axis" /> controls horizontal movement (width), the <Keyword term="Y-axis" /> controls vertical movement (height), and the <Keyword term="Z-axis" /> controls movement in depth, all relative to the starting <Keyword term="origin" /> (0, 0, 0). Understanding how each coordinate uniquely contributes to defining a point is crucial!
           </p>
         </div>
 

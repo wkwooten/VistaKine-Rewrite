@@ -173,36 +173,54 @@
             class="nav-item chapter-item"
             role="button"
             tabindex="0"
-            on:click={() => toggleChapterSections(chapter.slug)}
-            on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleChapterSections(chapter.slug); }}
+            on:click={(event) => {
+              // If collapsed, trigger expand/navigate (handled by this div now)
+              if (navCollapsed) {
+                  event.preventDefault(); // Prevent default link navigation if click originated from <a>
+                  $sidebarExpanded = true;
+                  expandedChapter = chapter.slug;
+                  if (browser) {
+                      const targetHref = `/chapter/${chapter.slug}`;
+                      setTimeout(() => { window.location.href = targetHref; }, 0);
+                  }
+              } else {
+                  // If expanded, just toggle sections
+                  toggleChapterSections(chapter.slug);
+              }
+            }}
+            on:keydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault(); // Prevent default action (scrolling)
+                if (navCollapsed) {
+                    // If collapsed, trigger expand/navigate
+                    $sidebarExpanded = true;
+                    expandedChapter = chapter.slug;
+                    if (browser) {
+                        const targetHref = `/chapter/${chapter.slug}`;
+                        setTimeout(() => { window.location.href = targetHref; }, 0);
+                    }
+                } else {
+                    // If expanded, just toggle sections
+                    toggleChapterSections(chapter.slug);
+                }
+              }
+            }}
             aria-expanded={expandedChapter === chapter.slug}
             aria-controls={`sections-${chapter.slug}`}
           >
             <a href={`/chapter/${chapter.slug}`}
                class="chapter-number"
-               on:click={(event) => {
-                   if (navCollapsed) {
-                       event.preventDefault(); // Prevent default navigation initially
-                       event.stopPropagation(); // Stop event from bubbling to parent div
-                       $sidebarExpanded = true; // Expand sidebar
-                       expandedChapter = chapter.slug; // Expand the accordion for this chapter
-                       if (browser) {
-                           window.location.href = event.currentTarget.href;
-                       }
-                   }
-                   // If sidebar is already expanded, allow default link behavior
-               }}
+               aria-label={`Go to Chapter ${index + 1}: ${chapter.title}`}
+               tabindex="-1"
             >{index + 1}</a>
             {#if !navCollapsed}
-              <a href={`/chapter/${chapter.slug}`} class="chapter-title"><span>{chapter.title}</span></a>
+              <a href={`/chapter/${chapter.slug}`} class="chapter-title" tabindex="-1">
+                <span>{chapter.title}</span>
+              </a>
               <div
                 class="chevron"
                 class:expanded={expandedChapter === chapter.slug}
-                role="button"
-                tabindex="0"
-                on:click|stopPropagation={() => toggleChapterSections(chapter.slug)}
-                on:keydown|stopPropagation={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleChapterSections(chapter.slug); }}
-                aria-label={expandedChapter === chapter.slug ? `Collapse ${chapter.title} sections` : `Expand ${chapter.title} sections`}
+                aria-hidden="true"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon lucide lucide-chevron-right">
                   <path d="m9 18 6-6-6-6"/></svg>
@@ -216,7 +234,7 @@
                   <a
                     href={`/chapter/${chapter.slug}#${section.id}`}
                     class="nav-item section-link"
-                    on:click|preventDefault={() => handleSectionClick(chapter.slug, section.id)}
+                    on:click|preventDefault|stopPropagation={() => handleSectionClick(chapter.slug, section.id)}
                   >
                     {section.title}
                   </a>
@@ -474,6 +492,12 @@
     padding-top: var(--space-xs);
   }
 
+  /* Remove cursor pointer from the list item */
+  .nav-chapter-group {
+      /* cursor: pointer; */ /* Removed */
+  }
+
+  /* Add cursor pointer back to the chapter item div */
   .chapter-item {
     cursor: pointer;
   }
