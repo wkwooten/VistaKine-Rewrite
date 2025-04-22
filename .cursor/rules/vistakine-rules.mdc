@@ -1,12 +1,12 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 
 # General Rules
 
 - Please provide and command line prompts in powershell
-- DO NOT WRITE INLINE COMMETS within threlte components, doing so will cause syntax errors
+- DO NOT WRITE INLINE COMMETS WITHIN threlte PROPS!! Doing so will cause syntax errors
 - Markdown perferred for text files
 - avoid commenting every line, if you comment. Do it for larger blocks of code

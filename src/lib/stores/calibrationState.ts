@@ -43,6 +43,6 @@ export function hideCalibrationDialog() {
 export const MIN_X = 0;
 export const MAX_X = 12;
 export const MIN_Y = 0;
-export const MAX_Y = 10;
+export const MAX_Y = 12;
 export const MIN_Z = 0;
 export const MAX_Z = 12;

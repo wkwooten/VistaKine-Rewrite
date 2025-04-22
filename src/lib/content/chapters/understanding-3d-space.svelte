@@ -15,6 +15,7 @@
   import Katex from 'svelte-katex';
   import Keyword from '$lib/components/Keyword.svelte';
   import AxisExplorer from '$lib/components/visualization/AxisExplorer.svelte';
+  import VectorAnatomy from '$lib/components/visualization/elements/constructs/VectorAnatomy.svelte';
 
   // The callback function definition remains the same, but now receives the detail object directly
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }, sectionId: string) {
@@ -156,16 +157,11 @@
         </div>
 
         <div class="section-core">
-          <h3>Visualizing Vectors: Arrows in Space</h3>
+          <h3>Anatomy of a Vector</h3>
+          <VectorAnatomy />
           <p>
-            How do we picture vectors? Typically, with an arrow in a 3D coordinate system.
+            As you can see, a vector is represented by an arrow. Its <strong>Tail</strong> marks the starting point, and the <strong>Head</strong> (tip) marks the ending point. The arrow's <strong>Length</strong> represents the vector's <strong>Magnitude</strong> (size, strength, or speed), and its <strong>Orientation</strong> in space indicates its <strong>Direction</strong>.
           </p>
-          <ul>
-            <li><strong>Length:</strong> Represents the vector's <Keyword term="magnitude" /> (size, strength, speed).</li>
-            <li><strong>Orientation:</strong> Represents the vector's <Keyword term="direction" />.</li>
-            <li><strong>Tail:</strong> The starting point of the arrow.</li>
-            <li><strong>Head:</strong> The ending point (tip) of the arrow.</li>
-          </ul>
 
           <FormulaAccordion>
             <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\vec{V}'}</Katex> with components <Katex>{'\textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>

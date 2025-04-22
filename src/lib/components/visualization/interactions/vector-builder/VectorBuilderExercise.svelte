@@ -145,6 +145,7 @@
     background-color: var(--bg-secondary);
     padding: var(--space-m) var(--space-xs); /* Adjusted padding */
     margin-bottom: var(--space-l); /* Add margin-bottom */
+    overflow: hidden; /* Prevent potential overflow from children */
   }
 
   /* --- Styles for moved title/description --- */

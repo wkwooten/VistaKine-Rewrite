@@ -23,6 +23,7 @@ $grid-max-columns: 12;  // Number of columns at max viewport
   margin-inline: auto;
   padding-inline: var(--grid-padding);
   box-sizing: border-box;
+  overflow-x: hidden;
 
   @media (max-width: variables.$breakpoint-md) {
     margin-inline: 0;

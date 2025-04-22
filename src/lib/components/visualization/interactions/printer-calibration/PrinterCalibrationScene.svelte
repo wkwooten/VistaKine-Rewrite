@@ -71,12 +71,6 @@
   const initialRelativePosition = new Vector3(0, 5, 0); // Store initial relative position
   const initialWorldPosition = cornerOriginOffset.clone().add(initialRelativePosition);
 
-  // --- Core State ---
-  // REMOVED: State for the input fields now passed as props
-  // let relativeNozzleX = $state(initialRelativePosition.x);
-  // let relativeNozzleY = $state(initialRelativePosition.y);
-  // let relativeNozzleZ = $state(initialRelativePosition.z);
-
   // Tweened state for the visual representation
   const animatedPosition = tweened(initialWorldPosition, {
     duration: 500, // Animation duration in ms
@@ -291,7 +285,7 @@
   const tickSize = 0.15;
   const tickLength = 0.5; // Length for elongated X/Z ticks
   const tickOpacity = 0.8; // Separate opacity for ticks
-  const yAxisLength = 10; // Match Y axis length
+  const yAxisLength = 12; // Match Y axis length
   const xAxisLength = 12;
   const zAxisLength = 12;
   const xTicks: number[] = [];
@@ -368,7 +362,7 @@
   <!-- Custom Axes Lines -->
   {@const axisThickness = 0.08}
   {@const axisLengthX = 12}
-  {@const axisLengthY = 10}
+  {@const axisLengthY = 12}
   {@const axisLengthZ = 12}
   {@const axisOpacity = 0.4} // Define opacity
   <!-- X Axis -->
