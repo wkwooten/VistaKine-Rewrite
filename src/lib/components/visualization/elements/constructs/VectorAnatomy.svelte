@@ -1,12 +1,13 @@
 <script lang="ts">
   import { T, Canvas } from '@threlte/core';
-  import { OrbitControls, Billboard, Text, MeshLineGeometry, MeshLineMaterial } from '@threlte/extras';
+  import { OrbitControls, MeshLineGeometry, MeshLineMaterial } from '@threlte/extras';
   import { ArrowHelper, Color, Vector3, Vector2, BufferGeometry, BufferAttribute, SphereGeometry, MeshBasicMaterial, CylinderGeometry, Quaternion } from 'three';
   import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
   import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
   import { Line2 } from 'three/examples/jsm/lines/Line2.js';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import SceneLabel from '../../helpers/SceneLabel.svelte';
 
   // --- State for Colors (Initialized with defaults) --- //
   let vectorColor = $state(new Color('#FFA500'));
@@ -251,9 +252,13 @@
         rotation.z={-Math.PI / 2} >
         <T.MeshBasicMaterial color={xAxisColor} />
     </T.Mesh>
-    <Billboard position={[axisIndicatorLength + axisLabelOffset, 0, 0]}>
-        <Text text="X+" fontSize={axisLabelFontSize} color={xAxisColor} />
-    </Billboard>
+    <SceneLabel
+        position={[axisIndicatorLength + axisLabelOffset, 0, 0]}
+        text="X+"
+        anchorY="top"
+        fontSize={axisLabelFontSize}
+        color={xAxisColor}
+    />
 
     <!-- Y Axis Indicator -->
      <T.Mesh
@@ -261,9 +266,12 @@
         position.y={axisIndicatorLength / 2} >
          <T.MeshBasicMaterial color={yAxisColor} />
     </T.Mesh>
-     <Billboard position={[0, axisIndicatorLength + axisLabelOffset, 0]}>
-        <Text text="Y+" fontSize={axisLabelFontSize} color={yAxisColor} />
-    </Billboard>
+    <SceneLabel
+        position={[0, axisIndicatorLength + axisLabelOffset, 0]}
+        text="Y+"
+        fontSize={axisLabelFontSize}
+        color={yAxisColor}
+    />
 
     <!-- Z Axis Indicator -->
      <T.Mesh
@@ -272,9 +280,12 @@
         rotation.x={Math.PI / 2} >
          <T.MeshBasicMaterial color={zAxisColor} />
     </T.Mesh>
-     <Billboard position={[0, 0, axisIndicatorLength + axisLabelOffset]}>
-        <Text text="Z+" fontSize={axisLabelFontSize} color={zAxisColor} />
-    </Billboard>
+    <SceneLabel
+        position={[0, 0, axisIndicatorLength + axisLabelOffset]}
+        text="Z+"
+        fontSize={axisLabelFontSize}
+        color={zAxisColor}
+    />
 
     <!-- Component Lines (Render Line2 instances) -->
     {#if lineX}
@@ -329,106 +340,97 @@
     {/if}
 
     <!-- Labels -->
-    <Billboard position={tailLabelPos.toArray()}>
-        <Text
-            text="Tail (Start)"
-            fontSize={labelFontSize}
-            color={labelColor}
-            anchorX="center"
-            anchorY="top"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={headLabelPos.toArray()}>
-        <Text
-            text="Head (End)"
-            fontSize={labelFontSize}
-            color={labelColor}
-            anchorX="center"
-            anchorY="bottom"
-            depthTest={false}
-        />
-    </Billboard>
-     <Billboard position={magnitudeLabelPos.toArray()}>
-        <Text
-            text={`Magnitude`}
-            fontSize={labelFontSize}
-            color={labelColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
+    <SceneLabel
+        position={tailLabelPos}
+        text="Tail (Start)"
+        fontSize={labelFontSize}
+        color={labelColor}
+        anchorX="center"
+        anchorY="top"
+        depthTest={false}
+    />
+    <SceneLabel
+        position={headLabelPos}
+        text="Head (End)"
+        fontSize={labelFontSize}
+        color={labelColor}
+        anchorX="center"
+        anchorY="bottom"
+        depthTest={false}
+    />
+     <SceneLabel
+        position={magnitudeLabelPos}
+        text={`Magnitude`}
+        fontSize={labelFontSize}
+        color={labelColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
 
     <!-- Component Labels -->
     {#if Math.abs(components.x) > 0.01}
-      <Billboard position={xCompLabelPos.toArray()}>
-          <Text
-              text={`X Component`}
-              fontSize={labelFontSize * 0.9}
-              color={xAxisColor}
-              anchorX="center"
-              anchorY="bottom"
-              depthTest={false}
-          />
-      </Billboard>
+      <SceneLabel
+          position={xCompLabelPos}
+          text={`X Component`}
+          fontSize={labelFontSize * 0.9}
+          color={xAxisColor}
+          anchorX="center"
+          anchorY="bottom"
+          depthTest={false}
+      />
     {/if}
     {#if Math.abs(components.y) > 0.01}
-      <Billboard position={yCompLabelPos.toArray()}>
-          <Text
-              text={`Y Component`}
-              fontSize={labelFontSize * 0.9}
-              color={yAxisColor}
-              anchorX="left"
-              anchorY="middle"
-              depthTest={false}
-          />
-      </Billboard>
+      <SceneLabel
+          position={yCompLabelPos}
+          text={`Y Component`}
+          fontSize={labelFontSize * 0.9}
+          color={yAxisColor}
+          anchorX="left"
+          anchorY="middle"
+          depthTest={false}
+      />
     {/if}
     {#if Math.abs(components.z) > 0.01}
-      <Billboard position={zCompLabelPos.toArray()}>
-          <Text
-              text={`Z Component`}
-              fontSize={labelFontSize * 0.9}
-              color={zAxisColor}
-              anchorX="center"
-              anchorY="bottom"
-              depthTest={false}
-          />
-      </Billboard>
+      <SceneLabel
+          position={zCompLabelPos}
+          text={`Z Component`}
+          fontSize={labelFontSize * 0.9}
+          color={zAxisColor}
+          anchorX="center"
+          anchorY="bottom"
+          depthTest={false}
+      />
     {/if}
 
     <!-- Direction Angle Labels (Repositioned) -->
-    <Billboard position={alphaLabelPos.toArray()}>
-        <Text
-            text="α"
-            fontSize={angleLabelFontSize}
-            color={xAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={betaLabelPos.toArray()}>
-        <Text
-            text="β"
-            fontSize={angleLabelFontSize}
-            color={yAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={gammaLabelPos.toArray()}>
-        <Text
-            text="γ"
-            fontSize={angleLabelFontSize}
-            color={zAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
+    <SceneLabel
+        position={alphaLabelPos}
+        text="α"
+        fontSize={angleLabelFontSize}
+        color={xAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
+    <SceneLabel
+        position={betaLabelPos}
+        text="β"
+        fontSize={angleLabelFontSize}
+        color={yAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
+    <SceneLabel
+        position={gammaLabelPos}
+        text="γ"
+        fontSize={angleLabelFontSize}
+        color={zAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
 
   </Canvas>
 </div>

@@ -27,6 +27,8 @@
     showVectorDialog,
     showDeltaX, showDeltaY, showDeltaZ
   } from '$lib/stores/vectorBuilderState';
+  // Import SceneLabel
+  import SceneLabel from '../../helpers/SceneLabel.svelte';
 
   // --- Threlte Hook ---
   const { size } = useThrelte();
@@ -78,7 +80,7 @@
     // Use derived values directly inside $derived.by
     if ($showDeltaX && deltaIntermediateXY && $vectorData && vectorStartWorld) {
       const midPointX = vectorStartWorld.clone().lerp(deltaIntermediateXY, 0.5);
-      const labelTextX = `ΔX: ${$vectorData.components.dx.toFixed(2)}`;
+      const labelTextX = `ΔX =  ${$vectorData.components.dx.toFixed(2)}`;
       return { position: midPointX, text: labelTextX };
     }
     return null;
@@ -88,7 +90,7 @@
     // Use derived values directly inside $derived.by
     if ($showDeltaY && deltaIntermediateXY && deltaIntermediateYZ && $vectorData) {
       const midPointY = deltaIntermediateXY.clone().lerp(deltaIntermediateYZ, 0.5);
-      const labelTextY = `ΔY: ${$vectorData.components.dy.toFixed(2)}`;
+      const labelTextY = `ΔY = ${$vectorData.components.dy.toFixed(2)}`;
       return { position: midPointY, text: labelTextY };
     }
     return null;
@@ -98,7 +100,7 @@
     // Use derived values directly inside $derived.by
     if ($showDeltaZ && deltaIntermediateYZ && vectorEndWorld && $vectorData) {
       const midPointZ = deltaIntermediateYZ.clone().lerp(vectorEndWorld, 0.5);
-      const labelTextZ = `ΔZ: ${$vectorData.components.dz.toFixed(2)}`;
+      const labelTextZ = `ΔZ = ${$vectorData.components.dz.toFixed(2)}`;
       return { position: midPointZ, text: labelTextZ };
     }
     return null;
@@ -448,44 +450,60 @@
 {#each gridNumbers as num}
   {@const worldPos = cornerOriginOffset.clone().add(new Vector3(num.x, 0, num.z))}
   {@const numColor = num.axis === 'x' ? $xAxisColor : $zAxisColor}
-  <Billboard position={[worldPos.x, numberYOffset, worldPos.z]}>
-    <Text
-      text={num.text}
-      fontSize={0.6}
-      color={numColor}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={[worldPos.x, numberYOffset, worldPos.z]}
+    text={num.text}
+    fontSize={0.6}
+    color={numColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 {/each}
 
 <!-- Y Axis Numbers (Copied) -->
 {#each yTicks as y (y)}
   {@const worldPos = cornerOriginOffset.clone().add(new Vector3(0, y, 0))}
   {@const yNumberOffset = 0.4}
-  <Billboard position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}>
-    <Text
-      text={y.toString()}
-      fontSize={0.6}
-      color={$yAxisColor}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}
+    text={y.toString()}
+    fontSize={0.6}
+    color={$yAxisColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 {/each}
 
 <!-- Axis Labels (Copied) -->
-<Billboard position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}>
-  <Text text="X" fontSize={labelFontSizeAxis} color={$xAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
-<Billboard position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}>
-  <Text text="Y" fontSize={labelFontSizeAxis} color={$yAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
-<Billboard position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}>
-  <Text text="Z" fontSize={labelFontSizeAxis} color={$zAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
+<SceneLabel
+  position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}
+  text="X"
+  fontSize={labelFontSizeAxis}
+  color={$xAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
+<SceneLabel
+  position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}
+  text="Y"
+  fontSize={labelFontSizeAxis}
+  color={$yAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
+<SceneLabel
+  position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}
+  text="Z"
+  fontSize={labelFontSizeAxis}
+  color={$zAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
 
 <!-- Nozzle Group -->
 <T.Group position={$animatedPosition.toArray()}>
@@ -538,27 +556,25 @@
   {@const labelOffsetY = 0.5}
   {@const labelFontSize = 0.5}
   {@const startLabelText = `(${ $vectorData.start.x }, ${ $vectorData.start.y }, ${ $vectorData.start.z })`}
-  <Billboard position={[vectorStartWorld.x, vectorStartWorld.y + labelOffsetY, vectorStartWorld.z]}>
-      <Text
-        text={startLabelText}
-        fontSize={labelFontSize}
-        color={$startPointColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
-      />
-  </Billboard>
+  <SceneLabel
+    position={[vectorStartWorld.x, vectorStartWorld.y + labelOffsetY, vectorStartWorld.z]}
+    text={startLabelText}
+    fontSize={labelFontSize}
+    color={$startPointColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
   {@const endLabelText = `(${ $vectorData.end.x }, ${ $vectorData.end.y }, ${ $vectorData.end.z })`}
-  <Billboard position={[vectorEndWorld.x, vectorEndWorld.y + labelOffsetY, vectorEndWorld.z]}>
-      <Text
-        text={endLabelText}
-        fontSize={labelFontSize}
-        color={$endPointColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
-      />
-  </Billboard>
+  <SceneLabel
+    position={[vectorEndWorld.x, vectorEndWorld.y + labelOffsetY, vectorEndWorld.z]}
+    text={endLabelText}
+    fontSize={labelFontSize}
+    color={$endPointColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 
   <!-- Correct Delta Component Lines (Conditional & Refactored) -->
   {@const dashSize = 0.2}
@@ -581,39 +597,36 @@
 
   <!-- Use derived label data -->
   {#if deltaLabelXData}
-    <Billboard position={[deltaLabelXData.position.x, deltaLabelXData.position.y + deltaLabelOffsetY, deltaLabelXData.position.z]}>
-      <Text
-        text={deltaLabelXData.text}
-        fontSize={deltaLabelFontSize}
-        color={$xAxisColor}
-        anchorX="center"
-        anchorY="middle"
-      />
-    </Billboard>
+    <SceneLabel
+      position={[deltaLabelXData.position.x, deltaLabelXData.position.y + deltaLabelOffsetY, deltaLabelXData.position.z]}
+      text={deltaLabelXData.text}
+      fontSize={deltaLabelFontSize}
+      color={$xAxisColor}
+      anchorX="center"
+      anchorY="middle"
+    />
   {/if}
 
   {#if deltaLabelYData}
-     <Billboard position={[deltaLabelYData.position.x, deltaLabelYData.position.y + deltaLabelOffsetY, deltaLabelYData.position.z]}>
-       <Text
-        text={deltaLabelYData.text}
-        fontSize={deltaLabelFontSize}
-        color={$yAxisColor}
-        anchorX="center"
-        anchorY="middle"
-      />
-    </Billboard>
+     <SceneLabel
+      position={[deltaLabelYData.position.x, deltaLabelYData.position.y + deltaLabelOffsetY, deltaLabelYData.position.z]}
+      text={deltaLabelYData.text}
+      fontSize={deltaLabelFontSize}
+      color={$yAxisColor}
+      anchorX="center"
+      anchorY="middle"
+    />
   {/if}
 
   {#if deltaLabelZData}
-     <Billboard position={[deltaLabelZData.position.x, deltaLabelZData.position.y + deltaLabelOffsetY, deltaLabelZData.position.z]}>
-       <Text
-        text={deltaLabelZData.text}
-        fontSize={deltaLabelFontSize}
-        color={$zAxisColor}
-        anchorX="center"
-        anchorY="middle"
-      />
-    </Billboard>
+     <SceneLabel
+      position={[deltaLabelZData.position.x, deltaLabelZData.position.y + deltaLabelOffsetY, deltaLabelZData.position.z]}
+      text={deltaLabelZData.text}
+      fontSize={deltaLabelFontSize}
+      color={$zAxisColor}
+      anchorX="center"
+      anchorY="middle"
+    />
   {/if}
 
   <!-- Delta Lines (Refactored to use Line2) -->
@@ -629,15 +642,14 @@
 
   <!-- Magnitude Label -->
   {@const midpointPosVec = vectorStartWorld.clone().add(vectorEndWorld).multiplyScalar(0.5)}
-  <Billboard position={midpointPosVec.add(new Vector3(0, 0.4, 0)).toArray()}>
-    <Text
-      text={'Magnitude: ' + $vectorData.magnitude.toFixed(2)}
-      color={$vectorColor}
-      fontSize={0.5}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={midpointPosVec.add(new Vector3(0, 0.4, 0))}
+    text={'Magnitude = ' + $vectorData.magnitude.toFixed(2)}
+    color={$vectorColor}
+    fontSize={0.5}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 
 {/if}

@@ -68,7 +68,7 @@
     >
       <div class="section-line" aria-hidden="true"></div>
       <div class="readable-content">
-        <div class="section-header-content"> <h2 class="section-title">1.1 Coordinate Systems</h2> <p class="section-description"> Learn how coordinate systems (X, Y, Z axes, origin) provide a universal language to define precise locations in 3D space, crucial for tasks like 3D printing. </p> </div>
+        <div class="section-header-content"> <h2 class="section-title">1.1 Coordinate Systems</h2> <p class="section-description"> Learn how coordinate systems (X, Y, Z axes, origin) provide a universal language to define precise locations in 3D space, crucial for tasks like 3D printing, 3d modeling, and more. </p> </div>
         <div class="section-intro">
           <Scenario>
             <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
@@ -104,7 +104,10 @@
             <li>The <Keyword term="Y-axis" /> guides movement up and down (height).</li>
           </ul>
           <p>
-             Remember, the point where these axes meet is the <Keyword term="origin" />, the reference point (0, 0, 0). By telling the printer exactly how far to travel along each axis from this origin (e.g., "move 50 units along X, 20 units along Y, 30 units along Z"), it reaches a unique point in its workspace. These axes typically form a <Keyword term="right-handed coordinate system" />, a standard orientation used in engineering. This precise control is key! Let's help Surya and Leo master this system by calibrating their machine.
+             The point where these axes meet is known as the <Keyword term="origin" />, it is often denoted by the letter <strong>O</strong> and is the reference point (0, 0, 0).
+          </p>
+          <p>
+            By telling the printer exactly how far to travel along each axis from this origin (e.g., "move 50 units along X, 20 units along Y, 30 units along Z"), it reaches a unique point in its workspace. These axes typically form a <Keyword term="right-handed coordinate system" />, a standard orientation used in engineering. This precise control is key!
           </p>
         </div>
 
@@ -113,7 +116,7 @@
             on:calibrationComplete={handleCalibrationComplete}
           />
           <p>
-            Think back to the calibration exercise. By inputting specific <Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" /> coordinates, you directed the printer nozzle to precise locations within its 3D workspace. You saw firsthand how the <Keyword term="X-axis" /> controls horizontal movement (width), the <Keyword term="Y-axis" /> controls vertical movement (height), and the <Keyword term="Z-axis" /> controls movement in depth, all relative to the starting <Keyword term="origin" /> (0, 0, 0). Understanding how each coordinate uniquely contributes to defining a point is crucial!
+             In the calibration exercise, by inputting specific <Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" /> coordinates, you directed the printer nozzle to precise locations within its 3D workspace. You saw firsthand how the <Keyword term="X-axis" /> controls horizontal movement (width), the <Keyword term="Y-axis" /> controls vertical movement (height), and the <Keyword term="Z-axis" /> controls movement in depth, all relative to the starting <Keyword term="origin" /> (0, 0, 0). Understanding how each coordinate uniquely contributes to defining a point is crucial!
           </p>
         </div>
 

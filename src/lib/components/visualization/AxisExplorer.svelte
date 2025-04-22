@@ -1,9 +1,10 @@
 <script lang="ts">
   import { T, Canvas } from '@threlte/core';
-  import { OrbitControls, Billboard, Text } from '@threlte/extras';
+  import { OrbitControls } from '@threlte/extras';
   import { AmbientLight, ArrowHelper, BufferAttribute, BufferGeometry, Color, DirectionalLight, LineBasicMaterial, Mesh, MeshBasicMaterial, PerspectiveCamera, SphereGeometry, Vector3 } from 'three';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
+  import SceneLabel from './helpers/SceneLabel.svelte';
 
   // --- State for Colors (Initialized with defaults, updated onMount) ---
   let xAxisColor = $state(new Color('#EF5350')); // Default Red
@@ -95,47 +96,43 @@
     {@const lineMaterial = new LineBasicMaterial({ color: originColor })}
     <T.Line geometry={lineGeometry} material={lineMaterial} />
 
-    <!-- Labels using Billboard and Text (using state colors) -->
-    <Billboard position={xLabelPos.toArray()}>
-        <Text
-            text="X"
-            fontSize={labelFontSize}
-            color={xAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={yLabelPos.toArray()}>
-        <Text
-            text="Y"
-            fontSize={labelFontSize}
-            color={yAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={zLabelPos.toArray()}>
-        <Text
-            text="Z"
-            fontSize={labelFontSize}
-            color={zAxisColor}
-            anchorX="center"
-            anchorY="middle"
-            depthTest={false}
-        />
-    </Billboard>
-    <Billboard position={originLabelConnectorEndPos.toArray()} >
-        <Text
-            text="Origin (0,0,0)"
-            fontSize={originLabelFontSize}
-            color={originColor}
-            anchorX="center"
-            anchorY="bottom"
-            depthTest={false}
-        />
-    </Billboard>
+    <!-- Labels using SceneLabel (state colors are passed directly) -->
+    <SceneLabel
+        text="X axis"
+        position={xLabelPos}
+        fontSize={labelFontSize}
+        color={xAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
+    <SceneLabel
+        text="Y axis"
+        position={yLabelPos}
+        fontSize={labelFontSize}
+        color={yAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
+    <SceneLabel
+        text="Z axis"
+        position={zLabelPos}
+        fontSize={labelFontSize}
+        color={zAxisColor}
+        anchorX="center"
+        anchorY="middle"
+        depthTest={false}
+    />
+    <SceneLabel
+        text="Origin (0,0,0)"
+        position={originLabelConnectorEndPos}
+        fontSize={originLabelFontSize}
+        color={originColor}
+        anchorX="center"
+        anchorY="bottom"
+        depthTest={false}
+    />
 
   </Canvas>
 </div>

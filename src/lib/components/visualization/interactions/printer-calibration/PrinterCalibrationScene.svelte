@@ -9,8 +9,6 @@
     interactivity,
     Edges,
     Gizmo,
-    Billboard,
-    Text,
     HTML
   } from '@threlte/extras'
   import { Vector3, Group, Quaternion, Euler, Vector2, Color } from 'three'
@@ -25,6 +23,7 @@
     MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z // Import constants if defined in store
   } from '$lib/stores/calibrationState';
   import { get } from 'svelte/store'; // To read store value once
+  import SceneLabel from '../../helpers/SceneLabel.svelte';
 
   interactivity()
 
@@ -411,47 +410,63 @@
 {#each gridNumbers as num}
   {@const worldPos = cornerOriginOffset.clone().add(new Vector3(num.x, 0, num.z))}
   {@const numColor = num.axis === 'x' ? xAxisColor : zAxisColor}
-  <Billboard position={[worldPos.x, numberYOffset, worldPos.z]}>
-    <Text
-      text={num.text}
-      fontSize={0.6}
-      color={numColor}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={[worldPos.x, numberYOffset, worldPos.z]}
+    text={num.text}
+    fontSize={0.6}
+    color={numColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 {/each}
 
 <!-- Y Axis Numbers -->
 {#each yTicks as y (y)}
   {@const worldPos = cornerOriginOffset.clone().add(new Vector3(0, y, 0))}
   {@const yNumberOffset = 0.4}
-  <Billboard position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}> // Offset diagonally away
-    <Text
-      text={y.toString()}
-      fontSize={0.6}
-      color={yAxisColor}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}
+    text={y.toString()}
+    fontSize={0.6}
+    color={yAxisColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 {/each}
 
 <!-- Axis Labels -->
 <!-- X Label -->
-<Billboard position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}>
-  <Text text="X" fontSize={labelFontSize} color={xAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
+<SceneLabel
+  position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}
+  text="X"
+  fontSize={labelFontSize}
+  color={xAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
 <!-- Y Label -->
-<Billboard position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}>
-  <Text text="Y" fontSize={labelFontSize} color={yAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
+<SceneLabel
+  position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}
+  text="Y"
+  fontSize={labelFontSize}
+  color={yAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
 <!-- Z Label -->
-<Billboard position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}>
-  <Text text="Z" fontSize={labelFontSize} color={zAxisColor} anchorX="center" anchorY="middle" depthTest={false} />
-</Billboard>
+<SceneLabel
+  position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}
+  text="Z"
+  fontSize={labelFontSize}
+  color={zAxisColor}
+  anchorX="center"
+  anchorY="middle"
+  depthTest={false}
+/>
 
 <!-- Target Point Markers -->
 {#each targetDetails as target (target.id)}
@@ -482,14 +497,13 @@
   {/if}
 
   <!-- Target Label (shows ID initially, coords when hit) -->
-  <Billboard position={[target.worldPos.x, target.worldPos.y + labelOffsetY, target.worldPos.z + labelOffsetZ]}>
-    <Text
-      text={isHit ? coordinateText : target.id}
-      fontSize={labelFontSize}
-      color={labelColor}
-      anchorX="center"
-      anchorY="middle"
-      depthTest={false}
-    />
-  </Billboard>
+  <SceneLabel
+    position={[target.worldPos.x, target.worldPos.y + labelOffsetY, target.worldPos.z + labelOffsetZ]}
+    text={isHit ? coordinateText : target.id}
+    fontSize={labelFontSize}
+    color={labelColor}
+    anchorX="center"
+    anchorY="middle"
+    depthTest={false}
+  />
 {/each}
