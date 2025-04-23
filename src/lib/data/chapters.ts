@@ -2,6 +2,7 @@
 export interface Section {
   id: string;
   title: string;
+  slug: string; // Add a URL-friendly slug for routing
 }
 
 // Define the structure for a chapter
@@ -22,10 +23,9 @@ export const chapters: Chapter[] = [
     slug: 'understanding-3d-space',
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
-      { id: "introduction", title: "Introduction" },
-      { id: "coordinate-systems", title: "1.1 Coordinate Systems" },
-      { id: "vectors-and-components", title: "1.2 Vectors and Components" },
-      { id: "vector-operations", title: "1.3 Vector Operations" }
+      { id: "coordinate-systems", title: "1.1 Coordinate Systems", slug: "coordinate-systems" },
+      { id: "vectors-and-components", title: "1.2 Vectors and Components", slug: "vectors-and-components" },
+      { id: "vector-operations", title: "1.3 Vector Operations", slug: "vector-operations" }
     ],
     prevChapter: null,
     nextChapter: 'kinematics',
@@ -36,10 +36,10 @@ export const chapters: Chapter[] = [
     slug: 'kinematics',
     description: 'Describing motion in 1D, 2D, and 3D.',
     sections: [
-        { id: "displacement-velocity", title: "2.1 Displacement & Velocity" },
-        { id: "acceleration", title: "2.2 Acceleration" },
-        { id: "projectile-motion", title: "2.3 Projectile Motion" },
-        { id: "relative-motion", title: "2.4 Relative Motion" }
+        { id: "displacement-velocity", title: "2.1 Displacement & Velocity", slug: "displacement-velocity" },
+        { id: "acceleration", title: "2.2 Acceleration", slug: "acceleration" },
+        { id: "projectile-motion", title: "2.3 Projectile Motion", slug: "projectile-motion" },
+        { id: "relative-motion", title: "2.4 Relative Motion", slug: "relative-motion" }
     ],
     prevChapter: 'understanding-3d-space',
     nextChapter: 'dynamics',
@@ -131,11 +131,11 @@ export function getChapterByNumber(chapterNumber: number): Chapter | undefined {
 // For simplified navigation needs (sidebar, TOC) - returns a structure Navigation.svelte can use
 export function getChapterList() {
   // Note: This returns a slightly different structure than the main Chapter interface
-  // It maps sections to {id, title} which Navigation.svelte expects
+  // It maps sections to {id, title, slug} which Navigation.svelte expects
   return chapters.map(({ title, slug, sections, description }) => ({
     title,
     slug,
-    sections: sections.map(sec => ({ id: sec.id, title: sec.title })),
+    sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug })),
     description // Include description if needed by the component
   }));
 }

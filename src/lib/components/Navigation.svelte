@@ -6,7 +6,7 @@
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { browser } from '$app/environment';
-  import { getChapterList } from '$lib/data/chapters';
+  import { getChapterList, chapters as allChapters } from '$lib/data/chapters';
 
   // Add prop for initial chapter slug
   export let currentChapterSlug: string | null = null;
@@ -18,6 +18,7 @@
   interface SectionItem {
     id: string;
     title: string;
+    slug: string;
   }
 
   const iconSize = 18;
@@ -95,10 +96,26 @@
 
   function handleSectionClick(chapterSlug: string, sectionId: string): void {
     if ($currentChapter === chapterSlug) {
-      scrollToSection(sectionId);
+      // Find the section slug from the id
+      const chapter = allChapters.find(ch => ch.slug === chapterSlug);
+      const section = chapter?.sections.find(sec => sec.id === sectionId);
+
+      if (section && browser) {
+        // Navigate to the section page instead of scrolling
+        window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
+      }
     } else {
       if (browser) {
-        window.location.href = `/chapter/${chapterSlug}#${sectionId}`;
+        // Find the section slug
+        const chapter = allChapters.find(ch => ch.slug === chapterSlug);
+        const section = chapter?.sections.find(sec => sec.id === sectionId);
+
+        if (section) {
+          window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
+        } else {
+          // Fallback to chapter page if section not found
+          window.location.href = `/chapter/${chapterSlug}`;
+        }
       }
     }
   }
@@ -232,7 +249,7 @@
               {#each chapter.sections || [] as section}
                 <li class="section-item">
                   <a
-                    href={`/chapter/${chapter.slug}#${section.id}`}
+                    href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
                     on:click|preventDefault|stopPropagation={() => handleSectionClick(chapter.slug, section.id)}
                   >
