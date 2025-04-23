@@ -3,41 +3,34 @@ import { getChapterBySlug } from '$lib/data/chapters';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
-  const { slug } = params;
-  const chapterData = getChapterBySlug(slug);
+  const chapter = getChapterBySlug(params.slug);
 
-  // If chapter not found, throw 404 error
-  if (!chapterData) {
-    throw error(404, 'Chapter not found');
+  if (!chapter) {
+    throw error(404, `Chapter not found: ${params.slug}`);
   }
 
-  // Add a check for the new property for safety
-  if (typeof chapterData.chapterNumber !== 'number') {
-    console.error(`Chapter data for slug "${slug}" is missing 'chapterNumber'.`);
-    // You could throw an error here or assign a default theme
-    throw error(500, `Chapter data for slug "${slug}" is misconfigured.`);
-  }
+  // Remove the dynamic import for chapterContent
+  // let chapterContent = null;
+  // try {
+  //   const module = await import(/* @vite-ignore */ `../../../lib/content/chapters/${params.slug}.svelte`);
+  //   chapterContent = module.default;
+  // } catch (e) {
+  //   console.error(`Failed to load chapter content for ${params.slug}:`, e);
+  //   // Keep chapterContent as null, the ChapterTemplate will handle the intro display
+  // }
 
-  try {
-    // Dynamically import the chapter content component
-    // Alternatively, this could be a Markdown file if that approach is preferred
-    const chapterContentModule = await import(`../../../lib/content/chapters/${slug}.svelte`);
-    const ChapterContent = chapterContentModule.default;
-
-    return {
-      slug,
-      title: chapterData.title,
-      sections: chapterData.sections,
-      prevChapter: chapterData.prevChapter,
-      nextChapter: chapterData.nextChapter,
-      // Use the reliable chapterNumber property
-      themeClass: `chapter-${chapterData.chapterNumber}-theme`,
-      ChapterContent,
-      chapterNumber: chapterData.chapterNumber,
-      intro: chapterData.intro || '' // Add intro data
-    };
-  } catch (e) {
-    console.error(`Failed to load chapter content for ${slug}:`, e);
-    throw error(500, 'Failed to load chapter content');
-  }
+  return {
+    chapter,
+    // chapterContent, // Remove chapterContent from the return value
+    chapterNumber: chapter.chapterNumber, // Use chapterNumber instead of number
+    chapterTitle: chapter.title,
+    chapterIntro: chapter.intro, // Pass the intro text
+    chapterSections: chapter.sections,
+    currentChapterSlug: params.slug,
+    // Explicitly pass prev/next chapter data if it exists on the chapter object
+    prevChapter: chapter.prevChapter || null,
+    nextChapter: chapter.nextChapter || null,
+    // Calculate and add themeClass based on chapter number
+    themeClass: `chapter-${chapter.chapterNumber}-theme`
+  };
 };

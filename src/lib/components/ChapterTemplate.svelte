@@ -22,7 +22,7 @@
   export let chapterNumber: string = '';
 
   // Get the first section to direct users there
-  $: firstSection = chapterSections.length > 0 ? chapterSections[0] : null;
+  $: firstSection = Array.isArray(chapterSections) && chapterSections.length > 0 ? chapterSections[0] : null;
 
   // Format chapter objects if they're strings
   $: prevChapterObj = typeof prevChapter === 'string'
@@ -61,7 +61,7 @@
       <div class="chapter-overview">
         <p class="section-intro">This chapter covers the following topics:</p>
         <div class="section-list">
-          {#each chapterSections as section, index}
+          {#each chapterSections || [] as section, index}
             <a href="/chapter/{currentChapterSlug}/{section.slug}" class="section-card">
               <div class="section-content">
                 <h2>{section.title}</h2>
