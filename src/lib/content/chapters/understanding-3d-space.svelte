@@ -167,14 +167,13 @@
           </p>
 
           <FormulaAccordion>
-            <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\vec{V}'}</Katex> with components <Katex>{'\textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>
+            <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\\\\vec{V}'}</Katex> with components <Katex>{'\\\\textcolor{#EF5350}{V_x}, \\\\textcolor{#66BB6A}{V_y}, \\\\textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>
             <p>
-                <Katex displayMode>{'||\vec{V}|| = \sqrt{\textcolor{#EF5350}{V_x}^2 + \textcolor{#66BB6A}{V_y}^2 + \textcolor{#2C8FFF}{V_z}^2}'}</Katex>
+                <Katex displayMode>{'\\\\|\\\\vec{V}\\\\| = \\\\sqrt{{\\\\textcolor{#EF5350}{V_x}}^2 + {\\\\textcolor{#66BB6A}{V_y}}^2 + {\\\\textcolor{#2C8FFF}{V_z}}^2}'}</Katex>
             </p>
             <p>(Calculation details coming soon!)</p>
           </FormulaAccordion>
 
-          <VectorBuilderExercise />
 
           <p>
             Changing the arrow's start or end points alters its length and direction. This visual helps, but for precision, we need numbers: <Keyword term="components" />.
@@ -182,26 +181,28 @@
 
           <h3>Describing Vectors Precisely: Components & Notation</h3>
           <p>
-            To work with vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
+            To work with vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\\\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\\\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\\\\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
           </p>
           <p>
             Calculate components using the tail <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex> coordinates:
           </p>
           <ul>
-            <li><Katex>{'\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
-            <li><Katex>{'\textcolor{#66BB6A}{V_y} = y_2 - y_1'}</Katex> (Change in Y)</li>
-            <li><Katex>{'\textcolor{#2C8FFF}{V_z} = z_2 - z_1'}</Katex> (Change in Z)</li>
+            <li><Katex>{'\\\\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
+            <li><Katex>{'\\\\textcolor{#66BB6A}{V_y} = y_2 - y_1'}</Katex> (Change in Y)</li>
+            <li><Katex>{'\\\\textcolor{#2C8FFF}{V_z} = z_2 - z_1'}</Katex> (Change in Z)</li>
           </ul>
           <p>
-            Common notations for vector <Katex>{'\vec{V}'}</Katex> using components:
+            Common notations for vector <Katex>{'\\\\vec{V}'}</Katex> using components:
           </p>
           <ul>
-            <li>Angle Bracket Notation: <Katex>{'\vec{V} = \langle \textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z} \rangle'}</Katex></li>
-            <li>Parentheses Notation: <Katex>{'\vec{V} = (\textcolor{#EF5350}{V_x}, \textcolor{#66BB6A}{V_y}, \textcolor{#2C8FFF}{V_z})'}</Katex></li>
+            <li>Angle Bracket Notation: <Katex>{'\\\\vec{V} = \\\\langle \\\\textcolor{#EF5350}{V_x}, \\\\textcolor{#66BB6A}{V_y}, \\\\textcolor{#2C8FFF}{V_z} \\\\rangle'}</Katex></li>
+            <li>Parentheses Notation: <Katex>{'\\\\vec{V} = (\\\\textcolor{#EF5350}{V_x}, \\\\textcolor{#66BB6A}{V_y}, \\\\textcolor{#2C8FFF}{V_z})'}</Katex></li>
           </ul>
           <p>
             The <Keyword term="Vector Builder" /> exercise shows these components and notation update as you adjust the vector. This numerical form is vital for calculations.
           </p>
+
+          <VectorBuilderExercise />
 
           <h3>An Alternative Language: Unit Vector Notation</h3>
           <p>
@@ -211,21 +212,21 @@
             A <Keyword term="unit vector" /> has a magnitude of exactly 1 and indicates direction. The <Keyword term="standard basis vectors" /> point along the positive axes:
           </p>
           <ul>
-            <li><Katex>{'\textcolor{#EF5350}{\hat{\mathbf{i}}} = \langle 1, 0, 0 \rangle'}</Katex> (Positive X-axis direction)</li>
-            <li><Katex>{'\textcolor{#66BB6A}{\hat{\mathbf{j}}} = \langle 0, 1, 0 \rangle'}</Katex> (Positive Y-axis direction)</li>
-            <li><Katex>{'\textcolor{#2C8FFF}{\hat{\mathbf{k}}} = \langle 0, 0, 1 \rangle'}</Katex> (Positive Z-axis direction)</li>
+            <li><Katex>{'\\\\textcolor{#EF5350}{\\\\hat{\\\\mathbf{i}}} = \\\\langle 1, 0, 0 \\\\rangle'}</Katex> (Positive X-axis direction)</li>
+            <li><Katex>{'\\\\textcolor{#66BB6A}{\\\\hat{\\\\mathbf{j}}} = \\\\langle 0, 1, 0 \\\\rangle'}</Katex> (Positive Y-axis direction)</li>
+            <li><Katex>{'\\\\textcolor{#2C8FFF}{\\\\hat{\\\\mathbf{k}}} = \\\\langle 0, 0, 1 \\\\rangle'}</Katex> (Positive Z-axis direction)</li>
           </ul>
           <p>
-             (Note: Sometimes written as bold **i**, **j**, **k** without the hat <Katex>{'\hat{}'}</Katex>.)
+             (Note: Sometimes written as bold **i**, **j**, **k** without the hat <Katex>{'\\\\hat{}'}</Katex>.)
           </p>
           <p>
-            Any vector <Katex>{'\vec{V}'}</Katex> can be written as a sum ("linear combination") of components times their corresponding unit vectors:
+            Any vector <Katex>{'\\\\vec{V}'}</Katex> can be written as a sum ("linear combination") of components times their corresponding unit vectors:
           </p>
           <p>
-             <Katex displayMode>{'\vec{V} = \textcolor{#EF5350}{V_x}\textcolor{#EF5350}{\hat{\mathbf{i}}} + \textcolor{#66BB6A}{V_y}\textcolor{#66BB6A}{\hat{\mathbf{j}}} + \textcolor{#2C8FFF}{V_z}\textcolor{#2C8FFF}{\hat{\mathbf{k}}}'}</Katex>
+             <Katex displayMode>{'\\\\vec{V} = \\\\textcolor{#EF5350}{V_x}\\\\textcolor{#EF5350}{\\\\hat{\\\\mathbf{i}}} + \\\\textcolor{#66BB6A}{V_y}\\\\textcolor{#66BB6A}{\\\\hat{\\\\mathbf{j}}} + \\\\textcolor{#2C8FFF}{V_z}\\\\textcolor{#2C8FFF}{\\\\hat{\\\\mathbf{k}}}'}</Katex>
           </p>
           <p>
-            This clearly shows the vector's extent along each axis. Example: <Katex>{'\langle 2, -3, 5 \rangle'}</Katex> is also <Katex>{'2\textcolor{#EF5350}{\hat{\mathbf{i}}} - 3\textcolor{#66BB6A}{\hat{\mathbf{j}}} + 5\textcolor{#2C8FFF}{\hat{\mathbf{k}}}'}</Katex>.
+            This clearly shows the vector's extent along each axis. Example: <Katex>{'\\\\langle 2, -3, 5 \\\\rangle'}</Katex> is also <Katex>{'2\\\\textcolor{#EF5350}{\\\\hat{\\\\mathbf{i}}} - 3\\\\textcolor{#66BB6A}{\\\\hat{\\\\mathbf{j}}} + 5\\\\textcolor{#2C8FFF}{\\\\hat{\\\\mathbf{k}}}'}</Katex>.
           </p>
 
           <h4>Notation in Different Fields</h4>
@@ -233,8 +234,8 @@
             Vector representation varies by field:
           </p>
           <ul>
-            <li><strong>Physics & Engineering:</strong> Often use <Katex>{'\hat{\mathbf{i}}, \hat{\mathbf{j}}, \hat{\mathbf{k}}'}</Katex> notation (good for forces, velocities).</li>
-            <li><strong>Computer Science & Graphics:</strong> Often use component form <Katex>{'\langle x, y, z \rangle'}</Katex> or <Katex>{'(x, y, z)'}</Katex> (good for points, directions in code).</li>
+            <li><strong>Physics & Engineering:</strong> Often use <Katex>{'\\\\hat{\\\\mathbf{i}}, \\\\hat{\\\\mathbf{j}}, \\\\hat{\\\\mathbf{k}}'}</Katex> notation (good for forces, velocities).</li>
+            <li><strong>Computer Science & Graphics:</strong> Often use component form <Katex>{'\\\\langle x, y, z \\\\rangle'}</Katex> or <Katex>{'(x, y, z)'}</Katex> (good for points, directions in code).</li>
           </ul>
           <p>
             Both notations represent the same concept: a quantity with magnitude and direction. Familiarity with both is useful.
@@ -270,7 +271,7 @@
           </p>
           <!-- Scenario kept, content can be adjusted later if needed -->
           <Scenario>
-            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, vectors describe movement like <Katex>{"\\vec{v}"}</Katex> or forces like <Katex>{"\\vec{F}"}</Katex>. But what if there are *multiple* forces, or something changes speed *and* direction?</p>
+            <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, vectors describe movement like <Katex>{"\\\\vec{v}"}</Katex> or forces like <Katex>{"\\\\vec{F}"}</Katex>. But what if there are *multiple* forces, or something changes speed *and* direction?</p>
             <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Great question! That's exactly why we need vector operations. They give us the mathematical tools to combine vectors (like adding forces) or scale them (like relating force to acceleration).</p>
            </Scenario>
 
@@ -288,7 +289,7 @@
           <p>
              Numerically, we add the corresponding components of the vectors:
              <Katex displayMode>
-               {"\\vec{A} + \\vec{B} = \\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
+               {"\\\\vec{A} + \\\\vec{B} = \\\\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
              </Katex>
           </p>
           <h5>Utility</h5>
@@ -301,20 +302,20 @@
           <h4>Subtraction</h4>
           <h5>Concept</h5>
            <p>
-             Subtracting a vector <Katex>{"\\vec{B}"}</Katex> from <Katex>{"\\vec{A}"}</Katex> is the same as adding the negative of <Katex>{"\\vec{B}"}</Katex> (a vector with the same magnitude but opposite direction).
+             Subtracting a vector <Katex>{"\\\\vec{B}"}</Katex> from <Katex>{"\\\\vec{A}"}</Katex> is the same as adding the negative of <Katex>{"\\\\vec{B}"}</Katex> (a vector with the same magnitude but opposite direction).
            </p>
           <p>
             Numerically, we subtract the corresponding components:
             <Katex displayMode>
-              {"\\vec{A} - \\vec{B} = \\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
+              {"\\\\vec{A} - \\\\vec{B} = \\\\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
             </Katex>
           </p>
            <p>
-             Graphically, subtraction <Katex>{"\\vec{A} - \\vec{B}"}</Katex> is often visualized by placing the vectors tail-to-tail. The resultant vector points from the head of <Katex>{"\\vec{B}"}</Katex> to the head of <Katex>{"\\vec{A}"}</Katex>. This shows the change needed to get from <Katex>{"\\vec{B}"}</Katex> to <Katex>{"\\vec{A}"}</Katex> (since <Katex>{"\\vec{B} + (\\vec{A} - \\vec{B}) = \\vec{A}"}</Katex>).
+             Graphically, subtraction <Katex>{"\\\\vec{A} - \\\\vec{B}"}</Katex> is often visualized by placing the vectors tail-to-tail. The resultant vector points from the head of <Katex>{"\\\\vec{B}"}</Katex> to the head of <Katex>{"\\\\vec{A}"}</Katex>. This shows the change needed to get from <Katex>{"\\\\vec{B}"}</Katex> to <Katex>{"\\\\vec{A}"}</Katex> (since <Katex>{"\\\\vec{B} + (\\\\vec{A} - \\\\vec{B}) = \\\\vec{A}"}</Katex>).
            </p>
           <h5>Utility</h5>
           <ul>
-            <li>Finding the change in velocity (<Keyword term="acceleration" /> is related to this): <Katex>{"\\Delta\\vec{v} = \\vec{v}_f - \\vec{v}_i"}</Katex>.</li>
+            <li>Finding the change in velocity (<Keyword term="acceleration" /> is related to this): <Katex>{"\\\\Delta\\\\vec{v} = \\\\vec{v}_f - \\\\vec{v}_i"}</Katex>.</li>
             <li>Determining relative position vectors.</li>
           </ul>
 
@@ -334,21 +335,21 @@
           <p>This operation scales a vector, changing its magnitude and potentially reversing its direction.</p>
           <h4>Concept</h4>
           <p>
-            Multiplying a vector <Katex>{"\\vec{A}"}</Katex> by a scalar (a regular number) <Katex>c</Katex> multiplies each component by <Katex>c</Katex>:
+            Multiplying a vector <Katex>{"\\\\vec{A}"}</Katex> by a scalar (a regular number) <Katex>c</Katex> multiplies each component by <Katex>c</Katex>:
             <Katex displayMode>
-              {"c\\vec{A} = \\langle cA_x, cA_y, cA_z \\rangle"}
+              {"c\\\\vec{A} = \\\\langle cA_x, cA_y, cA_z \\rangle"}
             </Katex>
           </p>
           <ul>
              <li>If <Katex>{"c > 0"}</Katex>, the vector's magnitude is scaled by <Katex>c</Katex>, and its direction remains the same.</li>
              <li>If <Katex>{"c < 0"}</Katex>, the vector's magnitude is scaled by <Katex>{"|c|"}</Katex>, and its direction is reversed (flipped 180°).</li>
-             <li>If <Katex>{"c = 0"}</Katex>, the result is the zero vector <Katex>{"\\langle 0, 0, 0 \\rangle"}</Katex>.</li>
+             <li>If <Katex>{"c = 0"}</Katex>, the result is the zero vector <Katex>{"\\\\langle 0, 0, 0 \\rangle"}</Katex>.</li>
           </ul>
           <h4>Utility</h4>
           <ul>
-             <li>Relating <Keyword term="force" /> and <Keyword term="acceleration" /> via mass (<Katex>{"\\vec{F} = m\\vec{a}"}</Katex>).</li>
-             <li>Relating <Keyword term="velocity" /> and <Keyword term="momentum" /> via mass (<Katex>{"\\vec{p} = m\\vec{v}"}</Katex>).</li>
-             <li>Creating <Keyword term="unit vectors" />: A unit vector <Katex>{"\\hat{u}"}</Katex> in the same direction as <Katex>{"\\vec{u}"}</Katex> is found by <Katex>{"\\hat{u} = \\frac{1}{\\|\\vec{u}\\|}\\vec{u}"}</Katex>. This involves scalar multiplication by <Katex>{"1/\\|\\vec{u}\\|"}</Katex>.</li>
+             <li>Relating <Keyword term="force" /> and <Keyword term="acceleration" /> via mass (<Katex>{"\\\\vec{F} = m\\\\vec{a}"}</Katex>).</li>
+             <li>Relating <Keyword term="velocity" /> and <Keyword term="momentum" /> via mass (<Katex>{"\\\\vec{p} = m\\\\vec{v}"}</Katex>).</li>
+             <li>Creating <Keyword term="unit vectors" />: A unit vector <Katex>{"\\\\hat{u}"}</Katex> in the same direction as <Katex>{"\\\\vec{u}"}</Katex> is found by <Katex>{"\\\\hat{u} = \\\\frac{1}{\\\\||\\\\vec{u}\\\\||}\\\\vec{u}"}</Katex>. This involves scalar multiplication by <Katex>{"1/\\\\||\\\\vec{u}\\\\||"}</Katex>.</li>
           </ul>
 
           <!-- Placeholder for Scalar Multiplication Visualization -->
@@ -367,24 +368,24 @@
           <p>The dot product combines two vectors to produce a single scalar value. It relates to how much one vector points along the direction of another.</p>
           <h4>Concept</h4>
           <p>
-            The dot product of vectors <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex> is defined in two ways:
+            The dot product of vectors <Katex>{"\\\\vec{A}"}</Katex> and <Katex>{"\\\\vec{B}"}</Katex> is defined in two ways:
           </p>
           <ol>
-             <li>Geometrically: <Katex>{"\\vec{A} \\cdot \\vec{B} = \\|\\vec{A}\\| \\|\\vec{B}\\| \\cos \\theta"}</Katex>, where <Katex>{"\\theta"}</Katex> is the angle between the vectors when placed tail-to-tail (<Katex>{"0 \\le \\theta \\le 180^\\circ"}</Katex>).</li>
-             <li>Algebraically (using components): <Katex>{"\\vec{A} \\cdot \\vec{B} = A_x B_x + A_y B_y + A_z B_z"}</Katex>.</li>
+             <li>Geometrically: <Katex>{"\\\\vec{A} \\\\cdot \\\\vec{B} = \\\\||\\\\vec{A}\\\\|| \\\\||\\\\vec{B}\\\\|| \\\\cos \\\\theta"}</Katex>, where <Katex>{"\\\\theta"}</Katex> is the angle between the vectors when placed tail-to-tail (<Katex>{"0 \\\\le \\\\theta \\\\le 180^\\\\circ"}</Katex>).</li>
+             <li>Algebraically (using components): <Katex>{"\\\\vec{A} \\\\cdot \\\\vec{B} = A_x B_x + A_y B_y + A_z B_z"}</Katex>.</li>
           </ol>
            <p>Key properties:</p>
            <ul>
-             <li>If the vectors are perpendicular (<Katex>{"\\theta = 90^\\circ"}</Katex>), <Katex>{"\\cos 90^\\circ = 0"}</Katex>, so their dot product is 0.</li>
-             <li>If the vectors are parallel (<Katex>{"\\theta = 0^\\circ"}</Katex>), <Katex>{"\\cos 0^\\circ = 1"}</Katex>, the dot product is the product of their magnitudes: <Katex>{"\\|\\vec{A}\\| \\|\\vec{B}\\|"}</Katex>.</li>
-             <li>If they point in opposite directions (<Katex>{"\\theta = 180^\\circ"}</Katex>), <Katex>{"\\cos 180^\\circ = -1"}</Katex>, the dot product is <Katex>{"-\\|\\vec{A}\\| \\|\\vec{B}\\|"}</Katex>.</li>
-             <li>The dot product is commutative: <Katex>{"\\vec{A} \\cdot \\vec{B} = \\vec{B} \\cdot \\vec{A}"}</Katex>.</li>
+             <li>If the vectors are perpendicular (<Katex>{"\\\\theta = 90^\\\\circ"}</Katex>), <Katex>{"\\\\cos 90^\\\\circ = 0"}</Katex>, so their dot product is 0.</li>
+             <li>If the vectors are parallel (<Katex>{"\\\\theta = 0^\\\\circ"}</Katex>), <Katex>{"\\\\cos 0^\\\\circ = 1"}</Katex>, the dot product is the product of their magnitudes: <Katex>{"\\\\||\\\\vec{A}\\\\|| \\\\||\\\\vec{B}\\\\||"}</Katex>.</li>
+             <li>If they point in opposite directions (<Katex>{"\\\\theta = 180^\\\\circ"}</Katex>), <Katex>{"\\\\cos 180^\\\\circ = -1"}</Katex>, the dot product is <Katex>{"-\\\\||\\\\vec{A}\\\\|| \\\\||\\\\vec{B}\\\\||"}</Katex>.</li>
+             <li>The dot product is commutative: <Katex>{"\\\\vec{A} \\\\cdot \\\\vec{B} = \\\\vec{B} \\\\cdot \\\\vec{A}"}</Katex>.</li>
            </ul>
           <h4>Utility</h4>
           <p>Brief examples of where the dot product is used:</p>
           <ul>
-             <li>Calculating <Keyword term="Work" /> done by a constant force: <Katex>{"W = \\vec{F} \\cdot \\vec{d}"}</Katex>.</li>
-             <li>Finding the angle between two vectors: <Katex>{"\\theta = \\arccos\\left(\\frac{\\vec{A} \\cdot \\vec{B}}{\\|\\vec{A}\\| \\|\\vec{B}\\|}\\right)"}</Katex>.</li>
+             <li>Calculating <Keyword term="Work" /> done by a constant force: <Katex>{"W = \\\\vec{F} \\\\cdot \\\\vec{d}"}</Katex>.</li>
+             <li>Finding the angle between two vectors: <Katex>{"\\\\theta = \\\\arccos\\\\left(\\\\frac{\\\\vec{A} \\\\cdot \\\\vec{B}}{\\\\||\\\\vec{A}\\\\|| \\\\||\\\\vec{B}\\\\||}\\\\right)"}</Katex>.</li>
              <li>Determining the <Keyword term="projection" /> of one vector onto another (finding the component of one vector along the direction of another).</li>
           </ul>
 
@@ -396,19 +397,19 @@
           <p>The cross product combines two vectors in 3D space to produce a new *vector* that is perpendicular to both original vectors. This operation is inherently three-dimensional.</p>
           <h4>Concept</h4>
            <p>
-             The cross product of <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>, denoted <Katex>{"\\vec{A} \\times \\vec{B}"}</Katex>, results in a vector <Katex>{"\\vec{C}"}</Katex>.
+             The cross product of <Katex>{"\\\\vec{A}"}</Katex> and <Katex>{"\\\\vec{B}"}</Katex>, denoted <Katex>{"\\\\vec{A} \\\\times \\\\vec{B}"}</Katex>, results in a vector <Katex>{"\\\\vec{C}"}</Katex>.
            </p>
            <ul>
-             <li><strong>Magnitude:</strong> The magnitude of the resulting vector is <Katex>{"\\|\\vec{A} \\times \\vec{B}\\| = \\|\\vec{A}\\| \\|\\vec{B}\\| \\sin \\theta"}</Katex>, where <Katex>{"\\theta"}</Katex> is the angle between <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex> (<Katex>{"0 \\le \\theta \\le 180^\\circ"}</Katex>). This magnitude is equal to the area of the parallelogram formed by <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>.</li>
-             <li><strong>Direction:</strong> The direction of <Katex>{"\\vec{C} = \\vec{A} \\times \\vec{B}"}</Katex> is perpendicular to the plane containing <Katex>{"\\vec{A}"}</Katex> and <Katex>{"\\vec{B}"}</Katex>, determined by the <Keyword term="Right-Hand Rule" />. (Point fingers of right hand along <Katex>{"\\vec{A}"}</Katex>, curl towards <Katex>{"\\vec{B}"}</Katex>; thumb points in direction of <Katex>{"\\vec{A} \\times \\vec{B}"}</Katex>).</li>
+             <li><strong>Magnitude:</strong> The magnitude of the resulting vector is <Katex>{"\\\\||\\\\vec{A} \\\\times \\\\vec{B}\\\\|| = \\\\||\\\\vec{A}\\\\|| \\\\||\\\\vec{B}\\\\|| \\\\sin \\\\theta"}</Katex>, where <Katex>{"\\\\theta"}</Katex> is the angle between <Katex>{"\\\\vec{A}"}</Katex> and <Katex>{"\\\\vec{B}"}</Katex> (<Katex>{"0 \\\\le \\\\theta \\\\le 180^\\\\circ"}</Katex>). This magnitude is equal to the area of the parallelogram formed by <Katex>{"\\\\vec{A}"}</Katex> and <Katex>{"\\\\vec{B}"}</Katex>.</li>
+             <li><strong>Direction:</strong> The direction of <Katex>{"\\\\vec{C} = \\\\vec{A} \\\\times \\\\vec{B}"}</Katex> is perpendicular to the plane containing <Katex>{"\\\\vec{A}"}</Katex> and <Katex>{"\\\\vec{B}"}</Katex>, determined by the <Keyword term="Right-Hand Rule" />. (Point fingers of right hand along <Katex>{"\\\\vec{A}"}</Katex>, curl towards <Katex>{"\\\\vec{B}"}</Katex>; thumb points in direction of <Katex>{"\\\\vec{A} \\\\times \\\\vec{B}"}</Katex>).</li>
            </ul>
            <p>Key properties:</p>
            <ul>
-             <li>The cross product is zero if the vectors are parallel or anti-parallel (<Katex>{"\\sin 0^\\circ = \\sin 180^\\circ = 0"}</Katex>).</li>
-             <li>The cross product is anti-commutative: <Katex>{"\\vec{A} \\times \\vec{B} = -(\\vec{B} \\times \\vec{A})"}</Katex>. Switching the order reverses the direction of the resulting vector.</li>
+             <li>The cross product is zero if the vectors are parallel or anti-parallel (<Katex>{"\\\\sin 0^\\\\circ = \\\\sin 180^\\\\circ = 0"}</Katex>).</li>
+             <li>The cross product is anti-commutative: <Katex>{"\\\\vec{A} \\\\times \\\\vec{B} = -(\\\\vec{B} \\\\times \\\\vec{A})"}</Katex>. Switching the order reverses the direction of the resulting vector.</li>
              <li>The component calculation is more complex: <br>
                <Katex displayMode>
-                 {"\\vec{A} \\times \\vec{B} = \\langle (A_y B_z - A_z B_y), (A_z B_x - A_x B_z), (A_x B_y - A_y B_x) \\rangle"}
+                 {"\\\\vec{A} \\\\times \\\\vec{B} = \\\\langle (A_y B_z - A_z B_y), (A_z B_x - A_x B_z), (A_x B_y - A_y B_x) \\\\rangle"}
                </Katex>
                (Often computed using determinants, but we'll focus on the geometric meaning here).
              </li>
@@ -416,9 +417,9 @@
           <h4>Utility</h4>
           <p>Brief examples of where the cross product is used:</p>
           <ul>
-            <li>Calculating <Keyword term="Torque" />: <Katex>{"\\vec{\\tau} = \\vec{r} \\times \\vec{F}"}</Katex>.</li>
-            <li>Calculating <Keyword term="Angular Momentum" />: <Katex>{"\\vec{L} = \\vec{r} \\times \\vec{p}"}</Katex>.</li>
-            <li>Calculating the magnetic force on a moving charge: <Katex>{"\\vec{F}_B = q(\\vec{v} \\times \\vec{B})"}</Katex>.</li>
+            <li>Calculating <Keyword term="Torque" />: <Katex>{"\\\\vec{\\\\tau} = \\\\vec{r} \\\\times \\\\vec{F}"}</Katex>.</li>
+            <li>Calculating <Keyword term="Angular Momentum" />: <Katex>{"\\\\vec{L} = \\\\vec{r} \\\\times \\\\vec{p}"}</Katex>.</li>
+            <li>Calculating the magnetic force on a moving charge: <Katex>{"\\\\vec{F}_B = q(\\\\vec{v} \\\\times \\\\vec{B})"}</Katex>.</li>
             <li>Finding a vector normal (perpendicular) to a plane defined by two vectors.</li>
           </ul>
 
