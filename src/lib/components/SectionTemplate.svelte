@@ -1,6 +1,7 @@
 <script lang="ts">
   import { currentSection } from '$lib/stores/appState';
   import Footer from '$lib/components/Footer.svelte';
+  import PageNav from '$lib/components/PageNav.svelte';
   import { getChapterBySlug } from '$lib/data/chapters';
   import '$lib/styles/chapter-styles.scss';
   import { onMount } from 'svelte';
@@ -44,6 +45,10 @@
   // Handle chapter changes if last or first section
   $: prevChapterSlug = sectionIndex === 0 ? chapter?.prevChapter : null;
   $: nextChapterSlug = sectionIndex === (chapter?.sections.length ?? 0) - 1 ? chapter?.nextChapter : null;
+
+  // Get previous and next chapter objects for navigation
+  $: prevChapterObj = prevChapterSlug ? { slug: prevChapterSlug, title: getChapterBySlug(prevChapterSlug)?.title || 'Previous Chapter' } : null;
+  $: nextChapterObj = nextChapterSlug ? { slug: nextChapterSlug, title: getChapterBySlug(nextChapterSlug)?.title || 'Next Chapter' } : null;
 </script>
 
 <svelte:options namespace="html" />
@@ -54,35 +59,29 @@
 
 <div class="section {themeClass}">
   <div class="container">
-    <nav class="section-nav">
-      <div class="prev-next-links">
-        {#if prevSection}
-          <a href="/chapter/{chapterSlug}/{prevSection.slug}" class="prev-link">
-            Previous: {prevSection.title}
-          </a>
-        {:else if prevChapterSlug}
-          <a href="/chapter/{prevChapterSlug}" class="prev-link">
-            Previous Chapter
-          </a>
-        {/if}
-
-        {#if nextSection}
-          <a href="/chapter/{chapterSlug}/{nextSection.slug}" class="next-link">
-            Next: {nextSection.title}
-          </a>
-        {:else if nextChapterSlug}
-          <a href="/chapter/{nextChapterSlug}" class="next-link">
-            Next Chapter
-          </a>
-        {/if}
-      </div>
-    </nav>
+    <!-- Top navigation -->
+    <PageNav
+      prevSection={prevSection}
+      nextSection={nextSection}
+      prevChapter={prevChapterObj}
+      nextChapter={nextChapterObj}
+      currentChapterSlug={chapterSlug}
+    />
 
     <article class="section-content">
       <h1>{section?.title || 'Section'}</h1>
 
       <slot></slot>
     </article>
+
+    <!-- Bottom navigation - same as top -->
+    <PageNav
+      prevSection={prevSection}
+      nextSection={nextSection}
+      prevChapter={prevChapterObj}
+      nextChapter={nextChapterObj}
+      currentChapterSlug={chapterSlug}
+    />
   </div>
   <Footer />
 </div>
@@ -100,30 +99,6 @@
   .section-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: var(--space-m);
-  }
-
-  .section-nav {
-    width: 100%;
     padding: var(--space-s);
-    background-color: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .prev-next-links {
-    display: flex;
-    justify-content: space-between;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .prev-link, .next-link {
-    padding: var(--space-xs);
-    color: var(--color-accent);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 </style>

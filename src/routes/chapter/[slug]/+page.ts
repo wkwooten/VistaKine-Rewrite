@@ -32,7 +32,9 @@ export const load: PageLoad = async ({ params }) => {
       nextChapter: chapterData.nextChapter,
       // Use the reliable chapterNumber property
       themeClass: `chapter-${chapterData.chapterNumber}-theme`,
-      ChapterContent
+      ChapterContent,
+      chapterNumber: chapterData.chapterNumber,
+      intro: chapterData.intro || '' // Add intro data
     };
   } catch (e) {
     console.error(`Failed to load chapter content for ${slug}:`, e);

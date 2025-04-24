@@ -19,7 +19,9 @@
 
 <ChapterTemplate
   themeClass={data.themeClass}
-  chapterTitle={`Chapter ${data.title}`}
+  chapterTitle={data.title}
+  chapterNumber={`Chapter ${data.chapterNumber ?? ''}`}
+  chapterIntro={data.intro ?? ''}
   chapterSections={data.sections}
   prevChapter={data.prevChapter}
   nextChapter={data.nextChapter}

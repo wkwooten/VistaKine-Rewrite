@@ -1,69 +1,105 @@
 <script lang="ts">
-    // Define a type for the expected chapter link structure
-    type ChapterLink = { slug: string; title: string } | null;
+    import { ArrowLeft, ArrowRight, Menu } from 'lucide-svelte';
 
-    // Use the type for the props
+    // Define types for the expected navigation structures
+    type ChapterLink = { slug: string; title: string } | null;
+    type SectionLink = { slug: string; title: string; id?: string } | null;
+
+    // Props for chapter navigation
     export let prevChapter: ChapterLink = null;
     export let nextChapter: ChapterLink = null;
+
+    // Props for section navigation
+    export let prevSection: SectionLink = null;
+    export let nextSection: SectionLink = null;
+    export let currentChapterSlug: string = '';
+
+    // Determine navigation mode
+    $: hasChapterNav = prevChapter !== null || nextChapter !== null;
+    $: hasSectionNav = prevSection !== null || nextSection !== null;
 </script>
 
 <nav class="page-nav">
     <div class="nav-links">
-        {#if prevChapter}
-            <!-- Always expect an object now -->
+        <!-- Previous link (section takes priority over chapter) -->
+        {#if prevSection && currentChapterSlug}
+            <a href={`/chapter/${currentChapterSlug}/${prevSection.slug}`} class="nav-link prev">
+                <ArrowLeft size={18} />
+                <span>Previous: {prevSection.title}</span>
+            </a>
+        {:else if prevChapter}
             <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
-                <span class="arrow">&larr;</span>
-                Previous Chapter: {prevChapter.title}
+                <ArrowLeft size={18} />
+                <span>Previous Chapter: {prevChapter.title}</span>
             </a>
         {:else}
-            <!-- Optional: Add a disabled or placeholder state if needed -->
-            <span class="nav-link prev disabled">&larr; Beginning</span >
+            <span class="nav-link prev disabled">
+                <ArrowLeft size={18} />
+                <span>Beginning</span>
+            </span>
         {/if}
 
         <!-- Table of Contents link in the middle -->
         <a href="/chapter/toc" class="nav-link toc">
-            Table of Contents
+            <Menu size={18} />
+            <span>Table of Contents</span>
         </a>
 
-        {#if nextChapter}
+        <!-- Next link (section takes priority over chapter) -->
+        {#if nextSection && currentChapterSlug}
+            <a href={`/chapter/${currentChapterSlug}/${nextSection.slug}`} class="nav-link next">
+                <span>Next: {nextSection.title}</span>
+                <ArrowRight size={18} />
+            </a>
+        {:else if nextChapter}
             <a href={`/chapter/${nextChapter.slug}`} class="nav-link next">
-                Next Chapter: {nextChapter.title}
-                <span class="arrow">&rarr;</span>
+                <span>Next Chapter: {nextChapter.title}</span>
+                <ArrowRight size={18} />
             </a>
         {:else}
-             <!-- Optional: Add a disabled or placeholder state if needed -->
-            <span class="nav-link next disabled">End &rarr;</span >
+            <span class="nav-link next disabled">
+                <span>End</span>
+                <ArrowRight size={18} />
+            </span>
         {/if}
     </div>
 </nav>
 
 <style lang="scss">
     .page-nav {
-        margin-top: var(--space-xl); // Space above the nav
+        margin-top: var(--space-l);
         padding: var(--space-m) var(--space-l);
         border-top: 1px solid var(--color-border);
-        text-align: center; // Center align links for now
+        text-align: center;
         width: 100%;
     }
 
     .nav-links {
         display: flex;
-        justify-content: space-between; // Distribute links
-        max-width: var(--max-content-width); // Limit width of links
-        margin: 0 auto; // Center the links container
+        justify-content: space-between;
+        max-width: var(--max-content-width, 1200px);
+        margin: 0 auto;
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+            gap: var(--space-s);
+        }
     }
 
     .nav-link {
         display: inline-flex;
         align-items: center;
+        gap: var(--space-2xs);
         color: var(--color-text-primary);
         text-decoration: none;
-        padding: var(--space-s) var(--space-m);
+        padding: var(--space-xs) var(--space-s);
         border-radius: var(--radius-md);
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        font-size: var(--step--1);
 
         &:hover {
             background-color: var(--color-accent-hover-bg);
+            transform: translateY(-2px);
         }
 
         &.prev {
@@ -77,16 +113,11 @@
         &.toc {
             justify-content: center;
         }
-
-        .arrow {
-            display: inline-block;
-            margin-inline: var(--space-xs);
-        }
     }
 
-    .nav-link.disabled { // Add some basic styling for disabled state
-        color: var(--color-text-secondary); // Example color
-        pointer-events: none; // Make it non-interactive
+    .nav-link.disabled {
+        color: var(--color-text-secondary);
+        pointer-events: none;
         opacity: 0.6;
     }
 </style>

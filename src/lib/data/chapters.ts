@@ -10,6 +10,7 @@ export interface Chapter {
   title: string;
   slug: string;
   description: string;
+  intro?: string; // HTML intro content for the chapter overview
   sections: Section[];
   prevChapter: string | null; // Store slugs for prev/next
   nextChapter: string | null;
@@ -22,6 +23,7 @@ export const chapters: Chapter[] = [
     title: 'Understanding 3D Space',
     slug: 'understanding-3d-space',
     description: 'Introduction to coordinate systems and vectors.',
+    intro: 'This chapter introduces the fundamental concepts of <span class="keyword">3D Space</span> and <span class="keyword">coordinate systems</span>, essential for understanding <span class="keyword">kinematics</span> and <span class="keyword">dynamics</span>.',
     sections: [
       { id: "coordinate-systems", title: "1.1 Coordinate Systems", slug: "coordinate-systems" },
       { id: "vectors-and-components", title: "1.2 Vectors and Components", slug: "vectors-and-components" },
