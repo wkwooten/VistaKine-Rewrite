@@ -41,7 +41,13 @@
 </svelte:head>
 
 <div class="chapter {themeClass}">
+
   <div class="container">
+    <PageNav
+    prevChapter={prevChapterObj}
+    nextChapter={nextChapterObj}
+  />
+
     <div class="chapter-wrapper">
       <header class="chapter-header">
         <h1>{chapterNumber ? `${chapterNumber}: ` : ''}<br> {chapterTitle}</h1>
@@ -73,12 +79,6 @@
           {/each}
         </div>
       </div>
-
-      <PageNav
-        prevChapter={prevChapterObj}
-        nextChapter={nextChapterObj}
-      />
-
       <slot></slot>
     </div>
   </div>

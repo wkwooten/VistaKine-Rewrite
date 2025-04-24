@@ -128,12 +128,13 @@
        <li>The dot product is commutative: <Katex>{"\\vec{A} \\cdot \\vec{B} = \\vec{B} \\cdot \\vec{A}"}</Katex>.</li>
      </ul>
     <h4>Utility</h4>
-    <p>Brief examples of where the dot product is used:</p>
+    <p>The dot product is an essential tool in physics with multiple applications that we'll explore in later chapters:</p>
     <ul>
-       <li>Calculating <Keyword term="Work" /> done by a constant force: <Katex>{"W = \\vec{F} \\cdot \\vec{d}"}</Katex>.</li>
-       <li>Finding the angle between two vectors: <Katex>{"\\theta = \\arccos\\left(\\frac{\\vec{A} \\cdot \\vec{B}}{\\|\\vec{A}\\| \\|\\vec{B}\\|}\\right)"}</Katex>.</li>
-       <li>Determining the <Keyword term="projection" /> of one vector onto another (finding the component of one vector along the direction of another).</li>
+       <li>Calculating <Keyword term="Work" /> done by a force.</li>
+       <li>Finding the angle between vectors.</li>
+       <li>Determining the <Keyword term="projection" /> of one vector onto another.</li>
     </ul>
+    <p>We'll see how these applications become important when we study energy, motion, and more complex physical systems.</p>
 
     <!-- Placeholder for Dot Product Visualization -->
      <p><em>(Optional visualization for the dot product concept might be added here.)</em></p>
@@ -153,34 +154,69 @@
      <ul>
        <li>The cross product is zero if the vectors are parallel or anti-parallel (<Katex>{"\\sin 0^\\circ = \\sin 180^\\circ = 0"}</Katex>).</li>
        <li>The cross product is anti-commutative: <Katex>{"\\vec{A} \\times \\vec{B} = -(\\vec{B} \\times \\vec{A})"}</Katex>. Switching the order reverses the direction of the resulting vector.</li>
-       <li>The component calculation is more complex: <br>
-         <Katex displayMode>
-           {"\\vec{A} \\times \\vec{B} = \\langle (A_y B_z - A_z B_y), (A_z B_x - A_x B_z), (A_x B_y - A_y B_x) \\rangle"}
-         </Katex>
-         (Often computed using determinants, but we'll focus on the geometric meaning here).
-       </li>
+       <li>The component calculation is more complex than other vector operations and will be covered in detail when needed in later chapters.</li>
      </ul>
     <h4>Utility</h4>
-    <p>Brief examples of where the cross product is used:</p>
+    <p>The cross product is a powerful tool in physics that we'll explore in depth when we study:</p>
     <ul>
-      <li>Calculating <Keyword term="Torque" />: <Katex>{"\\vec{\\tau} = \\vec{r} \\times \\vec{F}"}</Katex>.</li>
-      <li>Calculating <Keyword term="Angular Momentum" />: <Katex>{"\\vec{L} = \\vec{r} \\times \\vec{p}"}</Katex>.</li>
-      <li>Calculating the magnetic force on a moving charge: <Katex>{"\\vec{F}_B = q(\\vec{v} \\times \\vec{B})"}</Katex>.</li>
-      <li>Finding a vector normal (perpendicular) to a plane defined by two vectors.</li>
+      <li><Keyword term="Torque" /> in rotational motion.</li>
+      <li><Keyword term="Angular Momentum" /> in spinning systems.</li>
+      <li>Magnetic forces in electromagnetics.</li>
+      <li>Other applications requiring vectors perpendicular to a plane.</li>
     </ul>
+    <p>For now, simply understanding its conceptual meaning will prepare you for these more advanced topics.</p>
 
     <!-- Placeholder for Cross Product Visualization -->
     <p><em>(Optional visualization for the cross product concept, possibly including the Right-Hand Rule, might be added here.)</em></p>
 
     <h3>Conclusion</h3>
     <p>
-       Vector addition, subtraction, scalar multiplication, the dot product, and the cross product are the fundamental mathematical tools for working with vector quantities. Understanding how to combine and manipulate vectors numerically and conceptually is crucial for analyzing motion, forces, and other physical phenomena in 3D space, which we will explore further in subsequent chapters.
+       In this section, we've focused on mastering the fundamental vector operations—addition, subtraction, and scalar multiplication—which are your essential tools for combining and manipulating vectors. We've also introduced the dot product and cross product more conceptually, providing a glimpse of their importance in physics. While their detailed applications are beyond our current scope, these operations will become critical mathematical tools as we explore motion, forces, energy, and other physical phenomena in subsequent chapters. Your understanding of these basic vector operations builds the foundation for everything that follows.
     </p>
   </div>
 
   <!-- Formula Accordion kept, content can be added later -->
   <FormulaAccordion>
-     <p>Key formulas for vector operations will be summarized here.</p>
+    <div class="formulas-container">
+      <div class="formula-section">
+        <div class="formula-label">Vector Addition</div>
+        <Katex displayMode>
+          {"\\vec{A} + \\vec{B} = \\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
+        </Katex>
+      </div>
+
+      <div class="formula-section">
+        <div class="formula-label">Vector Subtraction</div>
+        <Katex displayMode>
+          {"\\vec{A} - \\vec{B} = \\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
+        </Katex>
+      </div>
+
+      <div class="formula-section">
+        <div class="formula-label">Scalar Multiplication</div>
+        <Katex displayMode>
+          {"c\\vec{A} = \\langle cA_x, cA_y, cA_z \\rangle"}
+        </Katex>
+      </div>
+
+      <div class="formula-section">
+        <div class="formula-label">Dot Product</div>
+        <Katex displayMode>
+          {"\\text{Geometric definition: } \\vec{A} \\cdot \\vec{B} = \\|\\vec{A}\\| \\|\\vec{B}\\| \\cos \\theta"}
+        </Katex>
+        <Katex displayMode>
+          {"\\text{Component form: } \\vec{A} \\cdot \\vec{B} = A_x B_x + A_y B_y + A_z B_z"}
+        </Katex>
+      </div>
+
+      <div class="formula-section">
+        <div class="formula-label">Cross Product</div>
+        <Katex displayMode>
+          {"\\text{Magnitude: } \\|\\vec{A} \\times \\vec{B}\\| = \\|\\vec{A}\\| \\|\\vec{B}\\| \\sin \\theta"}
+        </Katex>
+        <p>Direction: Perpendicular to both vectors, determined by the Right-Hand Rule</p>
+      </div>
+    </div>
   </FormulaAccordion>
 
   <!-- Section Review can be added later -->
@@ -212,5 +248,15 @@
 
   h5 {
     margin-top: var(--space-m);
+  }
+
+  .formulas-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .formula-section {
+    margin-bottom: var(--space-s);
   }
 </style>

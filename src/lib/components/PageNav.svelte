@@ -25,40 +25,59 @@
         {#if prevSection && currentChapterSlug}
             <a href={`/chapter/${currentChapterSlug}/${prevSection.slug}`} class="nav-link prev">
                 <ArrowLeft size={18} />
-                <span>Previous: {prevSection.title}</span>
+                <div class="nav-content">
+                    <div class="nav-label">Previous</div>
+                    <div class="nav-title">{prevSection.title}</div>
+                </div>
             </a>
         {:else if prevChapter}
             <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
                 <ArrowLeft size={18} />
-                <span>Previous Chapter: {prevChapter.title}</span>
+                <div class="nav-content">
+                    <div class="nav-label">Previous Chapter</div>
+                    <div class="nav-title">{prevChapter.title}</div>
+                </div>
             </a>
         {:else}
-            <span class="nav-link prev disabled">
+            <a href="/" class="nav-link prev">
                 <ArrowLeft size={18} />
-                <span>Beginning</span>
-            </span>
+                <div class="nav-content">
+                    <div class="nav-label">Home</div>
+                    <div class="nav-title">Beginning</div>
+                </div>
+            </a>
         {/if}
 
         <!-- Table of Contents link in the middle -->
         <a href="/chapter/toc" class="nav-link toc">
             <Menu size={18} />
-            <span>Table of Contents</span>
+            <div class="nav-content">
+                <div class="nav-title">Table of Contents</div>
+            </div>
         </a>
 
         <!-- Next link (section takes priority over chapter) -->
         {#if nextSection && currentChapterSlug}
             <a href={`/chapter/${currentChapterSlug}/${nextSection.slug}`} class="nav-link next">
-                <span>Next: {nextSection.title}</span>
+                <div class="nav-content">
+                    <div class="nav-label">Next</div>
+                    <div class="nav-title">{nextSection.title}</div>
+                </div>
                 <ArrowRight size={18} />
             </a>
         {:else if nextChapter}
             <a href={`/chapter/${nextChapter.slug}`} class="nav-link next">
-                <span>Next Chapter: {nextChapter.title}</span>
+                <div class="nav-content">
+                    <div class="nav-label">Next Chapter</div>
+                    <div class="nav-title">{nextChapter.title}</div>
+                </div>
                 <ArrowRight size={18} />
             </a>
         {:else}
             <span class="nav-link next disabled">
-                <span>End</span>
+                <div class="nav-content">
+                    <div class="nav-title">End</div>
+                </div>
                 <ArrowRight size={18} />
             </span>
         {/if}
@@ -67,11 +86,13 @@
 
 <style lang="scss">
     .page-nav {
-        margin-top: var(--space-l);
+        margin-block: var(--space-l);
         padding: var(--space-m) var(--space-l);
         border-top: 1px solid var(--color-border);
         text-align: center;
         width: 100%;
+        background-color: var(--color-surface);
+        border-radius: var(--radius-md);
     }
 
     .nav-links {
@@ -87,7 +108,7 @@
     }
 
     .nav-link {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: var(--space-2xs);
         color: var(--color-text-primary);
@@ -96,6 +117,27 @@
         border-radius: var(--radius-md);
         transition: all 0.2s ease;
         font-size: var(--step--1);
+        flex: 1;
+        max-width: 33%;
+
+        .nav-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .nav-label {
+            font-size: var(--step--2);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-3xs);
+        }
+
+        .nav-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         &:hover {
             background-color: var(--color-accent-hover-bg);
@@ -104,14 +146,29 @@
 
         &.prev {
             justify-content: flex-start;
+            text-align: left;
         }
 
         &.next {
             justify-content: flex-end;
+            text-align: right;
+
+            .nav-content {
+                align-items: flex-end;
+            }
         }
 
         &.toc {
             justify-content: center;
+            text-align: center;
+
+            .nav-content {
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            max-width: 100%;
         }
     }
 
