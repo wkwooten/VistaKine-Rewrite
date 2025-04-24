@@ -8,6 +8,12 @@
   export let chapterSlug: string;
   export let sectionSlug: string;
   export let themeClass: string = '';
+  // Accept chapter title from parent (+page.svelte)
+  export let currentChapterTitle: string | null = null;
+  // Accept current chapter slug from parent (+page.svelte)
+  export let currentChapterSlug: string;
+  // Accept chapter number from parent (+page.svelte)
+  export let chapterNumber: number | string | undefined = undefined;
 
   // For debugging
   onMount(() => {
@@ -37,8 +43,21 @@
 
   // Get previous and next sections for navigation
   $: sectionIndex = chapter?.sections.findIndex(s => s.slug === sectionSlug) ?? -1;
-  $: prevSection = sectionIndex > 0 ? chapter?.sections[sectionIndex - 1] : null;
-  $: nextSection = sectionIndex < (chapter?.sections.length ?? 0) - 1 ? chapter?.sections[sectionIndex + 1] : null;
+  $: prevSectionData = sectionIndex > 0 ? chapter?.sections[sectionIndex - 1] : null;
+  $: nextSectionData = sectionIndex < (chapter?.sections.length ?? 0) - 1 ? chapter?.sections[sectionIndex + 1] : null;
+
+  // Create simplified objects for PageNav, including the number
+  $: prevSectionForNav = prevSectionData ? {
+      slug: prevSectionData.slug,
+      title: prevSectionData.title,
+      number: prevSectionData.number
+  } : null;
+
+  $: nextSectionForNav = nextSectionData ? {
+      slug: nextSectionData.slug,
+      title: nextSectionData.title,
+      number: nextSectionData.number
+  } : null;
 
   // Handle chapter changes if last or first section
   $: prevChapterSlug = sectionIndex === 0 ? chapter?.prevChapter : null;
@@ -58,11 +77,13 @@
 <div class="chapter section-container {themeClass}">
   <div class="section-content-wrapper">
     <PageNav
-      prevSection={prevSection}
-      nextSection={nextSection}
+      prevSection={prevSectionForNav}
+      nextSection={nextSectionForNav}
       prevChapter={prevChapterObj}
       nextChapter={nextChapterObj}
-      currentChapterSlug={chapterSlug}
+      currentChapterSlug={currentChapterSlug}
+      currentChapterTitle={currentChapterTitle}
+      currentChapterNumber={chapterNumber}
     />
 
     <article class="section-content">
@@ -70,11 +91,13 @@
     </article>
 
     <PageNav
-      prevSection={prevSection}
-      nextSection={nextSection}
+      prevSection={prevSectionForNav}
+      nextSection={nextSectionForNav}
       prevChapter={prevChapterObj}
       nextChapter={nextChapterObj}
-      currentChapterSlug={chapterSlug}
+      currentChapterSlug={currentChapterSlug}
+      currentChapterTitle={currentChapterTitle}
+      currentChapterNumber={chapterNumber}
     />
   </div>
   <Footer />

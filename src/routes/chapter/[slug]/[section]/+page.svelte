@@ -12,6 +12,9 @@
   themeClass={data.themeClass}
   chapterSlug={data.chapterSlug}
   sectionSlug={data.sectionSlug}
+  currentChapterSlug={data.currentChapterSlug}
+  currentChapterTitle={data.chapterTitle}
+  chapterNumber={data.chapterNumber}
 >
   <!-- Dynamically render the section content component -->
   <svelte:component

@@ -36,16 +36,37 @@ export const load: PageLoad = async ({ params }) => {
     throw error(404, 'Chapter not found');
   }
 
-  // Find the section in the chapter
-  const sectionData = chapterData.sections.find(s => s.slug === section);
+  // Find the current section index and data
+  const currentSectionIndex = chapterData.sections.findIndex(s => s.slug === section);
 
-  // If section not found, throw 404 error
-  if (!sectionData) {
-    console.error(`Section not found: ${section} in chapter ${slug}`);
+  // If section not found in the array, throw 404 error
+  if (currentSectionIndex === -1) {
+    console.error(`Section slug not found in chapter data: ${section} in chapter ${slug}`);
     throw error(404, 'Section not found');
   }
 
-  console.log(`Found section: ${sectionData.title}`);
+  const sectionData = chapterData.sections[currentSectionIndex];
+  console.log(`Found section: ${sectionData.title} at index ${currentSectionIndex}`);
+
+  // Determine previous and next sections
+  const prevSectionData = currentSectionIndex > 0 ? chapterData.sections[currentSectionIndex - 1] : null;
+  const nextSectionData = currentSectionIndex < chapterData.sections.length - 1 ? chapterData.sections[currentSectionIndex + 1] : null;
+
+  // Prepare simplified section objects for PageNav (ensure number is included)
+  const prevSection = prevSectionData ? {
+    slug: prevSectionData.slug,
+    title: prevSectionData.title,
+    number: (prevSectionData as any).number // Cast to access number
+  } : null;
+
+  const nextSection = nextSectionData ? {
+    slug: nextSectionData.slug,
+    title: nextSectionData.title,
+    number: (nextSectionData as any).number // Cast to access number
+  } : null;
+
+  console.log('Prev Section:', prevSection);
+  console.log('Next Section:', nextSection);
 
   try {
     // Check if we have a component loader for this chapter/section
@@ -65,10 +86,15 @@ export const load: PageLoad = async ({ params }) => {
 
     return {
       chapterSlug: slug,
+      chapterTitle: chapterData.title,
+      currentChapterSlug: slug,
       sectionSlug: section,
       title: sectionData.title,
       themeClass: `chapter-${chapterData.chapterNumber}-theme`,
-      SectionContent
+      SectionContent,
+      prevSection,
+      nextSection,
+      chapterNumber: chapterData.chapterNumber
     };
   } catch (error: any) {
     // More detailed error logging
