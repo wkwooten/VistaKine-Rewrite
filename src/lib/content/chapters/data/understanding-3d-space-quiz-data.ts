@@ -7,6 +7,7 @@ interface QuizQuestion {
   id: string;
   text: string;
   options: QuizOption[];
+  correctAnswer: string;
 }
 
 export const coordinateQuizData: QuizQuestion[] = [
@@ -17,7 +18,8 @@ export const coordinateQuizData: QuizQuestion[] = [
       { value: 'a', label: '<span class="keyword">x</span>' },
       { value: 'b', label: '<span class="keyword">y</span>' },
       { value: 'c', label: '<span class="keyword">z</span>' }
-    ]
+    ],
+    correctAnswer: 'c'
   },
   {
     id: 'q2',
@@ -26,7 +28,8 @@ export const coordinateQuizData: QuizQuestion[] = [
       { value: 'a', label: 'Its <span class="keyword">horizontal</span> position' },
       { value: 'b', label: 'Its <span class="keyword">vertical</span> position' },
       { value: 'c', label: 'Its <span class="keyword">depth</span>' }
-    ]
+    ],
+    correctAnswer: 'b'
   }
 ];
 
@@ -38,7 +41,8 @@ export const vectorQuizData: QuizQuestion[] = [
       { value: 'a', label: 'Only <span class="keyword">magnitude</span>' },
       { value: 'b', label: 'Only <span class="keyword">direction</span>' },
       { value: 'c', label: 'Both <span class="keyword">magnitude</span> and <span class="keyword">direction</span>' }
-    ]
+    ],
+    correctAnswer: 'c'
   },
   {
     id: 'q4',
@@ -47,6 +51,7 @@ export const vectorQuizData: QuizQuestion[] = [
       { value: 'a', label: 'It halves' },
       { value: 'b', label: 'It doubles' },
       { value: 'c', label: 'It stays the same' }
-    ]
+    ],
+    correctAnswer: 'b'
   }
 ];

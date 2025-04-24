@@ -15,6 +15,12 @@ const sectionComponents: SectionImports = {
     'coordinate-systems': () => import('$lib/content/chapters/understanding-3d-space/sections/coordinate-systems.svelte'),
     'vectors-and-components': () => import('$lib/content/chapters/understanding-3d-space/sections/vectors-and-components.svelte'),
     'vector-operations': () => import('$lib/content/chapters/understanding-3d-space/sections/vector-operations.svelte')
+  },
+  'kinematics': {
+    'displacement-velocity': () => import('$lib/content/chapters/kinematics/sections/displacement-velocity.svelte'),
+    'acceleration': () => import('$lib/content/chapters/kinematics/sections/acceleration.svelte'),
+    'projectile-motion': () => import('$lib/content/chapters/kinematics/sections/projectile-motion.svelte'),
+    'relative-motion': () => import('$lib/content/chapters/kinematics/sections/relative-motion.svelte')
   }
 };
 

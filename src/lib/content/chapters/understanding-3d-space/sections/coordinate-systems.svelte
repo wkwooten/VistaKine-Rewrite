@@ -74,32 +74,10 @@
   </div>
 
   <SectionReview>
-    <Quiz questions={coordinateQuizData} />
+    <Quiz questions={coordinateQuizData} showFeedback={true} />
   </SectionReview>
 </article>
 
 <style lang="scss">
-  article {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-l);
-  }
 
-  .section-intro, .section-core {
-    /* Apply medium margin-top to ANY element following another element */
-    & > * + * {
-      margin-top: var(--space-m);
-    }
-  }
-
-  figure {
-    width: 100%;
-    margin: var(--space-m) 0;
-  }
-
-  figcaption {
-    text-align: center;
-    font-style: italic;
-    margin-top: var(--space-xs);
-  }
 </style>

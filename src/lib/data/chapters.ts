@@ -3,6 +3,7 @@ export interface Section {
   id: string;
   title: string;
   slug: string; // Add a URL-friendly slug for routing
+  description?: string; // Optional description of the section
 }
 
 // Define the structure for a chapter
@@ -37,11 +38,12 @@ export const chapters: Chapter[] = [
     title: 'Kinematics',
     slug: 'kinematics',
     description: 'Describing motion in 1D, 2D, and 3D.',
+    intro: 'This chapter introduces the fundamental concepts of <span class="keyword">kinematics</span>, the study of motion.',
     sections: [
-        { id: "displacement-velocity", title: "2.1 Displacement & Velocity", slug: "displacement-velocity" },
-        { id: "acceleration", title: "2.2 Acceleration", slug: "acceleration" },
-        { id: "projectile-motion", title: "2.3 Projectile Motion", slug: "projectile-motion" },
-        { id: "relative-motion", title: "2.4 Relative Motion", slug: "relative-motion" }
+        { id: "displacement-velocity", title: "Displacement & Velocity", slug: "displacement-velocity", description: "Learn about position changes and the rate at which objects move in specific directions." },
+        { id: "acceleration", title: "Acceleration", slug: "acceleration", description: "Understand how velocity changes over time and the equations that describe uniformly accelerated motion." },
+        { id: "projectile-motion", title: "Projectile Motion", slug: "projectile-motion", description: "Analyze the parabolic paths of objects moving under the influence of gravity alone." },
+        { id: "relative-motion", title: "Relative Motion", slug: "relative-motion", description: "Explore how motion appears different from various reference frames and how to convert between them." }
     ],
     prevChapter: 'understanding-3d-space',
     nextChapter: 'dynamics',

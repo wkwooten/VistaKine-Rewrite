@@ -120,7 +120,7 @@
   </div>
 
   <SectionReview>
-    <Quiz questions={vectorQuizData} />
+    <Quiz questions={vectorQuizData} showFeedback={true} />
   </SectionReview>
 </article>
 
