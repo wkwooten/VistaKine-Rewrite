@@ -169,11 +169,7 @@
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
 >
-  <!-- Moved title and description inside -->
-  <h3 class="exercise-title"><b>Visualize it:</b> Calibrating the Printer</h3>
-  <p class="exercise-description">
-    Help surya calibrate her 3D printer by moving the nozzle to the targets. Use the control panel to enter coordinates of target position then move the nozzle to the target.
-  </p>
+  <!-- Removed title and description that were here -->
 
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showDialog && !isFullscreen}
@@ -218,8 +214,6 @@
       />
     </HTML>
   </VisContainer>
-
-  <!-- Render DialogBox INSIDE the wrapper (overlay) when fullscreen -->
 </div>
 
 <style>
@@ -230,27 +224,12 @@
     /* Add border, background, padding */
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    background-color: var(--bg-secondary);
-    padding: var(--space-m) var(--space-xs); /* Adjusted padding */
+    background-color: var(--color-surface);
+    padding: var(--space-xs); /* Reduced padding since no title/description */
     margin-bottom: var(--space-l); /* Add margin-bottom */
   }
 
-  /* --- Styles for moved title/description --- */
-  .exercise-title {
-      font-size: var(--step-2); /* Slightly smaller */
-      font-weight: 600;
-      margin-bottom: var(--space-s); /* Space below title */
-      /* Resetting potential global heading margins */
-      margin-top: 0;
-  }
-  .exercise-description {
-      font-size: var(--step-0);
-      margin-bottom: var(--space-m); /* Space below description */
-      color: var(--color-text-secondary);
-       /* Resetting potential global paragraph margins */
-      margin-top: 0;
-  }
-  /* ------------------------------------------- */
+  /* Removed styles for title/description */
 
   /* Add order to VisContainer */
   :global(.visualization-container) {
@@ -281,11 +260,7 @@
     padding: 0; /* Remove padding in fullscreen */
     pointer-events: auto; /* Ensure wrapper passes events */
 
-    /* Hide title and description when fullscreen */
-    & > .exercise-title,
-    & > .exercise-description {
-        display: none;
-    }
+    /* Removed rules for title/description here */
 
     & > :global(.visualization-container) {
         width: 100%;

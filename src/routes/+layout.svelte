@@ -180,7 +180,6 @@
       transform: translateX(-100%);
       transition: transform 0.3s ease;
       background-color: var(--sidebar-background, var(--color-background));
-      box-shadow: var(--shadow-lg);
       flex-direction: column;
       align-items: initial;
       height: 100vh;
@@ -238,7 +237,7 @@
     min-width: 0;
     height: 100%;
     overflow-y: auto;
-    padding-inline: var(--space-m);
+    /* padding-inline: var(--space-m); */
     margin-left: 330px;
     transition: margin-left var(--sidebar-transition-duration, 0.3s) var(--sidebar-transition-timing, ease);
 

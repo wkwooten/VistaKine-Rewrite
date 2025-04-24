@@ -152,24 +152,6 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 
 
 // General Chapter Styles
-.chapter-wrapper {
-  display: flex;
-  flex-direction: column;
-  // border: 2px dashed var(--chapter-color);
-  margin-top: var(--space-s);
-  padding: var(--space-2xl) var(--space-l);
-  border-radius: var(--radius-lg);
-  gap: var(--space-xl);
-  max-width: var(--wide-content-width);
-
-  /* Apply mobile padding/border styles up to lg breakpoint */
-  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
-    padding: 0; /* Remove padding for medium screens */
-    border: none; /* Remove border for medium screens */
-    gap: var(--space-l); /* Adjust gap if needed */
-  }
-}
-
 .chapter-header {
   background-color: var(--chapter-header-bg);
   width: 100%;
@@ -208,56 +190,67 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
   background-color: var(--chapter-section-bg);
 }
 
-.content-section {
-  scroll-margin-top: 2rem;
-  position: relative;
-  padding: var(--space-l);
-  border-bottom: none;
-  padding-top: var(--space-xl);
-  padding-bottom: var(--space-3xl);
-  margin-bottom: var(--space-xl);
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-lg);
-  // Top Section Number (using ::after)
-  &::after {
-    content: attr(data-section);
-    position: absolute;
-    left: 30px;
-    top: var(--space-m);
-    color: var(--chapter-color);
-    font-size: var(--step-0);
-    font-weight: bold;
-    opacity: 0.7;
-  }
+// .content-section {
+//   scroll-margin-top: 2rem;
+//   position: relative;
+//   padding: var(--space-l);
+//   border-bottom: none;
+//   padding-top: var(--space-xl);
+//   padding-bottom: var(--space-3xl);
+//   margin-bottom: var(--space-xl);
+//   background-color: var(--color-surface);
+//   box-shadow: var(--shadow-lg);
+//   border-radius: var(--radius-md);
 
-  // Bottom Section Number (using ::before)
-  &::before {
-    content: attr(data-section);
-    position: absolute;
-    left: 30px;
-    bottom: var(--space-m);
-    color: var(--chapter-color);
-    font-size: var(--step-0);
-    font-weight: bold;
-    opacity: 0.7;
-  }
+//   // Top Section Number (using ::after)
+//   &::after {
+//     content: attr(data-section);
+//     position: absolute;
+//     left: 30px;
+//     top: var(--space-m);
+//     color: var(--chapter-color);
+//     font-size: var(--step-0);
+//     font-weight: bold;
+//     opacity: 0.7;
+//   }
 
-  /* Apply mobile padding styles up to lg breakpoint */
-  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
-    padding: var(--space-s);
-    margin-bottom: var(--space-xl);
-  }
+//   // Bottom Section Number (using ::before)
+//   &::before {
+//     content: attr(data-section);
+//     position: absolute;
+//     left: 30px;
+//     bottom: var(--space-m);
+//     color: var(--chapter-color);
+//     font-size: var(--step-0);
+//     font-weight: bold;
+//     opacity: 0.7;
+//   }
 
-  @media (max-width: variables.$breakpoint-lg) {
-    margin-left: 0;
-    padding: var(--space-xs);
-    margin-bottom: var(--space-l);
+//   // Themed Section Line
+//   .section-line {
+//     position: absolute;
+//     top: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
+//     bottom: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
+//     left: 45px;
+//     width: 2px;
+//     background-color: var(--chapter-color);
+//     opacity: 0.5;
+//   }
 
-    &::before, &::after, .section-line {
-      display: none;
-    }
-  }
-}
+//   /* Responsive adjustments for the section block itself */
+//   @media (max-width: variables.$breakpoint-lg) {
+//     padding: var(--space-s);
+//     margin-bottom: var(--space-l);
+//     border-radius: 0;
+//     border-left: none;
+//     border-right: none;
+//     box-shadow: none;
+
+//     &::before, &::after, .section-line {
+//       display: none;
+//     }
+//   }
+// }
 
 .chapter {
   display: grid;
@@ -273,32 +266,26 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 .section-title {
   background-color: transparent;
   color: var(--chapter-color);
-  margin-top: var(--space-xl);
-  padding: var(--space-xs) var(--space-s);
-  border-bottom: 2px solid var(--chapter-color);
-}
-
-.page-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3xl);
-  padding-inline: var(--space-s);
-  margin-inline: var(--space-m);
-  /* Apply mobile padding styles up to lg breakpoint */
-  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
-    margin-inline: 0;
-    padding-inline: 0;
-  }
-}
-
-.section-intro {
+  margin-top: 0;
   margin-bottom: var(--space-l);
+  padding: var(--space-xs) 0;
+  border-bottom: 2px solid var(--chapter-color);
+  font-size: var(--step-3);
+}
+
+.section-intro, .subsection-title, .section-core, .section-review {
+  p, ul, ol, li, blockquote, figure, pre {
+    margin-bottom: var(--space-m);
+    line-height: 1.7;
+  }
 }
 
 .subsection-title {
   font-size: var(--step-1);
   font-weight: bold;
   text-wrap: balance;
+  margin-top: var(--space-l);
+  margin-bottom: var(--space-s);
 }
 
 .section-core {
@@ -312,28 +299,26 @@ nav .nav-items li.nav-chapter-group.chapter-10-theme {
 .section-review {
   border-top: 1px solid var(--color-border);
   padding-top: var(--space-m);
+  margin-top: var(--space-xl);
 }
 
-/* New readable content class for optimal text readability */
+/* Readable content class for optimal text readability */
 .readable-content {
-  max-width: var(--readable-max-width, 70ch); /* Use CSS variable with fallback */
-  margin-inline: auto; /* Center horizontally */
+  max-width: var(--readable-max-width, 75ch);
+  margin-inline: auto;
   padding-inline: var(--space-m);
   width: 100%;
   box-sizing: border-box;
 
-  /* Responsive adjustments */
-  /* Apply mobile padding styles up to lg breakpoint */
-  @media (max-width: variables.$breakpoint-lg) { /* Changed from md */
-    padding-inline: var(--space-xs); /* Reduced horizontal padding */
+  @media (max-width: variables.$breakpoint-lg) {
+    padding-inline: var(--space-s);
   }
 
   @media (max-width: variables.$breakpoint-sm) {
-    padding-inline: 0; /* Removed horizontal padding for small screens */
+    padding-inline: 0;
   }
 
-  /* Text styling */
-  p, ul, ol, li, blockquote, figure, pre {
+  p, ul, ol, li, blockquote, pre {
     margin-bottom: var(--space-m);
     line-height: 1.7;
   }
@@ -368,26 +353,12 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
   color: var(--chapter-color-dark, var(--chapter-color));
 }
 
-// New styles for the dedicated line element
-.section-line {
-  position: absolute;
-  top: calc(var(--space-m) + var(--step-0) * 1.2);
-  bottom: calc(var(--space-m) + var(--step-0) * 1.2);
-  left: 45px;
-  width: 2px;
-  background-color: var(--chapter-color);
-  opacity: 0.5;
-}
-
-
-
 .keyword {
   font-weight: 600;
-  color: var(--color-accent); /* Give keywords the accent color */
-  background-color: color-mix(in srgb, var(--color-accent) 15%, transparent); /* Add a subtle highlight */
-  padding: 0.1em 0.2em; /* Add some padding so the background is visible */
-  border-radius: 3px; /* Slightly round the corners */
-  /* Add any other base keyword styles here */
+  color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
   &:hover {
    text-decoration: underline dashed;
    cursor: help;
@@ -399,15 +370,15 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
 }
 
 .section-header-content {
-  margin-bottom: var(--space-l); // Add space before the main section intro/core
+  margin-bottom: var(--space-l);
 }
 
 .section-description {
-  font-size: var(--step-0); // Slightly smaller than body text? Or keep same?
-  color: var(--color-text-muted); // Use a muted color to differentiate from main content
-  font-style: italic; // Optional: make it italic
-  margin-top: var(--space-xs); // Ensure some space above if title margin-bottom removed
-  margin-bottom: 0; // Remove default paragraph bottom margin
-  padding-inline: var(--space-s); // Align with title padding
-  max-width: 65ch; // Keep it readable
+  font-size: var(--step-0);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: var(--space-xs);
+  margin-bottom: 0;
+  padding-inline: 0;
+  max-width: 65ch;
 }

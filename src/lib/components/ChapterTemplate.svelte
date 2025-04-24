@@ -126,7 +126,7 @@
   .section-card {
     border: 1px solid var(--color-border);
     padding-bottom: var(--space-s);
-    border-radius: var(--radius-m);
+    border-radius: var(--radius-md);
     background-color: var(--color-surface);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
@@ -151,7 +151,7 @@
   h2 {
     font-size: var(--step-0); /* Smaller title */
     margin-bottom: var(--space-s);
-    color: var(--primary-color);
+    color: var(--chapter-color);
     line-height: 1.2;
     transition: color 0.2s ease;
   }
@@ -167,7 +167,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-2xs);
-    color: var(--primary-color);
+    color: var(--chapter-color);
     font-weight: 500;
     margin-top: auto;
     transition: transform 0.2s ease;
@@ -186,6 +186,39 @@
   }
 
   .section-card:hover h2 {
-    color: var(--color-accent, #4a7bff);
+    color: var(--color-accent);
+  }
+
+  .chapter-nav {
+    display: flex;
+    margin-top: var(--space-lg);
+    padding: var(--space-xs) var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+  }
+
+  .chapter-link {
+    flex: 1;
+    padding: var(--space-xs) var(--space-md);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s;
+  }
+
+  .previous {
+    justify-content: flex-start;
+  }
+
+  .next {
+    justify-content: flex-end;
+  }
+
+  .chapter-link:hover {
+    background-color: var(--color-accent);
+    color: white;
   }
 </style>
