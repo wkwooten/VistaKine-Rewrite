@@ -37,7 +37,6 @@
 
 <section
   id="coordinate-systems"
-  class="content-section"
   data-section={sectionNumber}
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -49,7 +48,7 @@
 
     <!-- Block 1: Section Header -->
     <div class="section-header-block">
-      <h1 class="section-title">Coordinate Systems</h1>
+      <h2>Section Introduction</h2>
       <Scenario>
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Ah, but 'right there' isn't precise enough for a machine, Surya! It needs a common language, a <Keyword term="coordinate system" />, to know exactly where 'there' is in <Keyword term="3D space" />.</p>
@@ -131,10 +130,3 @@
 
   </div>
 </section>
-
-<style lang="scss">
-  /* Styles for .visualization-card and h2 have been moved to SectionTemplate.svelte */
-  /* Add any styles truly SPECIFIC only to coordinate-systems.svelte here if needed */
-
-  /* Removed .section-title style override as it should inherit from chapter-styles */
-</style>

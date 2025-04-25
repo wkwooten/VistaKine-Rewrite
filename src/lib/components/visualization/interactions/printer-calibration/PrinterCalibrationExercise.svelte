@@ -221,12 +221,12 @@
     display: flex;
     flex-direction: column;
     position: relative; /* Added for absolute positioning context */
-    /* Add border, background, padding */
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background-color: var(--color-surface);
-    padding: var(--space-xs); /* Reduced padding since no title/description */
-    margin-bottom: var(--space-l); /* Add margin-bottom */
+    /* REMOVED border, background, padding, margin-bottom */
+    /* border: 1px solid var(--color-border); */
+    /* border-radius: var(--radius-lg); */
+    /* background-color: var(--color-surface); */
+    /* padding: var(--space-xs); */
+    /* margin-bottom: var(--space-l); */
   }
 
   /* Removed styles for title/description */

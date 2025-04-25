@@ -64,7 +64,8 @@
       fov={60}
     >
       <OrbitControls
-        maxDistance={axesSize * 2}
+        enablePan={false}
+        maxDistance={axesSize * 3}
         minDistance={axesSize * 0.5}
         enableDamping
         target={[0, axesSize / 4, 0]}

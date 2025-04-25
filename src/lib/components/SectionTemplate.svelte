@@ -86,6 +86,13 @@
       currentChapterNumber={chapterNumber}
     />
 
+    <!-- Standardized Section Title -->
+    {#if section}
+      <h1 class="section-title">
+        <span class="section-number-prefix">Section {section.number}:</span> <br/> <span class="section-title-main">{section.title}</span>
+      </h1>
+    {/if}
+
     <article class="section-content">
       <slot></slot>
     </article>
@@ -135,7 +142,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--space-l);
   }
 
   /* Default styles for figures/figcaptions */
@@ -151,81 +157,31 @@
     color: var(--color-text-secondary);
   }
 
-  /* ------------- Moved from chapter-styles.scss ------------- */
-
-  /* Content section styles */
-  :global(.content-section) {
-    scroll-margin-top: 2rem;
-    position: relative;
-    padding: var(--space-l);
-    padding-top: var(--space-xl);
-    padding-bottom: var(--space-3xl);
-    margin-bottom: var(--space-xl);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-    border-radius: var(--radius-md);
-
-    @media (max-width: vars.$breakpoint-lg) {
-      padding: var(--space-s);
-      margin-bottom: var(--space-l);
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      box-shadow: none;
-    }
-  }
-
-  /* Section number indicators - top and bottom */
-  :global(.content-section::after) {
-    content: attr(data-section);
-    position: absolute;
-    left: 30px;
-    top: var(--space-m);
-    color: var(--chapter-color);
-    font-size: var(--step-0);
-    font-weight: bold;
-    opacity: 0.7;
-  }
-
-  :global(.content-section::before) {
-    content: attr(data-section);
-    position: absolute;
-    left: 30px;
-    bottom: var(--space-m);
-    color: var(--chapter-color);
-    font-size: var(--step-0);
-    font-weight: bold;
-    opacity: 0.7;
-  }
-
-  /* Section line */
-  :global(.section-line) {
-    position: absolute;
-    top: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
-    bottom: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
-    left: 45px;
-    width: 2px;
-    background-color: var(--chapter-color);
-    opacity: 0.5;
-  }
-
-  @media (max-width: vars.$breakpoint-lg) {
-    :global(.content-section::before),
-    :global(.content-section::after),
-    :global(.section-line) {
-      display: none;
-    }
-  }
-
   /* Section titles */
   :global(.section-title) {
     background-color: transparent;
     color: var(--chapter-color);
     margin-top: 0;
     margin-bottom: var(--space-l);
-    padding: var(--space-xs) 0;
-    border-bottom: 2px solid var(--chapter-color);
+    padding: var(--space-s) 0;
+    border-bottom: 3px solid var(--chapter-color);
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.2;
+  }
+
+  :global(.section-title .section-number-prefix) {
+    display: block;
     font-size: var(--step-3);
+    font-weight: 500;
+    opacity: 0.85;
+    margin-bottom: var(--space-3xs);
+  }
+
+  :global(.section-title .section-title-main) {
+    display: block;
+    font-size: var(--step-4);
+    font-weight: 700;
   }
 
   /* Content block headings (h2) */
@@ -261,9 +217,9 @@
 
   /* Section review block */
   :global(.activity-block.-review) {
-    border-top: 1px solid var(--color-border);
-    padding-top: var(--space-m);
-    margin-top: var(--space-xl);
+    /* border-top: 1px solid var(--color-border); */ /* Removed border-top as card has border */
+    /* padding-top: var(--space-m); */ /* Padding is handled by the main .activity-block rule */
+    margin-top: var(--space-xl); /* Keep margin */
   }
 
   /* Readable content */
@@ -285,27 +241,14 @@
 
   /* Two tiers of visualization cards */
 
-  /* Basic visualization card - for simple visualizations */
-  :global(.visualization-card) {
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-l);
-    margin: var(--space-l) 0;
-  }
+  /* REMOVED: Basic visualization card styles (merged into .visualization-block:not(.-exercise)) */
+  /* :global(.visualization-card) { ... } */
+  /* :global(.visualization-card figure), ... */
+  /* :global(.visualization-card:not(.-exercise):hover) { ... } */
+  /* @media (max-width: vars.$breakpoint-md) { ... } */
 
-  :global(.visualization-card figure),
-  :global(.visualization-card p) {
-    margin-left: 0;
-    margin-right: 0;
-  }
 
-  :global(.visualization-card figure) {
-    margin-bottom: var(--space-m);
-    margin-top: 0;
-  }
-
-  /* Interactive visualization container - for complex interactive components */
+  /* Interactive visualization container - styles remain */
   :global(.visualization-block.-exercise) {
     /* This block will have minimal styling as the exercises already have their own styling */
     margin-top: var(--space-xl);
@@ -333,39 +276,74 @@
     }
   }
 
-  /* Hover effect only for normal visualization cards */
-  :global(.visualization-card:not(.-exercise):hover) {
-    box-shadow: var(--shadow-lg);
-    /* border-color: var(--chapter-color-light, var(--color-accent-light)); */
-  }
-
-  @media (max-width: vars.$breakpoint-md) {
-    :global(.visualization-card:not(.-exercise)) {
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      margin-left: calc(-1 * var(--space-s));
-      margin-right: calc(-1 * var(--space-s));
-    }
-  }
-
-  /* Semantic Block Styles */
+  /* Semantic Block Styles - Added card styles */
   :global(.section-header-block) {
     margin-bottom: var(--space-xl);
+    /* Card styles NOT added here yet - pending decision */
   }
 
   :global(.concept-block) {
     margin-top: var(--space-l);
     margin-bottom: var(--space-xl);
+    /* Added card styles */
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    padding: var(--space-l);
   }
 
   :global(.visualization-block) {
+    /* Shared margins */
     margin-top: var(--space-xl);
     margin-bottom: var(--space-xl);
+
+    /* Card styles apply to ALL visualization blocks now */
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border); /* Keep border */
+    border-radius: var(--radius-md);
+    padding: var(--space-l);
+    box-shadow: var(--shadow-lg); /* Added shadow */
+
+    /* Maintain hover effect for all */
+    &:hover {
+        box-shadow: var(--shadow-xl); /* Enhanced shadow on hover */
+        /* border-color: var(--chapter-color-light, var(--color-accent-light)); */ /* Optional: Accent border on hover */
+    }
+
+    /* Responsive adjustments for all visualization blocks */
+    @media (max-width: vars.$breakpoint-md) {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      /* Adjust margins to account for removed padding - Applied via padding now */
+      padding-inline: var(--space-s); /* Use padding for spacing */
+    }
+
+    /* Exercise-specific styles can still exist if needed, but appearance is handled above */
+    &.-exercise {
+      /* Example: Maybe slightly different padding for exercises? */
+      /* padding: var(--space-m); */
+
+      /* Ensure inner exercise description styles don't conflict badly */
+      & .exercise-description {
+        font-size: var(--step-0);
+        margin-bottom: var(--space-m);
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        /* Maybe remove extra margin if padding is sufficient */
+         margin-left: 0; /* Ensure it aligns within the new padding */
+         margin-right: 0;
+      }
+    }
   }
 
   :global(.activity-block) {
     margin-top: var(--space-xl);
     margin-bottom: var(--space-xl);
+    /* Added card styles */
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-md);
+    padding: var(--space-l);
   }
 </style>

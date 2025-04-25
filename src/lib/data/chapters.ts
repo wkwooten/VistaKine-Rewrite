@@ -27,9 +27,9 @@ export const chapters: Chapter[] = [
     description: 'Introduction to coordinate systems and vectors.',
     intro: 'This chapter introduces the fundamental concepts of <span class="keyword">3D Space</span> and <span class="keyword">coordinate systems</span>, essential for understanding <span class="keyword">kinematics</span> and <span class="keyword">dynamics</span>.',
     sections: [
-      { id: "coordinate-systems", title: "1.1 - Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
-      { id: "vectors-and-components", title: "1.2 - Vectors and Components", slug: "vectors-and-components", number: "1.2" },
-      { id: "vector-operations", title: "1.3 - Vector Operations", slug: "vector-operations", number: "1.3" }
+      { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
+      { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2" },
+      { id: "vector-operations", title: "Vector Operations", slug: "vector-operations", number: "1.3" }
     ],
     prevChapter: null,
     nextChapter: 'kinematics',
@@ -41,10 +41,10 @@ export const chapters: Chapter[] = [
     description: 'Describing motion in 1D, 2D, and 3D.',
     intro: 'This chapter introduces the fundamental concepts of <span class="keyword">kinematics</span>, the study of motion.',
     sections: [
-        { id: "displacement-velocity", title: "2.1 - Displacement & Velocity", slug: "displacement-velocity", description: "Learn about position changes and the rate at which objects move in specific directions.", number: "2.1" },
-        { id: "acceleration", title: "2.2 - Acceleration", slug: "acceleration", description: "Understand how velocity changes over time and the equations that describe uniformly accelerated motion.", number: "2.2" },
-        { id: "projectile-motion", title: "2.3 - Projectile Motion", slug: "projectile-motion", description: "Analyze the parabolic paths of objects moving under the influence of gravity alone.", number: "2.3" },
-        { id: "relative-motion", title: "2.4 - Relative Motion", slug: "relative-motion", description: "Explore how motion appears different from various reference frames and how to convert between them.", number: "2.4" }
+        { id: "displacement-velocity", title: "Displacement & Velocity", slug: "displacement-velocity", description: "Learn about position changes and the rate at which objects move in specific directions.", number: "2.1" },
+        { id: "acceleration", title: "Acceleration", slug: "acceleration", description: "Understand how velocity changes over time and the equations that describe uniformly accelerated motion.", number: "2.2" },
+        { id: "projectile-motion", title: "Projectile Motion", slug: "projectile-motion", description: "Analyze the parabolic paths of objects moving under the influence of gravity alone.", number: "2.3" },
+        { id: "relative-motion", title: "Relative Motion", slug: "relative-motion", description: "Explore how motion appears different from various reference frames and how to convert between them.", number: "2.4" }
     ],
     prevChapter: 'understanding-3d-space',
     nextChapter: 'dynamics',
