@@ -279,7 +279,19 @@
   /* Semantic Block Styles - Added card styles */
   :global(.section-header-block) {
     margin-bottom: var(--space-xl);
-    /* Card styles NOT added here yet - pending decision */
+    /* Card styles are now applied directly here (presumably by user edit) */
+    /* background-color: ... */
+    /* padding: ... */
+    /* ... etc ... */
+
+    /* Placeholder styling moved here, adjust selector if needed */
+    & p:first-of-type { /* Still assuming description is the first p */
+      font-style: italic;
+      color: var(--color-text-secondary);
+      border-left: 3px solid var(--chapter-color);
+      padding-left: var(--space-s);
+      margin-bottom: var(--space-l); /* Space before scenario */
+    }
   }
 
   :global(.concept-block) {

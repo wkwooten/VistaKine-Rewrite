@@ -46,9 +46,10 @@
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
 
-    <!-- Block 1: Section Header -->
+    <!-- Block 1: Section Introduction -->
     <div class="section-header-block">
       <h2>Section Introduction</h2>
+      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Ugh, Leo, this printer manual keeps talking about X, Y, and Z coordinates. Why can't I just point and tell it 'print right there'?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Ah, but 'right there' isn't precise enough for a machine, Surya! It needs a common language, a <Keyword term="coordinate system" />, to know exactly where 'there' is in <Keyword term="3D space" />.</p>
