@@ -357,7 +357,7 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
   font-weight: 600;
   color: var(--color-accent);
   background-color: color-mix(in srgb, var(--color-accent) 15%, transparent);
-  padding: 0.1em 0.2em;
+  padding: 0.1em 0;
   border-radius: 3px;
   &:hover {
    text-decoration: underline dashed;

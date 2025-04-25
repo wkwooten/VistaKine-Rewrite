@@ -61,25 +61,27 @@
       bind:value={searchTerm}
     />
   </div>
-
-  <div class="chapter-filter-buttons">  <!-- Chapter Filter Buttons Container -->
-    <button
-      class="chapter-filter-button"
-      class:active={selectedChapterFilter === null}
-      on:click={clearChapterFilter}
-    >
-      All Chapters
-    </button>
-    {#each glossaryData as chapter}
+<div>
+  <p>Filter by Chapter:</p>
+    <div class="chapter-filter-buttons">  <!-- Chapter Filter Buttons Container -->
       <button
         class="chapter-filter-button"
-        class:active={selectedChapterFilter === chapter.chapterSlug}
-        on:click={() => setChapterFilter(chapter.chapterSlug)}
+        class:active={selectedChapterFilter === null}
+        on:click={clearChapterFilter}
       >
-        {chapter.chapterTitle}
+        All Chapters
       </button>
-    {/each}
-  </div>
+      {#each glossaryData as chapter}
+        <button
+          class="chapter-filter-button"
+          class:active={selectedChapterFilter === chapter.chapterSlug}
+          on:click={() => setChapterFilter(chapter.chapterSlug)}
+        >
+          {chapter.chapterTitle}
+        </button>
+      {/each}
+    </div>
+</div>
 
   <div class="sort-dropdown-container">  <!-- Container for the dropdown -->
     <Dropdown
@@ -167,6 +169,7 @@
   /* Chapter Filter Buttons Styles */
   .chapter-filter-buttons {
     display: flex;
+    padding: var(--space-s);
     gap: var(--space-s);
     margin-bottom: var(--space-l);
     overflow-x: auto; /* Enable horizontal scrolling if many buttons */

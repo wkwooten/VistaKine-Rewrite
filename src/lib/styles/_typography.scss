@@ -44,9 +44,13 @@ $max-viewport: 1240px;
   color: var(--color-accent);
 }
 
-@mixin body-large {
+@mixin heading-5 {
   font-size: var(--step-1);
   line-height: 1.5;
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  text-wrap: balance;
+  color: var(--color-accent);
 }
 
 @mixin body {

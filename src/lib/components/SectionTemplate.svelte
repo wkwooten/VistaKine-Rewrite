@@ -128,7 +128,7 @@
     width: 100%;
     max-width: var(--wide-content-width);
     padding: var(--space-s);
-    gap: var(--space-xl);
+    gap: var(--space-l);
     flex-grow: 1;
 
     @media (max-width: vars.$breakpoint-lg) {
@@ -224,6 +224,9 @@
 
   /* Constrains width for prose content within slotted blocks */
   :global(.readable-content) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
     max-width: var(--readable-max-width, 75ch);
     margin-inline: auto;
     padding-inline: var(--space-m);
@@ -247,8 +250,14 @@
 		background-color: var(--color-surface); /* Use raised if available */
 		border-radius: var(--radius-md);
 		padding: var(--space-l);
-		box-shadow: var(--shadow-md); /* Slightly less shadow than main cards? */
+		box-shadow: var(--shadow-sm);
 		margin-top: var(--space-l); /* Add space below main title */
+    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
+
+    &:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-3px);
+    }
 
     /* Placeholder description style */
     & p:first-of-type {
@@ -267,6 +276,12 @@
     box-shadow: var(--shadow-lg);
     border-radius: var(--radius-md);
     padding: var(--space-l);
+    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
+
+    &:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-3px);
+    }
   }
 
   :global(.visualization-block) {
@@ -277,9 +292,11 @@
     border-radius: var(--radius-md);
     padding: var(--space-l);
     box-shadow: var(--shadow-lg);
+    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
 
     &:hover {
         box-shadow: var(--shadow-xl);
+        transform: translateY(-3px);
     }
 
     @media (max-width: vars.$breakpoint-md) {
@@ -319,5 +336,67 @@
     box-shadow: var(--shadow-lg);
     border-radius: var(--radius-md);
     padding: var(--space-l);
+    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
+
+    &:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-3px);
+    }
+  }
+
+  /* Global styling for Definition List used in slotted content */
+  :global(.definition-list) {
+    margin: var(--space-m) 0;
+    padding-left: var(--space-l); /* Indent the list slightly */
+    border-left: 3px solid var(--color-accent-secondary); /* Add a visual marker */
+    background-color: var(--color-surface-100); /* Slight background distinction */
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+    border-radius: 0 var(--radius-2) var(--radius-2) 0; /* Optional: slightly round the inner corners */
+  }
+
+  :global(.definition-list dt) {
+    font-weight: 600; /* Make the term stand out */
+    /* color: var(--color-accent); Optional: Use accent color */
+  }
+
+  :global(.definition-list dd) {
+    margin-left: 0; /* Reset default margin */
+    margin-bottom: var(--space-s); /* Space below definition */
+    padding-left: var(--space-s); /* Indent definition relative to term */
+  }
+
+  :global(.definition-list dd:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Global styling for Explanation Blocks used in slotted content */
+  :global(.explanation-block) {
+    background-color: var(--color-background); /* Subtle background */
+    border-radius: var(--radius-md);
+    padding: var(--space-l);
+    margin-block: var(--space-l); /* Vertical spacing */
+    text-align: center; /* Center heading and potentially inline text */
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
+
+    &:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-3px);
+    }
+  }
+
+  /* Keep list items left-aligned within the centered block */
+  :global(.explanation-block ol),
+  :global(.explanation-block ul) {
+    text-align: left;
+    display: inline-block; /* Helps with centering the list block itself if needed */
+    max-width: 100%; /* Prevent overflow */
+  }
+
+  :global(.explanation-block h4) {
+    margin-top: 0; /* Adjust heading margin if needed */
+    margin-bottom: var(--space-m);
+    color: var(--color-accent); /* Optional: Use accent color for heading */
   }
 </style>

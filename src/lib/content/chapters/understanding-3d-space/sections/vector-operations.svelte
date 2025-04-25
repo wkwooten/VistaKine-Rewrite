@@ -36,7 +36,6 @@
     <!-- Block 1: Section Header & Intro -->
     <div class="section-header-block">
       <h2>Section Introduction</h2>
-      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <p>
         Vectors often need to be combined or manipulated to understand physical situations. For example, how do multiple forces acting on an object combine? Or how do we describe a change in velocity? This section introduces the fundamental operations used to work with vectors. We'll look at both the visual intuition (graphical methods) and the precise calculations using components.
       </p>
@@ -56,13 +55,15 @@
       <p>
         Graphically, we combine vectors by placing them head-to-tail. The resulting vector (the "sum" or "resultant") goes from the tail of the first vector to the head of the last vector.
       </p>
-      <p>
-         Numerically, we add the corresponding components of the vectors:
-         <Katex displayMode>
-           {"\\vec{A} + \\vec{B} = \\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
-         </Katex>
-      </p>
-      <h5>Utility</h5>
+      <FormulaAccordion>
+        <p>
+           Numerically, we add the corresponding components of the vectors:
+           <Katex displayMode>
+             {"\\vec{A} + \\vec{B} = \\langle A_x + B_x, A_y + B_y, A_z + B_z \\rangle"}
+           </Katex>
+        </p>
+      </FormulaAccordion>
+      <h5>Use Cases</h5>
        <ul>
          <li>Finding the <Keyword term="resultant displacement" /> after multiple movements.</li>
          <li>Calculating the <Keyword term="net force" /> when multiple forces act on an object.</li>
@@ -74,12 +75,14 @@
        <p>
          Subtracting a vector <Katex>{"\\vec{B}"}</Katex> from <Katex>{"\\vec{A}"}</Katex> is the same as adding the negative of <Katex>{"\\vec{B}"}</Katex> (a vector with the same magnitude but opposite direction).
        </p>
-      <p>
-        Numerically, we subtract the corresponding components:
-        <Katex displayMode>
-          {"\\vec{A} - \\vec{B} = \\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
-        </Katex>
-      </p>
+      <FormulaAccordion>
+        <p>
+          Numerically, we subtract the corresponding components:
+          <Katex displayMode>
+            {"\\vec{A} - \\vec{B} = \\langle A_x - B_x, A_y - B_y, A_z - B_z \\rangle"}
+          </Katex>
+        </p>
+      </FormulaAccordion>
        <p>
          Graphically, subtraction <Katex>{"\\vec{A} - \\vec{B}"}</Katex> is often visualized by placing the vectors tail-to-tail. The resultant vector points from the head of <Katex>{"\\vec{B}"}</Katex> to the head of <Katex>{"\\vec{A}"}</Katex>. This shows the change needed to get from <Katex>{"\\vec{B}"}</Katex> to <Katex>{"\\vec{A}"}</Katex> (since <Katex>{"\\vec{B} + (\\vec{A} - \\vec{B}) = \\vec{A}"}</Katex>).
        </p>
@@ -117,7 +120,7 @@
       </p>
       <ul>
          <li>If <Katex>{"c > 0"}</Katex>, the vector's magnitude is scaled by <Katex>c</Katex>, and its direction remains the same.</li>
-         <li>If <Katex>{"c < 0"}</Katex>, the vector's magnitude is scaled by <Katex>{"|c|"}</Katex>, and its direction is reversed (flipped 180°).</li>
+         <li>If <Katex>{"c < 0"}</Katex>, the vector's magnitude is scaled by <Katex>{"\\|c\\|"}</Katex>, and its direction is reversed (flipped 180°).</li>
          <li>If <Katex>{"c = 0"}</Katex>, the result is the zero vector <Katex>{"\\langle 0, 0, 0 \\rangle"}</Katex>.</li>
       </ul>
       <h4>Utility</h4>

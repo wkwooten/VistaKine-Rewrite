@@ -65,10 +65,7 @@
         Giving simple directions like "5 steps forward, 3 steps left" works well on a flat surface (2D). But how do you describe reaching for a high shelf or pinpointing a drone? You need a third dimension – height!
       </p>
       <p>
-        To map locations precisely in the space around us, we use three reference lines, or <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />), which meet at a single point called the <Keyword term="origin" />. This <Keyword term="Cartesian coordinate system" /> is the standard map for <Keyword term="3D space" />. Engineers typically orient these using a <Keyword term="right-handed coordinate system" /> convention.
-      </p>
-      <p>
-        Let's explore this system:
+        To map locations precisely in the space around us, we use three reference lines, or <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />), which meet at a single point called the <Keyword term="origin"/>. This <Keyword term="Cartesian coordinate system" /> is the standard map for <Keyword term="3D space" />. Engineers typically orient these using a <Keyword term="right-handed coordinate system" /> convention.
       </p>
     </div>
 
@@ -106,7 +103,7 @@
     </div>
 
     <!-- Block 5: Activity - Printer Calibration -->
-    <div class="visualization-block -exercise">
+    <article class="visualization-block -exercise">
       <h2>Hands-On: Printer Calibration</h2>
 
       <p class="exercise-description">
@@ -120,14 +117,15 @@
       <p>
         In the calibration exercise, by inputting specific <Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" /> coordinates, you directed the printer nozzle to precise locations within its 3D workspace. You saw firsthand how the <Keyword term="X-axis" /> controls horizontal movement (width), the <Keyword term="Y-axis" /> controls vertical movement (height), and the <Keyword term="Z-axis" /> controls movement in depth, all relative to the starting <Keyword term="origin" /> (0, 0, 0). Understanding how each coordinate uniquely contributes to defining a point is crucial!
       </p>
-    </div>
+    </article>
 
     <!-- Block 6: Activity - Review/Quiz -->
-    <div class="activity-block -review">
+    <article class="activity-block -review">
+      <h2>Section Review</h2>
       <SectionReview>
         <Quiz questions={coordinateQuizData} showFeedback={true} />
       </SectionReview>
-    </div>
+    </article>
 
   </div>
 </section>

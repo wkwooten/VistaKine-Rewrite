@@ -100,6 +100,7 @@ $sidebar-transition-timing: $transition-bezier;
 $shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
 $shadow-md: 0 2px 10px rgba(0, 0, 0, 0.05);
 $shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 10px 25px rgba(0, 0, 0, 0.1); // Added extra-large shadow
 
 // UI States
 $state-selected-color: #007bff;
@@ -222,6 +223,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --shadow-sm: #{$shadow-sm};
   --shadow-md: #{$shadow-md};
   --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl}; // Added extra-large shadow variable
 
   // UI States (Keep As Is)
   --state-selected-color: #{$state-selected-color}; // Maybe rename to --color-selected-bg or similar? Or use accent?
