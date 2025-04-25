@@ -24,7 +24,6 @@
 
 <section
   id="vector-operations"
-  class="content-section"
   data-section="1.3"
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -36,8 +35,8 @@
 
     <!-- Block 1: Section Header & Intro -->
     <div class="section-header-block">
-      <h1 class="section-title">Vector Operations</h1>
-      <h2>Why Operate on Vectors?</h2>
+      <h2>Section Introduction</h2>
+      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <p>
         Vectors often need to be combined or manipulated to understand physical situations. For example, how do multiple forces acting on an object combine? Or how do we describe a change in velocity? This section introduces the fundamental operations used to work with vectors. We'll look at both the visual intuition (graphical methods) and the precise calculations using components.
       </p>

@@ -13,9 +13,19 @@
   import VectorAnatomy from '$lib/components/visualization/elements/constructs/VectorAnatomy.svelte';
 </script>
 
+<!-- Added back handleSectionIntersect function definition -->
+<script context="module" lang="ts">
+  // Handle section intersection for navigation (Placeholder - needs implementation)
+  function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }) {
+    if (detail.isIntersecting && detail.intersectionRatio > 0.3) {
+      // Assuming the store expects the slug 'vectors-and-components'
+      // currentSection.set('vectors-and-components'); // Re-enable when store/sidebar is ready
+    }
+  }
+</script>
+
 <section
   id="vectors-and-components"
-  class="content-section"
   data-section="1.2"
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -26,7 +36,8 @@
   <div class="readable-content">
 
     <div class="section-header-block">
-      <h1 class="section-title">Vectors and Components</h1>
+      <h2>Section Introduction</h2>
+      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, I get coordinates – like (3, 2, 5). But how do I tell a robot arm to *move*? Knowing the start and end isn't enough, right?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Exactly! That's where <Keyword term="vectors" /> come in. Think of kicking a ball: you need both *how hard* (magnitude) and *in what direction*. A vector captures both.</p>

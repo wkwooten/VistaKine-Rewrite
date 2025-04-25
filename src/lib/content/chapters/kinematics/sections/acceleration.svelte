@@ -20,7 +20,6 @@
 <!-- Section 2.2: Acceleration -->
 <section
   id="acceleration"
-  class="content-section"
   data-section="2.2"
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -29,8 +28,9 @@
 >
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
-    <h1 class="section-title">2.2 Acceleration</h1>
-    <div class="section-intro">
+    <div class="section-header-block">
+      <h2>Section Introduction</h2>
+      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
         <p><strong>Surya:</strong> What's the difference between a car driving at a constant speed and one that's speeding up or braking?</p>
         <p><strong>Leo:</strong> The difference is <span class="keyword">acceleration</span>! It measures how quickly the car's velocity is changing. Constant speed means zero acceleration.</p>
@@ -43,7 +43,8 @@
       </p>
     </div>
 
-    <div class="section-core">
+    <div class="concept-block">
+      <h2>Acceleration Formulas & Calculation</h2>
       <FormulaAccordion>
         <p class="formula-label">Average Acceleration:</p>
         <Katex displayMode>{'\\textcolor{blue}{a_{avg}} = \\frac{\\textcolor{purple}{\\Delta v}}{\\textcolor{green}{\\Delta t}}'}</Katex>
@@ -72,52 +73,10 @@
       </GuidedCalculation>
     </div>
 
-    <SectionReview>
-      <Quiz questions={accelerationQuizData} showFeedback={true} />
-    </SectionReview>
+    <div class="activity-block -review">
+      <SectionReview>
+        <Quiz questions={accelerationQuizData} showFeedback={true} />
+      </SectionReview>
+    </div>
   </div>
 </section>
-
-<style lang="scss">
-  .content-section {
-    position: relative;
-    padding: var(--space-l) 0;
-  }
-
-  .section-line {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: var(--color-accent);
-    opacity: 0.3;
-  }
-
-  .readable-content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 var(--space-l);
-  }
-
-  .section-title {
-    font-size: var(--step-3);
-    margin-bottom: var(--space-l);
-    color: var(--color-accent);
-  }
-
-  .section-intro, .section-core {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-  }
-
-  .section-intro p, .section-core p {
-    margin-bottom: var(--space-s);
-  }
-
-  .keyword {
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-</style>

@@ -23,7 +23,6 @@
 <!-- Section 2.1: Displacement & Velocity -->
 <section
   id="displacement-velocity"
-  class="content-section section-header"
   data-section="2.1"
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -32,13 +31,13 @@
 >
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
-    <h1 class="section-title">2.1 Displacement & Velocity</h1>
-    <div class="section-intro">
+    <div class="section-header-block">
+      <h2>Section Introduction</h2>
+      <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
         <p><strong>Surya:</strong> I'm tracking a runner in a marathon. How do I describe how fast they're going and where they are?</p>
         <p><strong>Leo:</strong> We can use displacement to pinpoint their position change and velocity to describe how fast they're running in a specific direction.</p>
       </Scenario>
-
       <p>
         <span class="keyword">Displacement</span> (<Katex>\Delta x</Katex>) is the change in position, describing how far an object has moved from its starting point in a straight line and in what direction. It's a vector quantity.
       </p>
@@ -47,7 +46,8 @@
       </p>
     </div>
 
-    <div class="section-core">
+    <div class="concept-block">
+      <h2>Displacement and Velocity Formulas</h2>
       <FormulaAccordion>
         <p class="formula-label">Displacement:</p>
         <Katex displayMode>{'\\textcolor{blue}{\\Delta x} = \\textcolor{red}{x_f} - \\textcolor{green}{x_i}'}</Katex>
@@ -60,54 +60,13 @@
       <p>
         Understanding these is the first step to analyzing any motion.
       </p>
+    </div>
 
+    <div class="activity-block -review">
       <SectionReview>
         <Quiz questions={combinedQuizData} showFeedback={true} />
       </SectionReview>
     </div>
+
   </div>
 </section>
-
-<style lang="scss">
-  .content-section {
-    position: relative;
-    padding: var(--space-l) 0;
-  }
-
-  .section-line {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background-color: var(--color-accent);
-    opacity: 0.3;
-  }
-
-  .readable-content {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 var(--space-l);
-  }
-
-  .section-title {
-    font-size: var(--step-3);
-    margin-bottom: var(--space-l);
-    color: var(--color-accent);
-  }
-
-  .section-intro, .section-core {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-  }
-
-  .section-intro p, .section-core p {
-    margin-bottom: var(--space-s);
-  }
-
-  .keyword {
-    font-weight: 600;
-    color: var(--color-accent);
-  }
-</style>
