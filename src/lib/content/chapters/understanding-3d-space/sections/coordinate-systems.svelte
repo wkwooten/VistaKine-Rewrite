@@ -7,7 +7,7 @@
   import Scenario from '$lib/components/Scenario.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import PrinterCalibrationExercise from '$lib/components/visualization/interactions/printer-calibration/PrinterCalibrationExercise.svelte';
-  import { coordinateQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
+  import { coordinateQuizData } from '$lib/content/chapters/data/quizzes/understanding-3d-space-quiz-data';
   import Keyword from '$lib/components/Keyword.svelte';
   import AxisExplorer from '$lib/components/visualization/AxisExplorer.svelte';
   import { onMount } from 'svelte'; // Import onMount if needed for intersection observer

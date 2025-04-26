@@ -7,7 +7,7 @@
   import Scenario from '$lib/components/Scenario.svelte';
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import VectorBuilderExercise from '$lib/components/visualization/interactions/vector-builder/VectorBuilderExercise.svelte';
-  import { vectorQuizData } from '$lib/content/chapters/data/understanding-3d-space-quiz-data';
+  import { vectorQuizData } from '$lib/content/chapters/data/quizzes/understanding-3d-space-quiz-data';
   import Katex from 'svelte-katex';
   import Keyword from '$lib/components/Keyword.svelte';
   import VectorAnatomy from '$lib/components/visualization/elements/constructs/VectorAnatomy.svelte';

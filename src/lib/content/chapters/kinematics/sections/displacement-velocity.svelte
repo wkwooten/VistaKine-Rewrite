@@ -7,7 +7,7 @@
   import Quiz from '$lib/components/Quiz.svelte';
   import Scenario from '$lib/components/Scenario.svelte';
   import Katex from 'svelte-katex';
-  import { displacementQuizData, velocityQuizData } from '$lib/content/chapters/data/kinematics-quiz-data';
+  import { displacementQuizData, velocityQuizData } from '$lib/content/chapters/data/quizzes/kinematics-quiz-data';
   import Keyword from '$lib/components/Keyword.svelte';
   import ContentCard from '$lib/components/ContentCard.svelte';
 
