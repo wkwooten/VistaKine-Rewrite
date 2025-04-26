@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSection } from '$lib/stores/appState';
+  import { currentSection } from '$lib/stores/appState.js';
   import { intersect } from '$lib/utils/intersection';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import GuidedCalculation from '$lib/components/GuidedCalculation.svelte';
@@ -8,6 +8,8 @@
   import Scenario from '$lib/components/Scenario.svelte';
   import Katex from 'svelte-katex';
   import { accelerationQuizData } from '$lib/content/chapters/data/kinematics-quiz-data';
+  import ContentCard from '$lib/components/ContentCard.svelte';
+  import Keyword from '$lib/components/Keyword.svelte';
 
   // Handle section intersection for navigation
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }) {
@@ -28,7 +30,7 @@
 >
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
-    <div class="section-header-block">
+    <ContentCard blockType="section-header-block">
       <h2>Section Introduction</h2>
       <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
@@ -41,9 +43,9 @@
       <p>
         If acceleration is zero, the object moves with constant velocity (uniform motion). If acceleration is constant and non-zero, the object's velocity changes at a steady rate (uniformly accelerated motion).
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Acceleration Formulas & Calculation</h2>
       <FormulaAccordion>
         <p class="formula-label">Average Acceleration:</p>
@@ -71,12 +73,12 @@
         </form>
         <!-- Answers: t=4s, d=40m -->
       </GuidedCalculation>
-    </div>
+    </ContentCard>
 
-    <div class="activity-block -review">
+    <ContentCard blockType="activity-block" class="-review">
       <SectionReview>
         <Quiz questions={accelerationQuizData} showFeedback={true} />
       </SectionReview>
-    </div>
+    </ContentCard>
   </div>
 </section>

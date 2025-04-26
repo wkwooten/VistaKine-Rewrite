@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { currentSection } from '$lib/stores/appState';
+  import { currentSection } from '$lib/stores/appState.js';
   import { intersect } from '$lib/utils/intersection';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import SectionReview from '$lib/components/SectionReview.svelte';
   import Quiz from '$lib/components/Quiz.svelte';
   import Scenario from '$lib/components/Scenario.svelte';
   import Katex from 'svelte-katex';
-  import { projectileMotionQuizData } from '$lib/content/chapters/data/kinematics-quiz-data';
+  import Keyword from '$lib/components/Keyword.svelte';
+  import ContentCard from '$lib/components/ContentCard.svelte';
 
   // Handle section intersection for navigation
   function handleSectionIntersect(detail: { isIntersecting: boolean; intersectionRatio: number; }) {
@@ -27,7 +28,8 @@
 >
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
-    <div class="section-header-block">
+
+    <ContentCard blockType="section-header-block">
       <h2>Section Introduction</h2>
       <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
@@ -37,9 +39,9 @@
       <p>
         <span class="keyword">Projectile motion</span> is a type of two-dimensional motion where an object is projected into the air and moves under the influence of gravity alone (ignoring air resistance).
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Projectile Motion Formulas</h2>
       <FormulaAccordion>
         <p class="description">Key equations, assuming launch from origin (x<sub>0</sub>=0, y<sub>0</sub>=0), initial velocity v<sub>0</sub> at angle θ to horizontal, and gravity g:</p>
@@ -56,13 +58,13 @@
       <p>
         Examples include a basketball shot, a thrown baseball, or a long jump in athletics. Maximum range is achieved at a launch angle of 45°.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="activity-block -review">
+    <ContentCard blockType="activity-block" class="-review">
       <SectionReview>
         <Quiz questions={projectileMotionQuizData} showFeedback={true} />
       </SectionReview>
-    </div>
+    </ContentCard>
 
   </div>
 </section>

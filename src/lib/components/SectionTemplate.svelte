@@ -253,42 +253,10 @@
       margin-bottom: var(--space-l);
   }
 
-  :global(.content-card.visualization-block) {
-    border: 1px solid var(--color-border);
-
-    @media (max-width: vars.$breakpoint-md) {
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      padding-inline: var(--space-s);
-    }
-
-    // Specific adjustments for exercise blocks within visualization blocks
-    &.-exercise {
-      & .exercise-description {
-        font-size: var(--step-0);
-        margin-bottom: var(--space-m);
-        color: var(--color-text-secondary);
-        line-height: 1.6;
-        margin-left: 0;
-        margin-right: 0;
-      }
-
-      // Prevent double styling if exercise component has its own wrapper
-      &.visualization-card { // TODO: Review if visualization-card class is still needed here
-        background-color: transparent;
-        border: none;
-        padding: 0;
-        box-shadow: none;
-        margin: var(--space-xl) 0;
-      }
-    }
-  }
-
-   :global(.content-card.activity-block.-review) {
+  :global(.content-card.activity-block.-review) {
       /* Example: border-top: 3px solid var(--color-accent); */
       margin-top: var(--space-xl); // Ensure review margin is kept (if different from base card)
-   }
+  }
 
   :global(.content-card.explanation-block) {
     background-color: var(--color-background);

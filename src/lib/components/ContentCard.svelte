@@ -27,7 +27,7 @@
   bind:this={elementRef}
   use:intersect={{
     rootMargin: '-20% 0px -20% 0px', // Keep the refined margin
-    threshold: 0.1,
+    threshold: 0.2,
     onIntersect: handleIntersect
   }}
   class="content-card {blockType} {klass}"
@@ -39,10 +39,13 @@
 </div>
 
 <style lang="scss">
+  @use '$lib/styles/variables' as vars; // Import variables
+
   .content-card {
     // --- Base Card Styles (Moved from SectionTemplate) ---
     margin-top: var(--space-l);
     margin-bottom: var(--space-xl);
+		margin-inline: var(--space-3xs);
     background-color: var(--color-surface);
     box-shadow: var(--shadow-sm); // Use the base shadow defined in variables
     border-radius: var(--radius-md);
@@ -56,12 +59,40 @@
 
   .content-card.is-visible {
     // --- Lifted Styles (Moved from SectionTemplate) ---
-    box-shadow: var(--shadow-xl);
-    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(3px);
+  }
+
+  /* Styles specifically for visualization-block type */
+  .content-card{
+    border: 1px solid var(--color-border);
+
+
+    // Specific adjustments when it's also an exercise
+    // Note: .-exercise class comes from the parent via `class` prop
+    &.-exercise {
+      .exercise-description {
+        font-size: var(--step-0);
+        margin-bottom: var(--space-m);
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      // Adjustments if it also has .visualization-card (legacy?)
+      &.visualization-card { // TODO: Review if visualization-card class is still needed here
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        box-shadow: none;
+        margin: var(--space-xl) 0;
+      }
+    }
   }
 
   /*
-   Specific block-type overrides (like borders, specific backgrounds)
+   Specific block-type overrides (like specific backgrounds for explanation-block)
    will still be handled in SectionTemplate.svelte using :global()
    targeting .content-card.blockType (e.g., :global(.content-card.visualization-block))
   */
