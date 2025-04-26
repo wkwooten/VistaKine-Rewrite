@@ -1,6 +1,6 @@
 <script lang="ts">
   import { currentSection } from '$lib/stores/appState.js';
-  import { intersect } from '$lib/utils/intersection';
+  import { intersect, type IntersectDetail } from '$lib/utils/intersection';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import SectionReview from '$lib/components/SectionReview.svelte';
   import Quiz from '$lib/components/Quiz.svelte';
@@ -11,6 +11,7 @@
   import Keyword from '$lib/components/Keyword.svelte';
   import AxisExplorer from '$lib/components/visualization/AxisExplorer.svelte';
   import { onMount } from 'svelte'; // Import onMount if needed for intersection observer
+  import ContentCard from '$lib/components/ContentCard.svelte'; // Import the new component
 
   // State for completion
   let isCalibrationComplete = false;
@@ -47,7 +48,7 @@
   <div class="readable-content">
 
     <!-- Block 1: Section Introduction -->
-    <div class="section-header-block">
+    <ContentCard blockType="section-header-block">
       <h2>Section Introduction</h2>
       <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
@@ -56,10 +57,10 @@
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, like the grid lines on the build plate?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Precisely! Think of it as a map. We use three perpendicular <Keyword term="axes" /> – usually X for width, Z for depth, and Y for height – all meeting at a starting point called the <Keyword term="origin" /> (0, 0, 0). Every point in the printer's volume has a unique X, Y, Z address.</p>
       </Scenario>
-    </div>
+    </ContentCard>
 
     <!-- Block 2: Concept - Need for 3D -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Why Three Dimensions?</h2>
       <p>
         Giving simple directions like "5 steps forward, 3 steps left" works well on a flat surface (2D). But how do you describe reaching for a high shelf or pinpointing a drone? You need a third dimension – height!
@@ -67,10 +68,10 @@
       <p>
         To map locations precisely in the space around us, we use three reference lines, or <Keyword term="axes" /> (<Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" />), which meet at a single point called the <Keyword term="origin"/>. This <Keyword term="Cartesian coordinate system" /> is the standard map for <Keyword term="3D space" />. Engineers typically orient these using a <Keyword term="right-handed coordinate system" /> convention.
       </p>
-    </div>
+    </ContentCard>
 
     <!-- Block 3: Visualization - Axis Explorer -->
-    <div class="visualization-block visualization-card">
+    <ContentCard blockType="visualization-block" class="visualization-card">
       <h2>Exploring the Axes</h2>
       <figure>
         <AxisExplorer />
@@ -81,10 +82,10 @@
       <p>
         Notice how the <span style="color: var(--axis-color-x);">X (Red)</span>, <span style="color: var(--axis-color-y);">Y (Green)</span>, and <span style="color: var(--axis-color-z);">Z (Blue)</span> axes represent the three dimensions, all meeting at the <Keyword term="Origin"/> at (0,0,0).
       </p>
-    </div>
+    </ContentCard>
 
     <!-- Block 4: Concept - Application to 3D Printing -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Coordinates in 3D Space</h2>
       <p>
         Now, let's see this system in action with a 3D printer. Imagine a device with a small nozzle that needs to move *very precisely* to build objects layer by layer. How does it know where to go? It uses those same axes!
@@ -100,10 +101,10 @@
       <p>
         By telling the printer exactly how far to travel along each axis from this origin (e.g., "move 50 units along X, 20 units along Y, 30 units along Z"), it reaches a unique point in its workspace. These axes typically form a <Keyword term="right-handed coordinate system" />, a standard orientation used in engineering. This precise control is key!
       </p>
-    </div>
+    </ContentCard>
 
     <!-- Block 5: Activity - Printer Calibration -->
-    <article class="visualization-block -exercise">
+    <ContentCard blockType="visualization-block" class="-exercise">
       <h2>Hands-On: Printer Calibration</h2>
 
       <p class="exercise-description">
@@ -117,15 +118,15 @@
       <p>
         In the calibration exercise, by inputting specific <Keyword term="X" />, <Keyword term="Y" />, and <Keyword term="Z" /> coordinates, you directed the printer nozzle to precise locations within its 3D workspace. You saw firsthand how the <Keyword term="X-axis" /> controls horizontal movement (width), the <Keyword term="Y-axis" /> controls vertical movement (height), and the <Keyword term="Z-axis" /> controls movement in depth, all relative to the starting <Keyword term="origin" /> (0, 0, 0). Understanding how each coordinate uniquely contributes to defining a point is crucial!
       </p>
-    </article>
+    </ContentCard>
 
     <!-- Block 6: Activity - Review/Quiz -->
-    <article class="activity-block -review">
+    <ContentCard blockType="activity-block" class="-review">
       <h2>Section Review</h2>
       <SectionReview>
         <Quiz questions={coordinateQuizData} showFeedback={true} />
       </SectionReview>
-    </article>
+    </ContentCard>
 
   </div>
 </section>

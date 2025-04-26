@@ -1,14 +1,14 @@
 import { browser } from '$app/environment';
 
 // Define the shape of the details passed to the callback
-interface IntersectDetail {
+export interface IntersectDetail {
 	isIntersecting: boolean;
 	intersectionRatio: number;
 }
 
 // Define the shape of the options the action accepts
 interface IntersectOptions extends IntersectionObserverInit {
-	onIntersect?: (detail: IntersectDetail) => void; // Add the optional callback function
+	onIntersect?: (detail: IntersectDetail, node: HTMLElement) => void;
 }
 
 /**
@@ -36,9 +36,9 @@ export function intersect(node: HTMLElement, options: IntersectOptions = {}) {
 				isIntersecting: entry.isIntersecting,
 				intersectionRatio: entry.intersectionRatio
 			};
-			// Call the callback directly if provided
+			// Call the callback directly if provided, passing the node
 			if (typeof onIntersect === 'function') {
-				onIntersect(detail);
+				onIntersect(detail, node);
 			}
 			// Removed node.dispatchEvent
 		}, mergedObserverOptions);
@@ -66,9 +66,9 @@ export function intersect(node: HTMLElement, options: IntersectOptions = {}) {
 						isIntersecting: entry.isIntersecting,
 						intersectionRatio: entry.intersectionRatio
 					};
-					// Call the callback directly if provided
+					// Call the callback directly if provided, passing the node
 					if (typeof onIntersect === 'function') {
-						onIntersect(detail);
+						onIntersect(detail, node);
 					}
 					// Removed node.dispatchEvent
 				}, mergedObserverOptions);

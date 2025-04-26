@@ -1,6 +1,6 @@
 <script lang="ts">
   import { currentSection } from '$lib/stores/appState.js';
-  import { intersect } from '$lib/utils/intersection';
+  import { intersect, type IntersectDetail } from '$lib/utils/intersection';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import SectionReview from '$lib/components/SectionReview.svelte';
   import Quiz from '$lib/components/Quiz.svelte';
@@ -8,6 +8,7 @@
   import extractKeywords from '$lib/utils/keywordExtractor.js';
   import Katex from 'svelte-katex';
   import Keyword from '$lib/components/Keyword.svelte';
+  import ContentCard from '$lib/components/ContentCard.svelte';
 
   // Determine the section number
   const sectionNumber = "1.3"; // Adjust if this is incorrect
@@ -33,8 +34,7 @@
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
 
-    <!-- Block 1: Section Header & Intro -->
-    <div class="section-header-block">
+    <ContentCard blockType="section-header-block">
       <h2>Section Introduction</h2>
       <p>
         Vectors often need to be combined or manipulated to understand physical situations. For example, how do multiple forces acting on an object combine? Or how do we describe a change in velocity? This section introduces the fundamental operations used to work with vectors. We'll look at both the visual intuition (graphical methods) and the precise calculations using components.
@@ -43,10 +43,9 @@
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> Okay, vectors describe movement like <Katex>{"\\vec{v}"}</Katex> or forces like <Katex>{"\\vec{F}"}</Katex>. But what if there are *multiple* forces, or something changes speed *and* direction?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> Great question! That's exactly why we need vector operations. They give us the mathematical tools to combine vectors (like adding forces) or scale them (like relating force to acceleration).</p>
       </Scenario>
-    </div>
+    </ContentCard>
 
-    <!-- Block 2: Concept - Addition & Subtraction -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Vector Addition and Subtraction</h2>
       <p>These operations help us find the net effect of combining vectors or the difference between two vector states.</p>
 
@@ -91,24 +90,14 @@
         <li>Finding the change in velocity (<Keyword term="acceleration" /> is related to this): <Katex>{"\\Delta\\vec{v} = \\vec{v}_f - \\vec{v}_i"}</Katex>.</li>
         <li>Determining relative position vectors.</li>
       </ul>
-    </div>
+    </ContentCard>
 
-    <!-- Block 3: Placeholder Visualization - Addition/Subtraction -->
-    <!--
-      <VectorOperationVisualization type="addition-subtraction">
-        Allows users to define two vectors A and B.
-        Visualizes A, B (head-to-tail for sum), and Resultant A+B.
-        Shows component calculations.
-        Toggle to visualize A-B (tail-to-tail or adding -B).
-      </VectorOperationVisualization>
-    -->
-     <div class="visualization-block visualization-card -placeholder">
-       <h2>Visualizing Addition & Subtraction</h2>
-       <p><em>(Interactive visualization for vector addition/subtraction will be added here.)</em></p>
-     </div>
+    <ContentCard blockType="visualization-block" class="visualization-card -placeholder">
+      <h2>Visualizing Addition & Subtraction</h2>
+      <p><em>(Interactive visualization for vector addition/subtraction will be added here.)</em></p>
+    </ContentCard>
 
-    <!-- Block 4: Concept - Scalar Multiplication -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Scalar Multiplication</h2>
       <p>This operation scales a vector, changing its magnitude and potentially reversing its direction.</p>
       <h4>Concept</h4>
@@ -129,24 +118,14 @@
          <li>Relating <Keyword term="velocity" /> and <Keyword term="momentum" /> via mass (<Katex>{"\\vec{p} = m\\vec{v}"}</Katex>).</li>
          <li>Creating <Keyword term="unit vectors" />: A unit vector <Katex>{"\\hat{u}"}</Katex> in the same direction as <Katex>{"\\vec{u}"}</Katex> is found by <Katex>{"\\hat{u} = \\frac{1}{\\|\\vec{u}\\|}\\vec{u}"}</Katex>. This involves scalar multiplication by <Katex>{"1/\\|\\vec{u}\\|"}</Katex>.</li>
       </ul>
-    </div>
+    </ContentCard>
 
-    <!-- Block 5: Placeholder Visualization - Scalar Multiplication -->
-    <!--
-      <VectorOperationVisualization type="scalar-multiplication">
-        Shows a base vector A.
-        Slider/input for scalar c.
-        Visualizes c*A, showing scaling and direction flip.
-        Displays component calculation.
-      </VectorOperationVisualization>
-    -->
-     <div class="visualization-block visualization-card -placeholder">
-       <h2>Visualizing Scalar Multiplication</h2>
-       <p><em>(Interactive visualization for scalar multiplication will be added here.)</em></p>
-     </div>
+    <ContentCard blockType="visualization-block" class="visualization-card -placeholder">
+      <h2>Visualizing Scalar Multiplication</h2>
+      <p><em>(Interactive visualization for scalar multiplication will be added here.)</em></p>
+    </ContentCard>
 
-    <!-- Block 6: Concept - Dot Product -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Dot Product (Scalar Product)</h2>
       <p>The dot product combines two vectors to produce a single scalar value. It relates to how much one vector points along the direction of another.</p>
       <h4>Concept</h4>
@@ -172,13 +151,12 @@
          <li>Determining the <Keyword term="projection" /> of one vector onto another.</li>
       </ul>
       <p>We'll see how these applications become important when we study energy, motion, and more complex physical systems.</p>
-    </div>
+    </ContentCard>
 
     <!-- Placeholder for Dot Product Visualization -->
-     <p><em>(Optional visualization for the dot product concept might be added here.)</em></p>
+    <p><em>(Optional visualization for the dot product concept might be added here.)</em></p>
 
-    <!-- Block 7: Concept - Cross Product -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Cross Product (Vector Product)</h2>
       <p>The cross product combines two vectors in 3D space to produce a new *vector* that is perpendicular to both original vectors. This operation is inherently three-dimensional.</p>
       <h4>Concept</h4>
@@ -204,21 +182,19 @@
         <li>Other applications requiring vectors perpendicular to a plane.</li>
       </ul>
       <p>For now, simply understanding its conceptual meaning will prepare you for these more advanced topics.</p>
-    </div>
+    </ContentCard>
 
     <!-- Placeholder for Cross Product Visualization -->
     <p><em>(Optional visualization for the cross product concept, possibly including the Right-Hand Rule, might be added here.)</em></p>
 
-    <!-- Block 8: Conclusion -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Conclusion</h2>
       <p>
          Vector addition, subtraction, scalar multiplication, the dot product, and the cross product are the fundamental mathematical tools for working with vector quantities. Understanding how to combine and manipulate vectors numerically and conceptually is crucial for analyzing motion, forces, and other physical phenomena in 3D space, which we will explore further in subsequent chapters.
       </p>
-    </div>
+    </ContentCard>
 
-    <!-- Block 9: Optional Formula Summary -->
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <FormulaAccordion>
          <div class="formulas-container">
            <div class="formula-section">
@@ -261,16 +237,17 @@
            </div>
          </div>
       </FormulaAccordion>
-    </div>
+    </ContentCard>
 
-    <!-- Block 10: Optional Quiz Placeholder -->
+    <!-- Block 10: Optional Quiz Placeholder - Re-commented -->
     <!--
-    <div class="activity-block -review">
-      <SectionReview>
-        <Quiz questions={vectorOpsQuizData} />
-      </SectionReview>
-    </div>
-    -->
+    <ContentCard blockType="activity-block" class="-review">
+      <h2>Section Review</h2>
+       <SectionReview>
+         <Quiz questions={vectorOpsQuizData} />
+       </SectionReview>
+     </ContentCard>
+     -->
 
   </div>
 </section>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { currentSection } from '$lib/stores/appState.js';
-  import { intersect } from '$lib/utils/intersection';
+  import { intersect, type IntersectDetail } from '$lib/utils/intersection';
   import FormulaAccordion from '$lib/components/FormulaAccordion.svelte';
   import SectionReview from '$lib/components/SectionReview.svelte';
   import Quiz from '$lib/components/Quiz.svelte';
@@ -11,6 +11,9 @@
   import Katex from 'svelte-katex';
   import Keyword from '$lib/components/Keyword.svelte';
   import VectorAnatomy from '$lib/components/visualization/elements/constructs/VectorAnatomy.svelte';
+  import ContentCard from '$lib/components/ContentCard.svelte';
+
+  /* Removed the separate handleCardIntersection factory function */
 </script>
 
 <!-- Added back handleSectionIntersect function definition -->
@@ -35,7 +38,7 @@
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
 
-    <div class="section-header-block">
+    <ContentCard blockType="section-header-block">
       <h2>Section Introduction</h2>
       <p>_Placeholder: Describe what this section will cover and the introductory scenario._</p>
       <Scenario>
@@ -44,9 +47,9 @@
         <p data-speaker="Surya"><span class="speaker"><strong>Surya:</strong></span> So, coordinates = location, vectors = movement, force, or velocity (speed + direction)?</p>
         <p data-speaker="Leo"><span class="speaker"><strong>Leo:</strong></span> You got it! Coordinates are map pins. Vectors are arrows showing the journey or force.</p>
       </Scenario>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>What are Vectors? Scalar vs. Vector</h2>
       <p>
         Sometimes, location isn't the whole story. We often need quantities with both size (<Keyword term="magnitude" />) and direction.
@@ -60,9 +63,9 @@
       <p>
         Examples of vectors include <Keyword term="force" />, <Keyword term="velocity" /> (speed in a specific direction), and <Keyword term="displacement" /> (change in position).
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="visualization-block visualization-card">
+    <ContentCard blockType="visualization-block" class="visualization-card">
       <h2>Anatomy of a Vector</h2>
       <VectorAnatomy />
       <p>
@@ -71,16 +74,16 @@
       <p>
         Changing the arrow's start or end points alters its length and direction. This visual helps, but for precision, we need numbers: <Keyword term="components" />.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Describing Vectors Precisely: Components & Notation</h2>
       <p>
         To work with vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
       </p>
       <FormulaAccordion>
         <p>
-          Calculate components using the tail <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex> coordinates:
+          To calculate the components of a vector where <br><Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex> coordinates:
         </p>
         <ul>
           <li><Katex>{'\\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
@@ -95,9 +98,9 @@
         <li>Angle Bracket Notation: <Katex>{'\\vec{V} = \\langle \\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z} \\rangle'}</Katex></li>
         <li>Parentheses Notation: <Katex>{'\\vec{V} = (\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z})'}</Katex></li>
       </ul>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Vector Magnitude: Measuring Length</h2>
       <FormulaAccordion>
         <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>
@@ -105,7 +108,7 @@
             <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}'}</Katex>
         </p>
       </FormulaAccordion>
-      <div class="explanation-block">
+      <ContentCard blockType="explanation-block">
         <h4>How it works (Extending Pythagoras):</h4>
         <ol>
           <li>Imagine the vector's shadow (projection) onto the XY plane. Its length (<Katex>{'d_{xy}'}</Katex>) comes from the standard 2D Pythagorean theorem: <Katex displayMode>{'d_{xy}^2 = \\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2'}</Katex></li>
@@ -114,14 +117,14 @@
           <li>Substitute the first equation into the second: <Katex displayMode>{'||\\vec{V}||^2 = (\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2) + \\textcolor{#2C8FFF}{V_z}^2'}</Katex></li>
           <li>Taking the square root gives the final magnitude formula.</li>
         </ol>
-      </div>
+      </ContentCard>
 
       <p>
         This numerical form is vital for calculations.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="visualization-block -exercise">
+    <ContentCard blockType="visualization-block" class="-exercise">
       <h2>Hands-On: Build a Vector</h2>
       <p class="exercise-description">Adjust the start and end points of the vector using the controls. Observe how the vector's components (Vx, Vy, Vz) and its angle bracket notation change in real-time.</p>
       <VectorBuilderExercise />
@@ -131,9 +134,9 @@
       <p>
         The <Keyword term="Vector Builder" /> exercise shows these components and notation update as you adjust the vector.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>An Alternative Language: Unit Vector Notation</h2>
       <p>
         Another common way to write vectors, especially in physics/engineering, uses <Keyword term="unit vectors" />.
@@ -158,9 +161,9 @@
       <p>
         This clearly shows the vector's extent along each axis. <br> Example: <br> <Katex>{'\\langle 2, -3, 5 \\rangle'}</Katex> is also <Katex>{'2\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} - 3\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + 5\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}'}</Katex>.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="concept-block">
+    <ContentCard blockType="concept-block">
       <h2>Comparing Vector Notations</h2>
       <h4>Notation in Different Fields</h4>
       <p>
@@ -173,13 +176,13 @@
       <p>
         Both notations represent the same concept: a quantity with magnitude and direction. Familiarity with both is useful.
       </p>
-    </div>
+    </ContentCard>
 
-    <div class="activity-block -review">
+    <ContentCard blockType="activity-block" class="-review">
       <SectionReview>
         <Quiz questions={vectorQuizData} showFeedback={true} />
       </SectionReview>
-    </div>
+    </ContentCard>
 
   </div>
 </section>

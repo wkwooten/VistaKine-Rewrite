@@ -128,7 +128,7 @@
     width: 100%;
     max-width: var(--wide-content-width);
     padding: var(--space-s);
-    gap: var(--space-l);
+    gap: var(--space-l      );
     flex-grow: 1;
 
     @media (max-width: vars.$breakpoint-lg) {
@@ -226,7 +226,7 @@
   :global(.readable-content) {
     display: flex;
     flex-direction: column;
-    gap: var(--space-l);
+    gap: var(--space-m);
     max-width: var(--readable-max-width, 75ch);
     margin-inline: auto;
     padding-inline: var(--space-m);
@@ -242,62 +242,19 @@
     }
   }
 
+  /* REMOVED grouped global card styles - now handled by ContentCard.svelte */
 
-  /* Apply card styling to semantic content blocks passed via slot */
-
-  :global(.section-header-block) {
-    margin-bottom: var(--space-xl);
-		background-color: var(--color-surface); /* Use raised if available */
-		border-radius: var(--radius-md);
-		padding: var(--space-l);
-		box-shadow: var(--shadow-sm);
-		margin-top: var(--space-l); /* Add space below main title */
-    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
-
-    &:hover {
-      box-shadow: var(--shadow-xl);
-      transform: translateY(-3px);
-    }
-
-    /* Placeholder description style */
-    & p:first-of-type {
+  /* Keep only specific :global() overrides targeting ContentCard classes */
+  :global(.content-card.section-header-block p:first-of-type) {
       font-style: italic;
       color: var(--color-text-secondary);
       border-left: 3px solid var(--chapter-color);
       padding-left: var(--space-s);
       margin-bottom: var(--space-l);
-    }
   }
 
-  :global(.concept-block) {
-    margin-top: var(--space-l);
-    margin-bottom: var(--space-xl);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-    border-radius: var(--radius-md);
-    padding: var(--space-l);
-    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
-
-    &:hover {
-      box-shadow: var(--shadow-xl);
-      transform: translateY(-3px);
-    }
-  }
-
-  :global(.visualization-block) {
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-xl);
-    background-color: var(--color-surface);
+  :global(.content-card.visualization-block) {
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-l);
-    box-shadow: var(--shadow-lg);
-    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
-
-    &:hover {
-        box-shadow: var(--shadow-xl);
-        transform: translateY(-3px);
-    }
 
     @media (max-width: vars.$breakpoint-md) {
       border-radius: 0;
@@ -306,9 +263,8 @@
       padding-inline: var(--space-s);
     }
 
-    /* Specific adjustments for exercise blocks */
+    // Specific adjustments for exercise blocks within visualization blocks
     &.-exercise {
-      /* Ensure inner elements like exercise description align well */
       & .exercise-description {
         font-size: var(--step-0);
         margin-bottom: var(--space-m);
@@ -318,33 +274,41 @@
         margin-right: 0;
       }
 
-      /* Prevent double borders/padding if exercise component has its own wrapper */
+      // Prevent double styling if exercise component has its own wrapper
       &.visualization-card { // TODO: Review if visualization-card class is still needed here
         background-color: transparent;
         border: none;
         padding: 0;
         box-shadow: none;
-        margin: var(--space-xl) 0; /* Keep margin */
+        margin: var(--space-xl) 0;
       }
     }
   }
 
-  :global(.activity-block) {
-    margin-top: var(--space-xl);
-    margin-bottom: var(--space-xl);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-    border-radius: var(--radius-md);
-    padding: var(--space-l);
-    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
+   :global(.content-card.activity-block.-review) {
+      /* Example: border-top: 3px solid var(--color-accent); */
+      margin-top: var(--space-xl); // Ensure review margin is kept (if different from base card)
+   }
 
-    &:hover {
-      box-shadow: var(--shadow-xl);
-      transform: translateY(-3px);
+  :global(.content-card.explanation-block) {
+    background-color: var(--color-background);
+    text-align: center;
+
+    // Keep list styles associated with explanation-block
+    & ol,
+    & ul {
+        text-align: left;
+        display: inline-block;
+        max-width: 100%;
+    }
+    & h4 {
+        margin-top: 0;
+        margin-bottom: var(--space-m);
+        color: var(--color-accent);
     }
   }
 
-  /* Global styling for Definition List used in slotted content */
+  /* Non-card global styles remain separate */
   :global(.definition-list) {
     margin: var(--space-m) 0;
     padding-left: var(--space-l); /* Indent the list slightly */
@@ -368,35 +332,5 @@
 
   :global(.definition-list dd:last-child) {
     margin-bottom: 0;
-  }
-
-  /* Global styling for Explanation Blocks used in slotted content */
-  :global(.explanation-block) {
-    background-color: var(--color-background); /* Subtle background */
-    border-radius: var(--radius-md);
-    padding: var(--space-l);
-    margin-block: var(--space-l); /* Vertical spacing */
-    text-align: center; /* Center heading and potentially inline text */
-    box-shadow: var(--shadow-lg);
-    transition: box-shadow var(--transition-normal) var(--transition-bezier), transform var(--transition-normal) var(--transition-bezier);
-
-    &:hover {
-      box-shadow: var(--shadow-xl);
-      transform: translateY(-3px);
-    }
-  }
-
-  /* Keep list items left-aligned within the centered block */
-  :global(.explanation-block ol),
-  :global(.explanation-block ul) {
-    text-align: left;
-    display: inline-block; /* Helps with centering the list block itself if needed */
-    max-width: 100%; /* Prevent overflow */
-  }
-
-  :global(.explanation-block h4) {
-    margin-top: 0; /* Adjust heading margin if needed */
-    margin-bottom: var(--space-m);
-    color: var(--color-accent); /* Optional: Use accent color for heading */
   }
 </style>
