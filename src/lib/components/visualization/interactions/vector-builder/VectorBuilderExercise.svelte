@@ -1,16 +1,15 @@
 <script lang="ts">
-  import VisContainer from '../../VisContainer.svelte';
-  import VectorBuilderScene from './VectorBuilderScene.svelte';
-  import VectorBuilderHud from './VectorBuilderHud.svelte';
-  import VectorInputPanel from './VectorInputPanel.svelte';
-  import { HTML } from '@threlte/extras';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import DialogBox from '../../elements/ui/DialogBox.svelte'; // Import DialogBox
+  import VisContainer from "../../VisContainer.svelte";
+  import VectorBuilderScene from "./VectorBuilderScene.svelte";
+  import VectorBuilderHud from "./VectorBuilderHud.svelte";
+  import VectorInputPanel from "./VectorInputPanel.svelte";
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
+  import DialogBox from "../../elements/ui/DialogBox.svelte";
   import {
-    showVectorBuilderDialog, // Import dialog state
-    vectorBuilderDialogTurns // Import dialog state
-  } from '$lib/stores/vectorBuilderState';
+    showVectorBuilderDialog,
+    vectorBuilderDialogTurns,
+  } from "$lib/stores/vectorBuilderState";
 
   // --- Fullscreen State & Logic ---
   let isFullscreen = $state(false);
@@ -19,10 +18,9 @@
   // --- Dialog Key State ---
   let dialogKey = $state(0);
 
-  // Increment key on mount for the initial dialog
   onMount(() => {
-      dialogKey += 1;
-      // TODO: Add logic to increment dialogKey if a reset happens
+    dialogKey += 1;
+    // TODO: Add logic to increment dialogKey if a reset happens
   });
 
   async function toggleFullscreen() {
@@ -31,35 +29,46 @@
     if (newState) {
       if (!document.fullscreenElement) {
         try {
+          // Standard fullscreen request
           if (exerciseWrapperElement.requestFullscreen) {
             await exerciseWrapperElement.requestFullscreen();
+            // WebKit prefix
           } else if ((exerciseWrapperElement as any).webkitRequestFullscreen) {
             await (exerciseWrapperElement as any).webkitRequestFullscreen();
+            // MS prefix
           } else if ((exerciseWrapperElement as any).msRequestFullscreen) {
             await (exerciseWrapperElement as any).msRequestFullscreen();
           }
           isFullscreen = true;
         } catch (err) {
-          console.error(`[VectorBuilderExercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
+          console.error(
+            `[VectorBuilderExercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+          );
           isFullscreen = false;
         }
       }
     } else {
       if (document.fullscreenElement) {
         try {
+          // Standard exit fullscreen
           if (document.exitFullscreen) {
             await document.exitFullscreen();
+            // WebKit prefix
           } else if ((document as any).webkitExitFullscreen) {
             await (document as any).webkitExitFullscreen();
+            // MS prefix
           } else if ((document as any).msExitFullscreen) {
             await (document as any).msExitFullscreen();
           }
           isFullscreen = false;
         } catch (err) {
-          console.error(`[VectorBuilderExercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
+          console.error(
+            `[VectorBuilderExercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+          );
         }
       } else {
-        isFullscreen = false; // Sync state
+        // Sync state if fullscreen was exited by other means (e.g., Esc key)
+        isFullscreen = false;
       }
     }
   }
@@ -67,7 +76,11 @@
   onMount(() => {
     function handleFullscreenChange() {
       if (browser) {
-        const browserIsFullscreen = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+        const browserIsFullscreen = !!(
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement
+        );
+        // Sync internal state with browser state if they differ
         if (isFullscreen !== browserIsFullscreen) {
           console.log(`[VectorBuilderExercise] Syncing fullscreen state.`);
           isFullscreen = browserIsFullscreen;
@@ -76,16 +89,30 @@
     }
 
     if (browser) {
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
-      document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.addEventListener('msfullscreenchange', handleFullscreenChange);
+      // Listen to vendor-prefixed events as well
+      document.addEventListener("fullscreenchange", handleFullscreenChange);
+      document.addEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange,
+      );
+      document.addEventListener("msfullscreenchange", handleFullscreenChange);
     }
 
+    // Cleanup listeners
     return () => {
       if (browser) {
-        document.removeEventListener('fullscreenchange', handleFullscreenChange);
-        document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-        document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+        document.removeEventListener(
+          "fullscreenchange",
+          handleFullscreenChange,
+        );
+        document.removeEventListener(
+          "webkitfullscreenchange",
+          handleFullscreenChange,
+        );
+        document.removeEventListener(
+          "msfullscreenchange",
+          handleFullscreenChange,
+        );
       }
     };
   });
@@ -96,8 +123,6 @@
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
 >
-  <!-- Removed title and description from here -->
-
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showVectorBuilderDialog && !isFullscreen}
     <div class="dialog-above-vis">
@@ -113,99 +138,116 @@
   <!-- Render VectorInputPanel OUTSIDE VisContainer when NOT fullscreen -->
   {#if !isFullscreen}
     <div class="input-panel-outside-vis">
-        <VectorInputPanel />
+      <VectorInputPanel />
     </div>
   {/if}
 
+  <!-- Wrapper for VisContainer and its Overlay -->
+  <div class="vis-area-wrapper">
+    <!-- UI Overlay Container -->
+    <div class="ui-overlay">
+      <VectorBuilderHud
+        bind:isFullscreen
+        on:requestToggleFullscreen={toggleFullscreen}
+      />
+    </div>
 
-  <VisContainer>
-    <VectorBuilderScene />
-
-    <HTML fullscreen pointerEvents="none">
-        <VectorBuilderHud
-            bind:isFullscreen
-            on:requestToggleFullscreen={toggleFullscreen}
-        />
-    </HTML>
-
-  </VisContainer>
-
+    <!-- VisContainer -->
+    <VisContainer>
+      <VectorBuilderScene />
+    </VisContainer>
+  </div>
 </div>
 
 <style>
-
-
-  /* Ensure VisContainer allows pointer events on children */
-  :global(.visualization-container) {
-    pointer-events: auto;
-    order: 1; /* Ensure VisContainer comes first in default flow */
+  /* Wrapper for the visualization area and its overlay */
+  .vis-area-wrapper {
+    position: relative;
+    width: 100%;
+    order: 1;
+    z-index: 1;
   }
 
-  /* Style for the input panel when it's outside the visualization */
+  /* The transparent overlay for HUD elements */
+  .ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none; /* Allows clicks through to canvas */
+  }
+
+  /* Style for the input panel when outside the vis area */
   .input-panel-outside-vis {
-    width: 100%; /* Take full width */
+    width: 100%;
     box-sizing: border-box;
-    margin-bottom: var(--space-s); /* Space below the panel */
-    order: 2; /* Ensure it comes after the VisContainer in default flow */
+    margin-bottom: var(--space-s);
+    order: 2;
   }
 
-  /* Adjust exercise-wrapper for non-fullscreen */
+  /* Layout for non-fullscreen mode */
   .exercise-wrapper:not(.fullscreen) {
-      display: flex;
-      flex-direction: column; /* Stack elements vertically */
+    display: flex;
+    flex-direction: column;
   }
 
-
-  /* Add styles for fullscreen mode */
+  /* Styles for fullscreen mode */
   .exercise-wrapper.fullscreen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh; /* Fallback */
-    height: -webkit-fill-available; /* Use available height */
+    height: -webkit-fill-available;
     max-height: 100vh; /* Fallback */
-    max-height: -webkit-fill-available; /* Use available height */
+    max-height: -webkit-fill-available;
     border-radius: 0;
     border: none;
     z-index: 9999;
-    flex-direction: row; /* Ensure layout works with overlay */
-    padding: 0; /* Remove padding in fullscreen */
-    pointer-events: auto; /* Ensure wrapper passes events */
+    padding: 0;
+    pointer-events: auto; /* Allow events on wrapper in fullscreen */
 
-    /* Hide title and description when fullscreen */
+    /* Hide non-visualization elements when fullscreen */
+    & > .dialog-above-vis,
+    & > .input-panel-outside-vis,
     & > h3,
     & > p:first-of-type {
-        display: none;
+      display: none;
     }
 
-    & > :global(.visualization-container) {
+    /* Ensure vis area takes full space in fullscreen */
+    & > .vis-area-wrapper {
       width: 100%;
-      height: 100%; /* Keep this as 100% to fill parent */
-      max-height: 100%; /* Use parent's max-height implicitly */
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Style VisContainer specifically in fullscreen */
+    & > .vis-area-wrapper > :global(.visualization-container) {
+      height: 100%;
+      max-height: 100%;
       border: none;
       border-radius: 0;
-      aspect-ratio: auto; /* Override aspect ratio in fullscreen */
+      aspect-ratio: auto;
+      z-index: 5;
+      position: relative;
     }
 
-    /* Target expanded dialog as descendant, use :global() for nested classes */
-    /* Removed rule for .dialog-in-fullscreen */
-
-    /* Position collapsed dialog separately in top-right using :global() */
-    /* Removed rule for .dialog-box.collapsed */
-
-    /* Hide the outside panel when fullscreen */
-    & > .input-panel-outside-vis {
-        display: none;
+    /* Style overlay specifically in fullscreen (optional, inherits z-index) */
+    & > .vis-area-wrapper > .ui-overlay {
+      z-index: 10; /* Inherited */
     }
   }
 
-  /* Style for the dialog wrapper when it's above the visualization */
+  /* Style for the dialog wrapper when above the vis */
   .dialog-above-vis {
     width: 100%;
     box-sizing: border-box;
-    min-height: 110px; /* Adjust based on DialogBox content */
+    min-height: 110px;
     margin-bottom: var(--space-s);
     position: relative;
+    order: 0;
   }
 </style>
