@@ -139,7 +139,7 @@ $leo-color-light: #1E40AF;  // Blue 800
 // ==================================
 :root {
   // Utopia Fluid Type Steps (Keep As Is)
-  --step--2: clamp(0.7901rem, 0.7867rem + 0.0172vw, 0.8rem);
+   --step--2: clamp(0.7901rem, 0.7867rem + 0.0172vw, 0.8rem);
   --step--1: clamp(0.8889rem, 0.8502rem + 0.1932vw, 1rem);
   --step-0: clamp(1rem, 0.913rem + 0.4348vw, 1.25rem);
   --step-1: clamp(1.125rem, 0.9728rem + 0.7609vw, 1.5625rem);
@@ -147,7 +147,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --step-3: clamp(1.4238rem, 1.0699rem + 1.7697vw, 2.4414rem);
   --step-4: clamp(1.6018rem, 1.0975rem + 2.5217vw, 3.0518rem);
   --step-5: clamp(1.802rem, 1.102rem + 3.5003vw, 3.8147rem);
-  --step-5: clamp(1.802rem, 1.102rem + 3.5003vw, 3.8147rem);
+  --step-6: clamp(2.0273rem, 1.0739rem + 4.7671vw, 4.7684rem);
 
   // Core Palette
   --color-background: #{$color-background};
