@@ -62,6 +62,8 @@
 		"@dimforge/rapier3d-compat": "^0.15.0",
 		"jsdom": "^26.0.0",
 		"lucide-svelte": "^0.483.0",
+		"p5": "^2.0.1",
+		"p5-svelte": "^3.1.2",
 		"phosphor-svelte": "^3.0.1",
 		"postprocessing": "^6.37.1",
 		"svelte-katex": "^0.1.2",

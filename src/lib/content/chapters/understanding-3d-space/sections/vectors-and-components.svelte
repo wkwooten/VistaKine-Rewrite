@@ -12,8 +12,14 @@
   import Keyword from '$lib/components/Keyword.svelte';
   import VectorAnatomy from '$lib/components/visualization/elements/constructs/VectorAnatomy.svelte';
   import ContentCard from '$lib/components/ContentCard.svelte';
+  import { onMount } from 'svelte';
+  import type Vector1dComponentType from '$lib/components/Vector1d.svelte';
 
-  /* Removed the separate handleCardIntersection factory function */
+  let Vector1dComponent: typeof Vector1dComponentType | null = null;
+
+  onMount(async () => {
+    Vector1dComponent = (await import('$lib/components/Vector1d.svelte')).default;
+  });
 </script>
 
 <!-- Added back handleSectionIntersect function definition -->
@@ -65,11 +71,58 @@
       </p>
     </ContentCard>
 
+    <ContentCard blockType="concept-block">
+      <h2>Vectors in One Dimension (1D)</h2>
+      <p>
+        Imagine a number line. A 1D vector simply represents movement or quantity along that line.
+      </p>
+      <ul>
+        <li><strong>Magnitude:</strong> The absolute value of the number (e.g., |+5| = 5, |-3| = 3).</li>
+        <li><strong>Direction:</strong> Indicated by the sign (+ for positive direction, - for negative).</li>
+      </ul>
+      <p>
+        Example: A vector <Katex>{'+7'}</Katex> means moving 7 units in the positive direction.
+      </p>
+      {#if Vector1dComponent}
+         <svelte:component this={Vector1dComponent} />
+      {:else}
+         <p>Loading 1D Canvas...</p>
+      {/if}
+    </ContentCard>
+
+    <ContentCard blockType="concept-block">
+      <h2>Extending to Two Dimensions (2D)</h2>
+      <p>
+        In 2D (like a flat plane), we need two pieces of information to describe a vector's direction and magnitude, typically using the X and Y axes. We break the vector down into <Keyword term="components" />:
+      </p>
+      <ul>
+        <li><Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>: How far the vector extends along the X-axis.</li>
+        <li><Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>: How far the vector extends along the Y-axis.</li>
+      </ul>
+      <p>
+        The magnitude (length) in 2D is found using the standard Pythagorean theorem:
+      </p>
+      <FormulaAccordion summary="2D Magnitude Formula">
+         <p>
+            <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2}'}</Katex>
+         </p>
+         <p>This calculates the hypotenuse of a right triangle formed by the vector's components.</p>
+      </FormulaAccordion>
+       <p>
+        Visually, it's an arrow on a graph starting from an origin (or tail point) to an end point (head).
+      </p>
+    </ContentCard>
+
+     <p class="transition-text">
+        Now that we've seen how vectors work in 1D and 2D, let's add the third dimension (Z-axis) to fully understand vectors in 3D space.
+     </p>
+
+
     <ContentCard blockType="visualization-block" class="visualization-card">
-      <h2>Anatomy of a Vector</h2>
+      <h2>Anatomy of a Vector (3D)</h2>
       <VectorAnatomy />
       <p>
-        As you can see, a vector is represented by an arrow. Its <strong>Tail</strong> marks the starting point, and the <strong>Head</strong> (tip) marks the ending point. The arrow's <strong>Length</strong> represents the vector's <strong>Magnitude</strong> (size, strength, or speed), and its <strong>Orientation</strong> in space indicates its <strong>Direction</strong>.
+        In 3D space, a vector is still represented by an arrow. Its <strong>Tail</strong> marks the starting point, and the <strong>Head</strong> (tip) marks the ending point. The arrow's <strong>Length</strong> represents the vector's <strong>Magnitude</strong> (size, strength, or speed), and its <strong>Orientation</strong> in space indicates its <strong>Direction</strong>.
       </p>
       <p>
         Changing the arrow's start or end points alters its length and direction. This visual helps, but for precision, we need numbers: <Keyword term="components" />.
@@ -77,13 +130,13 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Describing Vectors Precisely: Components & Notation</h2>
+      <h2>Describing 3D Vectors Precisely: Components & Notation</h2>
       <p>
-        To work with vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
+        To work with 3D vectors mathematically, we break them into <Keyword term="components" /> along the X, Y, and Z axes. These components (<Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>, <Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>, <Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>) tell us how much the vector extends along each axis.
       </p>
       <FormulaAccordion>
         <p>
-          To calculate the components of a vector where <br><Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head <Katex>{'P_2(x_2, y_2, z_2)'}</Katex> coordinates:
+          To calculate the components of a 3D vector with tail at <Katex>{'P_1(x_1, y_1, z_1)'}</Katex> and head at <Katex>{'P_2(x_2, y_2, z_2)'}</Katex>:
         </p>
         <ul>
           <li><Katex>{'\\textcolor{#EF5350}{V_x} = x_2 - x_1'}</Katex> (Change in X)</li>
@@ -92,7 +145,7 @@
         </ul>
       </FormulaAccordion>
       <p>
-        Common notations for vector <Katex>{'\\vec{V}'}</Katex> using components:
+        You may also encounter vectors written like this:
       </p>
       <ul>
         <li>Angle Bracket Notation: <Katex>{'\\vec{V} = \\langle \\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z} \\rangle'}</Katex></li>
@@ -101,27 +154,32 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Vector Magnitude: Measuring Length</h2>
+      <h2>Vector Magnitude in 3D: Measuring Length</h2>
+      <p>The <Keyword term="magnitude" /> (length) of a 3D vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> extends the 2D concept using the 3D Pythagorean theorem:</p>
       <FormulaAccordion>
-        <p>The <Keyword term="magnitude" /> (length) of a vector <Katex>{'\\vec{V}'}</Katex> with components <Katex>{'\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}'}</Katex> uses the 3D Pythagorean theorem:</p>
+        Where:
+        <ul>
+          <li><Katex>{'||\\vec{V}||'}</Katex>: Represents the <strong>magnitude</strong> (or length) of the vector <Katex>{'\\vec{V}'}</Katex>.</li>
+          <li><Katex>{'\\textcolor{#EF5350}{V_x}'}</Katex>: The component of the vector along the X-axis.</li>
+          <li><Katex>{'\\textcolor{#66BB6A}{V_y}'}</Katex>: The component of the vector along the Y-axis.</li>
+          <li><Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>: The component of the vector along the Z-axis.</li>
+        </ul>
         <p>
             <Katex displayMode>{'||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}'}</Katex>
         </p>
       </FormulaAccordion>
-      <ContentCard blockType="explanation-block">
+      <p>
+        This formula calculates the vector's overall length by combining its individual extensions along the X, Y, and Z axes. Think of it as finding the diagonal length of a 3D box defined by the vector's components.
+      </p>
+       <ContentCard blockType="explanation-block">
         <h4>How it works (Extending Pythagoras):</h4>
         <ol>
-          <li>Imagine the vector's shadow (projection) onto the XY plane. Its length (<Katex>{'d_{xy}'}</Katex>) comes from the standard 2D Pythagorean theorem: <Katex displayMode>{'d_{xy}^2 = \\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2'}</Katex></li>
-          <li>Now, consider a right triangle in 3D. The legs are this XY-plane projection (<Katex>{'d_{xy}'}</Katex>) and the vector's Z-component (<Katex>{'\\textcolor{#2C8FFF}{V_z}'}</Katex>). The vector itself (<Katex>{'\\vec{V}'}</Katex>) is the hypotenuse.</li>
-          <li>Apply Pythagoras again: <Katex displayMode>{'||\\vec{V}||^2 = d_{xy}^2 + \\textcolor{#2C8FFF}{V_z}^2'}</Katex></li>
-          <li>Substitute the first equation into the second: <Katex displayMode>{'||\\vec{V}||^2 = (\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2) + \\textcolor{#2C8FFF}{V_z}^2'}</Katex></li>
-          <li>Taking the square root gives the final magnitude formula.</li>
+          <li>In 2D, the squared distance in the XY plane is: <Katex displayMode>{'d_{xy}^2 = \\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2'}</Katex></li>
+          <li>In 3D, the squared magnitude uses the 2D distance and the Z component: <Katex displayMode>{'||\\vec{V}||^2 = d_{xy}^2 + \\textcolor{#2C8FFF}{V_z}^2'}</Katex></li>
+          <li>Substituting the first equation into the second gives: <Katex displayMode>{'||\\vec{V}||^2 = (\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2) + \\textcolor{#2C8FFF}{V_z}^2'}</Katex></li>
+          <li>Taking the square root yields the final magnitude formula.</li>
         </ol>
       </ContentCard>
-
-      <p>
-        This numerical form is vital for calculations.
-      </p>
     </ContentCard>
 
     <ContentCard blockType="visualization-block" class="-exercise">

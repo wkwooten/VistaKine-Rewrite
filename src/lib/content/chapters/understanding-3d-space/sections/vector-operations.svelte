@@ -84,7 +84,7 @@
        <p>
          Graphically, subtraction <Katex>{"\\vec{A} - \\vec{B}"}</Katex> is often visualized by placing the vectors tail-to-tail. The resultant vector points from the head of <Katex>{"\\vec{B}"}</Katex> to the head of <Katex>{"\\vec{A}"}</Katex>. This shows the change needed to get from <Katex>{"\\vec{B}"}</Katex> to <Katex>{"\\vec{A}"}</Katex> (since <Katex>{"\\vec{B} + (\\vec{A} - \\vec{B}) = \\vec{A}"}</Katex>).
        </p>
-      <h5>Utility</h5>
+      <h5>Use Cases</h5>
       <ul>
         <li>Finding the change in velocity (<Keyword term="acceleration" /> is related to this): <Katex>{"\\Delta\\vec{v} = \\vec{v}_f - \\vec{v}_i"}</Katex>.</li>
         <li>Determining relative position vectors.</li>

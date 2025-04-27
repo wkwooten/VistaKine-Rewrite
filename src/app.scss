@@ -77,6 +77,10 @@ a {
   }
 }
 
+li {
+  margin-left: 1rem;
+}
+
 // Focus styles for accessibility
 :focus-visible {
   outline: 2px solid var(--color-accent);
