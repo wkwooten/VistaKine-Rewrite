@@ -1,17 +1,28 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import { sidebarExpanded, currentChapter } from '$lib/stores/appState';
-  import { Hexagon, BookOpen, Settings, Search, ChevronRight, List, Shapes } from 'lucide-svelte';
-  import { onMount, onDestroy } from 'svelte';
-  import { slide } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
-  import { browser } from '$app/environment';
-  import { getChapterList, chapters as allChapters } from '$lib/data/chapters';
+  import { page } from "$app/stores";
+  import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
+  import {
+    Hexagon,
+    BookOpen,
+    Settings,
+    Search,
+    ChevronRight,
+    List,
+    Shapes,
+  } from "lucide-svelte";
+  import { onMount, onDestroy } from "svelte";
+  import { slide } from "svelte/transition";
+  import { quintOut } from "svelte/easing";
+  import { browser } from "$app/environment";
+  import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
 
   // Add prop for initial chapter slug
   export let currentChapterSlug: string | null = null;
 
-  $: console.log('Navigation.svelte - currentChapter store value:', $currentChapter);
+  $: console.log(
+    "Navigation.svelte - currentChapter store value:",
+    $currentChapter,
+  );
 
   export let chapters = getChapterList();
 
@@ -31,24 +42,25 @@
     if (browser) {
       const shouldLockScroll = $sidebarExpanded && isMobile;
       if (shouldLockScroll && !bodyClassApplied) {
-        document.body.classList.add('body-no-scroll');
+        document.body.classList.add("body-no-scroll");
         bodyClassApplied = true;
       } else if (!shouldLockScroll && bodyClassApplied) {
-        document.body.classList.remove('body-no-scroll');
+        document.body.classList.remove("body-no-scroll");
         bodyClassApplied = false;
       }
     }
   }
 
   onMount(() => {
-    let lgBreakpointValue = '1024px'; // Default fallback
+    let lgBreakpointValue = "1024px"; // Default fallback
     if (browser) {
-        // Read the CSS custom property
-        const styles = getComputedStyle(document.documentElement);
-        const bpValue = styles.getPropertyValue('--breakpoint-lg').trim();
-        if (bpValue) { // Use the value if found
-            lgBreakpointValue = bpValue;
-        }
+      // Read the CSS custom property
+      const styles = getComputedStyle(document.documentElement);
+      const bpValue = styles.getPropertyValue("--breakpoint-lg").trim();
+      if (bpValue) {
+        // Use the value if found
+        lgBreakpointValue = bpValue;
+      }
     }
 
     const mediaQuery = window.matchMedia(`(max-width: ${lgBreakpointValue})`); // Use dynamic value
@@ -59,23 +71,23 @@
       updateBodyScroll(); // Update on resize
     };
 
-    mediaQuery.addEventListener('change', handleResize);
-    window.addEventListener('resize', handleResize); // Also listen to resize
+    mediaQuery.addEventListener("change", handleResize);
+    window.addEventListener("resize", handleResize); // Also listen to resize
 
     const unsubscribeSidebar = sidebarExpanded.subscribe(() => {
-       updateBodyScroll();
+      updateBodyScroll();
     });
 
     // Initial check
     updateBodyScroll();
 
     return () => {
-      mediaQuery.removeEventListener('change', handleResize);
-      window.removeEventListener('resize', handleResize);
+      mediaQuery.removeEventListener("change", handleResize);
+      window.removeEventListener("resize", handleResize);
       unsubscribeSidebar();
       // Clean up body class if component is destroyed while scroll is locked
       if (bodyClassApplied) {
-        document.body.classList.remove('body-no-scroll');
+        document.body.classList.remove("body-no-scroll");
       }
     };
   });
@@ -90,15 +102,15 @@
   function scrollToSection(sectionId: string): void {
     const section = document.getElementById(sectionId);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
   function handleSectionClick(chapterSlug: string, sectionId: string): void {
     if ($currentChapter === chapterSlug) {
       // Find the section slug from the id
-      const chapter = allChapters.find(ch => ch.slug === chapterSlug);
-      const section = chapter?.sections.find(sec => sec.id === sectionId);
+      const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
+      const section = chapter?.sections.find((sec) => sec.id === sectionId);
 
       if (section && browser) {
         // Navigate to the section page instead of scrolling
@@ -107,8 +119,8 @@
     } else {
       if (browser) {
         // Find the section slug
-        const chapter = allChapters.find(ch => ch.slug === chapterSlug);
-        const section = chapter?.sections.find(sec => sec.id === sectionId);
+        const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
+        const section = chapter?.sections.find((sec) => sec.id === sectionId);
 
         if (section) {
           window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
@@ -133,11 +145,15 @@
     }
     previousChapter = $currentChapter;
   }
-
 </script>
 
 <!-- Navigation -->
-<nav class:collapsed={navCollapsed} style="--sidebar-width: {$sidebarExpanded ? 'var(--sidebar-width)' : 'var(--sidebar-width-collapsed)'}">
+<nav
+  class:collapsed={navCollapsed}
+  style="--sidebar-width: {$sidebarExpanded
+    ? 'var(--sidebar-width)'
+    : 'var(--sidebar-width-collapsed)'}"
+>
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
       <div class="logo">
@@ -160,7 +176,11 @@
   <div class="search">
     {#if !navCollapsed}
       <div class="search-input-container">
-        <Search size={iconSize} color="var(--color-text-primary)" opacity="0.6" />
+        <Search
+          size={iconSize}
+          color="var(--color-text-primary)"
+          opacity="0.6"
+        />
         <input type="text" placeholder="Search textbook..." />
       </div>
     {:else}
@@ -173,7 +193,11 @@
   <div class="nav-content">
     <ul class="nav-items">
       <li>
-        <a href="/chapter/toc" class="nav-item" class:is-active={$page.url.pathname === '/chapter/toc'}>
+        <a
+          href="/chapter/toc"
+          class="nav-item"
+          class:is-active={$page.url.pathname === "/chapter/toc"}
+        >
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
@@ -185,7 +209,10 @@
 
       {#each chapters as chapter, index}
         {@const isActive = $currentChapter === chapter.slug}
-        <li class="nav-chapter-group {`chapter-${index + 1}-theme`}" class:is-active={isActive}>
+        <li
+          class="nav-chapter-group {`chapter-${index + 1}-theme`}"
+          class:is-active={isActive}
+        >
           <div
             class="nav-item chapter-item"
             role="button"
@@ -193,45 +220,54 @@
             on:click={(event) => {
               // If collapsed, trigger expand/navigate (handled by this div now)
               if (navCollapsed) {
-                  event.preventDefault(); // Prevent default link navigation if click originated from <a>
-                  $sidebarExpanded = true;
-                  expandedChapter = chapter.slug;
-                  if (browser) {
-                      const targetHref = `/chapter/${chapter.slug}`;
-                      setTimeout(() => { window.location.href = targetHref; }, 0);
-                  }
+                event.preventDefault(); // Prevent default link navigation if click originated from <a>
+                $sidebarExpanded = true;
+                expandedChapter = chapter.slug;
+                if (browser) {
+                  const targetHref = `/chapter/${chapter.slug}`;
+                  setTimeout(() => {
+                    window.location.href = targetHref;
+                  }, 0);
+                }
               } else {
-                  // If expanded, just toggle sections
-                  toggleChapterSections(chapter.slug);
+                // If expanded, just toggle sections
+                toggleChapterSections(chapter.slug);
               }
             }}
             on:keydown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault(); // Prevent default action (scrolling)
                 if (navCollapsed) {
-                    // If collapsed, trigger expand/navigate
-                    $sidebarExpanded = true;
-                    expandedChapter = chapter.slug;
-                    if (browser) {
-                        const targetHref = `/chapter/${chapter.slug}`;
-                        setTimeout(() => { window.location.href = targetHref; }, 0);
-                    }
+                  // If collapsed, trigger expand/navigate
+                  $sidebarExpanded = true;
+                  expandedChapter = chapter.slug;
+                  if (browser) {
+                    const targetHref = `/chapter/${chapter.slug}`;
+                    setTimeout(() => {
+                      window.location.href = targetHref;
+                    }, 0);
+                  }
                 } else {
-                    // If expanded, just toggle sections
-                    toggleChapterSections(chapter.slug);
+                  // If expanded, just toggle sections
+                  toggleChapterSections(chapter.slug);
                 }
               }
             }}
             aria-expanded={expandedChapter === chapter.slug}
             aria-controls={`sections-${chapter.slug}`}
           >
-            <a href={`/chapter/${chapter.slug}`}
-               class="chapter-number"
-               aria-label={`Go to Chapter ${index + 1}: ${chapter.title}`}
-               tabindex="-1"
-            >{index + 1}</a>
+            <a
+              href={`/chapter/${chapter.slug}`}
+              class="chapter-number"
+              aria-label={`Go to Chapter ${index + 1}: ${chapter.title}`}
+              tabindex="-1">{index + 1}</a
+            >
             {#if !navCollapsed}
-              <a href={`/chapter/${chapter.slug}`} class="chapter-title" tabindex="-1">
+              <a
+                href={`/chapter/${chapter.slug}`}
+                class="chapter-title"
+                tabindex="-1"
+              >
                 <span>{chapter.title}</span>
               </a>
               <div
@@ -239,19 +275,36 @@
                 class:expanded={expandedChapter === chapter.slug}
                 aria-hidden="true"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-icon lucide lucide-chevron-right">
-                  <path d="m9 18 6-6-6-6"/></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={iconSize}
+                  height={iconSize}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide-icon lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" /></svg
+                >
               </div>
             {/if}
           </div>
           {#if !navCollapsed && expandedChapter === chapter.slug}
-            <ul class="chapter-sections" id={`sections-${chapter.slug}`} transition:slide={{ duration: 300, easing: quintOut }}>
+            <ul
+              class="chapter-sections"
+              id={`sections-${chapter.slug}`}
+              transition:slide={{ duration: 300, easing: quintOut }}
+            >
               {#each chapter.sections || [] as section}
                 <li class="section-item">
                   <a
                     href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
-                    on:click|preventDefault|stopPropagation={() => handleSectionClick(chapter.slug, section.id)}
+                    on:click|preventDefault|stopPropagation={() =>
+                      handleSectionClick(chapter.slug, section.id)}
                   >
                     {section.title}
                   </a>
@@ -263,7 +316,11 @@
       {/each}
 
       <li>
-        <a href="/physics-pg" class="nav-item" class:is-active={$page.url.pathname === '/physics-pg'}>
+        <a
+          href="/physics-pg"
+          class="nav-item"
+          class:is-active={$page.url.pathname === "/physics-pg"}
+        >
           <div class="icon">
             <Shapes size={iconSize} />
           </div>
@@ -272,35 +329,59 @@
           {/if}
         </a>
       </li>
-
     </ul>
   </div>
 
   <ul class="bottom-item">
     <li>
-      <a href="/glossary" class="nav-item" class:is-active={$page.url.pathname === '/glossary'}>
+      <a
+        href="/glossary"
+        class="nav-item"
+        class:is-active={$page.url.pathname === "/glossary"}
+      >
         <div class="icon">
           <List size={iconSize} />
         </div>
         {#if !navCollapsed}
-        <span>Glossary</span>
+          <span>Glossary</span>
         {/if}
       </a>
     </li>
     <li>
-      <a href="/settings" class="nav-item" class:is-active={$page.url.pathname === '/settings'}>
+      <a
+        href="/settings"
+        class="nav-item"
+        class:is-active={$page.url.pathname === "/settings"}
+      >
         <div class="icon">
           <Settings size={iconSize} />
-      </div>
-      {#if !navCollapsed}
-        <span>Settings</span>
-      {/if}
+        </div>
+        {#if !navCollapsed}
+          <span>Settings</span>
+        {/if}
       </a>
     </li>
   </ul>
 </nav>
 
+<!-- Add global style for body scroll lock -->
+<svelte:head>
+  {#if browser}
+    <style>
+      .body-no-scroll {
+        overflow: hidden !important; /* Force no scroll */
+        /* Optionally add touch-action: none; if needed for touch devices */
+      }
+    </style>
+  {/if}
+</svelte:head>
+
 <style lang="scss">
+  li {
+    list-style: none;
+    margin: 0;
+  }
+
   nav {
     height: 100vh;
     background-color: var(--color-background);
@@ -325,7 +406,8 @@
         justify-content: center;
       }
 
-      .icon, .chapter-number {
+      .icon,
+      .chapter-number {
         margin-right: 0;
       }
 
@@ -343,7 +425,6 @@
     background-color: var(--color-surface);
   }
 
-
   .nav-header-container {
     display: flex;
     justify-content: center;
@@ -351,7 +432,7 @@
     padding: var(--space-xs) var(--space-s);
     position: relative;
     &:hover {
-       background-color: rgba(59, 130, 246, 0.1);
+      background-color: rgba(59, 130, 246, 0.1);
     }
   }
 
@@ -368,7 +449,6 @@
     width: 100%;
     text-decoration: none;
   }
-
 
   .logo-with-text {
     display: flex;
@@ -448,7 +528,6 @@
     padding-block: var(--space-l);
   }
 
-
   .nav-item {
     display: flex;
     align-items: center;
@@ -478,7 +557,8 @@
     }
   }
 
-  .icon, .chapter-number {
+  .icon,
+  .chapter-number {
     margin-right: var(--space-xs);
     display: flex;
     justify-content: center;
@@ -511,7 +591,7 @@
 
   /* Remove cursor pointer from the list item */
   .nav-chapter-group {
-      /* cursor: pointer; */ /* Removed */
+    /* cursor: pointer; */ /* Removed */
   }
 
   /* Add cursor pointer back to the chapter item div */
@@ -540,7 +620,9 @@
       background-color: var(--chapter-bg);
       text-decoration: underline;
       color: var(--color-accent);
-      transition: background-color 0.2s ease, color 0.2s ease;
+      transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
     }
 
     span {
@@ -551,8 +633,12 @@
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .chevron {
@@ -582,24 +668,15 @@
 
   /* Update style selector for active non-chapter items */
   a.nav-item.is-active {
-     background-color: rgba(59, 130, 246, 0.1); /* Match hover style */
+    background-color: rgba(59, 130, 246, 0.1); /* Match hover style */
   }
 
   /* Keep existing chapter-specific active styles */
   .nav-chapter-group.is-active > .chapter-item {
     /* Existing styles for active chapters */
-    background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1)); /* Example fallback */
+    background-color: var(
+      --chapter-bg,
+      rgba(59, 130, 246, 0.1)
+    ); /* Example fallback */
   }
 </style>
-
-<!-- Add global style for body scroll lock -->
-<svelte:head>
-  {#if browser}
-    <style>
-      .body-no-scroll {
-        overflow: hidden !important; /* Force no scroll */
-        /* Optionally add touch-action: none; if needed for touch devices */
-      }
-    </style>
-  {/if}
-</svelte:head>

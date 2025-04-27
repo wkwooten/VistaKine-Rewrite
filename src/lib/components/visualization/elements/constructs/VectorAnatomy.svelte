@@ -1,21 +1,36 @@
 <script lang="ts">
-  import { T, Canvas } from '@threlte/core';
-  import { OrbitControls, MeshLineGeometry, MeshLineMaterial } from '@threlte/extras';
-  import { ArrowHelper, Color, Vector3, Vector2, BufferGeometry, BufferAttribute, SphereGeometry, MeshBasicMaterial, CylinderGeometry, Quaternion } from 'three';
-  import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
-  import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
-  import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-  import SceneLabel from '../../helpers/SceneLabel.svelte';
+  import { T, Canvas } from "@threlte/core";
+  import {
+    OrbitControls,
+    MeshLineGeometry,
+    MeshLineMaterial,
+  } from "@threlte/extras";
+  import {
+    ArrowHelper,
+    Color,
+    Vector3,
+    Vector2,
+    BufferGeometry,
+    BufferAttribute,
+    SphereGeometry,
+    MeshBasicMaterial,
+    CylinderGeometry,
+    Quaternion,
+  } from "three";
+  import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+  import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+  import { Line2 } from "three/examples/jsm/lines/Line2.js";
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
+  import SceneLabel from "../../helpers/SceneLabel.svelte";
 
   // --- State for Colors (Initialized with defaults) --- //
-  let vectorColor = $state(new Color('#FFA500'));
-  let labelColor = $state(new Color('#cccccc'));
-  let xAxisColor = $state(new Color('#EF5350'));
-  let yAxisColor = $state(new Color('#66BB6A'));
-  let zAxisColor = $state(new Color('#2C8FFF'));
-  const originSphereColor = new Color('#ffffff'); // White for origin sphere contrast
+  let vectorColor = $state(new Color("#FFA500"));
+  let labelColor = $state(new Color("#cccccc"));
+  let xAxisColor = $state(new Color("#EF5350"));
+  let yAxisColor = $state(new Color("#66BB6A"));
+  let zAxisColor = $state(new Color("#2C8FFF"));
+  const originSphereColor = new Color("#ffffff"); // White for origin sphere contrast
 
   // --- Vector Definition (Static) --- //
   const origin = new Vector3(0, 0, 0);
@@ -30,7 +45,7 @@
   // --- Direction Angles (Calculated but not displayed numerically) --- //
   const vNorm = vectorV.clone().normalize(); // Normalized vector for angle calculations
   const angleAlphaRad = Math.acos(vNorm.x); // Angle with +X
-  const angleBetaRad = Math.acos(vNorm.y);  // Angle with +Y
+  const angleBetaRad = Math.acos(vNorm.y); // Angle with +Y
   const angleGammaRad = Math.acos(vNorm.z); // Angle with +Z
 
   // --- Scene Setup Constants --- //
@@ -55,22 +70,25 @@
     endDir: Vector3,
     angleRad: number,
     radius: number,
-    numPoints: number
+    numPoints: number,
   ): Vector3[] {
     const points: Vector3[] = [];
     // Axis of rotation: cross product of start and end directions
-    const rotationAxis = new Vector3().crossVectors(startDir, endDir).normalize();
+    const rotationAxis = new Vector3()
+      .crossVectors(startDir, endDir)
+      .normalize();
     // Handle cases where vectors are collinear (angle is 0 or PI)
     if (rotationAxis.lengthSq() < 0.0001) {
       // If collinear and angle is approx PI, add intermediate points if needed
       // For simplicity here, just return start and end points scaled by radius if collinear
       // A better approach might draw a small semi-circle in a default plane if angle is PI
-      if (angleRad > 0.1) { // Only draw if not basically zero angle
-          points.push(startDir.clone().multiplyScalar(radius));
-          // Could add more points for a degenerate arc here
-          points.push(endDir.clone().multiplyScalar(radius));
+      if (angleRad > 0.1) {
+        // Only draw if not basically zero angle
+        points.push(startDir.clone().multiplyScalar(radius));
+        // Could add more points for a degenerate arc here
+        points.push(endDir.clone().multiplyScalar(radius));
       } else {
-         // Don't draw arc if angle is near zero
+        // Don't draw arc if angle is near zero
       }
       return points;
     }
@@ -90,23 +108,62 @@
   const yAxisDir = new Vector3(0, 1, 0);
   const zAxisDir = new Vector3(0, 0, 1);
 
-  const arcAlphaPoints = generateArcPoints(xAxisDir, vNorm, angleAlphaRad, arcRadius, arcPointsCount);
-  const arcBetaPoints = generateArcPoints(yAxisDir, vNorm, angleBetaRad, arcRadius, arcPointsCount);
-  const arcGammaPoints = generateArcPoints(zAxisDir, vNorm, angleGammaRad, arcRadius, arcPointsCount);
+  const arcAlphaPoints = generateArcPoints(
+    xAxisDir,
+    vNorm,
+    angleAlphaRad,
+    arcRadius,
+    arcPointsCount,
+  );
+  const arcBetaPoints = generateArcPoints(
+    yAxisDir,
+    vNorm,
+    angleBetaRad,
+    arcRadius,
+    arcPointsCount,
+  );
+  const arcGammaPoints = generateArcPoints(
+    zAxisDir,
+    vNorm,
+    angleGammaRad,
+    arcRadius,
+    arcPointsCount,
+  );
 
   // --- Calculated Positions (Static) --- //
-  const tailLabelPos = origin.clone().add(new Vector3(-labelOffset, -labelOffset, -labelOffset));
-  const headLabelPos = endPoint.clone().add(new Vector3(labelOffset, labelOffset, labelOffset));
+  const tailLabelPos = origin
+    .clone()
+    .add(new Vector3(-labelOffset, -labelOffset, -labelOffset));
+  const headLabelPos = endPoint
+    .clone()
+    .add(new Vector3(labelOffset, labelOffset, labelOffset));
   const midPoint = origin.clone().lerp(endPoint, 0.5);
-  const magnitudeLabelPos = midPoint.clone().add(new Vector3(0, labelOffset * 1.5, 0));
+  const magnitudeLabelPos = midPoint
+    .clone()
+    .add(new Vector3(0, labelOffset * 1.5, 0));
   const xCompLabelPos = origin.clone().lerp(intermediateX, 0.5);
   const yCompLabelPos = intermediateX.clone().lerp(intermediateXY, 0.5);
   const zCompLabelPos = intermediateXY.clone().lerp(endPoint, 0.5);
 
   // Positions for Angle Labels (near middle of arc)
-  const alphaLabelPos = arcAlphaPoints.length > 1 ? arcAlphaPoints[Math.floor(arcPointsCount / 2)].clone().multiplyScalar(1.2) : new Vector3(arcRadius, 0, 0);
-  const betaLabelPos = arcBetaPoints.length > 1 ? arcBetaPoints[Math.floor(arcPointsCount / 2)].clone().multiplyScalar(1.2) : new Vector3(0, arcRadius, 0);
-  const gammaLabelPos = arcGammaPoints.length > 1 ? arcGammaPoints[Math.floor(arcPointsCount / 2)].clone().multiplyScalar(1.2) : new Vector3(0, 0, arcRadius);
+  const alphaLabelPos =
+    arcAlphaPoints.length > 1
+      ? arcAlphaPoints[Math.floor(arcPointsCount / 2)]
+          .clone()
+          .multiplyScalar(1.2)
+      : new Vector3(arcRadius, 0, 0);
+  const betaLabelPos =
+    arcBetaPoints.length > 1
+      ? arcBetaPoints[Math.floor(arcPointsCount / 2)]
+          .clone()
+          .multiplyScalar(1.2)
+      : new Vector3(0, arcRadius, 0);
+  const gammaLabelPos =
+    arcGammaPoints.length > 1
+      ? arcGammaPoints[Math.floor(arcPointsCount / 2)]
+          .clone()
+          .multiplyScalar(1.2)
+      : new Vector3(0, 0, arcRadius);
 
   // --- State Refs for Line2 objects --- //
   let lineX = $state<Line2 | undefined>();
@@ -118,11 +175,18 @@
 
   // --- Reactive ArrowHelper (depends on vectorColor) --- //
   let arrow = $derived.by(() => {
-      // console.log("[VectorAnatomy] Recreating ArrowHelper with color:", vectorColor.getHexString());
-      const headLength = magnitude * 0.15;
-      const headWidth = headLength * 0.6;
-      // Use the current state of vectorColor
-      return new ArrowHelper(direction, origin, magnitude, vectorColor.getHex(), headLength, headWidth);
+    // console.log("[VectorAnatomy] Recreating ArrowHelper with color:", vectorColor.getHexString());
+    const headLength = magnitude * 0.15;
+    const headWidth = headLength * 0.6;
+    // Use the current state of vectorColor
+    return new ArrowHelper(
+      direction,
+      origin,
+      magnitude,
+      vectorColor.getHex(),
+      headLength,
+      headWidth,
+    );
   });
 
   // --- Setup on Mount --- //
@@ -141,40 +205,66 @@
       const currentSize = new Vector2(wrapperRect.width, wrapperRect.height);
 
       // Update color state (will trigger $derived arrow update)
-      vectorColor = new Color(styles.getPropertyValue('--vector-builder-vector-color').trim() || '#FFA500');
-      labelColor = new Color(styles.getPropertyValue('--color-text-secondary').trim() || '#cccccc');
-      xAxisColor = new Color(styles.getPropertyValue('--axis-color-x').trim() || '#EF5350');
-      yAxisColor = new Color(styles.getPropertyValue('--axis-color-y').trim() || '#66BB6A');
-      zAxisColor = new Color(styles.getPropertyValue('--axis-color-z').trim() || '#2C8FFF');
+      vectorColor = new Color(
+        styles.getPropertyValue("--vector-builder-vector-color").trim() ||
+          "#FFA500",
+      );
+      labelColor = new Color(
+        styles.getPropertyValue("--color-text-secondary").trim() || "#cccccc",
+      );
+      xAxisColor = new Color(
+        styles.getPropertyValue("--axis-color-x").trim() || "#EF5350",
+      );
+      yAxisColor = new Color(
+        styles.getPropertyValue("--axis-color-y").trim() || "#66BB6A",
+      );
+      zAxisColor = new Color(
+        styles.getPropertyValue("--axis-color-z").trim() || "#2C8FFF",
+      );
 
       if (currentSize.width > 0 && currentSize.height > 0) {
         // Create Materials using updated state colors
         matX = new LineMaterial({
-            color: xAxisColor,
-            linewidth: lineWidth,
-            resolution: currentSize,
-            dashed: true, dashScale: 1, dashSize: dashSize, gapSize: gapSize,
+          color: xAxisColor,
+          linewidth: lineWidth,
+          resolution: currentSize,
+          dashed: true,
+          dashScale: 1,
+          dashSize: dashSize,
+          gapSize: gapSize,
         });
         matY = new LineMaterial({
-            color: yAxisColor,
-            linewidth: lineWidth,
-            resolution: currentSize,
-            dashed: true, dashScale: 1, dashSize: dashSize, gapSize: gapSize,
+          color: yAxisColor,
+          linewidth: lineWidth,
+          resolution: currentSize,
+          dashed: true,
+          dashScale: 1,
+          dashSize: dashSize,
+          gapSize: gapSize,
         });
         matZ = new LineMaterial({
-            color: zAxisColor,
-            linewidth: lineWidth,
-            resolution: currentSize,
-            dashed: true, dashScale: 1, dashSize: dashSize, gapSize: gapSize,
+          color: zAxisColor,
+          linewidth: lineWidth,
+          resolution: currentSize,
+          dashed: true,
+          dashScale: 1,
+          dashSize: dashSize,
+          gapSize: gapSize,
         });
 
         // Create Geometries
         geomX = new LineGeometry();
         geomX.setPositions([...origin.toArray(), ...intermediateX.toArray()]);
         geomY = new LineGeometry();
-        geomY.setPositions([...intermediateX.toArray(), ...intermediateXY.toArray()]);
+        geomY.setPositions([
+          ...intermediateX.toArray(),
+          ...intermediateXY.toArray(),
+        ]);
         geomZ = new LineGeometry();
-        geomZ.setPositions([...intermediateXY.toArray(), ...endPoint.toArray()]);
+        geomZ.setPositions([
+          ...intermediateXY.toArray(),
+          ...endPoint.toArray(),
+        ]);
 
         // Create Line2 instances and assign to state
         const tempLineX = new Line2(geomX, matX);
@@ -191,37 +281,34 @@
 
         // console.log('[VectorAnatomy] Component Lines created.');
       } else {
-         console.warn('[VectorAnatomy] Wrapper size is zero, cannot create component lines.');
+        console.warn(
+          "[VectorAnatomy] Wrapper size is zero, cannot create component lines.",
+        );
       }
     }
 
     // Return cleanup function
     return () => {
-        // console.log('[VectorAnatomy] Cleaning up component lines (onMount cleanup)...');
-        matX?.dispose();
-        matY?.dispose();
-        matZ?.dispose();
-        geomX?.dispose();
-        geomY?.dispose();
-        geomZ?.dispose();
-        lineX = undefined;
-        lineY = undefined;
-        lineZ = undefined;
+      // console.log('[VectorAnatomy] Cleaning up component lines (onMount cleanup)...');
+      matX?.dispose();
+      matY?.dispose();
+      matZ?.dispose();
+      geomX?.dispose();
+      geomY?.dispose();
+      geomZ?.dispose();
+      lineX = undefined;
+      lineY = undefined;
+      lineZ = undefined;
     };
   });
-
 </script>
 
 <div class="vector-anatomy-wrapper" bind:this={wrapperElement}>
   <Canvas>
-    <T.PerspectiveCamera
-      makeDefault
-      position={[2, 3, 8]}
-      fov={50}
-    >
+    <T.PerspectiveCamera makeDefault position={[2, 20, 8]} fov={50}>
       <OrbitControls
         enableZoom={true}
-        enablePan={true}
+        enablePan={false}
         enableDamping
         target={midPoint.toArray()}
         minDistance={2}
@@ -239,52 +326,57 @@
 
     <!-- Origin Sphere -->
     <T.Mesh position={origin.toArray()}>
-        <T.SphereGeometry args={[originSphereRadius, 16, 16]} />
-        <T.MeshBasicMaterial color={originSphereColor} />
+      <T.SphereGeometry args={[originSphereRadius, 16, 16]} />
+      <T.MeshBasicMaterial color={originSphereColor} />
     </T.Mesh>
 
     <!-- Axis Indicators -->
-    {@const axisGeom = new CylinderGeometry(axisIndicatorRadius, axisIndicatorRadius, axisIndicatorLength, 8)}
+    {@const axisGeom = new CylinderGeometry(
+      axisIndicatorRadius,
+      axisIndicatorRadius,
+      axisIndicatorLength,
+      8,
+    )}
     <!-- X Axis Indicator -->
     <T.Mesh
-        geometry={axisGeom}
-        position.x={axisIndicatorLength / 2}
-        rotation.z={-Math.PI / 2} >
-        <T.MeshBasicMaterial color={xAxisColor} />
+      geometry={axisGeom}
+      position.x={axisIndicatorLength / 2}
+      rotation.z={-Math.PI / 2}
+    >
+      <T.MeshBasicMaterial color={xAxisColor} />
     </T.Mesh>
     <SceneLabel
-        position={[axisIndicatorLength + axisLabelOffset, 0, 0]}
-        text="X+"
-        anchorY="top"
-        fontSize={axisLabelFontSize}
-        color={xAxisColor}
+      position={[axisIndicatorLength + axisLabelOffset, 0, 0]}
+      text="X+"
+      anchorY="top"
+      fontSize={axisLabelFontSize}
+      color={xAxisColor}
     />
 
     <!-- Y Axis Indicator -->
-     <T.Mesh
-        geometry={axisGeom}
-        position.y={axisIndicatorLength / 2} >
-         <T.MeshBasicMaterial color={yAxisColor} />
+    <T.Mesh geometry={axisGeom} position.y={axisIndicatorLength / 2}>
+      <T.MeshBasicMaterial color={yAxisColor} />
     </T.Mesh>
     <SceneLabel
-        position={[0, axisIndicatorLength + axisLabelOffset, 0]}
-        text="Y+"
-        fontSize={axisLabelFontSize}
-        color={yAxisColor}
+      position={[0, axisIndicatorLength + axisLabelOffset, 0]}
+      text="Y+"
+      fontSize={axisLabelFontSize}
+      color={yAxisColor}
     />
 
     <!-- Z Axis Indicator -->
-     <T.Mesh
-        geometry={axisGeom}
-        position.z={axisIndicatorLength / 2}
-        rotation.x={Math.PI / 2} >
-         <T.MeshBasicMaterial color={zAxisColor} />
+    <T.Mesh
+      geometry={axisGeom}
+      position.z={axisIndicatorLength / 2}
+      rotation.x={Math.PI / 2}
+    >
+      <T.MeshBasicMaterial color={zAxisColor} />
     </T.Mesh>
     <SceneLabel
-        position={[0, 0, axisIndicatorLength + axisLabelOffset]}
-        text="Z+"
-        fontSize={axisLabelFontSize}
-        color={zAxisColor}
+      position={[0, 0, axisIndicatorLength + axisLabelOffset]}
+      text="Z+"
+      fontSize={axisLabelFontSize}
+      color={zAxisColor}
     />
 
     <!-- Component Lines (Render Line2 instances) -->
@@ -300,138 +392,137 @@
 
     <!-- Direction Angle Arcs -->
     {#if arcAlphaPoints.length > 1}
-        <T.Mesh>
-            <MeshLineGeometry points={arcAlphaPoints} />
-            <MeshLineMaterial
-                width={arcLineWidth}
-                color={xAxisColor}
-                transparent={true}
-                opacity={0.4}
-                dashArray={0.1}
-                dashRatio={0.5}
-            />
-        </T.Mesh>
+      <T.Mesh>
+        <MeshLineGeometry points={arcAlphaPoints} />
+        <MeshLineMaterial
+          width={arcLineWidth}
+          color={xAxisColor}
+          transparent={true}
+          opacity={0.4}
+          dashArray={0.1}
+          dashRatio={0.5}
+        />
+      </T.Mesh>
     {/if}
     {#if arcBetaPoints.length > 1}
-        <T.Mesh>
-            <MeshLineGeometry points={arcBetaPoints} />
-            <MeshLineMaterial
-                width={arcLineWidth}
-                color={yAxisColor}
-                transparent={true}
-                opacity={0.4}
-                dashArray={0.1}
-                dashRatio={0.5}
-            />
-        </T.Mesh>
+      <T.Mesh>
+        <MeshLineGeometry points={arcBetaPoints} />
+        <MeshLineMaterial
+          width={arcLineWidth}
+          color={yAxisColor}
+          transparent={true}
+          opacity={0.4}
+          dashArray={0.1}
+          dashRatio={0.5}
+        />
+      </T.Mesh>
     {/if}
     {#if arcGammaPoints.length > 1}
-        <T.Mesh>
-            <MeshLineGeometry points={arcGammaPoints} />
-            <MeshLineMaterial
-                width={arcLineWidth}
-                color={zAxisColor}
-                transparent={true}
-                opacity={0.4}
-                dashArray={0.1}
-                dashRatio={0.5}
-            />
-        </T.Mesh>
+      <T.Mesh>
+        <MeshLineGeometry points={arcGammaPoints} />
+        <MeshLineMaterial
+          width={arcLineWidth}
+          color={zAxisColor}
+          transparent={true}
+          opacity={0.4}
+          dashArray={0.1}
+          dashRatio={0.5}
+        />
+      </T.Mesh>
     {/if}
 
     <!-- Labels -->
     <SceneLabel
-        position={tailLabelPos}
-        text="Tail (Start)"
-        fontSize={labelFontSize}
-        color={labelColor}
-        anchorX="center"
-        anchorY="top"
-        depthTest={false}
+      position={tailLabelPos}
+      text="Tail (Start)"
+      fontSize={labelFontSize}
+      color={labelColor}
+      anchorX="center"
+      anchorY="top"
+      depthTest={false}
     />
     <SceneLabel
-        position={headLabelPos}
-        text="Head (End)"
-        fontSize={labelFontSize}
-        color={labelColor}
-        anchorX="center"
-        anchorY="bottom"
-        depthTest={false}
+      position={headLabelPos}
+      text="Head (End)"
+      fontSize={labelFontSize}
+      color={labelColor}
+      anchorX="center"
+      anchorY="bottom"
+      depthTest={false}
     />
-     <SceneLabel
-        position={magnitudeLabelPos}
-        text={`Magnitude`}
-        fontSize={labelFontSize}
-        color={labelColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
+    <SceneLabel
+      position={magnitudeLabelPos}
+      text={`Magnitude`}
+      fontSize={labelFontSize}
+      color={labelColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
     />
 
     <!-- Component Labels -->
     {#if Math.abs(components.x) > 0.01}
       <SceneLabel
-          position={xCompLabelPos}
-          text={`X Component`}
-          fontSize={labelFontSize * 0.9}
-          color={xAxisColor}
-          anchorX="center"
-          anchorY="bottom"
-          depthTest={false}
+        position={xCompLabelPos}
+        text={`X Component`}
+        fontSize={labelFontSize * 0.9}
+        color={xAxisColor}
+        anchorX="center"
+        anchorY="bottom"
+        depthTest={false}
       />
     {/if}
     {#if Math.abs(components.y) > 0.01}
       <SceneLabel
-          position={yCompLabelPos}
-          text={`Y Component`}
-          fontSize={labelFontSize * 0.9}
-          color={yAxisColor}
-          anchorX="left"
-          anchorY="middle"
-          depthTest={false}
+        position={yCompLabelPos}
+        text={`Y Component`}
+        fontSize={labelFontSize * 0.9}
+        color={yAxisColor}
+        anchorX="left"
+        anchorY="middle"
+        depthTest={false}
       />
     {/if}
     {#if Math.abs(components.z) > 0.01}
       <SceneLabel
-          position={zCompLabelPos}
-          text={`Z Component`}
-          fontSize={labelFontSize * 0.9}
-          color={zAxisColor}
-          anchorX="center"
-          anchorY="bottom"
-          depthTest={false}
+        position={zCompLabelPos}
+        text={`Z Component`}
+        fontSize={labelFontSize * 0.9}
+        color={zAxisColor}
+        anchorX="center"
+        anchorY="bottom"
+        depthTest={false}
       />
     {/if}
 
     <!-- Direction Angle Labels (Repositioned) -->
     <SceneLabel
-        position={alphaLabelPos}
-        text="α"
-        fontSize={angleLabelFontSize}
-        color={xAxisColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
+      position={alphaLabelPos}
+      text="α"
+      fontSize={angleLabelFontSize}
+      color={xAxisColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
     />
     <SceneLabel
-        position={betaLabelPos}
-        text="β"
-        fontSize={angleLabelFontSize}
-        color={yAxisColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
+      position={betaLabelPos}
+      text="β"
+      fontSize={angleLabelFontSize}
+      color={yAxisColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
     />
     <SceneLabel
-        position={gammaLabelPos}
-        text="γ"
-        fontSize={angleLabelFontSize}
-        color={zAxisColor}
-        anchorX="center"
-        anchorY="middle"
-        depthTest={false}
+      position={gammaLabelPos}
+      text="γ"
+      fontSize={angleLabelFontSize}
+      color={zAxisColor}
+      anchorX="center"
+      anchorY="middle"
+      depthTest={false}
     />
-
   </Canvas>
 </div>
 

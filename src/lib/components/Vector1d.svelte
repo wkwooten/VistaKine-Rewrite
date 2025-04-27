@@ -34,7 +34,7 @@
     let currentCanvasWidth = 0;
 
     // --- State for Interactivity ---
-    let vectorValue = 7; // Initial value
+    let vectorValue = 6; // Initial value
     let isDragging = false; // Is the user currently dragging the arrowhead?
     let isHovering = false; // Is the mouse hovering over the arrowhead?
     const arrowheadHitRadius = 20; // Clickable area around the arrowhead tip (pixels)

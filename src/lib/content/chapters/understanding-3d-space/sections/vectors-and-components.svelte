@@ -111,16 +111,16 @@
       </p>
       <ul>
         <li>
-          <Keyword term="Magnitude">Magnitude:</Keyword> The absolute value of the
-          number (e.g., |+5| = 5, |-3| = 3).
+          <Keyword term="Magnitude" />: The absolute value of the number (e.g.,
+          |+5| = 5, |-3| = 3).
         </li>
         <li>
-          <Keyword term="Direction">Direction:</Keyword> Indicated by the sign (+
-          for positive direction, - for negative).
+          <Keyword term="Direction" />: Indicated by the sign (+ for positive
+          direction, - for negative).
         </li>
       </ul>
       <p>
-        Example: A vector <Katex>{"+7"}</Katex> means moving 7 units in the positive
+        Example: A vector <Katex>{"+6"}</Katex> means moving 6 units in the positive
         direction.
       </p>
       {#if Vector1dComponent}
@@ -310,21 +310,13 @@
     </ContentCard>
 
     <ContentCard blockType="visualization-block" class="-exercise">
-      <h2>Hands-On: Build a Vector</h2>
+      <h2>Hands-On: Build-A-Vector</h2>
       <p class="exercise-description">
         Adjust the start and end points of the vector using the controls.
         Observe how the vector's components (Vx, Vy, Vz) and its angle bracket
         notation change in real-time.
       </p>
       <VectorBuilderExercise />
-      <p>
-        The <Keyword term="Vector Builder" /> shows component form; imagine it could
-        also show the equivalent unit vector notation.
-      </p>
-      <p>
-        The <Keyword term="Vector Builder" /> exercise shows these components and
-        notation update as you adjust the vector.
-      </p>
     </ContentCard>
 
     <ContentCard blockType="concept-block">

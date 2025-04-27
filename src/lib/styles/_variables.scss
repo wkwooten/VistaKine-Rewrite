@@ -230,7 +230,7 @@ $leo-color-light: #1E40AF;  // Blue 800
 
 
   // Glassmorphism (Keep As Is - Uses CSS vars)
-  --glass-bg-color: #f9fafb 90%;
+  --glass-bg-color: #{$color-surface} 90%;
   --glass-backdrop-blur: blur(8px);
   --glass-border-color: var(--color-accent);
   --glass-border: 1px solid var(--glass-border-color);

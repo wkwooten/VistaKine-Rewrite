@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { T, useTask, useThrelte } from '@threlte/core';
+  import { T, useTask, useThrelte } from "@threlte/core";
   import {
     OrbitControls,
     Grid,
@@ -7,35 +7,65 @@
     Gizmo,
     Billboard,
     Text,
-  } from '@threlte/extras';
-  import { Vector3, Vector2, Color, ArrowHelper, BufferGeometry, LineSegments, LineDashedMaterial, BufferAttribute } from 'three';
-  // Import new line classes
-  import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
-  import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
-  import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
-  import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
+  } from "@threlte/extras";
   import {
-    vectorData, traceVectorRequested, resetVectorBuilderRequested, MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z,
-    xAxisColor, yAxisColor, zAxisColor,
-    nozzleColor, nozzleEdgesColor, heightIndicatorColor,
-    bedColor, bedEdgesColor, gridCellColor, gridSectionColor,
-    vectorColor, startPointColor, endPointColor,
+    Vector3,
+    Vector2,
+    Color,
+    ArrowHelper,
+    BufferGeometry,
+    LineSegments,
+    LineDashedMaterial,
+    BufferAttribute,
+  } from "three";
+  // Import new line classes
+  import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+  import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+  import { Line2 } from "three/examples/jsm/lines/Line2.js";
+
+  import { tweened } from "svelte/motion";
+  import { cubicOut } from "svelte/easing";
+  import { onMount } from "svelte";
+  import { get } from "svelte/store";
+  import {
+    vectorData,
+    traceVectorRequested,
+    resetVectorBuilderRequested,
+    MIN_X,
+    MAX_X,
+    MIN_Y,
+    MAX_Y,
+    MIN_Z,
+    MAX_Z,
+    xAxisColor,
+    yAxisColor,
+    zAxisColor,
+    nozzleColor,
+    nozzleEdgesColor,
+    heightIndicatorColor,
+    bedColor,
+    bedEdgesColor,
+    gridCellColor,
+    gridSectionColor,
+    vectorColor,
+    startPointColor,
+    endPointColor,
     showVectorDialog,
-    showDeltaX, showDeltaY, showDeltaZ
-  } from '$lib/stores/vectorBuilderState';
+    showDeltaX,
+    showDeltaY,
+    showDeltaZ,
+  } from "$lib/stores/vectorBuilderState";
   // Import SceneLabel
-  import SceneLabel from '../../helpers/SceneLabel.svelte';
+  import SceneLabel from "../../helpers/SceneLabel.svelte";
 
   // --- Threlte Hook ---
   const { size } = useThrelte();
 
   // --- Constants (reuse from calibration/state) ---
   const cornerOriginOffset = new Vector3(-6, 1, -6); // Consistent with PrinterCalibrationScene
-  const initialWorldPosition = cornerOriginOffset.clone().add(new Vector3(0, 5, 0));
+  const initialWorldPosition = cornerOriginOffset
+    .clone()
+    .add(new Vector3(0, 5, 0));
   const dashSize = 0.2;
   const gapSize = 0.1;
   const deltaLineWidth = 3; // New constant for line width
@@ -47,15 +77,17 @@
     easing: cubicOut,
     interpolate: (a, b) => {
       const vec = a.clone();
-      return t => vec.lerpVectors(a, b, t);
-    }
+      return (t) => vec.lerpVectors(a, b, t);
+    },
   });
 
   // --- Derived World Positions & Delta Points (Reordered) --- //
   let vectorStartWorld = $derived.by(() => {
     const start = $vectorData?.start;
     if (!start) return null;
-    return cornerOriginOffset.clone().add(new Vector3(start.x, start.y, start.z));
+    return cornerOriginOffset
+      .clone()
+      .add(new Vector3(start.x, start.y, start.z));
   });
 
   let vectorEndWorld = $derived.by(() => {
@@ -66,13 +98,17 @@
 
   // Intermediate points for delta lines (defined AFTER world points)
   let deltaIntermediateXY = $derived.by(() => {
-      if (!vectorStartWorld || !vectorEndWorld) return null;
-      return new Vector3(vectorEndWorld.x, vectorStartWorld.y, vectorStartWorld.z);
+    if (!vectorStartWorld || !vectorEndWorld) return null;
+    return new Vector3(
+      vectorEndWorld.x,
+      vectorStartWorld.y,
+      vectorStartWorld.z,
+    );
   });
   let deltaIntermediateYZ = $derived.by(() => {
-      if (!vectorStartWorld || !vectorEndWorld) return null;
-      // This point is where X and Y deltas are complete, before Z delta starts
-      return new Vector3(vectorEndWorld.x, vectorEndWorld.y, vectorStartWorld.z);
+    if (!vectorStartWorld || !vectorEndWorld) return null;
+    // This point is where X and Y deltas are complete, before Z delta starts
+    return new Vector3(vectorEndWorld.x, vectorEndWorld.y, vectorStartWorld.z);
   });
 
   // --- Derived Label Data (defined AFTER intermediate points) ---
@@ -88,8 +124,15 @@
 
   let deltaLabelYData = $derived.by(() => {
     // Use derived values directly inside $derived.by
-    if ($showDeltaY && deltaIntermediateXY && deltaIntermediateYZ && $vectorData) {
-      const midPointY = deltaIntermediateXY.clone().lerp(deltaIntermediateYZ, 0.5);
+    if (
+      $showDeltaY &&
+      deltaIntermediateXY &&
+      deltaIntermediateYZ &&
+      $vectorData
+    ) {
+      const midPointY = deltaIntermediateXY
+        .clone()
+        .lerp(deltaIntermediateYZ, 0.5);
       const labelTextY = `ΔY = ${$vectorData.components.dy.toFixed(2)}`;
       return { position: midPointY, text: labelTextY };
     }
@@ -115,13 +158,26 @@
   let materialZ = $state<LineMaterial | undefined>(undefined);
 
   // --- Visual Helper Data Generation (Copied from PrinterCalibrationScene) ---
-  const gridNumbers: { text: string, x: number, z: number, axis: 'x' | 'z' }[] = [];
+  const gridNumbers: { text: string; x: number; z: number; axis: "x" | "z" }[] =
+    [];
   const step = 2;
   const gridSizeVal = 12;
-  const numberYOffset = .5;
-  const numberOutwardOffset = .8;
-  for (let i = 0; i <= gridSizeVal; i += step) gridNumbers.push({ text: `${i}`, x: i, z: -numberOutwardOffset, axis: 'x' });
-  for (let i = step; i <= gridSizeVal; i += step) gridNumbers.push({ text: `${i}`, x: -numberOutwardOffset, z: i, axis: 'z' });
+  const numberYOffset = 0.5;
+  const numberOutwardOffset = 0.8;
+  for (let i = 0; i <= gridSizeVal; i += step)
+    gridNumbers.push({
+      text: `${i}`,
+      x: i,
+      z: -numberOutwardOffset,
+      axis: "x",
+    });
+  for (let i = step; i <= gridSizeVal; i += step)
+    gridNumbers.push({
+      text: `${i}`,
+      x: -numberOutwardOffset,
+      z: i,
+      axis: "z",
+    });
 
   const tickStep = 2;
   const tickSize = 0.15;
@@ -140,19 +196,26 @@
   const labelOffset = 1.0;
   const labelYPos = 1.0;
   const labelFontSizeAxis = 0.8; // Renamed to avoid conflict
-  const xLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(xAxisLength + labelOffset, 0, 0));
-  const yLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(0, yAxisLength + labelOffset, 0));
-  const zLabelWorldPos = cornerOriginOffset.clone().add(new Vector3(0, 0, zAxisLength + labelOffset));
+  const xLabelWorldPos = cornerOriginOffset
+    .clone()
+    .add(new Vector3(xAxisLength + labelOffset, 0, 0));
+  const yLabelWorldPos = cornerOriginOffset
+    .clone()
+    .add(new Vector3(0, yAxisLength + labelOffset, 0));
+  const zLabelWorldPos = cornerOriginOffset
+    .clone()
+    .add(new Vector3(0, 0, zAxisLength + labelOffset));
 
   // --- Effects --- //
   // Initialize Lines and Materials ONCE
   $effect(() => {
     // Check if already initialized AND size is valid
     if (!lineX && $size.width > 0 && $size.height > 0) {
-      console.log('[VectorScene] Creating Line2 instances...');
+      console.log("[VectorScene] Creating Line2 instances...");
       // X Line
       const geomX = new LineGeometry();
-      const matX = new LineMaterial({ // Create with let/const
+      const matX = new LineMaterial({
+        // Create with let/const
         color: $xAxisColor,
         linewidth: deltaLineWidth,
         resolution: new Vector2($size.width, $size.height),
@@ -200,8 +263,9 @@
     // Cleanup remains the same, runs when dependencies change OR component unmounts
     return () => {
       // Check if objects exist before disposing
-      if (lineX) { // If lineX exists, others likely do too, but check individually is safer if needed
-        console.log('[VectorScene] Cleaning up Line2 instances...');
+      if (lineX) {
+        // If lineX exists, others likely do too, but check individually is safer if needed
+        console.log("[VectorScene] Cleaning up Line2 instances...");
         lineX.geometry.dispose();
         materialX?.dispose(); // materialX should exist if lineX does
         lineX = undefined; // Reset state
@@ -225,7 +289,10 @@
   // Update Line Positions
   $effect(() => {
     if (lineX && vectorStartWorld && deltaIntermediateXY) {
-      const positionsX = [...vectorStartWorld.toArray(), ...deltaIntermediateXY.toArray()];
+      const positionsX = [
+        ...vectorStartWorld.toArray(),
+        ...deltaIntermediateXY.toArray(),
+      ];
       (lineX.geometry as LineGeometry).setPositions(positionsX);
       lineX.computeLineDistances();
     }
@@ -233,23 +300,35 @@
 
   $effect(() => {
     if (lineY && deltaIntermediateXY && deltaIntermediateYZ) {
-      const positionsY = [...deltaIntermediateXY.toArray(), ...deltaIntermediateYZ.toArray()];
+      const positionsY = [
+        ...deltaIntermediateXY.toArray(),
+        ...deltaIntermediateYZ.toArray(),
+      ];
       (lineY.geometry as LineGeometry).setPositions(positionsY);
-       lineY.computeLineDistances();
+      lineY.computeLineDistances();
     }
   });
 
   $effect(() => {
     if (lineZ && deltaIntermediateYZ && vectorEndWorld) {
-      const positionsZ = [...deltaIntermediateYZ.toArray(), ...vectorEndWorld.toArray()];
+      const positionsZ = [
+        ...deltaIntermediateYZ.toArray(),
+        ...vectorEndWorld.toArray(),
+      ];
       (lineZ.geometry as LineGeometry).setPositions(positionsZ);
-       lineZ.computeLineDistances();
+      lineZ.computeLineDistances();
     }
   });
 
   // Update Material Resolution on Resize
   $effect(() => {
-    if (materialX && materialY && materialZ && $size.width > 0 && $size.height > 0) {
+    if (
+      materialX &&
+      materialY &&
+      materialZ &&
+      $size.width > 0 &&
+      $size.height > 0
+    ) {
       // Use Vector2
       const res = new Vector2($size.width, $size.height);
       materialX.resolution = res;
@@ -272,23 +351,28 @@
   // React to trace requests
   $effect(() => {
     if ($traceVectorRequested) {
-      console.log('[VectorScene] Trace requested');
+      console.log("[VectorScene] Trace requested");
       // Access derived values directly (no $ needed)
       const start = vectorStartWorld;
       const end = vectorEndWorld;
 
-      if (start && end) { // Explicit null check
+      if (start && end) {
+        // Explicit null check
         // Sequence: Instant move to start, then tween to end
         animatedPosition.set(start, { duration: 0 }).then(() => {
-            // Check distance to avoid issues if start === end
-            const distance = start.distanceTo(end);
-            const duration = distance * 100; // Duration based on length
-            if (distance > 0.01) { // Only tween if points are different
-                animatedPosition.set(end, { duration: Math.max(500, duration), easing: cubicOut });
-            }
+          // Check distance to avoid issues if start === end
+          const distance = start.distanceTo(end);
+          const duration = distance * 100; // Duration based on length
+          if (distance > 0.01) {
+            // Only tween if points are different
+            animatedPosition.set(end, {
+              duration: Math.max(500, duration),
+              easing: cubicOut,
+            });
+          }
         });
       } else {
-        console.warn('[VectorScene] Trace requested but points invalid.');
+        console.warn("[VectorScene] Trace requested but points invalid.");
       }
       traceVectorRequested.set(false); // Reset flag
     }
@@ -297,7 +381,7 @@
   // React to reset requests
   $effect(() => {
     if ($resetVectorBuilderRequested) {
-      console.log('[VectorScene] Reset requested');
+      console.log("[VectorScene] Reset requested");
       animatedPosition.set(initialWorldPosition, { duration: 0 });
       // State reset (like clearing coords) should happen in the store/HUD
       resetVectorBuilderRequested.set(false); // Reset flag
@@ -306,38 +390,87 @@
 
   onMount(() => {
     // Fetch CSS color variables and update stores
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const styles = getComputedStyle(document.documentElement);
       // Update axis color stores
-      xAxisColor.set(styles.getPropertyValue('--axis-color-x').trim() || get(xAxisColor));
-      yAxisColor.set(styles.getPropertyValue('--axis-color-y').trim() || get(yAxisColor));
-      zAxisColor.set(styles.getPropertyValue('--axis-color-z').trim() || get(zAxisColor));
+      xAxisColor.set(
+        styles.getPropertyValue("--axis-color-x").trim() || get(xAxisColor),
+      );
+      yAxisColor.set(
+        styles.getPropertyValue("--axis-color-y").trim() || get(yAxisColor),
+      );
+      zAxisColor.set(
+        styles.getPropertyValue("--axis-color-z").trim() || get(zAxisColor),
+      );
 
       // Update other scene color stores
-      nozzleColor.set(styles.getPropertyValue('--calibration-nozzle-color').trim() || get(nozzleColor));
-      nozzleEdgesColor.set(styles.getPropertyValue('--calibration-nozzle-edges-color').trim() || get(nozzleEdgesColor));
-      heightIndicatorColor.set(styles.getPropertyValue('--calibration-height-indicator-color').trim() || get(heightIndicatorColor));
-      bedColor.set(styles.getPropertyValue('--color-surface').trim() || get(bedColor));
-      bedEdgesColor.set(styles.getPropertyValue('--calibration-bed-edges-color').trim() || get(bedEdgesColor));
-      gridCellColor.set(styles.getPropertyValue('--scene-grid-cell-color').trim() || get(gridCellColor));
-      gridSectionColor.set(styles.getPropertyValue('--scene-grid-section-color').trim() || get(gridSectionColor));
-      vectorColor.set(styles.getPropertyValue('--vector-builder-vector-color').trim() || get(vectorColor));
-      startPointColor.set(styles.getPropertyValue('--vector-builder-start-color').trim() || get(startPointColor));
-      endPointColor.set(styles.getPropertyValue('--vector-builder-end-color').trim() || get(endPointColor));
+      nozzleColor.set(
+        styles.getPropertyValue("--calibration-nozzle-color").trim() ||
+          get(nozzleColor),
+      );
+      nozzleEdgesColor.set(
+        styles.getPropertyValue("--calibration-nozzle-edges-color").trim() ||
+          get(nozzleEdgesColor),
+      );
+      heightIndicatorColor.set(
+        styles
+          .getPropertyValue("--calibration-height-indicator-color")
+          .trim() || get(heightIndicatorColor),
+      );
+      bedColor.set(
+        styles.getPropertyValue("--color-surface").trim() || get(bedColor),
+      );
+      bedEdgesColor.set(
+        styles.getPropertyValue("--calibration-bed-edges-color").trim() ||
+          get(bedEdgesColor),
+      );
+      gridCellColor.set(
+        styles.getPropertyValue("--scene-grid-cell-color").trim() ||
+          get(gridCellColor),
+      );
+      gridSectionColor.set(
+        styles.getPropertyValue("--scene-grid-section-color").trim() ||
+          get(gridSectionColor),
+      );
+      vectorColor.set(
+        styles.getPropertyValue("--vector-builder-vector-color").trim() ||
+          get(vectorColor),
+      );
+      startPointColor.set(
+        styles.getPropertyValue("--vector-builder-start-color").trim() ||
+          get(startPointColor),
+      );
+      endPointColor.set(
+        styles.getPropertyValue("--vector-builder-end-color").trim() ||
+          get(endPointColor),
+      );
 
-      console.log('[VectorScene] Fetched Colors and updated stores');
+      console.log("[VectorScene] Fetched Colors and updated stores");
     }
 
     // Show initial dialog
     showVectorDialog([
-        { speaker: 'Leo', message: 'Okay, Surya, let\'s test a specific move. Define a start and end point using the controls. This defines a vector – the exact path the nozzle will follow.' },
-        { speaker: 'Surya', message: 'Got it. Start point... end point... So the vector is just the straight line between them?' },
-        { speaker: 'Leo', message: 'Precisely! And it has both a direction and a length, or magnitude. Enter some points and see.' }
+      {
+        speaker: "Leo",
+        message:
+          "Okay, Surya, let's test a specific move. Define a start and end point using the controls. This defines a vector – the exact path the nozzle will follow.",
+      },
+      {
+        speaker: "Surya",
+        message:
+          "Got it. Start point... end point... So the vector is just the straight line between them?",
+      },
+      {
+        speaker: "Leo",
+        message:
+          "Precisely! And it has both a direction and a length, or magnitude. Enter some points and see.",
+      },
     ]);
   });
 
   // --- Helper Function for Line Points ---
-  const linePoints = (start: Vector3, end: Vector3) => new Float32Array([...start.toArray(), ...end.toArray()]);
+  const linePoints = (start: Vector3, end: Vector3) =>
+    new Float32Array([...start.toArray(), ...end.toArray()]);
 
   // --- Effect to compute line distances --- //
   $effect(() => {
@@ -349,52 +482,46 @@
   });
   $effect(() => {
     if (lineY && materialY && deltaIntermediateXY && deltaIntermediateYZ) {
-       const positionsY = linePoints(deltaIntermediateXY, deltaIntermediateYZ);
-       (lineY.geometry as LineGeometry).setPositions(positionsY);
-       lineY.computeLineDistances();
+      const positionsY = linePoints(deltaIntermediateXY, deltaIntermediateYZ);
+      (lineY.geometry as LineGeometry).setPositions(positionsY);
+      lineY.computeLineDistances();
     }
   });
   $effect(() => {
     if (lineZ && materialZ && deltaIntermediateYZ && vectorEndWorld) {
-       const positionsZ = linePoints(deltaIntermediateYZ, vectorEndWorld);
-       (lineZ.geometry as LineGeometry).setPositions(positionsZ);
-       lineZ.computeLineDistances();
+      const positionsZ = linePoints(deltaIntermediateYZ, vectorEndWorld);
+      (lineZ.geometry as LineGeometry).setPositions(positionsZ);
+      lineZ.computeLineDistances();
     }
   });
-
 </script>
 
 <!-- Basic Lighting -->
 <T.AmbientLight intensity={1} />
 
-<T.PerspectiveCamera
-	makeDefault
-	position={[0, 60, 5]}
->
-	<OrbitControls
-		enableZoom={true}
-		enablePan={false}
-		maxPolarAngle={Math.PI / 2}
-		maxDistance={50}
-		minDistance={10}
-  >
-    <Gizmo placement='bottom-left' />
-	</OrbitControls>
+<T.PerspectiveCamera makeDefault position={[0, 60, 5]}>
+  <OrbitControls
+    enableZoom={true}
+    enablePan={false}
+    maxPolarAngle={Math.PI / 2}
+    maxDistance={50}
+    minDistance={10}
+  />
 </T.PerspectiveCamera>
 
 <!-- Base Scene Elements (Bed, Grid, Axes - Copy/Adapt from PrinterCalibrationScene) -->
 <Grid
-    position.y={1.1}
-    sectionsSize={10}
-    gridSize={12}
-    sectionThickness={1}
-    cellColor={$gridCellColor}
-    sectionColor={$gridSectionColor}
+  position.y={1.1}
+  sectionsSize={10}
+  gridSize={12}
+  sectionThickness={1}
+  cellColor={$gridCellColor}
+  sectionColor={$gridSectionColor}
 />
 <T.Mesh position.y={0.5}>
-    <T.BoxGeometry args={[12, 1, 12]}/>
-    <T.MeshBasicMaterial color={$bedColor} />
-    <Edges color={$bedEdgesColor} />
+  <T.BoxGeometry args={[12, 1, 12]} />
+  <T.MeshBasicMaterial color={$bedColor} />
+  <Edges color={$bedEdgesColor} />
 </T.Mesh>
 
 <!-- Axes Group at Corner -->
@@ -407,24 +534,40 @@
   <!-- X Axis -->
   <T.Mesh position.x={axisLengthX / 2}>
     <T.BoxGeometry args={[axisLengthX, axisThickness, axisThickness]} />
-    <T.MeshBasicMaterial color={$xAxisColor} transparent={true} opacity={axisOpacity} />
+    <T.MeshBasicMaterial
+      color={$xAxisColor}
+      transparent={true}
+      opacity={axisOpacity}
+    />
   </T.Mesh>
   <!-- Y Axis -->
   <T.Mesh position.y={axisLengthY / 2}>
     <T.BoxGeometry args={[axisThickness, axisLengthY, axisThickness]} />
-    <T.MeshBasicMaterial color={$yAxisColor} transparent={true} opacity={axisOpacity} />
+    <T.MeshBasicMaterial
+      color={$yAxisColor}
+      transparent={true}
+      opacity={axisOpacity}
+    />
   </T.Mesh>
   <!-- Z Axis -->
   <T.Mesh position.z={axisLengthZ / 2}>
     <T.BoxGeometry args={[axisThickness, axisThickness, axisLengthZ]} />
-    <T.MeshBasicMaterial color={$zAxisColor} transparent={true} opacity={axisOpacity} />
+    <T.MeshBasicMaterial
+      color={$zAxisColor}
+      transparent={true}
+      opacity={axisOpacity}
+    />
   </T.Mesh>
 
   <!-- X Axis Ticks (Copied) -->
   {#each xTicks as x (x)}
     <T.Mesh position.x={x}>
       <T.BoxGeometry args={[axisThickness / 2, tickSize, tickLength]} />
-      <T.MeshBasicMaterial color={$xAxisColor} transparent={true} opacity={tickOpacity} />
+      <T.MeshBasicMaterial
+        color={$xAxisColor}
+        transparent={true}
+        opacity={tickOpacity}
+      />
     </T.Mesh>
   {/each}
 
@@ -432,7 +575,11 @@
   {#each zTicks as z (z)}
     <T.Mesh position.z={z}>
       <T.BoxGeometry args={[tickLength, tickSize, axisThickness / 2]} />
-      <T.MeshBasicMaterial color={$zAxisColor} transparent={true} opacity={tickOpacity} />
+      <T.MeshBasicMaterial
+        color={$zAxisColor}
+        transparent={true}
+        opacity={tickOpacity}
+      />
     </T.Mesh>
   {/each}
 
@@ -440,16 +587,21 @@
   {#each yTicks as y (y)}
     <T.Mesh position.y={y}>
       <T.BoxGeometry args={[tickSize, axisThickness / 2, tickSize]} />
-      <T.MeshBasicMaterial color={$yAxisColor} transparent={true} opacity={tickOpacity} />
+      <T.MeshBasicMaterial
+        color={$yAxisColor}
+        transparent={true}
+        opacity={tickOpacity}
+      />
     </T.Mesh>
   {/each}
-
 </T.Group>
 
 <!-- Grid Numbers (Near Axes Only) (Copied) -->
 {#each gridNumbers as num}
-  {@const worldPos = cornerOriginOffset.clone().add(new Vector3(num.x, 0, num.z))}
-  {@const numColor = num.axis === 'x' ? $xAxisColor : $zAxisColor}
+  {@const worldPos = cornerOriginOffset
+    .clone()
+    .add(new Vector3(num.x, 0, num.z))}
+  {@const numColor = num.axis === "x" ? $xAxisColor : $zAxisColor}
   <SceneLabel
     position={[worldPos.x, numberYOffset, worldPos.z]}
     text={num.text}
@@ -466,7 +618,11 @@
   {@const worldPos = cornerOriginOffset.clone().add(new Vector3(0, y, 0))}
   {@const yNumberOffset = 0.4}
   <SceneLabel
-    position={[worldPos.x - yNumberOffset, worldPos.y, worldPos.z - yNumberOffset]}
+    position={[
+      worldPos.x - yNumberOffset,
+      worldPos.y,
+      worldPos.z - yNumberOffset,
+    ]}
     text={y.toString()}
     fontSize={0.6}
     color={$yAxisColor}
@@ -508,16 +664,25 @@
 <!-- Nozzle Group -->
 <T.Group position={$animatedPosition.toArray()}>
   <T.Mesh position.y={1}>
-    <T.BoxGeometry args={[1, 2, 1]}/>
-    <T.MeshBasicMaterial color={$nozzleColor} transparent={true} opacity={0.75} />
+    <T.BoxGeometry args={[1, 2, 1]} />
+    <T.MeshBasicMaterial
+      color={$nozzleColor}
+      transparent={true}
+      opacity={0.75}
+    />
     <Edges color={$nozzleEdgesColor} />
   </T.Mesh>
   <!-- Height Indicator Cylinder (Copied) -->
-  {@const indicatorHeight = $animatedPosition.y - cornerOriginOffset.y} // Height from bed surface (world Y=1) to nozzle bottom
+  {@const indicatorHeight = $animatedPosition.y - cornerOriginOffset.y} // Height
+  from bed surface (world Y=1) to nozzle bottom
   {#if indicatorHeight > 0.01}
     <T.Mesh position.y={-indicatorHeight / 2}>
       <T.CylinderGeometry args={[0.05, 0.05, indicatorHeight, 8]} />
-      <T.MeshBasicMaterial color={$heightIndicatorColor} transparent={true} opacity={0.6} />
+      <T.MeshBasicMaterial
+        color={$heightIndicatorColor}
+        transparent={true}
+        opacity={0.6}
+      />
     </T.Mesh>
   {/if}
 </T.Group>
@@ -528,14 +693,15 @@
   {@const distance = vectorStartWorld.distanceTo(vectorEndWorld)}
   {@const vectorColorObj = new Color($vectorColor)}
 
-  {#if distance > 0.01} <!-- Only draw if points are distinct -->
+  {#if distance > 0.01}
+    <!-- Only draw if points are distinct -->
     {@const arrow = new ArrowHelper(
-        direction,
-        vectorStartWorld,
-        distance,
-        vectorColorObj.getHex(),
-        distance * 0.1,
-        distance * 0.05
+      direction,
+      vectorStartWorld,
+      distance,
+      vectorColorObj.getHex(),
+      distance * 0.1,
+      distance * 0.05,
     )}
     <T is={arrow} />
   {/if}
@@ -555,9 +721,13 @@
   <!-- Coordinate Labels -->
   {@const labelOffsetY = 0.5}
   {@const labelFontSize = 0.5}
-  {@const startLabelText = `(${ $vectorData.start.x }, ${ $vectorData.start.y }, ${ $vectorData.start.z })`}
+  {@const startLabelText = `(${$vectorData.start.x}, ${$vectorData.start.y}, ${$vectorData.start.z})`}
   <SceneLabel
-    position={[vectorStartWorld.x, vectorStartWorld.y + labelOffsetY, vectorStartWorld.z]}
+    position={[
+      vectorStartWorld.x,
+      vectorStartWorld.y + labelOffsetY,
+      vectorStartWorld.z,
+    ]}
     text={startLabelText}
     fontSize={labelFontSize}
     color={$startPointColor}
@@ -565,9 +735,13 @@
     anchorY="middle"
     depthTest={false}
   />
-  {@const endLabelText = `(${ $vectorData.end.x }, ${ $vectorData.end.y }, ${ $vectorData.end.z })`}
+  {@const endLabelText = `(${$vectorData.end.x}, ${$vectorData.end.y}, ${$vectorData.end.z})`}
   <SceneLabel
-    position={[vectorEndWorld.x, vectorEndWorld.y + labelOffsetY, vectorEndWorld.z]}
+    position={[
+      vectorEndWorld.x,
+      vectorEndWorld.y + labelOffsetY,
+      vectorEndWorld.z,
+    ]}
     text={endLabelText}
     fontSize={labelFontSize}
     color={$endPointColor}
@@ -582,12 +756,44 @@
 
   <!-- Delta Component Lines (Conditional & Refactored) -->
   {#if showDeltaX && showDeltaY && showDeltaZ && $vectorData}
-    {@const deltaIntermediateXY = vectorStartWorld.clone().lerp(vectorEndWorld, 0.5)}
-    {@const deltaIntermediateYZ = deltaIntermediateXY.clone().lerp(vectorEndWorld, 0.5)}
+    {@const deltaIntermediateXY = vectorStartWorld
+      .clone()
+      .lerp(vectorEndWorld, 0.5)}
+    {@const deltaIntermediateYZ = deltaIntermediateXY
+      .clone()
+      .lerp(vectorEndWorld, 0.5)}
     <T.LineSegments>
-      <T.Line position={[vectorStartWorld.x, vectorStartWorld.y, vectorStartWorld.z]} end={[deltaIntermediateXY.x, deltaIntermediateXY.y, deltaIntermediateXY.z]} color={$xAxisColor} />
-      <T.Line position={[deltaIntermediateXY.x, deltaIntermediateXY.y, deltaIntermediateXY.z]} end={[deltaIntermediateYZ.x, deltaIntermediateYZ.y, deltaIntermediateYZ.z]} color={$yAxisColor} />
-      <T.Line position={[deltaIntermediateYZ.x, deltaIntermediateYZ.y, deltaIntermediateYZ.z]} end={[vectorEndWorld.x, vectorEndWorld.y, vectorEndWorld.z]} color={$zAxisColor} />
+      <T.Line
+        position={[vectorStartWorld.x, vectorStartWorld.y, vectorStartWorld.z]}
+        end={[
+          deltaIntermediateXY.x,
+          deltaIntermediateXY.y,
+          deltaIntermediateXY.z,
+        ]}
+        color={$xAxisColor}
+      />
+      <T.Line
+        position={[
+          deltaIntermediateXY.x,
+          deltaIntermediateXY.y,
+          deltaIntermediateXY.z,
+        ]}
+        end={[
+          deltaIntermediateYZ.x,
+          deltaIntermediateYZ.y,
+          deltaIntermediateYZ.z,
+        ]}
+        color={$yAxisColor}
+      />
+      <T.Line
+        position={[
+          deltaIntermediateYZ.x,
+          deltaIntermediateYZ.y,
+          deltaIntermediateYZ.z,
+        ]}
+        end={[vectorEndWorld.x, vectorEndWorld.y, vectorEndWorld.z]}
+        color={$zAxisColor}
+      />
     </T.LineSegments>
   {/if}
 
@@ -598,7 +804,11 @@
   <!-- Use derived label data -->
   {#if deltaLabelXData}
     <SceneLabel
-      position={[deltaLabelXData.position.x, deltaLabelXData.position.y + deltaLabelOffsetY, deltaLabelXData.position.z]}
+      position={[
+        deltaLabelXData.position.x,
+        deltaLabelXData.position.y + deltaLabelOffsetY,
+        deltaLabelXData.position.z,
+      ]}
       text={deltaLabelXData.text}
       fontSize={deltaLabelFontSize}
       color={$xAxisColor}
@@ -608,8 +818,12 @@
   {/if}
 
   {#if deltaLabelYData}
-     <SceneLabel
-      position={[deltaLabelYData.position.x, deltaLabelYData.position.y + deltaLabelOffsetY, deltaLabelYData.position.z]}
+    <SceneLabel
+      position={[
+        deltaLabelYData.position.x,
+        deltaLabelYData.position.y + deltaLabelOffsetY,
+        deltaLabelYData.position.z,
+      ]}
       text={deltaLabelYData.text}
       fontSize={deltaLabelFontSize}
       color={$yAxisColor}
@@ -619,8 +833,12 @@
   {/if}
 
   {#if deltaLabelZData}
-     <SceneLabel
-      position={[deltaLabelZData.position.x, deltaLabelZData.position.y + deltaLabelOffsetY, deltaLabelZData.position.z]}
+    <SceneLabel
+      position={[
+        deltaLabelZData.position.x,
+        deltaLabelZData.position.y + deltaLabelOffsetY,
+        deltaLabelZData.position.z,
+      ]}
       text={deltaLabelZData.text}
       fontSize={deltaLabelFontSize}
       color={$zAxisColor}
@@ -641,15 +859,17 @@
   {/if}
 
   <!-- Magnitude Label -->
-  {@const midpointPosVec = vectorStartWorld.clone().add(vectorEndWorld).multiplyScalar(0.5)}
+  {@const midpointPosVec = vectorStartWorld
+    .clone()
+    .add(vectorEndWorld)
+    .multiplyScalar(0.5)}
   <SceneLabel
     position={midpointPosVec.add(new Vector3(0, 0.4, 0))}
-    text={'Magnitude = ' + $vectorData.magnitude.toFixed(2)}
+    text={"Magnitude = " + $vectorData.magnitude.toFixed(2)}
     color={$vectorColor}
     fontSize={0.5}
     anchorX="center"
     anchorY="middle"
     depthTest={false}
   />
-
 {/if}
