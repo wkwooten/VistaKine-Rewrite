@@ -220,7 +220,12 @@
     /* Ensure vis area takes full space in fullscreen */
     & > .vis-area-wrapper {
       width: 100%;
-      height: 100%;
+      /* height: 100%; Remove or comment out */
+      position: absolute; /* Position relative to the fixed parent */
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
       z-index: 1;
     }
 
