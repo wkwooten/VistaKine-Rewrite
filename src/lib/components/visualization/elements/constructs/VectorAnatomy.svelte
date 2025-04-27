@@ -204,13 +204,12 @@
       const wrapperRect = wrapperElement.getBoundingClientRect();
       const currentSize = new Vector2(wrapperRect.width, wrapperRect.height);
 
-      // Update color state (will trigger $derived arrow update)
+      // Update color state (will trigger arrow update)
       vectorColor = new Color(
-        styles.getPropertyValue("--vector-builder-vector-color").trim() ||
-          "#FFA500",
+        styles.getPropertyValue("--color-accent").trim() || "#FFA500",
       );
       labelColor = new Color(
-        styles.getPropertyValue("--color-text-secondary").trim() || "#cccccc",
+        styles.getPropertyValue("--color-white").trim() || "#cccccc",
       );
       xAxisColor = new Color(
         styles.getPropertyValue("--axis-color-x").trim() || "#EF5350",

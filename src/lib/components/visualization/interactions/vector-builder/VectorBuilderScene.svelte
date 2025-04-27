@@ -3,7 +3,7 @@
   // Imports
   // ==================================
   import { T, useThrelte } from "@threlte/core";
-  import { OrbitControls, Grid, Edges, Billboard, Text } from "@threlte/extras"; // Removed Gizmo as it's not used here
+  import { OrbitControls, Grid, Edges, Billboard, Text } from "@threlte/extras";
   import {
     Vector3,
     Vector2,
@@ -55,6 +55,9 @@
 
   // Component Imports
   import SceneLabel from "../../helpers/SceneLabel.svelte";
+  import PrinterBed from "../../elements/constructs/PrinterBed.svelte";
+  import CoordinateAxes from "../../elements/constructs/CoordinateAxes.svelte";
+  import AnimatedNozzle from "../../elements/constructs/AnimatedNozzle.svelte";
 
   // ==================================
   // Threlte / Svelte Hooks
@@ -71,25 +74,6 @@
   const dashSize = 0.2;
   const gapSize = 0.1;
   const deltaLineWidth = 3;
-  const labelFontSize = 0.5; // For coordinate labels
-  const labelFontSizeAxis = 0.8; // For X, Y, Z labels
-  const deltaLabelFontSize = 0.5; // For delta labels
-  const deltaLabelOffsetY = 0.3; // Offset for delta labels
-
-  // Grid/Tick Constants (Copied from PrinterCalibrationScene)
-  const step = 2;
-  const gridSizeVal = 12;
-  const numberYOffset = 0.5;
-  const numberOutwardOffset = 0.8;
-  const tickStep = 2;
-  const tickSize = 0.15;
-  const tickLength = 0.5;
-  const tickOpacity = 0.8;
-  const yAxisLength = MAX_Y; // Use MAX_Y from state
-  const xAxisLength = MAX_X; // Use MAX_X from state
-  const zAxisLength = MAX_Z; // Use MAX_Z from state
-  const labelOffset = 1.0; // For axis labels
-  const labelYPos = 1.0; // For axis labels
 
   // ==================================
   // Reactive State ($state, tweened)
@@ -182,41 +166,6 @@
     }
     return null;
   });
-
-  // --- Grid/Axis Visual Data (Pre-calculated) ---
-  const gridNumbers: { text: string; x: number; z: number; axis: "x" | "z" }[] =
-    [];
-  for (let i = 0; i <= gridSizeVal; i += step)
-    gridNumbers.push({
-      text: `${i}`,
-      x: i,
-      z: -numberOutwardOffset,
-      axis: "x",
-    });
-  for (let i = step; i <= gridSizeVal; i += step)
-    gridNumbers.push({
-      text: `${i}`,
-      x: -numberOutwardOffset,
-      z: i,
-      axis: "z",
-    });
-
-  const xTicks: number[] = [];
-  const zTicks: number[] = [];
-  const yTicks: number[] = [];
-  for (let i = tickStep; i < xAxisLength; i += tickStep) xTicks.push(i);
-  for (let i = tickStep; i < zAxisLength; i += tickStep) zTicks.push(i);
-  for (let i = tickStep; i <= yAxisLength; i += tickStep) yTicks.push(i);
-
-  const xLabelWorldPos = cornerOriginOffset
-    .clone()
-    .add(new Vector3(xAxisLength + labelOffset, 0, 0));
-  const yLabelWorldPos = cornerOriginOffset
-    .clone()
-    .add(new Vector3(0, yAxisLength + labelOffset, 0));
-  const zLabelWorldPos = cornerOriginOffset
-    .clone()
-    .add(new Vector3(0, 0, zAxisLength + labelOffset));
 
   // ==================================
   // Helper Functions
@@ -466,13 +415,16 @@
       resetVectorBuilderRequested.set(false); // Reset flag
     }
   });
+
+  const cameraTarget = new Vector3(0, 7.5, 0);
 </script>
 
 <!-- Basic Lighting -->
 <T.AmbientLight intensity={1} />
 
-<T.PerspectiveCamera makeDefault position={[0, 60, 5]}>
+<T.PerspectiveCamera makeDefault position={[0, 60, 0]}>
   <OrbitControls
+    target={cameraTarget.toArray()}
     enableZoom={true}
     enablePan={false}
     maxPolarAngle={Math.PI / 2}
@@ -481,183 +433,33 @@
   />
 </T.PerspectiveCamera>
 
-<!-- Base Scene Elements (Bed, Grid, Axes - Copy/Adapt from PrinterCalibrationScene) -->
-<Grid
-  position.y={1.1}
-  sectionsSize={10}
-  gridSize={12}
-  sectionThickness={1}
-  cellColor={$gridCellColor}
-  sectionColor={$gridSectionColor}
-/>
-<T.Mesh position.y={0.5}>
-  <T.BoxGeometry args={[12, 1, 12]} />
-  <T.MeshBasicMaterial color={$bedColor} />
-  <Edges color={$bedEdgesColor} />
-</T.Mesh>
-
-<!-- Axes Group at Corner -->
-<T.Group position={[-6, 1, -6]}>
-  {@const axisThickness = 0.08}
-  {@const axisLengthX = MAX_X}
-  {@const axisLengthY = MAX_Y}
-  {@const axisLengthZ = MAX_Z}
-  {@const axisOpacity = 0.4}
-  <!-- X Axis -->
-  <T.Mesh position.x={axisLengthX / 2}>
-    <T.BoxGeometry args={[axisLengthX, axisThickness, axisThickness]} />
-    <T.MeshBasicMaterial
-      color={$xAxisColor}
-      transparent={true}
-      opacity={axisOpacity}
-    />
-  </T.Mesh>
-  <!-- Y Axis -->
-  <T.Mesh position.y={axisLengthY / 2}>
-    <T.BoxGeometry args={[axisThickness, axisLengthY, axisThickness]} />
-    <T.MeshBasicMaterial
-      color={$yAxisColor}
-      transparent={true}
-      opacity={axisOpacity}
-    />
-  </T.Mesh>
-  <!-- Z Axis -->
-  <T.Mesh position.z={axisLengthZ / 2}>
-    <T.BoxGeometry args={[axisThickness, axisThickness, axisLengthZ]} />
-    <T.MeshBasicMaterial
-      color={$zAxisColor}
-      transparent={true}
-      opacity={axisOpacity}
-    />
-  </T.Mesh>
-
-  <!-- X Axis Ticks (Copied) -->
-  {#each xTicks as x (x)}
-    <T.Mesh position.x={x}>
-      <T.BoxGeometry args={[axisThickness / 2, tickSize, tickLength]} />
-      <T.MeshBasicMaterial
-        color={$xAxisColor}
-        transparent={true}
-        opacity={tickOpacity}
-      />
-    </T.Mesh>
-  {/each}
-
-  <!-- Z Axis Ticks (Copied) -->
-  {#each zTicks as z (z)}
-    <T.Mesh position.z={z}>
-      <T.BoxGeometry args={[tickLength, tickSize, axisThickness / 2]} />
-      <T.MeshBasicMaterial
-        color={$zAxisColor}
-        transparent={true}
-        opacity={tickOpacity}
-      />
-    </T.Mesh>
-  {/each}
-
-  <!-- Y Axis Ticks (Copied) -->
-  {#each yTicks as y (y)}
-    <T.Mesh position.y={y}>
-      <T.BoxGeometry args={[tickSize, axisThickness / 2, tickSize]} />
-      <T.MeshBasicMaterial
-        color={$yAxisColor}
-        transparent={true}
-        opacity={tickOpacity}
-      />
-    </T.Mesh>
-  {/each}
-</T.Group>
-
-<!-- Grid Numbers (Near Axes Only) (Copied) -->
-{#each gridNumbers as num}
-  {@const worldPos = cornerOriginOffset
-    .clone()
-    .add(new Vector3(num.x, 0, num.z))}
-  {@const numColor = num.axis === "x" ? $xAxisColor : $zAxisColor}
-  <SceneLabel
-    position={[worldPos.x, numberYOffset, worldPos.z]}
-    text={num.text}
-    fontSize={0.6}
-    color={numColor}
-    anchorX="center"
-    anchorY="middle"
-    depthTest={false}
-  />
-{/each}
-
-<!-- Y Axis Numbers (Copied) -->
-{#each yTicks as y (y)}
-  {@const worldPos = cornerOriginOffset.clone().add(new Vector3(0, y, 0))}
-  {@const yNumberOffset = 0.4}
-  <SceneLabel
-    position={[
-      worldPos.x - yNumberOffset,
-      worldPos.y,
-      worldPos.z - yNumberOffset,
-    ]}
-    text={y.toString()}
-    fontSize={0.6}
-    color={$yAxisColor}
-    anchorX="center"
-    anchorY="middle"
-    depthTest={false}
-  />
-{/each}
-
-<!-- Axis Labels (Copied) -->
-<SceneLabel
-  position={[xLabelWorldPos.x, labelYPos, xLabelWorldPos.z]}
-  text="X"
-  fontSize={labelFontSizeAxis}
-  color={$xAxisColor}
-  anchorX="center"
-  anchorY="middle"
-  depthTest={false}
-/>
-<SceneLabel
-  position={[yLabelWorldPos.x, yLabelWorldPos.y, yLabelWorldPos.z]}
-  text="Y"
-  fontSize={labelFontSizeAxis}
-  color={$yAxisColor}
-  anchorX="center"
-  anchorY="middle"
-  depthTest={false}
-/>
-<SceneLabel
-  position={[zLabelWorldPos.x, labelYPos, zLabelWorldPos.z]}
-  text="Z"
-  fontSize={labelFontSizeAxis}
-  color={$zAxisColor}
-  anchorX="center"
-  anchorY="middle"
-  depthTest={false}
+<!-- Use PrinterBed Component -->
+<PrinterBed
+  bedColor={$bedColor}
+  bedEdgesColor={$bedEdgesColor}
+  gridCellColor={$gridCellColor}
+  gridSectionColor={$gridSectionColor}
 />
 
-<!-- Nozzle Group -->
-<T.Group position={$animatedPosition.toArray()}>
-  <T.Mesh position.y={1}>
-    <T.BoxGeometry args={[1, 2, 1]} />
-    <T.MeshBasicMaterial
-      color={$nozzleColor}
-      transparent={true}
-      opacity={0.75}
-    />
-    <Edges color={$nozzleEdgesColor} />
-  </T.Mesh>
-  <!-- Height Indicator Cylinder (Copied) -->
-  {@const indicatorHeight = $animatedPosition.y - cornerOriginOffset.y} // Height
-  from bed surface (world Y=1) to nozzle bottom
-  {#if indicatorHeight > 0.01}
-    <T.Mesh position.y={-indicatorHeight / 2}>
-      <T.CylinderGeometry args={[0.05, 0.05, indicatorHeight, 8]} />
-      <T.MeshBasicMaterial
-        color={$heightIndicatorColor}
-        transparent={true}
-        opacity={0.6}
-      />
-    </T.Mesh>
-  {/if}
-</T.Group>
+<!-- Use CoordinateAxes Component -->
+<CoordinateAxes
+  {cornerOriginOffset}
+  xAxisColor={$xAxisColor}
+  yAxisColor={$yAxisColor}
+  zAxisColor={$zAxisColor}
+  axisLengthX={MAX_X}
+  axisLengthY={MAX_Y}
+  axisLengthZ={MAX_Z}
+/>
+
+<!-- Use AnimatedNozzle Component -->
+<AnimatedNozzle
+  position={$animatedPosition}
+  {cornerOriginOffset}
+  nozzleColor={$nozzleColor}
+  nozzleEdgesColor={$nozzleEdgesColor}
+  heightIndicatorColor={$heightIndicatorColor}
+/>
 
 <!-- Vector Visualization -->
 {#if vectorStartWorld && vectorEndWorld && $vectorData}

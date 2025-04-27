@@ -237,13 +237,13 @@
       </FormulaAccordion>
       <p>You may also encounter vectors written like this:</p>
       <ul>
+        <p>Angle Bracket Notation:</p>
         <li>
-          Angle Bracket Notation: <Katex
-            >{"\\vec{V} = \\langle V_x, V_y, V_z \\rangle"}</Katex
-          >
+          <Katex>{"\\vec{V} = \\langle V_x, V_y, V_z \\rangle"}</Katex>
         </li>
+        <p>Parentheses Notation:</p>
         <li>
-          Parentheses Notation: <Katex>{"\\vec{V} = (V_x, V_y, V_z)"}</Katex>
+          <Katex>{"\\vec{V} = (V_x, V_y, V_z)"}</Katex>
         </li>
       </ul>
     </ContentCard>
