@@ -387,7 +387,7 @@
     background-color: var(--color-background);
     display: flex;
     flex-direction: column;
-    padding: var(--space-xs) 0;
+    padding: 0;
     top: 0;
     border-right: 1.5px solid var(--color-border);
     left: 0;
@@ -429,7 +429,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--space-xs) var(--space-s);
+    height: 80px;
+    flex-shrink: 0;
+    padding: 0 var(--space-s);
     position: relative;
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
@@ -475,10 +477,14 @@
   }
 
   .search {
-    padding: var(--space-xs);
+    padding: 0 var(--space-xs);
+    flex-shrink: 0;
+    height: 80px;
     border-block: 1px solid var(--color-border);
     display: flex;
     justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
   }
 
   .search-input-container {
@@ -517,6 +523,9 @@
   .nav-content {
     overflow-y: auto;
     height: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
   }
 
   .nav-items {
@@ -584,9 +593,12 @@
 
   .bottom-item {
     margin-top: auto;
+    height: 155px;
     margin-bottom: 0 !important;
     border-top: 1px solid var(--color-border);
     padding-top: var(--space-xs);
+    flex-shrink: 0;
+    box-sizing: border-box;
   }
 
   /* Remove cursor pointer from the list item */

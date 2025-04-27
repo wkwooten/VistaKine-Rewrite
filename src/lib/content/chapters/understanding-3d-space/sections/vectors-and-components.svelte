@@ -103,7 +103,7 @@
       </p>
     </ContentCard>
 
-    <ContentCard blockType="concept-block">
+    <ContentCard blockType="concept-block" layoutWidth="condensed">
       <h2>Vectors in One Dimension (1D)</h2>
       <p>
         Imagine a number line. A 1D vector simply represents movement or
@@ -133,7 +133,7 @@
       {/if}
     </ContentCard>
 
-    <ContentCard blockType="concept-block">
+    <ContentCard blockType="concept-block" layoutWidth="condensed">
       <h2>Extending to Two Dimensions (2D)</h2>
       <p>
         In 2D (like a flat plane), we need two pieces of information to describe
@@ -176,7 +176,11 @@
       dimension (Z-axis) to fully understand vectors in 3D space.
     </p>
 
-    <ContentCard blockType="visualization-block" class="visualization-card">
+    <ContentCard
+      blockType="visualization-block"
+      class="visualization-card"
+      layoutWidth="condensed"
+    >
       <h2>Anatomy of a Vector (3D)</h2>
       <VectorAnatomy />
       <p>

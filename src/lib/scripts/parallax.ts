@@ -6,7 +6,7 @@ export function parallaxBackground(): void {
 
   // This creates a reverse/negative parallax effect
   // Background moves in opposite direction to scrolling
-  const parallaxFactor = -0.15;
+  const parallaxFactor = -1;
 
   const updateParallax = () => {
     const scrollTop = content.scrollTop;
