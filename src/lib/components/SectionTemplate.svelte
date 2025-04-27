@@ -1,13 +1,15 @@
+<svelte:options namespace="html" />
+
 <script lang="ts">
-  import { currentSection } from '$lib/stores/appState.js';
-  import Footer from '$lib/components/Footer.svelte';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import { getChapterBySlug } from '$lib/data/chapters';
-  import { onMount } from 'svelte';
+  import { currentSection } from "$lib/stores/appState.js";
+  import Footer from "$lib/components/Footer.svelte";
+  import PageNav from "$lib/components/PageNav.svelte";
+  import { getChapterBySlug } from "$lib/data/chapters";
+  import { onMount } from "svelte";
 
   export let chapterSlug: string;
   export let sectionSlug: string;
-  export let themeClass: string = '';
+  export let themeClass: string = "";
   // Accept chapter title from parent (+page.svelte)
   export let currentChapterTitle: string | null = null;
   // Accept current chapter slug from parent (+page.svelte)
@@ -17,15 +19,19 @@
 
   // For debugging
   onMount(() => {
-    console.log(`SectionTemplate mounted with chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`);
+    console.log(
+      `SectionTemplate mounted with chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`,
+    );
   });
 
   $: {
-    console.log(`SectionTemplate props updated: chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`);
+    console.log(
+      `SectionTemplate props updated: chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`,
+    );
   }
 
   $: chapter = getChapterBySlug(chapterSlug);
-  $: section = chapter?.sections.find(s => s.slug === sectionSlug);
+  $: section = chapter?.sections.find((s) => s.slug === sectionSlug);
 
   $: {
     if (chapter) {
@@ -37,41 +43,65 @@
     if (section) {
       console.log(`Found section: ${section.title}`);
     } else if (chapter) {
-      console.error(`Section not found: ${sectionSlug} in chapter ${chapter.title}`);
+      console.error(
+        `Section not found: ${sectionSlug} in chapter ${chapter.title}`,
+      );
     }
   }
 
   // Get previous and next sections for navigation
-  $: sectionIndex = chapter?.sections.findIndex(s => s.slug === sectionSlug) ?? -1;
-  $: prevSectionData = sectionIndex > 0 ? chapter?.sections[sectionIndex - 1] : null;
-  $: nextSectionData = sectionIndex < (chapter?.sections.length ?? 0) - 1 ? chapter?.sections[sectionIndex + 1] : null;
+  $: sectionIndex =
+    chapter?.sections.findIndex((s) => s.slug === sectionSlug) ?? -1;
+  $: prevSectionData =
+    sectionIndex > 0 ? chapter?.sections[sectionIndex - 1] : null;
+  $: nextSectionData =
+    sectionIndex < (chapter?.sections.length ?? 0) - 1
+      ? chapter?.sections[sectionIndex + 1]
+      : null;
 
   // Create simplified objects for PageNav, including the number
-  $: prevSectionForNav = prevSectionData ? {
-      slug: prevSectionData.slug,
-      title: prevSectionData.title,
-      number: prevSectionData.number
-  } : null;
+  $: prevSectionForNav = prevSectionData
+    ? {
+        slug: prevSectionData.slug,
+        title: prevSectionData.title,
+        number: prevSectionData.number,
+      }
+    : null;
 
-  $: nextSectionForNav = nextSectionData ? {
-      slug: nextSectionData.slug,
-      title: nextSectionData.title,
-      number: nextSectionData.number
-  } : null;
+  $: nextSectionForNav = nextSectionData
+    ? {
+        slug: nextSectionData.slug,
+        title: nextSectionData.title,
+        number: nextSectionData.number,
+      }
+    : null;
 
   // Handle chapter changes if last or first section
   $: prevChapterSlug = sectionIndex === 0 ? chapter?.prevChapter : null;
-  $: nextChapterSlug = sectionIndex === (chapter?.sections.length ?? 0) - 1 ? chapter?.nextChapter : null;
+  $: nextChapterSlug =
+    sectionIndex === (chapter?.sections.length ?? 0) - 1
+      ? chapter?.nextChapter
+      : null;
 
   // Get previous and next chapter objects for navigation
-  $: prevChapterObj = prevChapterSlug ? { slug: prevChapterSlug, title: getChapterBySlug(prevChapterSlug)?.title || 'Previous Chapter' } : null;
-  $: nextChapterObj = nextChapterSlug ? { slug: nextChapterSlug, title: getChapterBySlug(nextChapterSlug)?.title || 'Next Chapter' } : null;
+  $: prevChapterObj = prevChapterSlug
+    ? {
+        slug: prevChapterSlug,
+        title: getChapterBySlug(prevChapterSlug)?.title || "Previous Chapter",
+      }
+    : null;
+  $: nextChapterObj = nextChapterSlug
+    ? {
+        slug: nextChapterSlug,
+        title: getChapterBySlug(nextChapterSlug)?.title || "Next Chapter",
+      }
+    : null;
 </script>
 
-<svelte:options namespace="html" />
-
 <svelte:head>
-  <title>{section?.title || 'Section'} | {chapter?.title || 'Chapter'} | VistaKine</title>
+  <title
+    >{section?.title || "Section"} | {chapter?.title || "Chapter"} | VistaKine</title
+  >
 </svelte:head>
 
 <div class="chapter section-container {themeClass}">
@@ -81,15 +111,16 @@
       nextSection={nextSectionForNav}
       prevChapter={prevChapterObj}
       nextChapter={nextChapterObj}
-      currentChapterSlug={currentChapterSlug}
-      currentChapterTitle={currentChapterTitle}
+      {currentChapterSlug}
+      {currentChapterTitle}
       currentChapterNumber={chapterNumber}
     />
 
     <!-- Standardized Section Title -->
     {#if section}
       <h1 class="section-title">
-        <span class="section-number-prefix">Section {section.number}:</span> <br/> <span class="section-title-main">{section.title}</span>
+        <span class="section-number-prefix">Section {section.number}:</span>
+        <br /> <span class="section-title-main">{section.title}</span>
       </h1>
     {/if}
 
@@ -102,17 +133,16 @@
       nextSection={nextSectionForNav}
       prevChapter={prevChapterObj}
       nextChapter={nextChapterObj}
-      currentChapterSlug={currentChapterSlug}
-      currentChapterTitle={currentChapterTitle}
+      {currentChapterSlug}
+      {currentChapterTitle}
       currentChapterNumber={chapterNumber}
-			/>
+    />
   </div>
   <Footer />
 </div>
 
-
 <style lang="scss">
-	@use '$lib/styles/variables' as vars;
+  @use "$lib/styles/variables" as vars;
 
   .section-container {
     display: flex;
@@ -128,7 +158,7 @@
     width: 100%;
     max-width: var(--wide-content-width);
     padding: var(--space-s);
-    gap: var(--space-l      );
+    gap: var(--space-l);
     flex-grow: 1;
 
     @media (max-width: vars.$breakpoint-lg) {
@@ -139,15 +169,15 @@
   }
 
   .section-content {
-		width: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
   }
 
   /* Default styles for figures/figcaptions used within slotted content */
-	/* Note: Uses :global() as these classes originate in slotted components/markdown */
+  /* Note: Uses :global() as these classes originate in slotted components/markdown */
   :global(figure) {
-		width: 100%;
+    width: 100%;
     margin: var(--space-m) 0;
   }
 
@@ -242,20 +272,11 @@
     }
   }
 
-  /* REMOVED grouped global card styles - now handled by ContentCard.svelte */
-
-  /* Keep only specific :global() overrides targeting ContentCard classes */
-  :global(.content-card.section-header-block p:first-of-type) {
-      font-style: italic;
-      color: var(--color-text-secondary);
-      border-left: 3px solid var(--chapter-color);
-      padding-left: var(--space-s);
-      margin-bottom: var(--space-l);
-  }
-
   :global(.content-card.activity-block.-review) {
-      /* Example: border-top: 3px solid var(--color-accent); */
-      margin-top: var(--space-xl); // Ensure review margin is kept (if different from base card)
+    /* Example: border-top: 3px solid var(--color-accent); */
+    margin-top: var(
+      --space-xl
+    ); // Ensure review margin is kept (if different from base card)
   }
 
   :global(.content-card.explanation-block) {
@@ -265,14 +286,14 @@
     // Keep list styles associated with explanation-block
     & ol,
     & ul {
-        text-align: left;
-        display: inline-block;
-        max-width: 100%;
+      text-align: left;
+      display: inline-block;
+      max-width: 100%;
     }
     & h4 {
-        margin-top: 0;
-        margin-bottom: var(--space-m);
-        color: var(--color-accent);
+      margin-top: 0;
+      margin-bottom: var(--space-m);
+      color: var(--color-accent);
     }
   }
 
@@ -281,7 +302,9 @@
     margin: var(--space-m) 0;
     padding-left: var(--space-l); /* Indent the list slightly */
     border-left: 3px solid var(--color-accent-secondary); /* Add a visual marker */
-    background-color: var(--color-surface-100); /* Slight background distinction */
+    background-color: var(
+      --color-surface-100
+    ); /* Slight background distinction */
     padding-top: var(--space-xs);
     padding-bottom: var(--space-xs);
     border-radius: 0 var(--radius-2) var(--radius-2) 0; /* Optional: slightly round the inner corners */

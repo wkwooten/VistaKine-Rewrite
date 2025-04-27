@@ -13,21 +13,21 @@ interface QuizQuestion {
 export const coordinateQuizData: QuizQuestion[] = [
   {
     id: 'q1',
-    text: 'Which <span class="keyword">axis</span> represents <span class="keyword">depth</span> in a 3D Cartesian <span class="keyword">coordinate system</span>?',
+    text: 'Which axis represents <em>depth</em> in a 3D Cartesian <em>coordinate system</em>?',
     options: [
-      { value: 'a', label: '<span class="keyword">x</span>' },
-      { value: 'b', label: '<span class="keyword">y</span>' },
-      { value: 'c', label: '<span class="keyword">z</span>' }
+      { value: 'a', label: '<strong>x</strong>' },
+      { value: 'b', label: '<strong>y</strong>' },
+      { value: 'c', label: '<strong>z</strong>' }
     ],
     correctAnswer: 'c'
   },
   {
     id: 'q2',
-    text: 'If you move a point only along the <span class="keyword">y-axis</span>, what changes?',
+    text: 'If you move a point only along the y-axis, what changes?',
     options: [
-      { value: 'a', label: 'Its <span class="keyword">horizontal</span> position' },
-      { value: 'b', label: 'Its <span class="keyword">vertical</span> position' },
-      { value: 'c', label: 'Its <span class="keyword">depth</span>' }
+      { value: 'a', label: 'Its <em>horizontal position</em>' },
+      { value: 'b', label: 'Its <em>vertical position</em>' },
+      { value: 'c', label: 'Its <em>depth</em>' }
     ],
     correctAnswer: 'b'
   }
@@ -36,17 +36,17 @@ export const coordinateQuizData: QuizQuestion[] = [
 export const vectorQuizData: QuizQuestion[] = [
   {
     id: 'q3',
-    text: 'A <span class="keyword">vector</span> pointing directly upwards has:',
+    text: 'A <strong>vector</strong> pointing directly upwards has:',
     options: [
-      { value: 'a', label: 'Only <span class="keyword">magnitude</span>' },
-      { value: 'b', label: 'Only <span class="keyword">direction</span>' },
-      { value: 'c', label: 'Both <span class="keyword">magnitude</span> and <span class="keyword">direction</span>' }
+      { value: 'a', label: 'Only <em>magnitude</em>' },
+      { value: 'b', label: 'Only <em>direction</em>' },
+      { value: 'c', label: 'Both <em>magnitude</em> and <em>direction</em>' }
     ],
     correctAnswer: 'c'
   },
   {
     id: 'q4',
-    text: 'If you double the <span class="keyword">magnitude</span> of a <span class="keyword">vector</span>, what happens to its length?',
+    text: 'If you double the <em>magnitude</em> of a <strong>vector</strong>, what happens to its length?',
     options: [
       { value: 'a', label: 'It halves' },
       { value: 'b', label: 'It doubles' },

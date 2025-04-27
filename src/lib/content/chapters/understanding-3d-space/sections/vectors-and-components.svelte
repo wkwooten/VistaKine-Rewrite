@@ -142,12 +142,12 @@
       </p>
       <ul>
         <li>
-          <Katex>{"\\textcolor{#EF5350}{V_x}"}</Katex>: How far the vector
-          extends along the X-axis.
+          <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>: How far the
+          vector extends along the X-axis.
         </li>
         <li>
-          <Katex>{"\\textcolor{#66BB6A}{V_y}"}</Katex>: How far the vector
-          extends along the Y-axis.
+          <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>: How far the
+          vector extends along the Y-axis.
         </li>
       </ul>
       <p>
@@ -156,9 +156,7 @@
       </p>
       <FormulaAccordion summary="2D Magnitude Formula">
         <p>
-          <Katex displayMode
-            >{"||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2}"}</Katex
-          >
+          <Katex displayMode>{"||\vec{V}|| = sqrt{V_x^2 + V_y^2}"}</Katex>
         </p>
         <p>
           This calculates the hypotenuse of a right triangle formed by the
@@ -204,11 +202,11 @@
       <p>
         To work with 3D vectors mathematically, we break them into <Keyword
           term="components"
-        /> along the X, Y, and Z axes. These components (<Katex
-          >{"\\textcolor{#EF5350}{V_x}"}</Katex
-        >, <Katex>{"\\textcolor{#66BB6A}{V_y}"}</Katex>, <Katex
-          >{"\\textcolor{#2C8FFF}{V_z}"}</Katex
-        >) tell us how much the vector extends along each axis.
+        /> along the X, Y, and Z axes. These components (<span
+          class="katex-axis-x"><Katex>{"V_x"}</Katex></span
+        >, <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>,
+        <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span>) tell us how
+        much the vector extends along each axis.
       </p>
       <FormulaAccordion>
         <p>
@@ -217,14 +215,23 @@
           > and head at <Katex>{"P_2(x_2, y_2, z_2)"}</Katex>:
         </p>
         <ul>
+          <p>Change in X:</p>
           <li>
-            <Katex>{"\\textcolor{#EF5350}{V_x} = x_2 - x_1"}</Katex> (Change in X)
+            <span class="katex-axis-x"
+              ><Katex>{"V_x = x_2 - x_1 = \\Delta x"}</Katex></span
+            >
           </li>
+          <p>Change in Y:</p>
           <li>
-            <Katex>{"\\textcolor{#66BB6A}{V_y} = y_2 - y_1"}</Katex> (Change in Y)
+            <span class="katex-axis-y"
+              ><Katex>{"V_y = y_2 - y_1 = \\Delta y"}</Katex></span
+            >
           </li>
+          <p>Change in Z:</p>
           <li>
-            <Katex>{"\\textcolor{#2C8FFF}{V_z} = z_2 - z_1"}</Katex> (Change in Z)
+            <span class="katex-axis-z"
+              ><Katex>{"V_z = z_2 - z_1 = \\Delta z"}</Katex></span
+            >
           </li>
         </ul>
       </FormulaAccordion>
@@ -232,13 +239,11 @@
       <ul>
         <li>
           Angle Bracket Notation: <Katex
-            >{"\\vec{V} = \\langle \\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z} \\rangle"}</Katex
+            >{"\\vec{V} = \\langle V_x, V_y, V_z \\rangle"}</Katex
           >
         </li>
         <li>
-          Parentheses Notation: <Katex
-            >{"\\vec{V} = (\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z})"}</Katex
-          >
+          Parentheses Notation: <Katex>{"\\vec{V} = (V_x, V_y, V_z)"}</Katex>
         </li>
       </ul>
     </ContentCard>
@@ -248,34 +253,37 @@
       <p>
         The <Keyword term="magnitude" /> (length) of a 3D vector <Katex
           >{"\\vec{V}"}</Katex
-        > with components <Katex
-          >{"\\textcolor{#EF5350}{V_x}, \\textcolor{#66BB6A}{V_y}, \\textcolor{#2C8FFF}{V_z}"}</Katex
-        > extends the 2D concept using the 3D Pythagorean theorem:
+        > with components
+        <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>,
+        <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>,
+        <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span> extends the 2D concept
+        using the 3D Pythagorean theorem:
       </p>
       <FormulaAccordion>
         Where:
         <ul>
           <li>
-            <Katex>{"||\\vec{V}||"}</Katex>: Represents the
+            <span class="katex-axis-x"><Katex>{"||\\vec{V}||"}</Katex></span>:
+            Represents the
             <strong>magnitude</strong>
             (or length) of the vector <Katex>{"\\vec{V}"}</Katex>.
           </li>
           <li>
-            <Katex>{"\\textcolor{#EF5350}{V_x}"}</Katex>: The component of the
-            vector along the X-axis.
+            <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>: The
+            component of the vector along the X-axis.
           </li>
           <li>
-            <Katex>{"\\textcolor{#66BB6A}{V_y}"}</Katex>: The component of the
-            vector along the Y-axis.
+            <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>: The
+            component of the vector along the Y-axis.
           </li>
           <li>
-            <Katex>{"\\textcolor{#2C8FFF}{V_z}"}</Katex>: The component of the
-            vector along the Z-axis.
+            <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span>: The
+            component of the vector along the Z-axis.
           </li>
         </ul>
         <p>
           <Katex displayMode
-            >{"||\\vec{V}|| = \\sqrt{\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2 + \\textcolor{#2C8FFF}{V_z}^2}"}</Katex
+            >{"||\\vec{V}|| = \\sqrt{V_x^2 + V_y^2 + V_z^2}"}</Katex
           >
         </p>
       </FormulaAccordion>
@@ -289,19 +297,18 @@
         <ol>
           <li>
             In 2D, the squared distance in the XY plane is: <Katex displayMode
-              >{"d_{xy}^2 = \\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2"}</Katex
+              >{"d_{xy}^2 = V_x^2 + V_y^2"}</Katex
             >
           </li>
           <li>
             In 3D, the squared magnitude uses the 2D distance and the Z
             component: <Katex displayMode
-              >{"||\\vec{V}||^2 = d_{xy}^2 + \\textcolor{#2C8FFF}{V_z}^2"}</Katex
+              >{"||\vec{V}||^2 = d_{xy}^2 + V_z^2"}</Katex
             >
           </li>
           <li>
             Substituting the first equation into the second gives: <Katex
-              displayMode
-              >{"||\\vec{V}||^2 = (\\textcolor{#EF5350}{V_x}^2 + \\textcolor{#66BB6A}{V_y}^2) + \\textcolor{#2C8FFF}{V_z}^2"}</Katex
+              displayMode>{"||\vec{V}||^2 = (V_x^2 + V_y^2) + V_z^2"}</Katex
             >
           </li>
           <li>Taking the square root yields the final magnitude formula.</li>
@@ -332,40 +339,44 @@
       </p>
       <ul>
         <li>
-          <Katex
-            >{"\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} = \\langle 1, 0, 0 \\rangle"}</Katex
-          > (Positive X-axis direction)
+          <span class="katex-axis-x"
+            ><Katex>{"\\hat{\\mathbf{i}} = \\langle 1, 0, 0 \\rangle"}</Katex
+            ></span
+          >
+          (Positive X-axis direction)
         </li>
         <li>
-          <Katex
-            >{"\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} = \\langle 0, 1, 0 \\rangle"}</Katex
-          > (Positive Y-axis direction)
+          <span class="katex-axis-y"
+            ><Katex>{"\\hat{\\mathbf{j}} = \\langle 0, 1, 0 \\rangle"}</Katex
+            ></span
+          >
+          (Positive Y-axis direction)
         </li>
         <li>
-          <Katex
-            >{"\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}} = \\langle 0, 0, 1 \\rangle"}</Katex
-          > (Positive Z-axis direction)
+          <span class="katex-axis-z"
+            ><Katex>{"\\hat{\\mathbf{k}} = \\langle 0, 0, 1 \\rangle"}</Katex
+            ></span
+          >
+          (Positive Z-axis direction)
         </li>
       </ul>
       <p>
-        (Note: Sometimes written as bold **i**, **j**, **k** without the hat <Katex
-          >{"\\hat{}"}</Katex
-        >.)
+        (Note: Sometimes written as bold <Katex>{"i, j, k"}</Katex> without the hat.)
       </p>
       <p>
-        Any vector <Katex>{"\\vec{V}"}</Katex> can be written as a sum ("linear combination")
-        of components times their corresponding unit vectors:
+        Unit vector <Katex>{"\\vec{V}"}</Katex> can be written as a sum ("linear
+        combination") of components times their corresponding unit vectors:
       </p>
       <p>
         <Katex displayMode
-          >{"\\vec{V} = \\textcolor{#EF5350}{V_x}\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} + \\textcolor{#66BB6A}{V_y}\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + \\textcolor{#2C8FFF}{V_z}\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}"}</Katex
+          >{"\\vec{V} = V_x\\hat{\\mathbf{i}} + V_y\\hat{\\mathbf{j}} + V_z\\hat{\\mathbf{k}}"}</Katex
         >
       </p>
       <p>
         This clearly shows the vector's extent along each axis. <br /> Example:
         <br />
         <Katex>{"\\langle 2, -3, 5 \\rangle"}</Katex> is also <Katex
-          >{"2\\textcolor{#EF5350}{\\hat{\\mathbf{i}}} - 3\\textcolor{#66BB6A}{\\hat{\\mathbf{j}}} + 5\\textcolor{#2C8FFF}{\\hat{\\mathbf{k}}}"}</Katex
+          >{"2\\hat{\\mathbf{i}} - 3\\hat{\\mathbf{j}} + 5\\hat{\\mathbf{k}}"}</Katex
         >.
       </p>
     </ContentCard>
@@ -393,6 +404,7 @@
     </ContentCard>
 
     <ContentCard blockType="activity-block" class="-review">
+      <h2>Section Review</h2>
       <SectionReview>
         <Quiz questions={vectorQuizData} showFeedback={true} />
       </SectionReview>

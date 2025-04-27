@@ -26,3 +26,16 @@
 // .katex-display {
 //   margin-block: var(--space-xs);
 // }
+
+// Axis color classes for use within KaTeX wrappers
+.katex-axis-x .katex {
+  color: var(--axis-color-x);
+}
+
+.katex-axis-y .katex {
+  color: var(--axis-color-y);
+}
+
+.katex-axis-z .katex {
+  color: var(--axis-color-z);
+}

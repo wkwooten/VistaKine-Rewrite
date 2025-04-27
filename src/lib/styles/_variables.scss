@@ -43,9 +43,9 @@ $color-text-on-dark: #F0F8FF; // Text used on dark/accent backgrounds
 // ----------------------------------
 // Axis Colors (Used, Keep As Is)
 // ----------------------------------
-$axis-color-x: #C62828; // Darker Red for light mode contrast
-$axis-color-y: #2E7D32; // Darker Green for light mode contrast
-$axis-color-z: #1565C0; // Darker Blue for light mode contrast
+$axis-color-x: #B71C1C; // Darker Red for light mode contrast
+$axis-color-y: #1B5E20; // Darker Green for light mode contrast
+$axis-color-z: #0D47A1; // Darker Blue for light mode contrast
 // Transparent versions...
 $axis-color-x-t75: rgba($axis-color-x, 0.75);
 $axis-color-y-t75: rgba($axis-color-y, 0.75);
@@ -295,9 +295,9 @@ $color-dark-text-on-dark: $color-dark-text-primary; // Primary light text works 
 $color-dark-text-on-accent: #111; // Dark text might be needed on the bright dark-mode accents
 
 // --- Axis Dark (Brighter versions for visibility) ---
-$axis-dark-color-x: #FF5252; // Adjusted Bright Red
-$axis-dark-color-y: #69F0AE; // Adjusted Bright Green
-$axis-dark-color-z: #448AFF; // Adjusted Bright Blue
+$axis-dark-color-x: #EF5350; // Adjusted Bright Red
+$axis-dark-color-y: #4CAF50; // Adjusted Bright Green
+$axis-dark-color-z: #2979FF; // Adjusted Bright Blue
 $axis-dark-color-x-t75: rgba($axis-dark-color-x, 0.75);
 $axis-dark-color-y-t75: rgba($axis-dark-color-y, 0.75);
 $axis-dark-color-z-t75: rgba($axis-dark-color-z, 0.75);

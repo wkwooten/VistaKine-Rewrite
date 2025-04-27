@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { T, useTask, useThrelte } from "@threlte/core";
-  import {
-    OrbitControls,
-    Grid,
-    Edges,
-    Gizmo,
-    Billboard,
-    Text,
-  } from "@threlte/extras";
+  // ==================================
+  // Imports
+  // ==================================
+  import { T, useThrelte } from "@threlte/core";
+  import { OrbitControls, Grid, Edges, Billboard, Text } from "@threlte/extras"; // Removed Gizmo as it's not used here
   import {
     Vector3,
     Vector2,
@@ -18,7 +14,6 @@
     LineDashedMaterial,
     BufferAttribute,
   } from "three";
-  // Import new line classes
   import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
   import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
   import { Line2 } from "three/examples/jsm/lines/Line2.js";
@@ -27,6 +22,8 @@
   import { cubicOut } from "svelte/easing";
   import { onMount } from "svelte";
   import { get } from "svelte/store";
+
+  // Store Imports
   import {
     vectorData,
     traceVectorRequested,
@@ -55,23 +52,48 @@
     showDeltaY,
     showDeltaZ,
   } from "$lib/stores/vectorBuilderState";
-  // Import SceneLabel
+
+  // Component Imports
   import SceneLabel from "../../helpers/SceneLabel.svelte";
 
-  // --- Threlte Hook ---
+  // ==================================
+  // Threlte / Svelte Hooks
+  // ==================================
   const { size } = useThrelte();
 
-  // --- Constants (reuse from calibration/state) ---
-  const cornerOriginOffset = new Vector3(-6, 1, -6); // Consistent with PrinterCalibrationScene
+  // ==================================
+  // Constants
+  // ==================================
+  const cornerOriginOffset = new Vector3(-6, 1, -6);
   const initialWorldPosition = cornerOriginOffset
     .clone()
     .add(new Vector3(0, 5, 0));
   const dashSize = 0.2;
   const gapSize = 0.1;
-  const deltaLineWidth = 3; // New constant for line width
+  const deltaLineWidth = 3;
+  const labelFontSize = 0.5; // For coordinate labels
+  const labelFontSizeAxis = 0.8; // For X, Y, Z labels
+  const deltaLabelFontSize = 0.5; // For delta labels
+  const deltaLabelOffsetY = 0.3; // Offset for delta labels
 
-  // --- State ---
-  // Animated nozzle position
+  // Grid/Tick Constants (Copied from PrinterCalibrationScene)
+  const step = 2;
+  const gridSizeVal = 12;
+  const numberYOffset = 0.5;
+  const numberOutwardOffset = 0.8;
+  const tickStep = 2;
+  const tickSize = 0.15;
+  const tickLength = 0.5;
+  const tickOpacity = 0.8;
+  const yAxisLength = MAX_Y; // Use MAX_Y from state
+  const xAxisLength = MAX_X; // Use MAX_X from state
+  const zAxisLength = MAX_Z; // Use MAX_Z from state
+  const labelOffset = 1.0; // For axis labels
+  const labelYPos = 1.0; // For axis labels
+
+  // ==================================
+  // Reactive State ($state, tweened)
+  // ==================================
   const animatedPosition = tweened(initialWorldPosition, {
     duration: 500,
     easing: cubicOut,
@@ -81,7 +103,21 @@
     },
   });
 
-  // --- Derived World Positions & Delta Points (Reordered) --- //
+  // ==================================
+  // Component/Object Refs ($state)
+  // ==================================
+  let lineX = $state<Line2 | undefined>(undefined);
+  let lineY = $state<Line2 | undefined>(undefined);
+  let lineZ = $state<Line2 | undefined>(undefined);
+  let materialX = $state<LineMaterial | undefined>(undefined);
+  let materialY = $state<LineMaterial | undefined>(undefined);
+  let materialZ = $state<LineMaterial | undefined>(undefined);
+
+  // ==================================
+  // Derived State ($derived.by)
+  // ==================================
+
+  // --- World Positions ---
   let vectorStartWorld = $derived.by(() => {
     const start = $vectorData?.start;
     if (!start) return null;
@@ -96,7 +132,7 @@
     return cornerOriginOffset.clone().add(new Vector3(end.x, end.y, end.z));
   });
 
-  // Intermediate points for delta lines (defined AFTER world points)
+  // --- Intermediate Points for Delta Lines ---
   let deltaIntermediateXY = $derived.by(() => {
     if (!vectorStartWorld || !vectorEndWorld) return null;
     return new Vector3(
@@ -105,15 +141,15 @@
       vectorStartWorld.z,
     );
   });
+
   let deltaIntermediateYZ = $derived.by(() => {
     if (!vectorStartWorld || !vectorEndWorld) return null;
-    // This point is where X and Y deltas are complete, before Z delta starts
+    // Point where X and Y deltas are complete
     return new Vector3(vectorEndWorld.x, vectorEndWorld.y, vectorStartWorld.z);
   });
 
-  // --- Derived Label Data (defined AFTER intermediate points) ---
+  // --- Label Data ---
   let deltaLabelXData = $derived.by(() => {
-    // Use derived values directly inside $derived.by
     if ($showDeltaX && deltaIntermediateXY && $vectorData && vectorStartWorld) {
       const midPointX = vectorStartWorld.clone().lerp(deltaIntermediateXY, 0.5);
       const labelTextX = `ΔX =  ${$vectorData.components.dx.toFixed(2)}`;
@@ -123,7 +159,6 @@
   });
 
   let deltaLabelYData = $derived.by(() => {
-    // Use derived values directly inside $derived.by
     if (
       $showDeltaY &&
       deltaIntermediateXY &&
@@ -140,7 +175,6 @@
   });
 
   let deltaLabelZData = $derived.by(() => {
-    // Use derived values directly inside $derived.by
     if ($showDeltaZ && deltaIntermediateYZ && vectorEndWorld && $vectorData) {
       const midPointZ = deltaIntermediateYZ.clone().lerp(vectorEndWorld, 0.5);
       const labelTextZ = `ΔZ = ${$vectorData.components.dz.toFixed(2)}`;
@@ -149,21 +183,9 @@
     return null;
   });
 
-  // --- Refs for Delta Lines ---
-  let lineX = $state<Line2 | undefined>(undefined); // Initialize with undefined
-  let lineY = $state<Line2 | undefined>(undefined); // Initialize with undefined
-  let lineZ = $state<Line2 | undefined>(undefined); // ADDED: Missing lineZ ref
-  let materialX = $state<LineMaterial | undefined>(undefined); // ADDED: Missing materialX ref
-  let materialY = $state<LineMaterial | undefined>(undefined); // ADDED: Missing materialY ref
-  let materialZ = $state<LineMaterial | undefined>(undefined);
-
-  // --- Visual Helper Data Generation (Copied from PrinterCalibrationScene) ---
+  // --- Grid/Axis Visual Data (Pre-calculated) ---
   const gridNumbers: { text: string; x: number; z: number; axis: "x" | "z" }[] =
     [];
-  const step = 2;
-  const gridSizeVal = 12;
-  const numberYOffset = 0.5;
-  const numberOutwardOffset = 0.8;
   for (let i = 0; i <= gridSizeVal; i += step)
     gridNumbers.push({
       text: `${i}`,
@@ -179,13 +201,6 @@
       axis: "z",
     });
 
-  const tickStep = 2;
-  const tickSize = 0.15;
-  const tickLength = 0.5;
-  const tickOpacity = 0.8;
-  const yAxisLength = MAX_Y; // Use MAX_Y from state
-  const xAxisLength = MAX_X; // Use MAX_X from state
-  const zAxisLength = MAX_Z; // Use MAX_Z from state
   const xTicks: number[] = [];
   const zTicks: number[] = [];
   const yTicks: number[] = [];
@@ -193,9 +208,6 @@
   for (let i = tickStep; i < zAxisLength; i += tickStep) zTicks.push(i);
   for (let i = tickStep; i <= yAxisLength; i += tickStep) yTicks.push(i);
 
-  const labelOffset = 1.0;
-  const labelYPos = 1.0;
-  const labelFontSizeAxis = 0.8; // Renamed to avoid conflict
   const xLabelWorldPos = cornerOriginOffset
     .clone()
     .add(new Vector3(xAxisLength + labelOffset, 0, 0));
@@ -206,16 +218,24 @@
     .clone()
     .add(new Vector3(0, 0, zAxisLength + labelOffset));
 
-  // --- Effects --- //
-  // Initialize Lines and Materials ONCE
+  // ==================================
+  // Helper Functions
+  // ==================================
+  const linePoints = (start: Vector3, end: Vector3) =>
+    new Float32Array([...start.toArray(), ...end.toArray()]);
+
+  // ==================================
+  // Effects ($effect)
+  // ==================================
+
+  // --- Initialization ---
   $effect(() => {
-    // Check if already initialized AND size is valid
+    // Initialize Lines and Materials ONCE
     if (!lineX && $size.width > 0 && $size.height > 0) {
       console.log("[VectorScene] Creating Line2 instances...");
       // X Line
       const geomX = new LineGeometry();
       const matX = new LineMaterial({
-        // Create with let/const
         color: $xAxisColor,
         linewidth: deltaLineWidth,
         resolution: new Vector2($size.width, $size.height),
@@ -224,8 +244,7 @@
         dashSize: dashSize,
         gapSize: gapSize,
       });
-      const lnX = new Line2(geomX, matX); // Create with let/const
-      // Assign to state variables *once*
+      const lnX = new Line2(geomX, matX);
       materialX = matX;
       lineX = lnX;
 
@@ -260,15 +279,13 @@
       lineZ = lnZ;
     }
 
-    // Cleanup remains the same, runs when dependencies change OR component unmounts
+    // Cleanup
     return () => {
-      // Check if objects exist before disposing
       if (lineX) {
-        // If lineX exists, others likely do too, but check individually is safer if needed
         console.log("[VectorScene] Cleaning up Line2 instances...");
         lineX.geometry.dispose();
-        materialX?.dispose(); // materialX should exist if lineX does
-        lineX = undefined; // Reset state
+        materialX?.dispose();
+        lineX = undefined;
         materialX = undefined;
       }
       if (lineY) {
@@ -286,113 +303,10 @@
     };
   });
 
-  // Update Line Positions
-  $effect(() => {
-    if (lineX && vectorStartWorld && deltaIntermediateXY) {
-      const positionsX = [
-        ...vectorStartWorld.toArray(),
-        ...deltaIntermediateXY.toArray(),
-      ];
-      (lineX.geometry as LineGeometry).setPositions(positionsX);
-      lineX.computeLineDistances();
-    }
-  });
-
-  $effect(() => {
-    if (lineY && deltaIntermediateXY && deltaIntermediateYZ) {
-      const positionsY = [
-        ...deltaIntermediateXY.toArray(),
-        ...deltaIntermediateYZ.toArray(),
-      ];
-      (lineY.geometry as LineGeometry).setPositions(positionsY);
-      lineY.computeLineDistances();
-    }
-  });
-
-  $effect(() => {
-    if (lineZ && deltaIntermediateYZ && vectorEndWorld) {
-      const positionsZ = [
-        ...deltaIntermediateYZ.toArray(),
-        ...vectorEndWorld.toArray(),
-      ];
-      (lineZ.geometry as LineGeometry).setPositions(positionsZ);
-      lineZ.computeLineDistances();
-    }
-  });
-
-  // Update Material Resolution on Resize
-  $effect(() => {
-    if (
-      materialX &&
-      materialY &&
-      materialZ &&
-      $size.width > 0 &&
-      $size.height > 0
-    ) {
-      // Use Vector2
-      const res = new Vector2($size.width, $size.height);
-      materialX.resolution = res;
-      materialY.resolution = res;
-      materialZ.resolution = res;
-    }
-  });
-
-  // Update Material Colors
-  $effect(() => {
-    if (materialX) materialX.color = new Color($xAxisColor);
-  });
-  $effect(() => {
-    if (materialY) materialY.color = new Color($yAxisColor);
-  });
-  $effect(() => {
-    if (materialZ) materialZ.color = new Color($zAxisColor);
-  });
-
-  // React to trace requests
-  $effect(() => {
-    if ($traceVectorRequested) {
-      console.log("[VectorScene] Trace requested");
-      // Access derived values directly (no $ needed)
-      const start = vectorStartWorld;
-      const end = vectorEndWorld;
-
-      if (start && end) {
-        // Explicit null check
-        // Sequence: Instant move to start, then tween to end
-        animatedPosition.set(start, { duration: 0 }).then(() => {
-          // Check distance to avoid issues if start === end
-          const distance = start.distanceTo(end);
-          const duration = distance * 100; // Duration based on length
-          if (distance > 0.01) {
-            // Only tween if points are different
-            animatedPosition.set(end, {
-              duration: Math.max(500, duration),
-              easing: cubicOut,
-            });
-          }
-        });
-      } else {
-        console.warn("[VectorScene] Trace requested but points invalid.");
-      }
-      traceVectorRequested.set(false); // Reset flag
-    }
-  });
-
-  // React to reset requests
-  $effect(() => {
-    if ($resetVectorBuilderRequested) {
-      console.log("[VectorScene] Reset requested");
-      animatedPosition.set(initialWorldPosition, { duration: 0 });
-      // State reset (like clearing coords) should happen in the store/HUD
-      resetVectorBuilderRequested.set(false); // Reset flag
-    }
-  });
-
   onMount(() => {
-    // Fetch CSS color variables and update stores
+    // Fetch CSS Colors and update stores
     if (typeof window !== "undefined") {
       const styles = getComputedStyle(document.documentElement);
-      // Update axis color stores
       xAxisColor.set(
         styles.getPropertyValue("--axis-color-x").trim() || get(xAxisColor),
       );
@@ -402,8 +316,6 @@
       zAxisColor.set(
         styles.getPropertyValue("--axis-color-z").trim() || get(zAxisColor),
       );
-
-      // Update other scene color stores
       nozzleColor.set(
         styles.getPropertyValue("--calibration-nozzle-color").trim() ||
           get(nozzleColor),
@@ -444,7 +356,6 @@
         styles.getPropertyValue("--vector-builder-end-color").trim() ||
           get(endPointColor),
       );
-
       console.log("[VectorScene] Fetched Colors and updated stores");
     }
 
@@ -468,30 +379,91 @@
     ]);
   });
 
-  // --- Helper Function for Line Points ---
-  const linePoints = (start: Vector3, end: Vector3) =>
-    new Float32Array([...start.toArray(), ...end.toArray()]);
-
-  // --- Effect to compute line distances --- //
+  // --- Updates / Sync ---
   $effect(() => {
-    if (lineX && materialX && vectorStartWorld && deltaIntermediateXY) {
+    // Update Line Positions
+    if (lineX && vectorStartWorld && deltaIntermediateXY) {
       const positionsX = linePoints(vectorStartWorld, deltaIntermediateXY);
       (lineX.geometry as LineGeometry).setPositions(positionsX);
       lineX.computeLineDistances();
     }
   });
+
   $effect(() => {
-    if (lineY && materialY && deltaIntermediateXY && deltaIntermediateYZ) {
+    if (lineY && deltaIntermediateXY && deltaIntermediateYZ) {
       const positionsY = linePoints(deltaIntermediateXY, deltaIntermediateYZ);
       (lineY.geometry as LineGeometry).setPositions(positionsY);
       lineY.computeLineDistances();
     }
   });
+
   $effect(() => {
-    if (lineZ && materialZ && deltaIntermediateYZ && vectorEndWorld) {
+    if (lineZ && deltaIntermediateYZ && vectorEndWorld) {
       const positionsZ = linePoints(deltaIntermediateYZ, vectorEndWorld);
       (lineZ.geometry as LineGeometry).setPositions(positionsZ);
       lineZ.computeLineDistances();
+    }
+  });
+
+  $effect(() => {
+    // Update Material Resolution on Resize
+    if (
+      materialX &&
+      materialY &&
+      materialZ &&
+      $size.width > 0 &&
+      $size.height > 0
+    ) {
+      const res = new Vector2($size.width, $size.height);
+      materialX.resolution = res;
+      materialY.resolution = res;
+      materialZ.resolution = res;
+    }
+  });
+
+  $effect(() => {
+    // Update Material Colors
+    if (materialX) materialX.color = new Color($xAxisColor);
+  });
+  $effect(() => {
+    if (materialY) materialY.color = new Color($yAxisColor);
+  });
+  $effect(() => {
+    if (materialZ) materialZ.color = new Color($zAxisColor);
+  });
+
+  // --- Reactions ---
+  $effect(() => {
+    // React to trace requests
+    if ($traceVectorRequested) {
+      console.log("[VectorScene] Trace requested");
+      const start = vectorStartWorld;
+      const end = vectorEndWorld;
+
+      if (start && end) {
+        animatedPosition.set(start, { duration: 0 }).then(() => {
+          const distance = start.distanceTo(end);
+          const duration = distance * 100;
+          if (distance > 0.01) {
+            animatedPosition.set(end, {
+              duration: Math.max(500, duration),
+              easing: cubicOut,
+            });
+          }
+        });
+      } else {
+        console.warn("[VectorScene] Trace requested but points invalid.");
+      }
+      traceVectorRequested.set(false); // Reset flag
+    }
+  });
+
+  $effect(() => {
+    // React to reset requests
+    if ($resetVectorBuilderRequested) {
+      console.log("[VectorScene] Reset requested");
+      animatedPosition.set(initialWorldPosition, { duration: 0 });
+      resetVectorBuilderRequested.set(false); // Reset flag
     }
   });
 </script>

@@ -121,13 +121,13 @@
     border-radius: var(--radius-md, 4px);
     box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.15));
     padding: var(--space-m, 1rem);
-    max-width: 300px;
-    font-size: var(--step--1);
-    color: var(--color-text-primary);
+    max-width: 400px;
+    font-size: var(--step--0);
 
     .popover-term {
       margin: 0 0 var(--space-s) 0;
       font-size: inherit;
+      color: var(--color-accent);
     }
 
     .close-button {
@@ -150,12 +150,15 @@
     .definition {
       margin: 0 0 var(--space-s) 0;
       line-height: 1.5;
+      max-height: 100px;
+      padding-bottom: var(--space-s);
+      overflow-y: scroll;
     }
 
     .glossary-link {
       display: block;
       margin-top: var(--space-s);
-      font-size: var(--step--2);
+      font-size: var(--step--1);
       color: var(--color-accent);
       text-decoration: none;
 
