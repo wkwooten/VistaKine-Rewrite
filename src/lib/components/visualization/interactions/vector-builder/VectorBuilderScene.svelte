@@ -416,7 +416,7 @@
     }
   });
 
-  const cameraTarget = new Vector3(0, 7.5, 0);
+  const cameraTarget = new Vector3(0, 6, 0);
 </script>
 
 <!-- Basic Lighting -->

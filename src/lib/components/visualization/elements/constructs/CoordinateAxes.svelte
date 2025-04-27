@@ -24,8 +24,8 @@
     numberYOffset = 0.5,
     numberOutwardOffset = 0.8,
     yNumberOffset = 0.4, // Offset for Y numbers
-    labelOffset = 1.0, // Offset for X, Y, Z labels
-    labelYPos = 1.0, // Y Position for X, Z labels
+    labelOffset = 0.5, // Offset for X, Y, Z labels
+    labelYPos = 0.1, // Y Position for X, Z labels
     labelFontSize = 0.8,
     labelFontSizeGridNum = 0.6,
   } = $props<{
@@ -178,9 +178,8 @@
 
   <!-- Y Axis Numbers (Relative to Group Origin) -->
   {#each yTicks as y (y)}
-    {@const relativeY = y - cornerOriginOffset.y}
     <SceneLabel
-      position={[-yNumberOffset, relativeY, -yNumberOffset]}
+      position={[-yNumberOffset, y, -yNumberOffset]}
       text={y.toString()}
       fontSize={labelFontSizeGridNum}
       color={yAxisColor}
@@ -193,7 +192,7 @@
   <!-- Axis Labels (Positioned relative to group origin) -->
   <SceneLabel
     position={[axisLengthX + labelOffset, labelYPos, 0]}
-    text="X"
+    text="+X"
     fontSize={labelFontSize}
     color={xAxisColor}
     anchorX="center"
@@ -202,7 +201,7 @@
   />
   <SceneLabel
     position={[0, axisLengthY + labelOffset, 0]}
-    text="Y"
+    text="+Y"
     fontSize={labelFontSize}
     color={yAxisColor}
     anchorX="center"
@@ -211,7 +210,7 @@
   />
   <SceneLabel
     position={[0, labelYPos, axisLengthZ + labelOffset]}
-    text="Z"
+    text="+Z"
     fontSize={labelFontSize}
     color={zAxisColor}
     anchorX="center"

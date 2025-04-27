@@ -1,35 +1,35 @@
 <script lang="ts">
-  import VisContainer from '../../VisContainer.svelte';
-  import PrinterCalibrationScene from './PrinterCalibrationScene.svelte';
-  import PrinterCalibrationHud from './PrinterCalibrationHud.svelte';
-  import NozzleControlPanel from './NozzleControlPanel.svelte';
+  import VisContainer from "../../VisContainer.svelte";
+  import PrinterCalibrationScene from "./PrinterCalibrationScene.svelte";
+  import PrinterCalibrationHud from "./PrinterCalibrationHud.svelte";
+  import NozzleControlPanel from "./NozzleControlPanel.svelte";
   import {
     resetSceneRequested,
     dialogTurns,
     showDialog,
     hideCalibrationDialog,
-    requestedNozzlePosition
-  } from '$lib/stores/calibrationState';
-  import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
-  import { HTML } from '@threlte/extras';
-  import DialogBox from '../../elements/ui/DialogBox.svelte';
-  import { createEventDispatcher } from 'svelte';
+    requestedNozzlePosition,
+  } from "$lib/stores/calibrationState";
+  import { onMount, onDestroy } from "svelte";
+  import { browser } from "$app/environment";
+  import { HTML } from "@threlte/extras";
+  import DialogBox from "../../elements/ui/DialogBox.svelte";
+  import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
   // Define Stage 1 target points (relative to corner origin)
   const stage1Targets = [
-    { id: 't1', x: 12, y: 0, z: 0 },
-    { id: 't2', x: 2, y: 0, z: 4 },
-    { id: 't3', x: 7, y: 0, z: 10 }
+    { id: "t1", x: 12, y: 0, z: 0 },
+    { id: "t2", x: 2, y: 0, z: 4 },
+    { id: "t3", x: 7, y: 0, z: 10 },
   ];
 
   // Define Stage 2 target points (relative to corner origin)
   const stage2Targets = [
-    { id: 't4', x: 1, y: 3, z: 1 },
-    { id: 't5', x: 8, y: 5, z: 8 },
-    { id: 't6', x: 11, y: 2, z: 11 }
+    { id: "t4", x: 1, y: 3, z: 1 },
+    { id: "t5", x: 8, y: 5, z: 8 },
+    { id: "t6", x: 11, y: 2, z: 11 },
   ];
 
   // --- Printer Boundaries (Could potentially move to store if shared) ---
@@ -56,12 +56,16 @@
   let relativeNozzleZ = $state(initialRelativePosition.z);
 
   // --- Derived State ---
-  let activeTargets = $derived((currentStage === 1) ? stage1Targets : stage2Targets);
+  let activeTargets = $derived(
+    currentStage === 1 ? stage1Targets : stage2Targets,
+  );
 
   // --- Event Handlers ---
   function goToStage2() {
     if (currentStage === 1) {
-      console.log("[Exercise] Stage 1 Complete event received! Starting Stage 2.");
+      console.log(
+        "[Exercise] Stage 1 Complete event received! Starting Stage 2.",
+      );
       currentStage = 2;
       dialogKey += 1; // Increment key on stage change
     }
@@ -71,81 +75,102 @@
     console.log("[Exercise] Calibration Complete event received!");
     isCalibrationComplete = true;
     dialogKey += 1; // Increment key on completion
-    dispatch('calibrationComplete');
+    dispatch("calibrationComplete");
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
-	async function toggleFullscreen() {
-		if (!browser || !exerciseWrapperElement) return;
+  async function toggleFullscreen() {
+    if (!browser || !exerciseWrapperElement) return;
 
-		const newState = !isFullscreen;
+    const newState = !isFullscreen;
 
-		if (newState) {
-			if (!document.fullscreenElement) {
-				try {
-					if (exerciseWrapperElement.requestFullscreen) {
-						await exerciseWrapperElement.requestFullscreen();
-					} else if ((exerciseWrapperElement as any).webkitRequestFullscreen) {
-						await (exerciseWrapperElement as any).webkitRequestFullscreen();
-					} else if ((exerciseWrapperElement as any).msRequestFullscreen) {
-						await (exerciseWrapperElement as any).msRequestFullscreen();
-					}
-					isFullscreen = true;
-				} catch (err) {
-					console.error(`[Exercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
-					isFullscreen = false;
-				}
-			}
-		} else {
-			if (document.fullscreenElement) {
-				try {
-					if (document.exitFullscreen) {
-						await document.exitFullscreen();
-					} else if ((document as any).webkitExitFullscreen) {
-						await (document as any).webkitExitFullscreen();
-					} else if ((document as any).msExitFullscreen) {
-						await (document as any).msExitFullscreen();
-					}
-					isFullscreen = false;
-				} catch (err) {
-					console.error(`[Exercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
-				}
-			} else {
-				isFullscreen = false; // Sync state if fullscreen exited via other means (e.g., ESC key)
-			}
-		}
-	}
+    if (newState) {
+      if (!document.fullscreenElement) {
+        try {
+          if (exerciseWrapperElement.requestFullscreen) {
+            await exerciseWrapperElement.requestFullscreen();
+          } else if ((exerciseWrapperElement as any).webkitRequestFullscreen) {
+            await (exerciseWrapperElement as any).webkitRequestFullscreen();
+          } else if ((exerciseWrapperElement as any).msRequestFullscreen) {
+            await (exerciseWrapperElement as any).msRequestFullscreen();
+          }
+          isFullscreen = true;
+        } catch (err) {
+          console.error(
+            `[Exercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+          );
+          isFullscreen = false;
+        }
+      }
+    } else {
+      if (document.fullscreenElement) {
+        try {
+          if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if ((document as any).webkitExitFullscreen) {
+            await (document as any).webkitExitFullscreen();
+          } else if ((document as any).msExitFullscreen) {
+            await (document as any).msExitFullscreen();
+          }
+          isFullscreen = false;
+        } catch (err) {
+          console.error(
+            `[Exercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+          );
+        }
+      } else {
+        isFullscreen = false; // Sync state if fullscreen exited via other means (e.g., ESC key)
+      }
+    }
+  }
 
-	onMount(() => {
-		function handleFullscreenChange() {
-			if (browser) {
-				const browserIsFullscreen = !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
-				if (isFullscreen !== browserIsFullscreen) {
-					console.log(`[Exercise] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`);
-					isFullscreen = browserIsFullscreen;
-				}
-			}
-		}
+  onMount(() => {
+    function handleFullscreenChange() {
+      if (browser) {
+        const browserIsFullscreen = !!(
+          document.fullscreenElement ||
+          (document as any).webkitFullscreenElement
+        );
+        if (isFullscreen !== browserIsFullscreen) {
+          console.log(
+            `[Exercise] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`,
+          );
+          isFullscreen = browserIsFullscreen;
+        }
+      }
+    }
 
-		if (browser) {
-			document.addEventListener('fullscreenchange', handleFullscreenChange);
-			document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-			document.addEventListener('msfullscreenchange', handleFullscreenChange);
-		}
+    if (browser) {
+      document.addEventListener("fullscreenchange", handleFullscreenChange);
+      document.addEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange,
+      );
+      document.addEventListener("msfullscreenchange", handleFullscreenChange);
+    }
 
-		return () => {
-			if (browser) {
-				document.removeEventListener('fullscreenchange', handleFullscreenChange);
-				document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-				document.removeEventListener('msfullscreenchange', handleFullscreenChange);
-			}
-		};
-	});
+    return () => {
+      if (browser) {
+        document.removeEventListener(
+          "fullscreenchange",
+          handleFullscreenChange,
+        );
+        document.removeEventListener(
+          "webkitfullscreenchange",
+          handleFullscreenChange,
+        );
+        document.removeEventListener(
+          "msfullscreenchange",
+          handleFullscreenChange,
+        );
+      }
+    };
+  });
 
   // --- Reset Logic ---
   $effect(() => {
     if ($resetSceneRequested) {
-      console.log('[Exercise] Resetting stage state due to store request.');
+      console.log("[Exercise] Resetting stage state due to store request.");
       currentStage = 1;
       isCalibrationComplete = false;
       dialogKey += 1; // Increment key on reset
@@ -159,9 +184,8 @@
 
   // Increment key on mount for the initial dialog
   onMount(() => {
-      dialogKey += 1;
+    dialogKey += 1;
   });
-
 </script>
 
 <div
@@ -169,42 +193,30 @@
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
 >
-  <!-- Removed title and description that were here -->
-
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showDialog && !isFullscreen}
     <div class="dialog-above-vis">
       {#key dialogKey}
-        <DialogBox
-          turns={$dialogTurns}
-          show={$showDialog}
-        />
+        <DialogBox turns={$dialogTurns} show={$showDialog} />
       {/key}
     </div>
   {/if}
 
-  <!-- RESTORED: Render NozzleControlPanel OUTSIDE VisContainer when NOT fullscreen -->
+  <!-- Render NozzleControlPanel OUTSIDE VisContainer when NOT fullscreen -->
   {#if !isFullscreen}
-      <div class="control-panel-outside-vis">
-          <NozzleControlPanel
-            bind:x={relativeNozzleX}
-            bind:y={relativeNozzleY}
-            bind:z={relativeNozzleZ}
-          />
-      </div>
+    <div class="control-panel-outside-vis">
+      <NozzleControlPanel
+        bind:x={relativeNozzleX}
+        bind:y={relativeNozzleY}
+        bind:z={relativeNozzleZ}
+      />
+    </div>
   {/if}
 
-  <VisContainer isComplete={isCalibrationComplete}>
-    <PrinterCalibrationScene
-      targets={activeTargets}
-      currentStage={currentStage}
-      {relativeNozzleX}
-      {relativeNozzleY}
-      {relativeNozzleZ}
-      on:stageComplete={goToStage2}
-      on:allStagesComplete={handleCalibrationComplete}
-    />
-    <HTML fullscreen>
+  <!-- New Wrapper for VisContainer and its Overlay -->
+  <div class="vis-area-wrapper">
+    <!-- UI Overlay -->
+    <div class="ui-overlay">
       <PrinterCalibrationHud
         bind:isFullscreen
         bind:relativeNozzleX
@@ -212,74 +224,121 @@
         bind:relativeNozzleZ
         on:requestToggleFullscreen={toggleFullscreen}
       />
-    </HTML>
-  </VisContainer>
+    </div>
+
+    <!-- VisContainer -->
+    <VisContainer isComplete={isCalibrationComplete}>
+      <PrinterCalibrationScene
+        targets={activeTargets}
+        {currentStage}
+        {relativeNozzleX}
+        {relativeNozzleY}
+        {relativeNozzleZ}
+        on:stageComplete={goToStage2}
+        on:allStagesComplete={handleCalibrationComplete}
+      />
+    </VisContainer>
+  </div>
 </div>
 
 <style>
+  /* Add styles similar to VectorBuilderExercise */
   .exercise-wrapper {
+    /* position: relative; */ /* Not needed here */
+  }
+
+  /* Add this rule block for non-fullscreen layout */
+  .exercise-wrapper:not(.fullscreen) {
     display: flex;
     flex-direction: column;
-    position: relative; /* Added for absolute positioning context */
-    /* REMOVED border, background, padding, margin-bottom */
-    /* border: 1px solid var(--color-border); */
-    /* border-radius: var(--radius-lg); */
-    /* background-color: var(--color-surface); */
-    /* padding: var(--space-xs); */
-    /* margin-bottom: var(--space-l); */
   }
 
-  /* Removed styles for title/description */
-
-  /* Add order to VisContainer */
-  :global(.visualization-container) {
-      order: 1;
+  .vis-area-wrapper {
+    position: relative;
+    width: 100%;
+    order: 2;
+    z-index: 1;
   }
 
-  /* Style for the control panel when it's outside the visualization */
+  .ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* No need for .ui-overlay > :global(*) rule here if children handle it */
+
+  /* Existing rules for outside panels */
   .control-panel-outside-vis {
-      width: 100%; /* Take full width */
-      box-sizing: border-box;
-      margin-block: var(--space-s); /* Space below the panel */
-      order: 2; /* Ensure it comes after the VisContainer in default flow */
+    width: 100%;
+    box-sizing: border-box;
+    margin-block: var(--space-s);
+    order: 4;
   }
-
-  .exercise-wrapper.fullscreen {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh; /* Fallback */
-        height: -webkit-fill-available; /* Use available height */
-		max-height: 100vh; /* Fallback */
-        max-height: -webkit-fill-available; /* Use available height */
-		border-radius: 0;
-		border: none;
-		z-index: 100;
-    flex-direction: row;
-    padding: 0; /* Remove padding in fullscreen */
-    pointer-events: auto; /* Ensure wrapper passes events */
-
-    /* Removed rules for title/description here */
-
-    & > :global(.visualization-container) {
-        width: 100%;
-        height: 100%; /* Keep this as 100% to fill parent */
-        max-height: 100%; /* Use parent's max-height implicitly */
-        border: none;
-        border-radius: 0;
-        aspect-ratio: auto; /* Override aspect ratio in fullscreen */
-    }
-
-    & > .control-panel-outside-vis {
-        display: none;
-    }
-	}
-
-  /* Style for the dialog wrapper when it's above the visualization */
   .dialog-above-vis {
     box-sizing: border-box;
     margin-bottom: var(--space-s);
     position: relative;
+    order: 0; /* Ensure dialog is first in non-fullscreen */
+    /* min-height might be needed depending on DialogBox */
+  }
+
+  /* Remove order from visualization-container as it's now wrapped */
+  :global(.visualization-container) {
+    /* order: 1; */
+  }
+
+  /* Fullscreen styles */
+  .exercise-wrapper.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    max-height: -webkit-fill-available;
+    border-radius: 0;
+    border: none;
+    z-index: 9999; /* Match vector builder */
+    flex-direction: row; /* Keep this? */
+    padding: 0;
+    pointer-events: auto;
+
+    /* Hide outside elements */
+    & > .control-panel-outside-vis,
+    & > .dialog-above-vis,
+    & > h3,
+    & > p:first-of-type {
+      display: none;
+    }
+
+    /* Style vis area wrapper */
+    & > .vis-area-wrapper {
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Style overlay within wrapper */
+    & > .vis-area-wrapper > .ui-overlay {
+      z-index: 10;
+    }
+
+    /* Style vis container within wrapper */
+    & > .vis-area-wrapper > :global(.visualization-container) {
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      border: none;
+      border-radius: 0;
+      aspect-ratio: auto;
+      z-index: 5; /* Below overlay */
+      position: relative;
+    }
   }
 </style>

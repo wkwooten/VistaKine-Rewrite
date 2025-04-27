@@ -292,7 +292,7 @@
         individual extensions along the X, Y, and Z axes. Think of it as finding
         the diagonal length of a 3D box defined by the vector's components.
       </p>
-      <ContentCard blockType="explanation-block">
+      <!-- <ContentCard blockType="explanation-block">
         <h4>How it works (Extending Pythagoras):</h4>
         <ol>
           <li>
@@ -313,7 +313,7 @@
           </li>
           <li>Taking the square root yields the final magnitude formula.</li>
         </ol>
-      </ContentCard>
+      </ContentCard> -->
     </ContentCard>
 
     <ContentCard blockType="visualization-block" class="-exercise">
