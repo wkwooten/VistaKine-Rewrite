@@ -18,6 +18,8 @@
 
   // Add prop for initial chapter slug
   export let currentChapterSlug: string | null = null;
+  // ADD PROP for mobile state
+  export let isMobile: boolean = false;
 
   $: console.log(
     "Navigation.svelte - currentChapter store value:",
@@ -34,7 +36,6 @@
 
   const iconSize = 18;
 
-  let isMobile = false; // State to track mobile viewport
   let bodyClassApplied = false; // Track if class is applied
 
   // Function to update body scroll class
@@ -132,8 +133,8 @@
     }
   }
 
-  // Use store value directly
-  $: navCollapsed = !$sidebarExpanded;
+  // Use store value directly, considering mobile state
+  $: navCollapsed = isMobile ? false : !$sidebarExpanded;
 
   // Add a reactive block to handle chapter changes *after* initial load
   let previousChapter: string | null = $currentChapter; // Track previous value
@@ -152,7 +153,7 @@
   class:collapsed={navCollapsed}
   style="--sidebar-width: {$sidebarExpanded
     ? 'var(--sidebar-width)'
-    : 'var(--sidebar-width-collapsed)'}"
+    : 'var(--sidebar-collapsed-width)'}"
 >
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
@@ -393,10 +394,14 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    width: 100%;
+    width: var(--sidebar-width);
+    transition: width var(--sidebar-transition-duration)
+      var(--sidebar-transition-timing);
     box-sizing: border-box;
 
     &.collapsed {
+      width: var(--sidebar-collapsed-width);
+
       .nav-item {
         justify-content: center;
         padding: var(--space-xs);
