@@ -149,12 +149,7 @@
 </script>
 
 <!-- Navigation -->
-<nav
-  class:collapsed={navCollapsed}
-  style="--sidebar-width: {$sidebarExpanded
-    ? 'var(--sidebar-width)'
-    : 'var(--sidebar-collapsed-width)'}"
->
+<nav class:collapsed={navCollapsed}>
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
       <div class="logo">
@@ -304,6 +299,7 @@
                   <a
                     href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
+                    class:is-active={$page.params.section === section.slug}
                     on:click|preventDefault|stopPropagation={() =>
                       handleSectionClick(chapter.slug, section.id)}
                   >
@@ -378,6 +374,9 @@
 </svelte:head>
 
 <style lang="scss">
+  /* ADD import for variables */
+  @use "$lib/styles/variables" as variables;
+
   li {
     list-style: none;
     margin: 0;
@@ -398,6 +397,12 @@
     transition: width var(--sidebar-transition-duration)
       var(--sidebar-transition-timing);
     box-sizing: border-box;
+
+    /* ADD Media query to disable width/transition on mobile */
+    @media (max-width: variables.$breakpoint-lg) {
+      width: auto;
+      transition: none; /* Disable component's width transition */
+    }
 
     &.collapsed {
       width: var(--sidebar-collapsed-width);
@@ -606,11 +611,6 @@
     box-sizing: border-box;
   }
 
-  /* Remove cursor pointer from the list item */
-  .nav-chapter-group {
-    /* cursor: pointer; */ /* Removed */
-  }
-
   /* Add cursor pointer back to the chapter item div */
   .chapter-item {
     cursor: pointer;
@@ -628,18 +628,29 @@
 
   .section-link {
     @extend .nav-item;
+    margin-top: var(--space-xs);
     padding-left: calc(var(--space-s) + var(--space-xs));
     font-size: 0.9em;
     height: auto;
     box-sizing: border-box;
 
     &:hover {
-      background-color: var(--chapter-bg);
+      background-color: var(--color-accent-hover-bg);
       text-decoration: underline;
       color: var(--color-accent);
       transition:
         background-color 0.2s ease,
         color 0.2s ease;
+    }
+
+    &.is-active {
+      background-color: var(--chapter-bg);
+      font-weight: bold;
+      color: var(--color-accent);
+
+      &:hover {
+        background-color: var(--color-accent-hover-bg);
+      }
     }
 
     span {
@@ -685,15 +696,11 @@
 
   /* Update style selector for active non-chapter items */
   a.nav-item.is-active {
-    background-color: rgba(59, 130, 246, 0.1); /* Match hover style */
   }
 
   /* Keep existing chapter-specific active styles */
   .nav-chapter-group.is-active > .chapter-item {
     /* Existing styles for active chapters */
-    background-color: var(
-      --chapter-bg,
-      rgba(59, 130, 246, 0.1)
-    ); /* Example fallback */
+    background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
   }
 </style>
