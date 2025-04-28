@@ -89,8 +89,8 @@ $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 $max-content-width: 1000px;
 $wide-content-width: 1400px;
 $readable-max-width: 70ch; // Optimal reading width (ch units are width of "0" character)
-$sidebar-width: 300px;
-$sidebar-collapsed-width: 80px;
+$sidebar-width: 400px;
+$sidebar-collapsed-width:80px;
 $sidebar-width-full: 300px; // Consider consolidating with $sidebar-width
 $sidebar-width-mini: 100px;
 $sidebar-transition-duration: $transition-normal;
