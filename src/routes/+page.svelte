@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  // Removed animejs imports
+
   // Scroll function for the About section
   function scrollToAbout() {
     const aboutSection = document.getElementById("about");
@@ -12,38 +15,43 @@
   import SearchBar from "$lib/components/ui/SearchBar.svelte";
   // Import the ContentCard component
   import ContentCard from "$lib/components/ContentCard.svelte";
+  // Import the new AnimatedLogo component
+  import AnimatedLogo from "$lib/components/ui/AnimatedLogo.svelte";
 </script>
 
 <section class="hero">
   <!-- Wrap hero content in a ContentCard -->
-  <ContentCard
-    blockType="hero-block"
-    layoutWidth="full"
-    class="hero-content-card"
-  >
+  <div class="hero-content-card">
     <div class="hero-content-inner">
-      <h1 class="hero-title">VistaKine</h1>
-      <p class="tagline">
-        Bringing Physics Learning into a New Dimension <br />
-        Explore interactive 3D visualizations that bring kinematics to life.
-      </p>
+      <!-- Branding Section -->
+      <div class="hero-branding">
+        <AnimatedLogo />
+        <p class="tagline">
+          Bringing Physics Learning into a New Dimension <br />
+          Explore interactive 3D visualizations that bring kinematics to life.
+        </p>
+        <!-- SearchBar moved back to hero-actions -->
+      </div>
 
-      <!-- Add the SearchBar component -->
-      <SearchBar
-        placeholder="Search topics like 'vectors', 'kinematics', 'forces'..."
-      />
+      <!-- Actions Section -->
+      <div class="hero-actions">
+        <!-- Add the SearchBar component here -->
+        <SearchBar
+          placeholder="Search topics like 'vectors', 'kinematics', 'forces'..."
+        />
 
-      <div class="hero-buttons">
-        <a
-          href="/chapter/understanding-3d-space/coordinate-systems"
-          class="btn primary">Begin Learning</a
-        >
-        <button class="btn secondary" onclick={scrollToAbout}
-          >About VistaKine</button
-        >
+        <div class="hero-buttons">
+          <a
+            href="/chapter/understanding-3d-space/coordinate-systems"
+            class="btn primary">Begin Learning</a
+          >
+          <!-- Placeholder Sign In button -->
+          <button class="btn secondary">Sign In</button>
+          <!-- Using secondary style for now -->
+        </div>
       </div>
     </div>
-  </ContentCard>
+  </div>
 </section>
 
 <section id="about" class="about">
@@ -99,65 +107,96 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
     position: relative;
     overflow: hidden;
-    padding: var(--space-xl) var(--space-m); // Add padding to the section itself
+    padding: 40px 20px; // Changed from var(--space-xl) var(--space-m)
   }
 
-  .hero-title {
-    font-size: var(
-      --step-6
-    ); // Reverted from clamp for testing, adjust as needed
-    line-height: 1.1;
-    margin-bottom: var(--space-m);
-  }
-
-  /* Target the ContentCard used in the hero */
   .hero-content-card {
     /* Override default ContentCard background/shadow for hero transparency */
-    background-color: transparent; // Rely on backdrop-filter
-    aspect-ratio: var(--pertensious_ratio);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); // Keep custom shadow for now
+    background-color: var(--color-background);
     border: 1px solid var(--color-border-light); // Use defined light border variable
-    padding: var(--space-l); // Keep padding consistent
+    padding: 40px 60px; // Changed from var(--space-l) var(--space-xl)
     margin-top: 0; // Remove default top margin for hero placement
-    max-width: 600px; // Allow hero card to be slightly wider
+    max-width: 600px; // Consider if this needs to be a multiple of 20?
+    margin-bottom: var(
+      --sidebar-width
+    ); // This comes from variables, might not align
+    width: 100%; // Ensure it takes available width up to max-width
   }
 
-  /* Styles for the inner content div if needed, mainly for text alignment */
+  /* Styles for the inner content div - Now a single column */
   .hero-content-inner {
-    text-align: center; // Ensure inner elements are centered
+    display: flex; /* Changed from grid */
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items horizontally */
+    text-align: center; /* Center text within elements */
+    gap: 40px; // Consistent gap between branding and actions
+    /* Removed grid-template-columns and related media query */
   }
 
-  /* Remove styles previously applied to .hero-content div */
-  /* .hero-content { ... } */
+  .hero-branding {
+    /* Remove text-align: left */
+    display: flex; // Use flex to manage SVG and tagline layout
+    flex-direction: column; // Stack SVG and tagline
+    align-items: center; // Center items
+    gap: 20px;
+    width: 100%; // Take full width for centering
+
+    /* Target the AnimatedLogo component specifically */
+    :global(.animated-logo-container) {
+      width: clamp(180px, 30vw, 300px); // Adjusted size for centered layout
+      height: auto; // Maintain aspect ratio
+      margin-bottom: 10px; // Add some space below logo
+    }
+
+    /* Removed media query for alignment as it's always centered now */
+  }
 
   .hero-content-card .tagline {
     /* Target tagline within the hero card */
-    font-size: var(--step-1);
-    margin-bottom: var(--space-l);
-    color: var(--color-text-primary);
-    opacity: 0.9; // Slightly less opacity than before for better contrast
+    font-size: clamp(var(--step--1), 1.5vw + 0.5rem, var(--step-0));
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+    line-height: 1.5;
+    max-width: 60ch; // Limit tagline width for readability
+    width: 100%; // Ensure tagline takes full width up to max-width
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; // Adjusted gap between search and buttons
+    align-items: center; // Center items horizontally
+    width: 100%; // Ensure actions container takes full width
+    max-width: 500px; // Limit width of actions area for focus
+
+    /* Removed media query for alignment */
+  }
+
+  /* Adjust SearchBar width and remove margin override */
+  .hero-actions :global(.search-bar-wrapper) {
+    width: 100%; /* Search bar takes full width of actions container */
+    /* margin-bottom: 20px; // Removed, gap handled by parent flex */
   }
 
   .hero-buttons {
     display: flex;
-    gap: var(--space-s);
+    flex-wrap: wrap; // Allow buttons to wrap on smaller screens if needed
+    gap: 20px;
     justify-content: center;
-    margin-top: var(--space-l); // Increased margin-top
+    margin-top: 0;
+    width: 100%;
 
-    @media (max-width: 640px) {
-      flex-direction: column;
-      align-items: center;
-    }
+    /* Removed media query for column layout, flex-wrap handles responsiveness */
   }
 
   .btn {
     // Keep button styles
     display: inline-block;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.5rem; // Keep padding
+    font-size: var(--step-0); // Ensure consistent button text size
     border-radius: 8px;
     text-align: center;
     color: var(--color-text-primary);
@@ -166,6 +205,7 @@
       box-shadow 0.3s ease;
     text-decoration: none;
     border: 1px solid transparent; // Add base border for layout consistency
+    white-space: nowrap; // Prevent buttons breaking line
 
     &.primary {
       background-color: var(--color-accent);

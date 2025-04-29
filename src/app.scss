@@ -2,10 +2,10 @@
 @use '$lib/styles/variables';
 @use '$lib/styles/main';
 @use '$lib/styles/katex-custom';
-// Import Google Fonts
-// @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+// @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700&display=swap'); // Added for Headers
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap'); // Added for Body
+// @import url("https://use.typekit.net/iag4ddx.css"); // Import Adobe Font - REPLACE YOUR_PROJECT_ID.css
 
 // Import SCSS partials - order matters
 

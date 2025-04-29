@@ -190,14 +190,98 @@ $leo-color-light: #1E40AF;  // Blue 800
   --axis-color-y-t25: #{$axis-color-y-t25};
   --axis-color-z-t25: #{$axis-color-z-t25};
 
-  // Chapter Theme Colors (Defined directly as CSS vars)
-  --chapter-color-1: #10b981;
-  --chapter-color-light-1: #6ee7b7;
-  --chapter-color-dark-1: #047857;
-  --chapter-color-2: #007bff;
-  --chapter-color-light-2: #67b3ff;
-  --chapter-color-dark-2: #0056b3;
+  // ==========================================
+  // Chapter Theme Colors - LIGHT MODE (Contrast + Early Saturation)
+  // ==========================================
 
+  // Chapter 1 (More Saturated Green)
+  --chapter-color-1: #16A34A; // Green 600
+  --chapter-color-light-1: #86EFAC; // Lighter variant
+  --chapter-color-dark-1: #14532D; // Darker variant (Green 900)
+  --chapter-header-bg-1: color-mix(in srgb, #16A34A 80%, black);
+  --chapter-bg-1: rgba(22, 163, 74, 0.1); // RGBA of base color
+  --chapter-sidebar-bg-1: rgba(22, 163, 74, 0.05); // RGBA of base color
+
+  // Chapter 2 (More Saturated Teal)
+  --chapter-color-2: #0D9488; // Teal 600
+  --chapter-color-light-2: #5EEAD4; // Lighter variant (Teal 300)
+  --chapter-color-dark-2: #115E59; // Darker variant (Teal 800)
+  --chapter-header-bg-2: color-mix(in srgb, #0D9488 80%, black);
+  --chapter-bg-2: rgba(13, 148, 136, 0.1);
+  --chapter-sidebar-bg-2: rgba(13, 148, 136, 0.05);
+
+  // Chapter 3 (No Change - Emerald 600)
+  --chapter-color-3: #059669; // Emerald 600
+  --chapter-color-light-3: #6EE7B7; // Lighter variant
+  --chapter-color-dark-3: #065F46; // Darker variant
+  --chapter-header-bg-3: color-mix(in srgb, #059669 80%, black);
+  --chapter-bg-3: rgba(5, 150, 105, 0.1);
+  --chapter-sidebar-bg-3: rgba(5, 150, 105, 0.05);
+
+  // Chapter 4 (More Saturated Blue)
+  --chapter-color-4: #2563EB; // Blue 600
+  --chapter-color-light-4: #93C5FD; // Lighter variant (Blue 300)
+  --chapter-color-dark-4: #1E40AF; // Darker variant (Blue 800)
+  --chapter-header-bg-4: color-mix(in srgb, #2563EB 80%, black);
+  --chapter-bg-4: rgba(37, 99, 235, 0.1);
+  --chapter-sidebar-bg-4: rgba(37, 99, 235, 0.05);
+
+  // Chapter 5 (Now Teal 700)
+  --chapter-color-5: #0F766E; // Teal 700
+  --chapter-color-light-5: #99F6E4; // Lighter variant
+  --chapter-color-dark-5: #134E4A; // Darker variant
+  --chapter-header-bg-5: color-mix(in srgb, #0F766E 80%, black);
+  --chapter-bg-5: rgba(15, 118, 110, 0.1);
+  --chapter-sidebar-bg-5: rgba(15, 118, 110, 0.05);
+
+  // Chapter 6 (No Change - Indigo 600)
+  --chapter-color-6: #4F46E5; // Indigo 600
+  --chapter-color-light-6: #A5B4FC; // Lighter variant
+  --chapter-color-dark-6: #3730A3; // Darker variant
+  --chapter-header-bg-6: color-mix(in srgb, #4F46E5 80%, black);
+  --chapter-bg-6: rgba(79, 70, 229, 0.1);
+  --chapter-sidebar-bg-6: rgba(79, 70, 229, 0.05);
+
+  // Chapter 7 (Now Sky Blue 700)
+  --chapter-color-7: #0284C7; // Sky Blue 700
+  --chapter-color-light-7: #7DD3FC; // Lighter variant
+  --chapter-color-dark-7: #075985; // Darker variant
+  --chapter-header-bg-7: color-mix(in srgb, #0284C7 80%, black);
+  --chapter-bg-7: rgba(2, 132, 199, 0.1);
+  --chapter-sidebar-bg-7: rgba(2, 132, 199, 0.05);
+
+  // Chapter 8 (No Change - Blue 700)
+  --chapter-color-8: #1D4ED8; // Blue 700
+  --chapter-color-light-8: #60A5FA; // Lighter variant
+  --chapter-color-dark-8: #1E3A8A; // Darker variant
+  --chapter-header-bg-8: color-mix(in srgb, #1D4ED8 80%, black);
+  --chapter-bg-8: rgba(29, 78, 216, 0.1);
+  --chapter-sidebar-bg-8: rgba(29, 78, 216, 0.05);
+
+  // Chapter 9 (No Change - Emerald 700)
+  --chapter-color-9: #047857; // Emerald 700
+  --chapter-color-light-9: #34D399; // Lighter variant
+  --chapter-color-dark-9: #064E3B; // Darker variant
+  --chapter-header-bg-9: color-mix(in srgb, #047857 80%, black);
+  --chapter-bg-9: rgba(4, 120, 87, 0.1);
+  --chapter-sidebar-bg-9: rgba(4, 120, 87, 0.05);
+
+  // Chapter 10 (No Change - Cyan 900)
+  --chapter-color-10: #164E63; // Cyan 900
+  --chapter-color-light-10: #A5F3FC; // Lighter variant
+  --chapter-color-dark-10: #1E3A8A; // Darker variant
+  --chapter-header-bg-10: color-mix(in srgb, #164E63 80%, black);
+  --chapter-bg-10: rgba(22, 78, 99, 0.1);
+  --chapter-sidebar-bg-10: rgba(22, 78, 99, 0.05);
+
+
+  // --- Fallback / Default Chapter Theme (Light Mode) ---
+  --chapter-color-default: #1D4ED8; // Blue 700 as default
+  --chapter-color-light-default: #60A5FA;
+  --chapter-color-dark-default: #1E3A8A;
+  --chapter-header-bg-default: color-mix(in srgb, #1D4ED8 80%, black);
+  --chapter-bg-default: rgba(29, 78, 216, 0.1);
+  --chapter-sidebar-bg-default: rgba(29, 78, 216, 0.05);
 
   // Typography (Base definitions - Keep As Is)
   --font-family-base: #{$font-family-base};
@@ -424,6 +508,100 @@ $leo-color-dark: #93C5FD;  // Blue 300
     // Character Colors (Dark)
     --surya-color: #{$surya-color-dark};
     --leo-color: #{$leo-color-dark};
+
+    // ==========================================
+    // Chapter Theme Colors - DARK MODE (Using the Lighter Palette from previous step)
+    // ==========================================
+
+    // Chapter 1
+    --chapter-color-1: #A5D8FF; // Light Sky Blue
+    --chapter-color-light-1: #E0F2FE;
+    --chapter-color-dark-1: #6EB2E0;
+    --chapter-header-bg-1: color-mix(in srgb, #A5D8FF 30%, #1a1a2e);
+    --chapter-bg-1: rgba(165, 216, 255, 0.1);
+    --chapter-sidebar-bg-1: rgba(165, 216, 255, 0.05);
+
+    // Chapter 2
+    --chapter-color-2: #99F6E4; // Light Aqua/Teal
+    --chapter-color-light-2: #CFFDF0;
+    --chapter-color-dark-2: #5DDBC0;
+    --chapter-header-bg-2: color-mix(in srgb, #99F6E4 30%, #1a1a2e);
+    --chapter-bg-2: rgba(153, 246, 228, 0.1);
+    --chapter-sidebar-bg-2: rgba(153, 246, 228, 0.05);
+
+    // Chapter 3
+    --chapter-color-3: #84CC16; // Lime Green
+    --chapter-color-light-3: #A3E635;
+    --chapter-color-dark-3: #6DA80D;
+    --chapter-header-bg-3: color-mix(in srgb, #84CC16 30%, #1a1a2e);
+    --chapter-bg-3: rgba(132, 204, 22, 0.1);
+    --chapter-sidebar-bg-3: rgba(132, 204, 22, 0.05);
+
+    // Chapter 4
+    --chapter-color-4: #67E8F9; // Cyan
+    --chapter-color-light-4: #A5F3FC;
+    --chapter-color-dark-4: #22D3EE;
+    --chapter-header-bg-4: color-mix(in srgb, #67E8F9 30%, #1a1a2e);
+    --chapter-bg-4: rgba(103, 232, 249, 0.1);
+    --chapter-sidebar-bg-4: rgba(103, 232, 249, 0.05);
+
+    // Chapter 5
+    --chapter-color-5: #77CFF4; // Medium Sky Blue
+    --chapter-color-light-5: #A8E1FA;
+    --chapter-color-dark-5: #38BDF8;
+    --chapter-header-bg-5: color-mix(in srgb, #77CFF4 30%, #1a1a2e);
+    --chapter-bg-5: rgba(119, 207, 244, 0.1);
+    --chapter-sidebar-bg-5: rgba(119, 207, 244, 0.05);
+
+    // Chapter 6
+    --chapter-color-6: #4DA6FF; // Medium Blue
+    --chapter-color-light-6: #7ABFFF;
+    --chapter-color-dark-6: #258AFB;
+    --chapter-header-bg-6: color-mix(in srgb, #4DA6FF 30%, #1a1a2e);
+    --chapter-bg-6: rgba(77, 166, 255, 0.1);
+    --chapter-sidebar-bg-6: rgba(77, 166, 255, 0.05);
+
+    // Chapter 7
+    --chapter-color-7: #10B981; // Emerald Green
+    --chapter-color-light-7: #34D399;
+    --chapter-color-dark-7: #0B8A63;
+    --chapter-header-bg-7: color-mix(in srgb, #10B981 30%, #1a1a2e);
+    --chapter-bg-7: rgba(16, 185, 129, 0.1);
+    --chapter-sidebar-bg-7: rgba(16, 185, 129, 0.05);
+
+    // Chapter 8
+    --chapter-color-8: #0891B2; // Medium Cyan/Teal
+    --chapter-color-light-8: #22D3EE;
+    --chapter-color-dark-8: #06758E;
+    --chapter-header-bg-8: color-mix(in srgb, #0891B2 30%, #1a1a2e);
+    --chapter-bg-8: rgba(8, 145, 178, 0.1);
+    --chapter-sidebar-bg-8: rgba(8, 145, 178, 0.05);
+
+    // Chapter 9
+    --chapter-color-9: #0077CC; // Standard Link Blue
+    --chapter-color-light-9: #38BDF8;
+    --chapter-color-dark-9: #005FA3;
+    --chapter-header-bg-9: color-mix(in srgb, #0077CC 30%, #1a1a2e);
+    --chapter-bg-9: rgba(0, 119, 204, 0.1);
+    --chapter-sidebar-bg-9: rgba(0, 119, 204, 0.05);
+
+    // Chapter 10
+    --chapter-color-10: #047857; // Dark Emerald Green
+    --chapter-color-light-10: #10B981;
+    --chapter-color-dark-10: #065F46;
+    --chapter-header-bg-10: color-mix(in srgb, #047857 30%, #1a1a2e);
+    --chapter-bg-10: rgba(4, 120, 87, 0.1);
+    --chapter-sidebar-bg-10: rgba(4, 120, 87, 0.05);
+
+
+    // --- Fallback / Default Chapter Theme (Dark Mode) ---
+    // Use the dark mode accent color as base
+    --chapter-color-default: var(--color-dark-accent); // #a779e1
+    --chapter-color-light-default: var(--color-dark-accent-hover); // #c099f0
+    --chapter-color-dark-default: var(--color-dark-accent-light); // #7b4db8
+    --chapter-header-bg-default: color-mix(in srgb, var(--color-dark-accent) 30%, #1a1a2e);
+    --chapter-bg-default: rgba(167, 121, 225, 0.1); // RGBA of dark accent
+    --chapter-sidebar-bg-default: rgba(167, 121, 225, 0.05); // RGBA of dark accent
   }
 }
 
