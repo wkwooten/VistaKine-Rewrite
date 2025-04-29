@@ -153,14 +153,13 @@
   <div class="nav-header-container">
     <a href="/" class="nav-header-link">
       <div class="logo">
-        {#if !navCollapsed}
-          <div class="logo-with-text">
-            <div class="icon-logo">
-              <Hexagon size={iconSize} color="var(--color-accent)" />
-            </div>
-            <h1>VistaKine</h1>
+        <div class="logo-with-text">
+          <div class="icon-logo">
+            <Hexagon size={iconSize} color="var(--color-accent)" />
           </div>
-        {:else}
+          <h1>VistaKine</h1>
+        </div>
+        {#if navCollapsed}
           <div class="icon-logo">
             <Hexagon size={32} color="var(--color-accent)" />
           </div>
@@ -170,16 +169,11 @@
   </div>
 
   <div class="search">
-    {#if !navCollapsed}
-      <div class="search-input-container">
-        <Search
-          size={iconSize}
-          color="var(--color-text-primary)"
-          opacity="0.6"
-        />
-        <input type="text" placeholder="Search textbook..." />
-      </div>
-    {:else}
+    <div class="search-input-container">
+      <Search size={iconSize} color="var(--color-text-primary)" opacity="0.6" />
+      <input type="text" placeholder="Search textbook..." />
+    </div>
+    {#if navCollapsed}
       <div class="icon-search">
         <Search size={24} />
       </div>
@@ -197,9 +191,7 @@
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
-          {#if !navCollapsed}
-            <span>Chapters</span>
-          {/if}
+          <span>Chapters</span>
         </a>
       </li>
 
@@ -258,35 +250,33 @@
               aria-label={`Go to Chapter ${index + 1}: ${chapter.title}`}
               tabindex="-1">{index + 1}</a
             >
-            {#if !navCollapsed}
-              <a
-                href={`/chapter/${chapter.slug}`}
-                class="chapter-title"
-                tabindex="-1"
+            <a
+              href={`/chapter/${chapter.slug}`}
+              class="chapter-title"
+              tabindex="-1"
+            >
+              <span>{chapter.title}</span>
+            </a>
+            <div
+              class="chevron"
+              class:expanded={expandedChapter === chapter.slug}
+              aria-hidden="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={iconSize}
+                height={iconSize}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide-icon lucide lucide-chevron-right"
               >
-                <span>{chapter.title}</span>
-              </a>
-              <div
-                class="chevron"
-                class:expanded={expandedChapter === chapter.slug}
-                aria-hidden="true"
+                <path d="m9 18 6-6-6-6" /></svg
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={iconSize}
-                  height={iconSize}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide-icon lucide lucide-chevron-right"
-                >
-                  <path d="m9 18 6-6-6-6" /></svg
-                >
-              </div>
-            {/if}
+            </div>
           </div>
           {#if !navCollapsed && expandedChapter === chapter.slug}
             <ul
@@ -321,9 +311,7 @@
           <div class="icon">
             <Shapes size={iconSize} />
           </div>
-          {#if !navCollapsed}
-            <span>Physics Playground</span>
-          {/if}
+          <span>Physics Playground</span>
         </a>
       </li>
     </ul>
@@ -339,9 +327,7 @@
         <div class="icon">
           <List size={iconSize} />
         </div>
-        {#if !navCollapsed}
-          <span>Glossary</span>
-        {/if}
+        <span>Glossary</span>
       </a>
     </li>
     <li>
@@ -353,9 +339,7 @@
         <div class="icon">
           <Settings size={iconSize} />
         </div>
-        {#if !navCollapsed}
-          <span>Settings</span>
-        {/if}
+        <span>Settings</span>
       </a>
     </li>
   </ul>
@@ -412,6 +396,10 @@
         padding: var(--space-xs);
       }
 
+      .chapter-item {
+        justify-content: center;
+      }
+
       .chapter-item .chapter-link {
         justify-content: center;
       }
@@ -453,11 +441,12 @@
     color: inherit;
     display: flex;
     align-items: center;
+    width: 100%;
+    justify-content: center;
   }
 
   .logo {
     display: flex;
-    justify-content: flex-start;
     width: 100%;
     text-decoration: none;
   }
@@ -466,12 +455,28 @@
     display: flex;
     align-items: center;
     gap: var(--space-2xs);
+    opacity: 1;
+    transition: opacity 0.1s ease-in-out;
+    overflow: hidden;
+  }
+
+  nav.collapsed .logo-with-text {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    position: absolute;
+  }
+
+  nav.collapsed .icon-logo {
+    position: relative;
+    width: auto;
   }
 
   .logo h1 {
     font-size: var(--step-1);
     color: var(--color-accent);
     margin: 0;
+    white-space: nowrap;
   }
 
   .icon-logo {
@@ -502,6 +507,9 @@
     width: 100%;
     display: flex;
     align-items: center;
+    opacity: 1;
+    transition: opacity 0.1s ease-in-out;
+    overflow: hidden;
 
     :global(svg) {
       position: absolute;
@@ -513,6 +521,20 @@
       background-color: var(--color-surface);
       color: var(--color-text-primary);
     }
+  }
+
+  nav.collapsed .search-input-container {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    position: absolute;
+    visibility: hidden;
+  }
+
+  nav.collapsed .icon-search {
+    position: relative;
+    width: auto;
+    visibility: visible;
   }
 
   input {
@@ -557,10 +579,28 @@
     position: relative;
     box-sizing: border-box;
     min-width: 0;
+    overflow: hidden;
 
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
     }
+
+    span {
+      opacity: 1;
+      transition: opacity 0.1s ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+  }
+
+  nav.collapsed .nav-item span {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .chapter-title {
@@ -569,11 +609,23 @@
     white-space: normal;
     word-break: break-word;
     display: inline-block;
+    opacity: 1;
+    transition: opacity 0.1s ease-in-out;
+    white-space: nowrap;
+    overflow: hidden;
 
     &:hover {
       text-decoration: underline;
       color: var(--color-accent);
     }
+  }
+
+  nav.collapsed .chapter-title {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    position: absolute;
+    visibility: hidden;
   }
 
   .icon,
@@ -588,6 +640,10 @@
     min-height: 32px;
     width: 32px;
     height: 32px;
+  }
+
+  nav.collapsed .chapter-item .chapter-number {
+    margin-right: 0;
   }
 
   .chapter-number {
@@ -609,17 +665,32 @@
     padding-top: var(--space-xs);
     flex-shrink: 0;
     box-sizing: border-box;
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      margin-bottom: var(--space-xs);
+    }
   }
 
-  /* Add cursor pointer back to the chapter item div */
   .chapter-item {
     cursor: pointer;
+    overflow: hidden;
   }
 
   .chapter-sections {
     list-style: none;
     padding-left: var(--space-s);
     margin: 0;
+    transition:
+      opacity 0.1s ease-in-out,
+      height var(--sidebar-transition-duration) var(--sidebar-transition-timing);
+  }
+
+  nav.collapsed .chapter-sections {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .section-item {
@@ -676,10 +747,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1;
+    transition:
+      opacity 0.1s ease-in-out,
+      transform 0.3s ease;
 
-    /* Override reset styles for SVG inside chevron */
     :global(svg) {
-      max-width: none; /* Prevent max-width: 100% from reset */
+      max-width: none;
       transition: transform 0.3s ease;
     }
 
@@ -694,13 +768,19 @@
     }
   }
 
-  /* Update style selector for active non-chapter items */
+  nav.collapsed .chevron {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    padding: 0;
+    margin-left: 0;
+    visibility: hidden;
+  }
+
   a.nav-item.is-active {
   }
 
-  /* Keep existing chapter-specific active styles */
   .nav-chapter-group.is-active > .chapter-item {
-    /* Existing styles for active chapters */
     background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
   }
 </style>

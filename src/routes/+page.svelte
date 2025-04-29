@@ -117,6 +117,7 @@
   .hero-content-card {
     /* Override default ContentCard background/shadow for hero transparency */
     background-color: transparent; // Rely on backdrop-filter
+    aspect-ratio: var(--pertensious_ratio);
     backdrop-filter: blur(5px);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); // Keep custom shadow for now
     border: 1px solid var(--color-border-light); // Use defined light border variable
