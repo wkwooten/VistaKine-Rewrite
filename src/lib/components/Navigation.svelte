@@ -23,7 +23,7 @@
 
   $: console.log(
     "Navigation.svelte - currentChapter store value:",
-    $currentChapter,
+    $currentChapter
   );
 
   export let chapters = getChapterList();
@@ -448,6 +448,7 @@
   .logo {
     display: flex;
     width: 100%;
+    justify-content: center;
     text-decoration: none;
   }
 

@@ -113,7 +113,7 @@
 <style lang="scss">
   .hero-logo-svg {
     width: 100%;
-    max-width: 600px; // Keep user's adjusted max-width
+    /* max-width: 100%; */
     height: auto;
     display: block;
     margin-block: var(--space-l);

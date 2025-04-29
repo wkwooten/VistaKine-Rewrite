@@ -8,7 +8,7 @@
     if (query.trim()) {
       console.log(`Search submitted for: ${query}`);
       alert(
-        `Search functionality not yet implemented. You searched for: "${query}"`,
+        `Search functionality not yet implemented. You searched for: "${query}"`
       );
       // Future: Navigate to search results page or trigger search API
     } else {
@@ -57,8 +57,7 @@
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: 600px; // Adjust as needed
-    margin: var(--space-m) auto var(--space-l); // Center and add vertical space
+    margin-block: var(--space-m) var(--space-l);
     border: 1px solid var(--color-border);
     border-radius: 25px; // Pill shape
     overflow: hidden; // Keep button contained

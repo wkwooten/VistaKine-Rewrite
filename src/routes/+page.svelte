@@ -26,6 +26,7 @@
       <!-- Branding Section -->
       <div class="hero-branding">
         <AnimatedLogo />
+        <hr class="branding-separator" />
         <p class="tagline">
           Bringing Physics Learning into a New Dimension <br />
           Explore interactive 3D visualizations that bring kinematics to life.
@@ -109,55 +110,57 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: 40px 20px; // Changed from var(--space-xl) var(--space-m)
+    padding: var(--space-xl) var(--space-m); // Changed from var(--space-xl) var(--space-m)
   }
 
   .hero-content-card {
-    /* Override default ContentCard background/shadow for hero transparency */
-    background-color: var(--color-background);
-    border: 1px solid var(--color-border-light); // Use defined light border variable
-    padding: 40px 60px; // Changed from var(--space-l) var(--space-xl)
-    margin-top: 0; // Remove default top margin for hero placement
-    max-width: 600px; // Consider if this needs to be a multiple of 20?
+    background-color: var(--color-surface);
+    border: 2px solid var(--color-border-light);
+    padding: 40px 60px 60px 60px; // Increased bottom padding to 60px
+    margin-top: 0;
+    max-width: 720px;
     margin-bottom: var(
       --sidebar-width
     ); // This comes from variables, might not align
-    width: 100%; // Ensure it takes available width up to max-width
+    width: 100%;
+    border-radius: var(--radius-lg); // Added border radius for consistency
   }
 
   /* Styles for the inner content div - Now a single column */
   .hero-content-inner {
-    display: flex; /* Changed from grid */
-    flex-direction: column; /* Stack elements vertically */
-    align-items: center; /* Center items horizontally */
-    text-align: center; /* Center text within elements */
-    gap: 40px; // Consistent gap between branding and actions
-    /* Removed grid-template-columns and related media query */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 40px; // Keep overall gap for now
   }
 
   .hero-branding {
-    /* Remove text-align: left */
-    display: flex; // Use flex to manage SVG and tagline layout
-    flex-direction: column; // Stack SVG and tagline
-    align-items: center; // Center items
-    gap: 20px;
-    width: 100%; // Take full width for centering
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; // Reduced gap between logo, separator, and tagline
+    width: 100%;
 
     /* Target the AnimatedLogo component specifically */
     :global(.animated-logo-container) {
-      width: clamp(180px, 30vw, 300px); // Adjusted size for centered layout
-      height: auto; // Maintain aspect ratio
-      margin-bottom: 10px; // Add some space below logo
+      width: clamp(180px, 30vw, 300px);
+      height: auto;
+      // Removed margin-bottom, gap handles spacing
     }
+  }
 
-    /* Removed media query for alignment as it's always centered now */
+  .tagline {
+    border-top: 1px solid var(--color-accent);
+    width: 100%;
+    padding: var(--space-s) 0;
   }
 
   .hero-content-card .tagline {
     /* Target tagline within the hero card */
     font-size: clamp(var(--step--1), 1.5vw + 0.5rem, var(--step-0));
     margin-bottom: 0;
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     opacity: 0.8;
     line-height: 1.5;
     max-width: 60ch; // Limit tagline width for readability
@@ -170,7 +173,6 @@
     gap: 30px; // Adjusted gap between search and buttons
     align-items: center; // Center items horizontally
     width: 100%; // Ensure actions container takes full width
-    max-width: 500px; // Limit width of actions area for focus
 
     /* Removed media query for alignment */
   }
