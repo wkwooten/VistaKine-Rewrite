@@ -59,11 +59,9 @@
     width: 100%;
     margin-block: var(--space-m) var(--space-l);
     border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
     border-radius: 25px; // Pill shape
     overflow: hidden; // Keep button contained
-    background-color: var(
-      --sidebar-background
-    ); // Use sidebar background for contrast
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
 

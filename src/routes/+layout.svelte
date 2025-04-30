@@ -3,6 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
+  import PageNav from "$lib/components/PageNav.svelte";
   import { sidebarExpanded } from "$lib/stores/appState";
   import { parallaxBackground } from "$lib/scripts/parallax";
   import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
@@ -67,10 +68,6 @@
 
   $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
 </script>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -159,6 +156,20 @@
   {/if}
 
   <main class="content">
+    <div class="top-nav-bar">
+      <!-- Render PageNav directly if data exists -->
+      {#if $page.data.prevSection !== undefined || $page.data.nextSection !== undefined || $page.data.prevChapter !== undefined || $page.data.nextChapter !== undefined || $page.data.currentChapterSlug}
+        <PageNav
+          prevSection={$page.data.prevSection}
+          nextSection={$page.data.nextSection}
+          prevChapter={$page.data.prevChapter}
+          nextChapter={$page.data.nextChapter}
+          currentChapterSlug={$page.data.currentChapterSlug}
+          currentChapterTitle={$page.data.chapterTitle}
+          currentChapterNumber={$page.data.chapterNumber}
+        />
+      {/if}
+    </div>
     <slot />
   </main>
 </div>
@@ -268,13 +279,56 @@
     height: 100%;
     overflow-y: auto;
     margin-left: 80px;
-    /* padding-inline: var(--space-m); */
-    padding: var(--space-m); /* Example base padding */
+    position: relative; /* Needed for sticky positioning context */
+    /* Add padding-top to prevent content from being hidden by sticky top bar */
+    /* padding-top: 40px; */
 
     @media (max-width: variables.$breakpoint-lg) {
       margin-left: 0;
       /* Use mobile specific padding or inherit base */
-      padding: var(--space-s); /* Example mobile padding */
+
+      /* Remove the extra padding-bottom added for the bottom bar */
+      /* padding-bottom: calc(40px + var(--space-s)); REMOVED */
+    }
+  }
+
+  /* Styles for the top navigation bar */
+  .top-nav-bar {
+    position: sticky;
+    top: 0; /* Changed from bottom */
+    left: 0;
+    width: 100%;
+    height: 80px; /* As requested */
+    background-color: var(
+      --color-background-alt,
+      var(--color-background)
+    ); /* Slightly different bg or fallback */
+    border-bottom: 1px solid var(--color-border); /* Changed from border-top */
+    z-index: 10; /* Ensure it's above content but below overlays/modals if any */
+    display: flex; /* Use flex to easily center/align content */
+    align-items: center;
+    justify-content: center;
+
+    /* Remove default padding from PageNav when inside the bar */
+    :global([slot="page-nav"] .page-nav) {
+      padding: 0;
+      margin: 0;
+      border: none;
+      width: 100%; /* Make PageNav take full width */
+      height: 100%; /* Make PageNav take full height */
+      max-width: var(
+        --max-content-width,
+        1200px
+      ); /* Apply max-width like the content */
+      margin: 0 auto; /* Center PageNav content */
+      padding-inline: var(
+        --space-s
+      ); /* Add some horizontal padding inside the bar */
+    }
+    @media (max-width: variables.$breakpoint-lg) {
+      background-color: var(
+        --color-background
+      ); /* Match main background on mobile maybe? */
     }
   }
 

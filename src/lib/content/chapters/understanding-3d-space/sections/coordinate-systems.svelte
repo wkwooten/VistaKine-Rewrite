@@ -39,7 +39,7 @@
 </script>
 
 <section
-  id="coordinate-systems"
+  id="coordinate-systems-section"
   data-section={sectionNumber}
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -50,7 +50,9 @@
   <div class="readable-content">
     <!-- Block 1: Section Introduction -->
     <ContentCard blockType="section-header-block" layoutWidth="full">
-      <h2>Section Introduction</h2>
+      <h2 id="coordinate-systems" data-nav-target="true">
+        Section Introduction
+      </h2>
       <p>
         _Placeholder: Describe what this section will cover and the introductory
         scenario._
@@ -83,7 +85,9 @@
 
     <!-- Block 2: Concept - Need for 3D -->
     <ContentCard blockType="concept-block" layoutWidth="full">
-      <h2>Why Three Dimensions?</h2>
+      <h2 id="why-three-dimensions" data-nav-target="true">
+        Why Three Dimensions?
+      </h2>
       <p>
         Giving simple directions like "5 steps forward, 3 steps left" works well
         on a flat surface (2D). But how do you describe reaching for a high
@@ -108,7 +112,7 @@
       class="visualization-card"
       layoutWidth="condensed"
     >
-      <h2>Exploring the Axes</h2>
+      <h2 id="axis-explorer" data-nav-target="true">Exploring the Axes</h2>
       <figure>
         <AxisExplorer />
         <figcaption>
@@ -127,7 +131,9 @@
 
     <!-- Block 4: Concept - Application to 3D Printing -->
     <ContentCard blockType="concept-block" layoutWidth="full">
-      <h2>Coordinates in 3D Space</h2>
+      <h2 id="coordinates-in-3d-space" data-nav-target="true">
+        Coordinates in 3D Space
+      </h2>
       <p>
         Now, let's see this system in action with a 3D printer. Imagine a device
         with a small nozzle that needs to move *very precisely* to build objects
@@ -161,7 +167,9 @@
 
     <!-- Block 5: Activity - Printer Calibration -->
     <ContentCard blockType="visualization-block" class="-exercise">
-      <h2>Hands-On: Printer Calibration</h2>
+      <h2 id="printer-calibration" data-nav-target="true">
+        Hands-On: Printer Calibration
+      </h2>
 
       <p class="exercise-description">
         Help Surya calibrate her 3D printer by moving the nozzle to the target
@@ -188,7 +196,7 @@
 
     <!-- Block 6: Activity - Review/Quiz -->
     <ContentCard blockType="activity-block" class="-review" layoutWidth="full">
-      <h2>Section Review</h2>
+      <h2 id="section-review" data-nav-target="true">Section Review</h2>
       <SectionReview>
         <Quiz questions={coordinateQuizData} showFeedback={true} />
       </SectionReview>

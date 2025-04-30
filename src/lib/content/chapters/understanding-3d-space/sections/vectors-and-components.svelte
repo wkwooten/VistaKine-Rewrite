@@ -42,7 +42,7 @@
 </script>
 
 <section
-  id="vectors-and-components"
+  id="vectors-and-components-section"
   data-section="1.2"
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -52,7 +52,9 @@
   <div class="section-line" aria-hidden="true"></div>
   <div class="readable-content">
     <ContentCard blockType="section-header-block">
-      <h2>Section Introduction</h2>
+      <h2 id="vector-section-introduction" data-nav-target="true">
+        Section Introduction
+      </h2>
       <p>
         _Placeholder: Describe what this section will cover and the introductory
         scenario._
@@ -81,7 +83,9 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>What are Vectors? Scalar vs. Vector</h2>
+      <h2 id="what-are-vectors" data-nav-target="true">
+        What are Vectors? Scalar vs. Vector
+      </h2>
       <p>
         Sometimes, location isn't the whole story. We often need quantities with
         both size (<Keyword term="magnitude" />) and direction.
@@ -104,7 +108,9 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Vectors in One Dimension (1D)</h2>
+      <h2 id="vectors-in-1d" data-nav-target="true">
+        Vectors in One Dimension (1D)
+      </h2>
       <p>
         Imagine a number line. A 1D vector simply represents movement or
         quantity along that line.
@@ -134,7 +140,9 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Extending to Two Dimensions (2D)</h2>
+      <h2 id="vectors-in-2d" data-nav-target="true">
+        Extending to Two Dimensions (2D)
+      </h2>
       <p>
         In 2D (like a flat plane), we need two pieces of information to describe
         a vector's direction and magnitude, typically using the X and Y axes. We
@@ -156,7 +164,7 @@
       </p>
       <FormulaAccordion summary="2D Magnitude Formula">
         <p>
-          <Katex displayMode>{"||\vec{V}|| = sqrt{V_x^2 + V_y^2}"}</Katex>
+          <Katex displayMode>{"||ec{V}|| = sqrt{V_x^2 + V_y^2}"}</Katex>
         </p>
         <p>
           This calculates the hypotenuse of a right triangle formed by the
@@ -177,7 +185,9 @@
     </p>
 
     <ContentCard blockType="visualization-block" class="visualization-card">
-      <h2>Anatomy of a Vector (3D)</h2>
+      <h2 id="vector-anatomy" data-nav-target="true">
+        Anatomy of a Vector (3D)
+      </h2>
       <VectorAnatomy />
       <p>
         In 3D space, a vector is still represented by an arrow. Its <strong
@@ -198,7 +208,9 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Describing 3D Vectors Precisely: Components & Notation</h2>
+      <h2 id="describing-3d-vectors" data-nav-target="true">
+        Describing 3D Vectors Precisely: Components & Notation
+      </h2>
       <p>
         To work with 3D vectors mathematically, we break them into <Keyword
           term="components"
@@ -218,19 +230,19 @@
           <p>Change in X:</p>
           <li>
             <span class="katex-axis-x"
-              ><Katex>{"V_x = x_2 - x_1 = \\Delta x"}</Katex></span
+              ><Katex>{"V_x = x_2 - x_1 = Delta x"}</Katex></span
             >
           </li>
           <p>Change in Y:</p>
           <li>
             <span class="katex-axis-y"
-              ><Katex>{"V_y = y_2 - y_1 = \\Delta y"}</Katex></span
+              ><Katex>{"V_y = y_2 - y_1 = Delta y"}</Katex></span
             >
           </li>
           <p>Change in Z:</p>
           <li>
             <span class="katex-axis-z"
-              ><Katex>{"V_z = z_2 - z_1 = \\Delta z"}</Katex></span
+              ><Katex>{"V_z = z_2 - z_1 = Delta z"}</Katex></span
             >
           </li>
         </ul>
@@ -239,20 +251,22 @@
       <ul>
         <p>Angle Bracket Notation:</p>
         <li>
-          <Katex>{"\\vec{V} = \\langle V_x, V_y, V_z \\rangle"}</Katex>
+          <Katex>{"\vec{V} = langle V_x, V_y, V_z \rangle"}</Katex>
         </li>
         <p>Parentheses Notation:</p>
         <li>
-          <Katex>{"\\vec{V} = (V_x, V_y, V_z)"}</Katex>
+          <Katex>{"\vec{V} = (V_x, V_y, V_z)"}</Katex>
         </li>
       </ul>
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Vector Magnitude in 3D: Measuring Length</h2>
+      <h2 id="vector-magnitude-3d" data-nav-target="true">
+        Vector Magnitude in 3D: Measuring Length
+      </h2>
       <p>
         The <Keyword term="magnitude" /> (length) of a 3D vector <Katex
-          >{"\\vec{V}"}</Katex
+          >{"\vec{V}"}</Katex
         > with components
         <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>,
         <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>,
@@ -263,10 +277,10 @@
         Where:
         <ul>
           <li>
-            <span class="katex-axis-x"><Katex>{"||\\vec{V}||"}</Katex></span>:
+            <span class="katex-axis-x"><Katex>{"||\vec{V}||"}</Katex></span>:
             Represents the
             <strong>magnitude</strong>
-            (or length) of the vector <Katex>{"\\vec{V}"}</Katex>.
+            (or length) of the vector <Katex>{"\vec{V}"}</Katex>.
           </li>
           <li>
             <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>: The
@@ -283,7 +297,7 @@
         </ul>
         <p>
           <Katex displayMode
-            >{"||\\vec{V}|| = \\sqrt{V_x^2 + V_y^2 + V_z^2}"}</Katex
+            >{"||\vec{V}|| = sqrt{V_x^2 + V_y^2 + V_z^2}"}</Katex
           >
         </p>
       </FormulaAccordion>
@@ -292,32 +306,12 @@
         individual extensions along the X, Y, and Z axes. Think of it as finding
         the diagonal length of a 3D box defined by the vector's components.
       </p>
-      <!-- <ContentCard blockType="explanation-block">
-        <h4>How it works (Extending Pythagoras):</h4>
-        <ol>
-          <li>
-            In 2D, the squared distance in the XY plane is: <Katex displayMode
-              >{"d_{xy}^2 = V_x^2 + V_y^2"}</Katex
-            >
-          </li>
-          <li>
-            In 3D, the squared magnitude uses the 2D distance and the Z
-            component: <Katex displayMode
-              >{"||\vec{V}||^2 = d_{xy}^2 + V_z^2"}</Katex
-            >
-          </li>
-          <li>
-            Substituting the first equation into the second gives: <Katex
-              displayMode>{"||\vec{V}||^2 = (V_x^2 + V_y^2) + V_z^2"}</Katex
-            >
-          </li>
-          <li>Taking the square root yields the final magnitude formula.</li>
-        </ol>
-      </ContentCard> -->
     </ContentCard>
 
     <ContentCard blockType="visualization-block" class="-exercise">
-      <h2>Hands-On: Build-A-Vector</h2>
+      <h2 id="build-a-vector" data-nav-target="true">
+        Hands-On: Build-A-Vector
+      </h2>
       <p class="exercise-description">
         Adjust the start and end points of the vector using the controls.
         Observe how the vector's components (Vx, Vy, Vz) and its angle bracket
@@ -327,7 +321,9 @@
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>An Alternative Language: Unit Vector Notation</h2>
+      <h2 id="unit-vector-notation" data-nav-target="true">
+        An Alternative Language: Unit Vector Notation
+      </h2>
       <p>
         Another common way to write vectors, especially in physics/engineering,
         uses <Keyword term="unit vectors" />.
@@ -340,22 +336,19 @@
       <ul>
         <li>
           <span class="katex-axis-x"
-            ><Katex>{"\\hat{\\mathbf{i}} = \\langle 1, 0, 0 \\rangle"}</Katex
-            ></span
+            ><Katex>{"hat{mathbf{i}} = langle 1, 0, 0 \rangle"}</Katex></span
           >
           (Positive X-axis direction)
         </li>
         <li>
           <span class="katex-axis-y"
-            ><Katex>{"\\hat{\\mathbf{j}} = \\langle 0, 1, 0 \\rangle"}</Katex
-            ></span
+            ><Katex>{"hat{mathbf{j}} = langle 0, 1, 0 \rangle"}</Katex></span
           >
           (Positive Y-axis direction)
         </li>
         <li>
           <span class="katex-axis-z"
-            ><Katex>{"\\hat{\\mathbf{k}} = \\langle 0, 0, 1 \\rangle"}</Katex
-            ></span
+            ><Katex>{"hat{mathbf{k}} = langle 0, 0, 1 \rangle"}</Katex></span
           >
           (Positive Z-axis direction)
         </li>
@@ -364,36 +357,38 @@
         (Note: Sometimes written as bold <Katex>{"i, j, k"}</Katex> without the hat.)
       </p>
       <p>
-        Unit vector <Katex>{"\\vec{V}"}</Katex> can be written as a sum ("linear
-        combination") of components times their corresponding unit vectors:
+        Unit vector <Katex>{"\vec{V}"}</Katex> can be written as a sum ("linear combination")
+        of components times their corresponding unit vectors:
       </p>
       <p>
         <Katex displayMode
-          >{"\\vec{V} = V_x\\hat{\\mathbf{i}} + V_y\\hat{\\mathbf{j}} + V_z\\hat{\\mathbf{k}}"}</Katex
+          >{"\vec{V} = V_xhat{mathbf{i}} + V_yhat{mathbf{j}} + V_zhat{mathbf{k}}"}</Katex
         >
       </p>
       <p>
         This clearly shows the vector's extent along each axis. <br /> Example:
         <br />
-        <Katex>{"\\langle 2, -3, 5 \\rangle"}</Katex> is also <Katex
-          >{"2\\hat{\\mathbf{i}} - 3\\hat{\\mathbf{j}} + 5\\hat{\\mathbf{k}}"}</Katex
+        <Katex>{"langle 2, -3, 5 \rangle"}</Katex> is also <Katex
+          >{"2hat{mathbf{i}} - 3hat{mathbf{j}} + 5hat{mathbf{k}}"}</Katex
         >.
       </p>
     </ContentCard>
 
     <ContentCard blockType="concept-block">
-      <h2>Comparing Vector Notations</h2>
+      <h2 id="comparing-vector-notations" data-nav-target="true">
+        Comparing Vector Notations
+      </h2>
       <h4>Notation in Different Fields</h4>
       <p>Vector representation varies by field:</p>
       <ul>
         <li>
           <strong>Physics & Engineering:</strong> Often use <Katex
-            >{"\\hat{\\mathbf{i}}, \\hat{\\mathbf{j}}, \\hat{\\mathbf{k}}"}</Katex
+            >{"hat{mathbf{i}}, hat{mathbf{j}}, hat{mathbf{k}}"}</Katex
           > notation (good for forces, velocities).
         </li>
         <li>
           <strong>Computer Science & Graphics:</strong> Often use component form <Katex
-            >{"\\langle x, y, z \\rangle"}</Katex
+            >{"langle x, y, z \rangle"}</Katex
           > or <Katex>{"(x, y, z)"}</Katex> (good for points, directions in code).
         </li>
       </ul>
@@ -404,7 +399,7 @@
     </ContentCard>
 
     <ContentCard blockType="activity-block" class="-review">
-      <h2>Section Review</h2>
+      <h2 id="vector-section-review" data-nav-target="true">Section Review</h2>
       <SectionReview>
         <Quiz questions={vectorQuizData} showFeedback={true} />
       </SectionReview>

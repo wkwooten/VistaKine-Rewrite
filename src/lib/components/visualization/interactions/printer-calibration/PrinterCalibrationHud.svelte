@@ -11,15 +11,19 @@
   import NozzleControlPanel from "./NozzleControlPanel.svelte";
 
   // --- Props ---
-  // Use $props for all props in runes mode
   let {
     isFullscreen = $bindable(false),
-    relativeNozzleX = $bindable(),
-    relativeNozzleY = $bindable(),
-    relativeNozzleZ = $bindable(),
+    relativeNozzleX = $bindable(0),
+    relativeNozzleY = $bindable(0),
+    relativeNozzleZ = $bindable(0),
   } = $props();
 
-  // --- Local State (Nozzle state passed down) ---
+  // --- Derived State for Display ---
+  let formattedPosition = $derived(
+    `X: ${relativeNozzleX.toFixed(1)}, Y: ${relativeNozzleY.toFixed(
+      1
+    )}, Z: ${relativeNozzleZ.toFixed(1)}`
+  );
 
   // --- Event Handlers ---
   function handleResetScene() {
@@ -47,6 +51,11 @@
       bind:isFullscreen
       on:requestToggle={handleRequestToggle}
     />
+  </div>
+
+  <!-- NEW: Top Right Position Display -->
+  <div class="hud-position-display">
+    <span>{formattedPosition}</span>
   </div>
 
   <!-- Conditionally render DialogBox directly inside HUD -->
@@ -103,6 +112,25 @@
     display: flex;
     flex-direction: row;
     pointer-events: auto;
+  }
+
+  /* NEW: Styles for position display */
+  .hud-position-display {
+    position: absolute;
+    top: var(--space-xs, 4px); /* Align with top-left buttons */
+    right: var(--space-xs, 4px); /* Position in top right */
+    z-index: 10; /* Same level as other controls */
+    padding: var(--space-2xs, 2px) var(--space-xs, 4px);
+    background-color: var(--color-surface, #fefeff);
+    color: var(--color-text-primary, #1f2937);
+    border: 1px solid var(--color-border, rgba(0, 77, 159, 0.2));
+    box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.05));
+    font-size: var(--font-size-xs, 0.75rem);
+    border-radius: var(--radius-sm, 4px);
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+    font-family: var(--font-mono, monospace);
   }
 
   /* Container for bottom-right panel */

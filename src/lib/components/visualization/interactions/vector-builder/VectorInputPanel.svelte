@@ -16,12 +16,22 @@
     MAX_Z,
   } from "$lib/stores/vectorBuilderState";
   import { get } from "svelte/store";
+  import { onDestroy } from "svelte";
   // Import a Toggle component if available, otherwise use checkbox
   // Assuming a simple checkbox for now
   // import Toggle from '$lib/components/ui/Toggle.svelte'; // Example path
 
   // Use $props() for runes mode
   let { extraClass = "" } = $props<{ extraClass?: string }>();
+
+  // --- Constants for Long Press ---
+  const step = 1;
+  const HOLD_DELAY = 400; // ms before repeat starts
+  const HOLD_INTERVAL = 100; // ms between repeated steps
+
+  // --- State for Long Press ---
+  let holdTimers = $state<{ [key: string]: any | null }>({});
+  let holdIntervals = $state<{ [key: string]: any | null }>({});
 
   // --- Input Sanitization ---
   function handleIntegerInput(event: Event) {
@@ -31,7 +41,87 @@
     // Note: bind:value will automatically update the store with the sanitized value
   }
 
-  // Function to handle triggering the trace (moved here)
+  // --- Core Value Change Logic (Adapted) ---
+  function changeValue(
+    point: "start" | "end",
+    axis: "x" | "y" | "z",
+    direction: 1 | -1
+  ) {
+    const storeToUpdate = point === "start" ? startCoordsRaw : endCoordsRaw;
+    const currentRaw = get(storeToUpdate);
+    const currentValueStr = currentRaw[axis] ?? "0"; // Default to '0' if null/undefined
+    let currentValue = parseFloat(currentValueStr);
+    if (isNaN(currentValue)) currentValue = 0; // Default to 0 if parsing fails
+
+    let newValue = currentValue + direction * step;
+    let min: number, max: number;
+
+    switch (axis) {
+      case "x":
+        min = MIN_X;
+        max = MAX_X;
+        break;
+      case "y":
+        min = MIN_Y;
+        max = MAX_Y;
+        break;
+      case "z":
+        min = MIN_Z;
+        max = MAX_Z;
+        break;
+    }
+
+    // Clamp the value
+    newValue = Math.max(min, Math.min(max, newValue));
+
+    // Update the store with the new string value
+    storeToUpdate.update((current) => ({
+      ...current,
+      [axis]: String(newValue),
+    }));
+  }
+
+  // --- Long Press Handlers (Adapted) ---
+  function startHolding(
+    point: "start" | "end",
+    axis: "x" | "y" | "z",
+    direction: 1 | -1
+  ) {
+    const key = `${point}-${axis}-${direction}`;
+    stopHolding(point, axis, direction); // Clear existing timers/intervals
+
+    changeValue(point, axis, direction); // Initial single step
+
+    holdTimers[key] = setTimeout(() => {
+      holdIntervals[key] = setInterval(() => {
+        changeValue(point, axis, direction);
+      }, HOLD_INTERVAL);
+      holdTimers[key] = null;
+    }, HOLD_DELAY) as any;
+
+    holdTimers = { ...holdTimers };
+    holdIntervals = { ...holdIntervals };
+  }
+
+  function stopHolding(
+    point: "start" | "end",
+    axis: "x" | "y" | "z",
+    direction: 1 | -1
+  ) {
+    const key = `${point}-${axis}-${direction}`;
+    if (holdTimers[key]) {
+      clearTimeout(holdTimers[key]);
+      holdTimers[key] = null;
+    }
+    if (holdIntervals[key]) {
+      clearInterval(holdIntervals[key]);
+      holdIntervals[key] = null;
+    }
+    holdTimers = { ...holdTimers };
+    holdIntervals = { ...holdIntervals };
+  }
+
+  // --- Trace Logic (Keep existing) ---
   function handleTrace() {
     // TODO: Add input validation (ensure numbers, maybe check bounds)
     if (get(vectorData)) {
@@ -94,6 +184,16 @@
       }));
     }
   });
+
+  // --- Cleanup ---
+  onDestroy(() => {
+    Object.values(holdTimers).forEach(
+      (timerId) => timerId && clearTimeout(timerId)
+    );
+    Object.values(holdIntervals).forEach(
+      (intervalId) => intervalId && clearInterval(intervalId)
+    );
+  });
 </script>
 
 <div class="vector-input-panel {extraClass}">
@@ -105,35 +205,89 @@
         <!-- X Input Group -->
         <div class="axis-input-group" style="border-color: {$xAxisColor};">
           <span class="axis-label" style="color: {$xAxisColor};">X</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$startCoordsRaw.x}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "x", 1)}
+              onpointerup={() => stopHolding("start", "x", 1)}
+              onpointerleave={() => stopHolding("start", "x", 1)}
+              aria-label="Increase Start X">+</button
+            >
+            <input
+              type="number"
+              bind:value={$startCoordsRaw.x}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_X}
+              max={MAX_X}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "x", -1)}
+              onpointerup={() => stopHolding("start", "x", -1)}
+              onpointerleave={() => stopHolding("start", "x", -1)}
+              aria-label="Decrease Start X">-</button
+            >
+          </div>
         </div>
         <!-- Y Input Group -->
         <div class="axis-input-group" style="border-color: {$yAxisColor};">
           <span class="axis-label" style="color: {$yAxisColor};">Y</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$startCoordsRaw.y}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "y", 1)}
+              onpointerup={() => stopHolding("start", "y", 1)}
+              onpointerleave={() => stopHolding("start", "y", 1)}
+              aria-label="Increase Start Y">+</button
+            >
+            <input
+              type="number"
+              bind:value={$startCoordsRaw.y}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_Y}
+              max={MAX_Y}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "y", -1)}
+              onpointerup={() => stopHolding("start", "y", -1)}
+              onpointerleave={() => stopHolding("start", "y", -1)}
+              aria-label="Decrease Start Y">-</button
+            >
+          </div>
         </div>
         <!-- Z Input Group -->
         <div class="axis-input-group" style="border-color: {$zAxisColor};">
           <span class="axis-label" style="color: {$zAxisColor};">Z</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$startCoordsRaw.z}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "z", 1)}
+              onpointerup={() => stopHolding("start", "z", 1)}
+              onpointerleave={() => stopHolding("start", "z", 1)}
+              aria-label="Increase Start Z">+</button
+            >
+            <input
+              type="number"
+              bind:value={$startCoordsRaw.z}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_Z}
+              max={MAX_Z}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("start", "z", -1)}
+              onpointerup={() => stopHolding("start", "z", -1)}
+              onpointerleave={() => stopHolding("start", "z", -1)}
+              aria-label="Decrease Start Z">-</button
+            >
+          </div>
         </div>
       </div>
     </fieldset>
@@ -144,35 +298,89 @@
         <!-- X Input Group -->
         <div class="axis-input-group" style="border-color: {$xAxisColor};">
           <span class="axis-label" style="color: {$xAxisColor};">X</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$endCoordsRaw.x}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "x", 1)}
+              onpointerup={() => stopHolding("end", "x", 1)}
+              onpointerleave={() => stopHolding("end", "x", 1)}
+              aria-label="Increase End X">+</button
+            >
+            <input
+              type="number"
+              bind:value={$endCoordsRaw.x}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_X}
+              max={MAX_X}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "x", -1)}
+              onpointerup={() => stopHolding("end", "x", -1)}
+              onpointerleave={() => stopHolding("end", "x", -1)}
+              aria-label="Decrease End X">-</button
+            >
+          </div>
         </div>
         <!-- Y Input Group -->
         <div class="axis-input-group" style="border-color: {$yAxisColor};">
           <span class="axis-label" style="color: {$yAxisColor};">Y</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$endCoordsRaw.y}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "y", 1)}
+              onpointerup={() => stopHolding("end", "y", 1)}
+              onpointerleave={() => stopHolding("end", "y", 1)}
+              aria-label="Increase End Y">+</button
+            >
+            <input
+              type="number"
+              bind:value={$endCoordsRaw.y}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_Y}
+              max={MAX_Y}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "y", -1)}
+              onpointerup={() => stopHolding("end", "y", -1)}
+              onpointerleave={() => stopHolding("end", "y", -1)}
+              aria-label="Decrease End Y">-</button
+            >
+          </div>
         </div>
         <!-- Z Input Group -->
         <div class="axis-input-group" style="border-color: {$zAxisColor};">
           <span class="axis-label" style="color: {$zAxisColor};">Z</span>
-          <input
-            type="number"
-            step="1"
-            bind:value={$endCoordsRaw.z}
-            oninput={handleIntegerInput}
-            placeholder="0"
-          />
+          <div class="input-stepper">
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "z", 1)}
+              onpointerup={() => stopHolding("end", "z", 1)}
+              onpointerleave={() => stopHolding("end", "z", 1)}
+              aria-label="Increase End Z">+</button
+            >
+            <input
+              type="number"
+              bind:value={$endCoordsRaw.z}
+              oninput={handleIntegerInput}
+              placeholder="0"
+              min={MIN_Z}
+              max={MAX_Z}
+              onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+            />
+            <button
+              class="stepper-button"
+              onpointerdown={() => startHolding("end", "z", -1)}
+              onpointerup={() => stopHolding("end", "z", -1)}
+              onpointerleave={() => stopHolding("end", "z", -1)}
+              aria-label="Decrease End Z">-</button
+            >
+          </div>
         </div>
       </div>
     </fieldset>
@@ -208,6 +416,7 @@
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE/Edge */
+    touch-action: manipulation; // Prevent double-tap zoom on mobile
   }
 
   h4 {
@@ -215,6 +424,7 @@
     color: var(--color-text-secondary);
     font-weight: 600;
     font-size: 1.1em;
+    text-align: center; // Center title
   }
 
   .input-section {
@@ -260,10 +470,10 @@
   /* New styles for the input group */
   .axis-input-group {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: var(--space-3xs); // Reduce gap
+    padding: var(--space-3xs) var(--space-2xs);
     border-radius: var(--radius-md); /* Rounded corners for the group */
-    padding: var(--space-3xs) var(--space-2xs); /* Padding inside the group */
-    gap: var(--space-2xs); /* Gap between label and input */
     border: 2px solid; /* Base border, now solid - color set inline */
     background-color: transparent; /* Ensure background is transparent */
     transition:
@@ -276,13 +486,14 @@
     font-size: 0.9em;
     min-width: 1em; /* Ensure label takes some space */
     text-align: center;
+    margin-bottom: var(--space-3xs); // Add space below label
   }
 
   /* Remove old label styles */
   /* Remove input border styling that conflicts */
   .axis-input-group input[type="number"] {
-    width: 3ch; /* Reduced width from 5ch to 3ch */
-    padding: var(--space-3xs); /* Adjust padding */
+    width: 4.5ch; // Match NozzleControlPanel
+    padding: var(--space-3xs) var(--space-2xs); // Match
     font-size: 1em;
     background-color: var(--color-surface); /* Grey background */
     border-radius: var(--radius-sm); /* Rounded corners for input */
@@ -291,6 +502,7 @@
     border: none; /* Remove default border */
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle inset shadow */
     transition: box-shadow 0.2s ease;
+    order: 2; // Place input between buttons
 
     /* Hide spinners for Webkit browsers */
     &::-webkit-outer-spin-button,
@@ -319,6 +531,60 @@
   /* Focus style when invalid */
   .axis-input-group.invalid:focus-within {
     box-shadow: 0 0 3px 1px var(--color-error); /* Keep error shadow on focus */
+  }
+
+  /* NEW: Stepper layout */
+  .input-stepper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  /* NEW: Stepper button styles (adapted from NozzleControlPanel) */
+  .stepper-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5ch; // Match input width
+    height: auto;
+    padding: var(--space-3xs);
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 1;
+    color: var(--color-text-secondary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+      background-color 0.1s ease,
+      color 0.1s ease,
+      transform 0.1s ease;
+
+    &:first-child {
+      order: 1; /* '+' button on top */
+    }
+
+    &:last-child {
+      order: 3; /* '-' button on bottom */
+    }
+
+    &:hover {
+      background-color: var(
+        --color-surface-hover,
+        var(--color-accent-hover-bg)
+      );
+      color: var(--color-text-primary);
+    }
+
+    &:active {
+      background-color: var(
+        --color-surface-active,
+        var(--color-accent-active-bg)
+      );
+      transform: scale(0.95);
+    }
   }
 
   /* Add styles for controls-section (copied from old VectorOutputPanel) */

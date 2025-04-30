@@ -3,9 +3,9 @@
 <script lang="ts">
   import { currentSection } from "$lib/stores/appState.js";
   import Footer from "$lib/components/Footer.svelte";
-  import PageNav from "$lib/components/PageNav.svelte";
   import { getChapterBySlug } from "$lib/data/chapters";
   import { onMount } from "svelte";
+  import SectionMap from "$lib/components/ui/SectionMap.svelte";
 
   export let chapterSlug: string;
   export let sectionSlug: string;
@@ -18,84 +18,36 @@
   export let chapterNumber: number | string | undefined = undefined;
 
   // For debugging
-  onMount(() => {
-    console.log(
-      `SectionTemplate mounted with chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`,
-    );
-  });
+  // onMount(() => {
+  //   console.log(
+  //     `SectionTemplate mounted with chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`
+  //   );
+  // });
 
-  $: {
-    console.log(
-      `SectionTemplate props updated: chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`,
-    );
-  }
+  // $: {
+  //   console.log(
+  //     `SectionTemplate props updated: chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`
+  //   );
+  // }
 
   $: chapter = getChapterBySlug(chapterSlug);
   $: section = chapter?.sections.find((s) => s.slug === sectionSlug);
 
-  $: {
-    if (chapter) {
-      console.log(`Found chapter: ${chapter.title}`);
-    } else {
-      console.error(`Chapter not found: ${chapterSlug}`);
-    }
+  // $: {
+  //   if (chapter) {
+  //     console.log(`Found chapter: ${chapter.title}`);
+  //   } else {
+  //     console.error(`Chapter not found: ${chapterSlug}`);
+  //   }
 
-    if (section) {
-      console.log(`Found section: ${section.title}`);
-    } else if (chapter) {
-      console.error(
-        `Section not found: ${sectionSlug} in chapter ${chapter.title}`,
-      );
-    }
-  }
-
-  // Get previous and next sections for navigation
-  $: sectionIndex =
-    chapter?.sections.findIndex((s) => s.slug === sectionSlug) ?? -1;
-  $: prevSectionData =
-    sectionIndex > 0 ? chapter?.sections[sectionIndex - 1] : null;
-  $: nextSectionData =
-    sectionIndex < (chapter?.sections.length ?? 0) - 1
-      ? chapter?.sections[sectionIndex + 1]
-      : null;
-
-  // Create simplified objects for PageNav, including the number
-  $: prevSectionForNav = prevSectionData
-    ? {
-        slug: prevSectionData.slug,
-        title: prevSectionData.title,
-        number: prevSectionData.number,
-      }
-    : null;
-
-  $: nextSectionForNav = nextSectionData
-    ? {
-        slug: nextSectionData.slug,
-        title: nextSectionData.title,
-        number: nextSectionData.number,
-      }
-    : null;
-
-  // Handle chapter changes if last or first section
-  $: prevChapterSlug = sectionIndex === 0 ? chapter?.prevChapter : null;
-  $: nextChapterSlug =
-    sectionIndex === (chapter?.sections.length ?? 0) - 1
-      ? chapter?.nextChapter
-      : null;
-
-  // Get previous and next chapter objects for navigation
-  $: prevChapterObj = prevChapterSlug
-    ? {
-        slug: prevChapterSlug,
-        title: getChapterBySlug(prevChapterSlug)?.title || "Previous Chapter",
-      }
-    : null;
-  $: nextChapterObj = nextChapterSlug
-    ? {
-        slug: nextChapterSlug,
-        title: getChapterBySlug(nextChapterSlug)?.title || "Next Chapter",
-      }
-    : null;
+  //   if (section) {
+  //     console.log(`Found section: ${section.title}`);
+  //   } else if (chapter) {
+  //     console.error(
+  //       `Section not found: ${sectionSlug} in chapter ${chapter.title}`
+  //     );
+  //   }
+  // }
 </script>
 
 <svelte:head>
@@ -104,67 +56,76 @@
   >
 </svelte:head>
 
-<div class="chapter section-container {themeClass}">
-  <div class="section-content-wrapper">
-    <PageNav
-      prevSection={prevSectionForNav}
-      nextSection={nextSectionForNav}
-      prevChapter={prevChapterObj}
-      nextChapter={nextChapterObj}
-      {currentChapterSlug}
-      {currentChapterTitle}
-      currentChapterNumber={chapterNumber}
-    />
+<div class="section-container {themeClass}">
+  <main class="main-content-area">
+    <div class="section-content-wrapper">
+      <!-- Standardized Section Title -->
+      {#if section}
+        <h1 class="section-title">
+          <span class="section-number-prefix">Section {section.number}:</span>
+          <br /> <span class="section-title-main">{section.title}</span>
+        </h1>
+      {/if}
 
-    <!-- Standardized Section Title -->
-    {#if section}
-      <h1 class="section-title">
-        <span class="section-number-prefix">Section {section.number}:</span>
-        <br /> <span class="section-title-main">{section.title}</span>
-      </h1>
-    {/if}
+      <article class="section-content">
+        <!-- Content from specific section .svelte file goes here -->
+        <slot></slot>
+      </article>
+    </div>
+  </main>
 
-    <article class="section-content">
-      <slot></slot>
-    </article>
-
-    <PageNav
-      prevSection={prevSectionForNav}
-      nextSection={nextSectionForNav}
-      prevChapter={prevChapterObj}
-      nextChapter={nextChapterObj}
-      {currentChapterSlug}
-      {currentChapterTitle}
-      currentChapterNumber={chapterNumber}
-    />
-  </div>
-  <Footer />
+  <!-- Section Map (Desktop) -->
+  <SectionMap />
 </div>
+<!-- Footer moved outside the main flex container to allow map positioning -->
+<Footer />
 
 <style lang="scss">
   @use "$lib/styles/variables" as vars;
 
   .section-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-l);
+    min-height: calc(100vh - var(--footer-height, 100px));
     color: var(--color-text-primary);
+    padding: 0 var(--space-s);
+    width: 100%;
+
+    @media (max-width: 1023px) {
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+      align-items: stretch;
+    }
+  }
+
+  .main-content-area {
+    flex: 1;
+    max-width: var(--wide-content-width);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    @media (max-width: 1023px) {
+      max-width: 100%;
+    }
   }
 
   .section-content-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: var(--wide-content-width);
-    padding: var(--space-s);
+    padding: var(--space-s) 0;
     gap: var(--space-l);
     flex-grow: 1;
 
     @media (max-width: vars.$breakpoint-lg) {
-      padding: var(--space-xs) 0;
       gap: var(--space-l);
-      max-width: 100%;
+    }
+    @media (max-width: 1023px) {
+      padding: var(--space-s);
     }
   }
 
@@ -218,7 +179,6 @@
   /* Generic heading styles for slotted content (typically section sub-headings) */
   :global(h2) {
     font-size: var(--step-2);
-    /* color: var(--chapter-color-dark, var(--color-text-primary)); */ // Commented out color override
     margin-bottom: var(--space-m);
     padding-bottom: var(--space-xs);
     border-bottom: 1px solid var(--color-border);
@@ -248,8 +208,7 @@
 
   /* Specific adjustments for review blocks (which are activity blocks) */
   :global(.activity-block.-review) {
-    /* Border/padding handled by base .activity-block card style */
-    margin-top: var(--space-xl); /* Keep margin */
+    margin-top: var(--space-xl);
   }
 
   /* Constrains width for prose content within slotted blocks */
@@ -273,17 +232,13 @@
   }
 
   :global(.content-card.activity-block.-review) {
-    /* Example: border-top: 3px solid var(--color-accent); */
-    margin-top: var(
-      --space-xl
-    ); // Ensure review margin is kept (if different from base card)
+    margin-top: var(--space-xl);
   }
 
   :global(.content-card.explanation-block) {
     background-color: var(--color-background);
     text-align: center;
 
-    // Keep list styles associated with explanation-block
     & ol,
     & ul {
       text-align: left;
@@ -297,31 +252,37 @@
     }
   }
 
-  /* Non-card global styles remain separate */
   :global(.definition-list) {
     margin: var(--space-m) 0;
-    padding-left: var(--space-l); /* Indent the list slightly */
-    border-left: 3px solid var(--color-accent-secondary); /* Add a visual marker */
-    background-color: var(
-      --color-surface-100
-    ); /* Slight background distinction */
+    padding-left: var(--space-l);
+    border-left: 3px solid var(--color-accent-secondary);
+    background-color: var(--color-surface-100);
     padding-top: var(--space-xs);
     padding-bottom: var(--space-xs);
-    border-radius: 0 var(--radius-2) var(--radius-2) 0; /* Optional: slightly round the inner corners */
+    border-radius: 0 var(--radius-2) var(--radius-2) 0;
   }
 
   :global(.definition-list dt) {
-    font-weight: 600; /* Make the term stand out */
-    /* color: var(--color-accent); Optional: Use accent color */
+    font-weight: 600;
   }
 
   :global(.definition-list dd) {
-    margin-left: 0; /* Reset default margin */
-    margin-bottom: var(--space-s); /* Space below definition */
-    padding-left: var(--space-s); /* Indent definition relative to term */
+    margin-left: 0;
+    margin-bottom: var(--space-s);
+    padding-left: var(--space-s);
   }
 
   :global(.definition-list dd:last-child) {
     margin-bottom: 0;
+  }
+
+  :global(app-footer) {
+    width: 100%;
+    margin-top: auto;
+  }
+
+  /* Apply scroll margin to nav targets */
+  :global([data-nav-target="true"]) {
+    scroll-margin-top: calc(var(--navbar-height, 80px) + 4rem);
   }
 </style>

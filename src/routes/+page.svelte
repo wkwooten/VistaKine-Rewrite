@@ -114,16 +114,13 @@
   }
 
   .hero-content-card {
-    background-color: var(--color-surface);
+    background-color: var(--color-accent);
     border: 2px solid var(--color-border-light);
-    padding: 40px 60px 60px 60px; // Increased bottom padding to 60px
+    padding: var(--space-xl) var(--space-m); // Increased bottom padding to 60px
     margin-top: 0;
     max-width: 720px;
-    margin-bottom: var(
-      --sidebar-width
-    ); // This comes from variables, might not align
+    margin-inline: 20px;
     width: 100%;
-    border-radius: var(--radius-lg); // Added border radius for consistency
   }
 
   /* Styles for the inner content div - Now a single column */
@@ -141,13 +138,6 @@
     align-items: center;
     gap: 15px; // Reduced gap between logo, separator, and tagline
     width: 100%;
-
-    /* Target the AnimatedLogo component specifically */
-    :global(.animated-logo-container) {
-      width: clamp(180px, 30vw, 300px);
-      height: auto;
-      // Removed margin-bottom, gap handles spacing
-    }
   }
 
   .tagline {
@@ -158,9 +148,9 @@
 
   .hero-content-card .tagline {
     /* Target tagline within the hero card */
-    font-size: clamp(var(--step--1), 1.5vw + 0.5rem, var(--step-0));
+    font-size: var(--step-0);
     margin-bottom: 0;
-    color: var(--color-text-primary);
+    color: var(--color-surface);
     opacity: 0.8;
     line-height: 1.5;
     max-width: 60ch; // Limit tagline width for readability

@@ -94,7 +94,7 @@
       .clone()
       .add(new Vector3(relativeNozzleX, relativeNozzleY, relativeNozzleZ));
     console.log(
-      `[PrinterCalibration] Relative state changed. Setting animated target world pos to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`,
+      `[PrinterCalibration] Relative state changed. Setting animated target world pos to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`
     );
     animatedPosition.set(targetWorldPosition);
   });
@@ -117,7 +117,7 @@
         worldPos: cornerOriginOffset
           .clone()
           .add(new Vector3(target.x, target.y, target.z)),
-      }),
+      })
     );
   });
 
@@ -141,7 +141,7 @@
           if (target.y === 0 && currentStage === 1) {
             const nozzleXZ = new Vector2(
               currentNozzlePos.x,
-              currentNozzlePos.z,
+              currentNozzlePos.z
             );
             const targetXZ = new Vector2(targetWorldPos.x, targetWorldPos.z);
             distance = nozzleXZ.distanceTo(targetXZ);
@@ -159,7 +159,7 @@
             newlyHit = true;
           }
         }
-      },
+      }
     );
 
     if (newlyHit) {
@@ -184,7 +184,7 @@
       } else if (hitTargets.size === targets.length && targets.length > 0) {
         if (currentStage === 1) {
           console.log(
-            "[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog.",
+            "[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog."
           );
           setTimeout(
             () => {
@@ -212,11 +212,11 @@
               ]);
               dispatch("stageComplete");
             },
-            firstTargetHitThisUpdate ? 2500 : 0,
+            firstTargetHitThisUpdate ? 2500 : 0
           );
         } else if (currentStage === 2) {
           console.log(
-            "[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog.",
+            "[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog."
           );
           setTimeout(
             () => {
@@ -239,7 +239,7 @@
               ]);
               dispatch("allStagesComplete");
             },
-            firstTargetHitThisUpdate ? 2500 : 0,
+            firstTargetHitThisUpdate ? 2500 : 0
           );
         }
       }
@@ -372,9 +372,7 @@
     maxPolarAngle={Math.PI / 2}
     maxDistance={50}
     minDistance={10}
-  >
-    <Gizmo placement="bottom-left" />
-  </OrbitControls>
+  />
 </T.PerspectiveCamera>
 
 <!-- Use Extracted Components -->

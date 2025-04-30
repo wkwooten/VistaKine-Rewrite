@@ -1,11 +1,12 @@
+<svelte:options namespace="html" />
+
 <script lang="ts">
-  import { currentSection } from '$lib/stores/appState';
-  import PageNav from '$lib/components/PageNav.svelte';
-  import Footer from '$lib/components/Footer.svelte';
-  import ChapterHeaderNav from '$lib/components/ChapterHeaderNav.svelte';
-  import Keyword from '$lib/components/Keyword.svelte';
-  import { ArrowRight } from 'lucide-svelte';
-  import '$lib/styles/chapter-styles.scss';
+  import { currentSection } from "$lib/stores/appState";
+  import Footer from "$lib/components/Footer.svelte";
+  import ChapterHeaderNav from "$lib/components/ChapterHeaderNav.svelte";
+  import Keyword from "$lib/components/Keyword.svelte";
+  import { ArrowRight } from "lucide-svelte";
+  import "$lib/styles/chapter-styles.scss";
 
   interface Chapter {
     slug: string;
@@ -17,40 +18,29 @@
   export let prevChapter: string | Chapter | null = null;
   export let nextChapter: string | Chapter | null = null;
   export let currentChapterSlug: string;
-  export let themeClass: string = '';
-  export let chapterIntro: string = '';
-  export let chapterNumber: string = '';
+  export let themeClass: string = "";
+  export let chapterIntro: string = "";
+  export let chapterNumber: string = "";
 
   // Get the first section to direct users there
-  $: firstSection = Array.isArray(chapterSections) && chapterSections.length > 0 ? chapterSections[0] : null;
-
-  // Format chapter objects if they're strings
-  $: prevChapterObj = typeof prevChapter === 'string'
-    ? { slug: prevChapter, title: 'Previous Chapter' }
-    : prevChapter;
-
-  $: nextChapterObj = typeof nextChapter === 'string'
-    ? { slug: nextChapter, title: 'Next Chapter' }
-    : nextChapter;
+  $: firstSection =
+    Array.isArray(chapterSections) && chapterSections.length > 0
+      ? chapterSections[0]
+      : null;
 </script>
-
-<svelte:options namespace="html" />
 
 <svelte:head>
   <title>{chapterTitle} | VistaKine</title>
 </svelte:head>
 
 <div class="chapter {themeClass}">
-
   <div class="container">
-    <PageNav
-    prevChapter={prevChapterObj}
-    nextChapter={nextChapterObj}
-  />
-
     <div class="chapter-wrapper">
       <header class="chapter-header">
-        <h1>{chapterNumber ? `${chapterNumber}: ` : ''}<br> {chapterTitle}</h1>
+        <h1>
+          {chapterNumber ? `${chapterNumber}: ` : ""}<br />
+          {chapterTitle}
+        </h1>
         {#if chapterIntro}
           <p class="chapter-intro">
             {@html chapterIntro}
@@ -62,13 +52,18 @@
         <p class="section-intro">This chapter covers the following topics:</p>
         <div class="section-list">
           {#each chapterSections || [] as section, index}
-            <a href="/chapter/{currentChapterSlug}/{section.slug}" class="section-card">
+            <a
+              href="/chapter/{currentChapterSlug}/{section.slug}"
+              class="section-card"
+            >
               <div class="section-content">
                 <h2>{section.title}</h2>
                 {#if section.description}
                   <p>{section.description}</p>
                 {:else}
-                  <p>Explore this section to learn more about {section.title.toLowerCase()}.</p>
+                  <p>
+                    Explore this section to learn more about {section.title.toLowerCase()}.
+                  </p>
                 {/if}
                 <span class="section-link">
                   Explore Section
@@ -84,7 +79,6 @@
   </div>
   <Footer />
 </div>
-
 
 <style lang="scss">
   .chapter {
@@ -128,7 +122,9 @@
     padding-bottom: var(--space-s);
     border-radius: var(--radius-md);
     background-color: var(--color-surface);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     display: flex;
     overflow: hidden;
     text-decoration: none;
