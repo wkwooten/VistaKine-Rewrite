@@ -13,43 +13,82 @@
   let isMobile = false;
   let lgBreakpointValue = 1024; // Default fallback (numeric)
 
+  // State for top nav visibility and scroll tracking - Use Svelte 5 $state rune correctly
+  let topNavVisible = $state(true);
+  let lastScrollY = $state(0);
+  let mainContentElement: HTMLElement | null = null;
+  let navBarHeight = 80; // Default height, will try to read from CSS
+
+  // Define handlers outside the if (browser) block
+  function handleScroll() {
+    if (!mainContentElement) return;
+    const currentScrollY = mainContentElement.scrollTop;
+    if (currentScrollY < navBarHeight) {
+      topNavVisible = true;
+    } else if (currentScrollY > lastScrollY) {
+      topNavVisible = false;
+    } else {
+      topNavVisible = true;
+    }
+    lastScrollY = currentScrollY;
+  }
+
+  function checkMobile() {
+    if (browser) {
+      isMobile = window.innerWidth <= lgBreakpointValue;
+      if (!isMobile && mobileNavOpen) {
+        mobileNavOpen = false;
+      }
+    }
+  }
+
   onMount(() => {
     parallaxBackground();
 
     if (browser) {
-      // Read the CSS custom property once on mount
+      // Read CSS variables
       try {
         const styles = getComputedStyle(document.documentElement);
         const bpValueString = styles.getPropertyValue("--breakpoint-lg").trim();
         if (bpValueString) {
-          // Parse the value (remove "px" and convert to number)
           const parsedValue = parseInt(bpValueString, 10);
           if (!isNaN(parsedValue)) {
             lgBreakpointValue = parsedValue;
           }
         }
-      } catch (error) {
-        console.error("Error reading --breakpoint-lg CSS variable:", error);
-        // Keep fallback value
-      }
-    }
-
-    function checkMobile() {
-      if (browser) {
-        // Use the retrieved (or fallback) breakpoint value
-        isMobile = window.innerWidth <= lgBreakpointValue;
-        if (!isMobile && mobileNavOpen) {
-          mobileNavOpen = false;
+        const navHeightString = styles
+          .getPropertyValue("--navbar-height")
+          .trim();
+        if (navHeightString) {
+          const parsedNavHeight = parseInt(navHeightString, 10);
+          if (!isNaN(parsedNavHeight)) {
+            navBarHeight = parsedNavHeight;
+          }
         }
+      } catch (error) {
+        console.error("Error reading CSS variables:", error);
       }
-    }
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+      // Add listeners
+      if (mainContentElement) {
+        mainContentElement.addEventListener("scroll", handleScroll, {
+          passive: true,
+        });
+      } else {
+        console.warn("Main content element not found for scroll listener.");
+      }
+      window.addEventListener("resize", checkMobile);
+
+      // Initial check
+      checkMobile();
+    }
 
     return () => {
       if (browser) {
         window.removeEventListener("resize", checkMobile);
+        if (mainContentElement) {
+          mainContentElement.removeEventListener("scroll", handleScroll);
+        }
       }
     };
   });
@@ -66,7 +105,10 @@
     mobileNavOpen = false;
   }
 
-  $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
+  let currentChapterSlug = $derived($page.params.slug || null);
+
+  // CONVERT $: assignment to $derived
+  // $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -155,8 +197,8 @@
     ></div>
   {/if}
 
-  <main class="content">
-    <div class="top-nav-bar">
+  <main class="content" bind:this={mainContentElement}>
+    <div class="top-nav-bar" class:hidden={!topNavVisible}>
       <!-- New Wrapper Structure -->
       <div class="page-nav-wrapper">
         <!-- Container for the actual PageNav -->
@@ -306,7 +348,7 @@
     top: 0; /* Changed from bottom */
     left: 0;
     width: 100%;
-    height: 80px; /* As requested */
+    height: var(--navbar-height, 80px); // Use variable or default
     background-color: var(
       --color-background-alt,
       var(--color-background)
@@ -316,6 +358,12 @@
     display: flex; /* Use flex to easily center/align content */
     align-items: center;
     justify-content: center; /* Center the wrapper inside */
+    transition: transform 0.3s ease; // ADD transition for hiding
+
+    // ADD style for hidden state
+    &.hidden {
+      transform: translateY(-100%);
+    }
 
     // ADD styles for the wrapper structure
     .page-nav-wrapper {
