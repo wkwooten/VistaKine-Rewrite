@@ -9,6 +9,8 @@
   import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
   import { browser } from "$app/environment";
 
+  let { children } = $props(); // Add children prop
+
   let mobileNavOpen = false;
   let isMobile = false;
   let lgBreakpointValue = 1024; // Default fallback (numeric)
@@ -220,7 +222,7 @@
         <div class="page-nav-spacer"></div>
       </div>
     </div>
-    <slot />
+    {@render children()}
   </main>
 </div>
 
