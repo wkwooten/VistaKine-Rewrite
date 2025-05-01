@@ -121,7 +121,7 @@
 
   /* Keep styles for the animated line/stroke */
   .hero-logo-svg .logo-line {
-    stroke: var(--color-surface);
+    stroke: var(--color-accent);
     stroke-width: 0.6838px; /* Match original stroke width from SVG defs */
     fill: none;
     stroke-linecap: round;

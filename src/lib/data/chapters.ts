@@ -3,20 +3,20 @@ export interface Section {
   id: string;
   title: string;
   slug: string; // Add a URL-friendly slug for routing
-  description?: string; // Optional description of the section
-  number?: string; // ADDED: Optional section number
+  number: string; // Section number as string (e.g., "1.1")
+  description?: string; // Optional short description
+  component?: ConstructorOfATypedSvelteComponent; // Component to render (Optional)
 }
 
 // Define the structure for a chapter
 export interface Chapter {
-  title: string;
   slug: string;
+  title: string;
+  number?: string | number; // Optional chapter number
   description: string;
-  intro?: string; // HTML intro content for the chapter overview
+  themeColor?: string; // Optional theme color
   sections: Section[];
-  prevChapter: string | null; // Store slugs for prev/next
-  nextChapter: string | null;
-  chapterNumber: number;
+  component?: ConstructorOfATypedSvelteComponent; // For chapter intro page
 }
 
 // Define all chapters with their data
@@ -25,30 +25,24 @@ export const chapters: Chapter[] = [
     title: 'Understanding 3D Space',
     slug: 'understanding-3d-space',
     description: 'Introduction to coordinate systems and vectors.',
-    intro: 'This chapter introduces the fundamental concepts of <span class="keyword">3D Space</span> and <span class="keyword">coordinate systems</span>, essential for understanding <span class="keyword">kinematics</span> and <span class="keyword">dynamics</span>.',
     sections: [
       { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
       { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2" },
       { id: "vector-operations", title: "Vector Operations", slug: "vector-operations", number: "1.3" }
     ],
-    prevChapter: null,
-    nextChapter: 'kinematics',
-    chapterNumber: 1
+    component: undefined
   },
   {
     title: 'Kinematics',
     slug: 'kinematics',
     description: 'Describing motion in 1D, 2D, and 3D.',
-    intro: 'This chapter introduces the fundamental concepts of <span class="keyword">kinematics</span>, the study of motion.',
     sections: [
         { id: "displacement-velocity", title: "Displacement & Velocity", slug: "displacement-velocity", description: "Learn about position changes and the rate at which objects move in specific directions.", number: "2.1" },
         { id: "acceleration", title: "Acceleration", slug: "acceleration", description: "Understand how velocity changes over time and the equations that describe uniformly accelerated motion.", number: "2.2" },
         { id: "projectile-motion", title: "Projectile Motion", slug: "projectile-motion", description: "Analyze the parabolic paths of objects moving under the influence of gravity alone.", number: "2.3" },
         { id: "relative-motion", title: "Relative Motion", slug: "relative-motion", description: "Explore how motion appears different from various reference frames and how to convert between them.", number: "2.4" }
     ],
-    prevChapter: 'understanding-3d-space',
-    nextChapter: 'dynamics',
-    chapterNumber: 2
+    component: undefined
   },
   {
     title: 'Dynamics',
@@ -58,9 +52,7 @@ export const chapters: Chapter[] = [
       // Add section IDs for Dynamics later
       // Example: { id: "newtons-laws", title: "3.1 Newton's Laws" }
     ],
-    prevChapter: 'kinematics',
-    nextChapter: 'energy',
-    chapterNumber: 3
+    component: undefined
   },
   {
     title: 'Work, Energy, and Power',
@@ -69,9 +61,7 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Energy later
     ],
-    prevChapter: 'dynamics',
-    nextChapter: 'momentum',
-    chapterNumber: 4
+    component: undefined
   },
   {
     title: 'Momentum and Collisions',
@@ -80,9 +70,7 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Momentum later
     ],
-    prevChapter: 'energy',
-    nextChapter: 'circular-motion',
-    chapterNumber: 5
+    component: undefined
   },
   {
     title: 'Circular Motion and Gravitation',
@@ -91,9 +79,7 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Circular Motion later
     ],
-    prevChapter: 'momentum',
-    nextChapter: 'rotational-motion',
-    chapterNumber: 6
+    component: undefined
   },
   {
     title: 'Rotational Motion',
@@ -102,9 +88,7 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Rotational Motion later
     ],
-    prevChapter: 'circular-motion',
-    nextChapter: null, // This is the last chapter for now
-    chapterNumber: 7
+    component: undefined
   }
   // Add more chapters as needed
 ];
@@ -130,7 +114,7 @@ export function getChapterBySlug(slug: string): Chapter | undefined {
 }
 
 export function getChapterByNumber(chapterNumber: number): Chapter | undefined {
-  return chapters.find(chapter => chapter.chapterNumber === chapterNumber);
+  return chapters.find(chapter => chapter.number === chapterNumber);
 }
 
 // For simplified navigation needs (sidebar, TOC) - returns a structure Navigation.svelte can use
@@ -143,4 +127,13 @@ export function getChapterList() {
     sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug })),
     description // Include description if needed by the component
   }));
+}
+
+// Helper function to get a section by chapter and section slugs
+export function getSectionBySlugs(
+  chapterSlug: string,
+  sectionSlug: string
+): Section | undefined {
+  const chapter = getChapterBySlug(chapterSlug);
+  return chapter?.sections.find((section) => section.slug === sectionSlug);
 }

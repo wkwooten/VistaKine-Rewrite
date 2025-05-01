@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { ArrowLeft, ArrowRight, Menu } from "lucide-svelte";
+  import { ArrowLeft, ArrowRight, Menu, List } from "lucide-svelte";
   import { page } from "$app/stores"; // Import page store to get chapter title if needed
+  import { sectionMapOpen } from "$lib/stores/uiStores";
 
   // Define types for the expected navigation structures
   type ChapterLink = { slug: string; title: string } | null;
@@ -8,25 +9,34 @@
     slug: string;
     title: string;
     id?: string;
-    number?: string; // Added optional section number
+    number?: string;
   } | null;
 
-  // Props for chapter navigation
-  export let prevChapter: ChapterLink = null;
-  export let nextChapter: ChapterLink = null;
+  // Define props using $props
+  type PageNavProps = {
+    prevChapter?: ChapterLink;
+    nextChapter?: ChapterLink;
+    prevSection?: SectionLink;
+    nextSection?: SectionLink;
+    currentChapterSlug: string;
+    currentChapterTitle?: string | null;
+    currentChapterNumber?: number | string | null;
+  };
 
-  // Props for section navigation
-  export let prevSection: SectionLink = null;
-  export let nextSection: SectionLink = null;
-  export let currentChapterSlug: string = "";
-  // Optionally pass chapter title if available, otherwise try to infer
-  export let currentChapterTitle: string | null = null;
-  // ADDED: Accept chapter number
-  export let currentChapterNumber: number | string | null = null;
+  // Revert getting full props object
+  let {
+    prevChapter = null,
+    nextChapter = null,
+    prevSection = null,
+    nextSection = null,
+    currentChapterSlug,
+    currentChapterTitle = null,
+    currentChapterNumber = null,
+  }: PageNavProps = $props();
 
-  // Determine navigation mode
-  $: hasChapterNav = prevChapter !== null || nextChapter !== null;
-  $: hasSectionNav = prevSection !== null || nextSection !== null;
+  // Determine navigation mode using $derived
+  const hasChapterNav = $derived(prevChapter !== null || nextChapter !== null);
+  const hasSectionNav = $derived(prevSection !== null || nextSection !== null);
 
   // Helper to format slug to title if title prop not passed
   function formatSlugToTitle(slug: string): string {
@@ -36,19 +46,19 @@
       .join(" ");
   }
 
-  // Determine the title for the current chapter link
-  $: chapterIntroTitle =
+  // Determine the title for the current chapter link using $derived
+  const chapterIntroTitle = $derived(
     currentChapterTitle ??
-    (currentChapterSlug
-      ? formatSlugToTitle(currentChapterSlug)
-      : "Chapter Intro");
+      (currentChapterSlug
+        ? formatSlugToTitle(currentChapterSlug)
+        : "Chapter Intro")
+  );
 </script>
 
 <nav class="page-nav">
   <div class="nav-links">
-    <!-- Previous link logic adjusted -->
+    <!-- Previous link logic -->
     {#if prevSection && currentChapterSlug}
-      <!-- Link to Previous Section -->
       <a
         href={`/chapter/${currentChapterSlug}/${prevSection.slug}`}
         class="nav-link prev"
@@ -61,7 +71,6 @@
         </div>
       </a>
     {:else if !prevSection && currentChapterSlug}
-      <!-- Link to Current Chapter Intro -->
       <a
         href={`/chapter/${currentChapterSlug}`}
         class="nav-link prev chapter-intro-link"
@@ -74,7 +83,6 @@
         </div>
       </a>
     {:else if prevChapter}
-      <!-- Link to Previous Chapter Intro -->
       <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
         <ArrowLeft size={18} />
         <div class="nav-content">
@@ -83,7 +91,6 @@
         </div>
       </a>
     {:else}
-      <!-- Fallback Link to Home -->
       <a href="/" class="nav-link prev">
         <ArrowLeft size={18} />
         <div class="nav-content">
@@ -93,15 +100,30 @@
       </a>
     {/if}
 
-    <!-- Table of Contents link in the middle -->
-    <a href="/chapter/toc" class="nav-link toc">
+    <!-- Table of Contents link (Always shown now) -->
+    <!-- REMOVED Old TOC Link -->
+    <!-- <a href="/chapter/toc" class="nav-link toc">
       <Menu size={18} />
       <div class="nav-content">
         <div class="nav-title">Table of Contents</div>
       </div>
-    </a>
+    </a> -->
 
-    <!-- Next link (section takes priority over chapter) -->
+    <!-- ADD Section Map Toggle Button -->
+    <button
+      type="button"
+      class="nav-link section-map-toggle"
+      aria-label="Toggle section navigation"
+      onclick={() => sectionMapOpen.update((v) => !v)}
+    >
+      <List size={18} />
+      <div class="nav-content mobile-hidden-text">
+        <!-- Hide text on mobile -->
+        <div class="nav-title">Section Map</div>
+      </div>
+    </button>
+
+    <!-- Next link logic -->
     {#if nextSection && currentChapterSlug}
       <a
         href={`/chapter/${currentChapterSlug}/${nextSection.slug}`}
@@ -134,14 +156,11 @@
 </nav>
 
 <style lang="scss">
+  @use "$lib/styles/variables" as vars;
+
   .page-nav {
-    /* margin-block: var(--space-l);
-    padding: var(--space-m) var(--space-l); */
-    /* border-bottom: 1px solid var(--color-border); */
     text-align: center;
     width: 100%;
-    /* background-color: var(--color-background); */
-    /* border-radius: var(--radius-md); */
   }
 
   .nav-links {
@@ -149,11 +168,7 @@
     justify-content: space-between;
     max-width: var(--max-content-width, 1200px);
     margin: 0 auto;
-
-    @media (max-width: 768px) {
-      flex-direction: row;
-      gap: var(--space-xs);
-    }
+    gap: var(--space-xs); // Keep gap for mobile
   }
 
   .nav-link {
@@ -162,13 +177,15 @@
     gap: var(--space-2xs);
     color: var(--color-text-primary);
     text-decoration: none;
-    border-inline: 1px solid var(--color-border);
+    /* border: 1px solid var(--color-border); */
     padding: var(--space-xs) var(--space-s);
-    /* border-radius: var(--radius-md); */
     transition: all 0.2s ease;
     font-size: var(--step--1);
     flex: 1;
     min-width: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: inherit;
 
     .nav-content {
       display: flex;
@@ -189,37 +206,45 @@
       text-overflow: ellipsis;
     }
 
-    &:hover {
+    &:hover:not(.disabled) {
       background-color: var(--color-accent-hover-bg);
-      transform: translateY(-2px);
     }
 
     &.prev {
       justify-content: flex-start;
       text-align: left;
+      border-right: none;
     }
 
     &.next {
       justify-content: flex-end;
       text-align: right;
+      border-left: none;
 
       .nav-content {
         align-items: flex-end;
       }
     }
 
-    &.toc {
+    &.section-map-toggle {
+      display: none; // Hide by default (on desktop)
       justify-content: center;
       text-align: center;
+      flex-grow: 0;
+      flex-basis: auto;
+      padding-left: var(--space-m);
+      padding-right: var(--space-m);
+      border-inline: 1px solid var(--color-border);
 
       .nav-content {
         align-items: center;
       }
     }
 
-    @media (max-width: 768px) {
-      padding: var(--space-2xs) var(--space-3xs);
-      gap: var(--space-3xs);
+    /* Mobile Styles */
+    @media (max-width: vars.$breakpoint-lg) {
+      padding: var(--space-xs) var(--space-s);
+      gap: var(--space-2xs);
       flex: 1;
       min-width: 0;
 
@@ -228,78 +253,72 @@
       }
 
       .nav-title {
-        font-size: var(--step--2);
+        font-size: var(--step--1);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      .nav-content {
-        flex: 0;
-      }
-
-      /* Ensure TOC remains centered - adjust as needed for row layout */
-      &.toc {
-        justify-content: center;
-        flex-grow: 0; /* Don't allow TOC to grow */
-        flex-basis: auto; /* Base size on icon */
-        padding-left: var(--space-xs); /* Add some padding */
-        padding-right: var(--space-xs);
-
-        .nav-content {
-          display: none; /* Hide text content for TOC */
-        }
-      }
+      // Hide text content for specific mobile links
       &.prev,
       &.next {
-        /* flex-grow: 1; Allow prev/next to take remaining space */
         .nav-title {
-          display: none; /* Hide original title on mobile */
+          display: none;
         }
-
         /* Use pseudo-element to show number */
         &::after {
-          /* Default to section number, specific rule below will override for chapter */
           content: attr(data-section-number);
-          font-size: var(--step--2);
-          font-weight: 500; /* Optional: adjust weight */
-          margin-left: var(--space-3xs); /* Adjust spacing */
+          font-size: var(--step--1);
+          font-weight: 500;
+          margin-left: var(--space-3xs);
           white-space: nowrap;
         }
       }
-      /* Adjust alignment for number */
+
+      // Align number for Prev link
       &.prev::after {
-        order: 1; /* Place number after icon */
-        margin-left: 0; /* REMOVED space next to arrow */
+        order: 1;
+        margin-left: var(--space-2xs);
         margin-right: 0;
       }
       /* Specific content for chapter intro link */
       &.prev.chapter-intro-link::after {
-        content: attr(data-chapter-number); /* Show chapter number */
+        content: attr(data-chapter-number);
       }
+
+      // Align number for Next link
       &.next {
-        /* Ensure icon is last */
         .nav-content {
           order: -1;
           display: none;
-        } /* Hide placeholder */
+        }
         &::after {
-          order: -1; /* Place number before icon */
+          order: -1;
           margin-left: 0;
-          margin-right: var(--space-3xs);
+          margin-right: var(--space-2xs);
         }
       }
-    }
-  }
 
-  .nav-link.disabled {
-    color: var(--color-text-secondary);
-    pointer-events: none;
-    opacity: 0.6;
+      // Mobile TOC specific styles - Now Section Map Toggle
+      &.section-map-toggle {
+        display: flex; // Show on mobile (overrides default)
+        flex-grow: 0;
+        flex-basis: auto;
+        padding-left: var(--space-s);
+        padding-right: var(--space-s);
 
-    @media (max-width: 768px) {
-      flex-direction: column;
-      gap: var(--space-xs);
+        // Hide text content for section map toggle on mobile
+        .nav-content.mobile-hidden-text {
+          display: none;
+        }
+      }
+    } // End media query
+
+    &.disabled {
+      color: var(--color-text-disabled);
+      pointer-events: none;
+      opacity: 0.6;
+      background-color: transparent;
     }
-  }
+  } // End .nav-link
 </style>

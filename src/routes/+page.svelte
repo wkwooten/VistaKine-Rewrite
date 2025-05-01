@@ -114,7 +114,7 @@
   }
 
   .hero-content-card {
-    background-color: var(--color-accent);
+    background-color: var(--color-background);
     border: 2px solid var(--color-border-light);
     padding: var(--space-xl) var(--space-m); // Increased bottom padding to 60px
     margin-top: 0;
@@ -150,7 +150,7 @@
     /* Target tagline within the hero card */
     font-size: var(--step-0);
     margin-bottom: 0;
-    color: var(--color-surface);
+    color: var(--color-text-primary);
     opacity: 0.8;
     line-height: 1.5;
     max-width: 60ch; // Limit tagline width for readability

@@ -6,16 +6,45 @@
   import { getChapterBySlug } from "$lib/data/chapters";
   import { onMount } from "svelte";
   import SectionMap from "$lib/components/ui/SectionMap.svelte";
+  import PageNav from "$lib/components/PageNav.svelte";
+  import { sectionMapOpen } from "$lib/stores/uiStores";
+  import {
+    getAdjacentSections,
+    getAdjacentChapters,
+  } from "$lib/utils/navigationUtils";
 
-  export let chapterSlug: string;
-  export let sectionSlug: string;
-  export let themeClass: string = "";
-  // Accept chapter title from parent (+page.svelte)
-  export let currentChapterTitle: string | null = null;
-  // Accept current chapter slug from parent (+page.svelte)
-  export let currentChapterSlug: string;
-  // Accept chapter number from parent (+page.svelte)
-  export let chapterNumber: number | string | undefined = undefined;
+  // Define props using $props
+  type SectionTemplateProps = {
+    chapterSlug: string;
+    sectionSlug: string;
+    themeClass?: string;
+    currentChapterTitle?: string | null; // Can be derived if not passed
+    currentChapterSlug: string;
+    chapterNumber?: number | string | undefined; // Can be derived if not passed
+  };
+
+  let {
+    chapterSlug,
+    sectionSlug,
+    themeClass = "",
+    currentChapterSlug, // Keep this as required from the route
+    // currentChapterTitle is now derived from chapter object
+    // chapterNumber is now derived from chapter object
+  }: SectionTemplateProps = $props();
+
+  // Derive chapter and section data
+  const chapter = $derived(getChapterBySlug(chapterSlug));
+  const section = $derived(
+    chapter?.sections.find((s) => s.slug === sectionSlug)
+  );
+
+  // Derive adjacent sections/chapters for PageNav
+  const { prevSection, nextSection } = $derived(
+    getAdjacentSections(chapterSlug, sectionSlug)
+  );
+  const { prevChapter, nextChapter } = $derived(
+    getAdjacentChapters(chapterSlug)
+  );
 
   // For debugging
   // onMount(() => {
@@ -29,9 +58,6 @@
   //     `SectionTemplate props updated: chapterSlug=${chapterSlug}, sectionSlug=${sectionSlug}`
   //   );
   // }
-
-  $: chapter = getChapterBySlug(chapterSlug);
-  $: section = chapter?.sections.find((s) => s.slug === sectionSlug);
 
   // $: {
   //   if (chapter) {
@@ -71,13 +97,24 @@
         <!-- Content from specific section .svelte file goes here -->
         <slot></slot>
       </article>
+
+      <!-- Page Navigation (within main content area) -->
+      <PageNav
+        {prevSection}
+        {nextSection}
+        {prevChapter}
+        {nextChapter}
+        {currentChapterSlug}
+        currentChapterTitle={chapter?.title}
+        currentChapterNumber={chapter?.number}
+      />
     </div>
   </main>
 
-  <!-- Section Map (Desktop) -->
-  <SectionMap />
+  <!-- Section Map (Desktop/Mobile) - Receives open state and sectionSlug -->
+  <SectionMap bind:isOpen={$sectionMapOpen} {sectionSlug} />
 </div>
-<!-- Footer moved outside the main flex container to allow map positioning -->
+<!-- Footer moved outside the main flex container -->
 <Footer />
 
 <style lang="scss">
@@ -279,6 +316,12 @@
   :global(app-footer) {
     width: 100%;
     margin-top: auto;
+  }
+
+  /* Ensure PageNav is placed correctly */
+  :global(app-page-nav) {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-l);
   }
 
   /* Apply scroll margin to nav targets */

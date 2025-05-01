@@ -1,10 +1,18 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from "svelte";
+  import { X } from "lucide-svelte"; // Import close icon
 
   type NavTarget = {
     id: string;
     title: string;
   };
+
+  // Define props including sectionSlug
+  type SectionMapProps = {
+    isOpen?: boolean;
+    sectionSlug: string; // Add sectionSlug prop
+  };
+  let { isOpen = $bindable(false), sectionSlug }: SectionMapProps = $props();
 
   const debugObserver = false; // Set to false to hide visualizer
 
@@ -38,7 +46,11 @@
 
     targets.forEach((target) => {
       const id = target.id;
-      const title = target.textContent?.trim() || "Unnamed Section";
+      // Try getting title from aria-label first, then text content
+      const title =
+        target.getAttribute("aria-label") ||
+        target.textContent?.trim() ||
+        "Unnamed Section";
       if (id) {
         newNavTargets.push({ id, title });
         elementsToObserve.push(target);
@@ -46,11 +58,25 @@
     });
 
     // Update state only if targets changed
-    if (JSON.stringify(navTargets) !== JSON.stringify(newNavTargets)) {
-      navTargets = newNavTargets;
-      console.log("SectionMap: Updated targets:", navTargets);
+    // Compare based on IDs only, titles might not change even if content does
+    const currentTargetIds = JSON.stringify(navTargets.map((t) => t.id).sort());
+    const newTargetIds = JSON.stringify(newNavTargets.map((t) => t.id).sort());
 
-      // --- Setup Intersection Observer ---
+    if (currentTargetIds !== newTargetIds) {
+      navTargets = newNavTargets;
+      console.log(
+        "SectionMap: Updated targets for section",
+        sectionSlug,
+        ":",
+        navTargets
+      );
+      setupObserver(elementsToObserve);
+    } else {
+      console.log(
+        "SectionMap: Targets haven't changed for section",
+        sectionSlug
+      );
+      // Re-setup observer even if targets *seem* the same, DOM might have changed
       setupObserver(elementsToObserve);
     }
   }
@@ -110,25 +136,23 @@
       });
 
       // Only update the active ID if a valid highest target is found within the zone.
-      // If highestVisibleTargetId is null, it means nothing is intersecting the zone correctly,
-      // so we keep the last known active ID.
       if (
         highestVisibleTargetId !== null &&
         activeSectionId !== highestVisibleTargetId
       ) {
         activeSectionId = highestVisibleTargetId;
-        // console.log("Active section updated:", activeSectionId);
-      } else if (intersectingTargets.size === 0 && elements.length > 0) {
-        // Optional: If *nothing* is intersecting (e.g., scrolled way past last section or before first)
-        // you might want to clear the active state. Uncomment the line below if needed.
-        // activeSectionId = null;
+      } else if (intersectingTargets.size === 0) {
+        // If nothing is intersecting the active zone, check if we are above the first target
+        // or below the last target based on scroll position to potentially clear active state.
+        // This logic might need refinement based on exact desired behavior when scrolling
+        // outside the bounds of all targets.
+        // For now, let's keep the last active ID if nothing is in the zone.
       }
     }, observerOptions);
 
     // Observe all target elements
     elements.forEach((el) => {
       if (observer) {
-        // Check observer is not null before observing
         observer.observe(el);
       }
     });
@@ -142,13 +166,23 @@
         behavior: "smooth",
         block: "start",
       });
+      // Close mobile map after clicking a link
+      isOpen = false;
     }
   }
 
-  // Effect to find targets and set up observer on mount/update
+  function closeMap() {
+    isOpen = false;
+  }
+
+  // Effect to find targets and set up observer when sectionSlug changes
   $effect(() => {
+    // Read sectionSlug to establish dependency
+    const currentSlug = sectionSlug;
+    console.log(`SectionMap: Effect triggered for sectionSlug: ${currentSlug}`);
+
     async function runFinder() {
-      await tick(); // Wait for DOM updates
+      await tick(); // Wait for DOM updates after slug change
       findNavTargetsAndObserve();
     }
     runFinder();
@@ -157,7 +191,7 @@
     return () => {
       if (observer) {
         observer.disconnect();
-        console.log("SectionMap: Observer disconnected.");
+        console.log("SectionMap: Observer disconnected on cleanup.");
       }
     };
   });
@@ -170,10 +204,29 @@
   ></div>
 {/if}
 
-<aside class="section-map-container">
+<!-- Mobile Overlay -->
+{#if isOpen}
+  <div
+    class="mobile-overlay"
+    onclick={closeMap}
+    role="button"
+    aria-label="Close section navigation"
+  ></div>
+{/if}
+
+<aside class="section-map-container" class:is-open={isOpen}>
   {#if navTargets.length > 0}
     <nav aria-labelledby="section-map-heading">
-      <h3 id="section-map-heading">Section Navigation</h3>
+      <div class="map-header">
+        <h3 id="section-map-heading">In This Section</h3>
+        <button
+          class="close-button mobile-only"
+          onclick={closeMap}
+          aria-label="Close section navigation"
+        >
+          <X size={20} />
+        </button>
+      </div>
       <ul>
         {#each navTargets as target (target.id)}
           <li>
@@ -196,6 +249,8 @@
 </aside>
 
 <style lang="scss">
+  @use "$lib/styles/variables" as vars; // Import variables
+
   .debug-observer-viz {
     position: fixed;
     top: var(--activation-offset);
@@ -207,31 +262,106 @@
     z-index: 9998; // Below potential modals but above most content
     pointer-events: none; // Allow clicks to pass through
     transition: top 0.1s linear; // Smooth updates if offset changes
+    display: none; // Hide debug visualizer by default
+
+    @media (min-width: calc(var(--breakpoint-lg) + 1px)) {
+      display: block; // Show only on larger screens if debugObserver is true
+    }
+  }
+
+  .mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); // Semi-transparent black
+    z-index: 40; // Below map container, above content
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    @media (max-width: vars.$breakpoint-lg) {
+      pointer-events: auto; // Enable clicks only on mobile when map is open
+      opacity: 1;
+    }
   }
 
   .section-map-container {
+    // Default Desktop Styles (Sticky Sidebar)
     position: sticky;
-    top: var(--navbar-height, 60px);
+    top: calc(var(--navbar-height, 60px) + var(--space-s));
     align-self: flex-start;
+    background-color: var(--color-background);
     width: var(--section-map-width, 220px);
-    max-height: calc(100vh - var(--navbar-height, 60px) - var(--space-l));
     overflow-y: auto;
-    padding: var(--space-m) var(--space-s);
+    padding: var(--space-s) 0 var(--space-s) var(--space-s);
     flex-shrink: 0;
-    z-index: 10; // Ensure map is above background viz if needed
+    z-index: 50; // Above overlay
+    border-left: 1px solid var(--color-border-subtle);
+    transition: transform 0.3s ease; // Add transition for mobile slide
 
-    @media (max-width: var(--breakpoint-lg)) {
-      display: none;
+    // Mobile Styles (Off-canvas Drawer)
+    @media (max-width: vars.$breakpoint-lg) {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(80vw, 300px); // Responsive width
+      height: 100vh; // Full height
+      border-left: 1px solid var(--color-border); // Border on the left now
+      transform: translateX(100%); // Start off-screen
+      padding: var(--space-l); // More padding for mobile
+      overflow-y: auto; // Ensure scrolling within the drawer
+
+      &.is-open {
+        transform: translateX(0); // Slide in when open
+      }
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-s);
+      padding-right: var(--space-s); // Ensure padding consistency
+
+      @media (max-width: vars.$breakpoint-lg) {
+        padding-right: 0; // No right padding needed inside mobile drawer
+      }
     }
 
     // Style for the heading
     #section-map-heading {
-      font-size: var(--step-0);
+      font-size: var(--step--1);
       font-weight: 600;
-      color: var(--color-text-primary);
-      margin: 0 0 var(--space-s) 0;
-      padding-bottom: var(--space-xs);
-      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      margin: 0;
+      padding-bottom: 0; // Remove padding moved to header
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: none;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      color: var(--color-text-secondary);
+      padding: var(--space-3xs);
+      cursor: pointer;
+      line-height: 0; // Ensure icon aligns well
+      border-radius: var(--radius-round);
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        color: var(--color-text-primary);
+        background-color: var(--color-surface-hover);
+      }
+    }
+
+    /* Visibility for close button */
+    .mobile-only {
+      display: none;
+      @media (max-width: vars.$breakpoint-lg) {
+        display: inline-flex; // Show only on mobile
+      }
     }
 
     ul {
@@ -240,30 +370,52 @@
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: var(--space-xs);
+      gap: 2px;
     }
 
     li a {
       display: block;
-      padding: var(--space-2xs) var(--space-xs);
+      padding: var(--space-2xs) var(--space-s);
       text-decoration: none;
       color: var(--color-text-secondary);
       font-size: var(--step--1);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      transition: all 0.2s ease;
+      border-left: 2px solid transparent;
+      transition: all 0.15s ease-in-out;
       white-space: normal;
       line-height: 1.4;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-right: var(--space-s); // Add margin for desktop
+
+      @media (max-width: vars.$breakpoint-lg) {
+        margin-right: 0; // No right margin needed on mobile
+        border-radius: var(--radius-sm); // Apply radius all around on mobile
+        padding: var(--space-s); // Increase padding slightly on mobile
+      }
 
       &:hover {
-        background-color: var(--color-accent-hover-bg);
+        background-color: var(--color-surface-hover);
+        color: var(--color-text-primary);
+        border-left-color: var(
+          --color-border
+        ); // Show border on hover (desktop)
+
+        @media (max-width: vars.$breakpoint-lg) {
+          border-left-color: transparent; // No left border highlight on mobile hover
+        }
       }
 
       // Style for active link
       &.active {
-        background-color: var(--color-surface);
-        border-left: 1px solid var(--color-accent);
-        color: var(--color-text-primary);
-        /* font-weight: 500; */
+        background-color: var(--color-accent-subtle-bg);
+        border-left: 2px solid var(--color-accent);
+        color: var(--color-accent-text-on-subtle);
+        font-weight: 500;
+
+        @media (max-width: vars.$breakpoint-lg) {
+          // Mobile active style adjustments if needed (e.g., different bg)
+          background-color: var(--color-accent-subtle-bg); // Keep subtle bg
+          border-left-color: var(--color-accent); // Keep accent border
+        }
       }
     }
 
@@ -271,20 +423,13 @@
       font-size: var(--step--1);
       color: var(--color-text-disabled);
       text-align: center;
-      padding: var(--space-l) 0;
-    }
+      padding: var(--space-l) var(--space-s);
+      margin-right: var(--space-s); // Align with potential link padding
 
-    // visually-hidden class removed from component, but kept here for reference if needed elsewhere
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border-width: 0;
+      @media (max-width: vars.$breakpoint-lg) {
+        margin-right: 0;
+        padding: var(--space-xl) var(--space-s); // More padding on mobile
+      }
     }
   }
 </style>

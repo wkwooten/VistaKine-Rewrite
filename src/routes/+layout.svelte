@@ -157,18 +157,26 @@
 
   <main class="content">
     <div class="top-nav-bar">
-      <!-- Render PageNav directly if data exists -->
-      {#if $page.data.prevSection !== undefined || $page.data.nextSection !== undefined || $page.data.prevChapter !== undefined || $page.data.nextChapter !== undefined || $page.data.currentChapterSlug}
-        <PageNav
-          prevSection={$page.data.prevSection}
-          nextSection={$page.data.nextSection}
-          prevChapter={$page.data.prevChapter}
-          nextChapter={$page.data.nextChapter}
-          currentChapterSlug={$page.data.currentChapterSlug}
-          currentChapterTitle={$page.data.chapterTitle}
-          currentChapterNumber={$page.data.chapterNumber}
-        />
-      {/if}
+      <!-- New Wrapper Structure -->
+      <div class="page-nav-wrapper">
+        <!-- Container for the actual PageNav -->
+        <div class="page-nav-container">
+          <!-- Render PageNav directly if data exists -->
+          {#if $page.data.prevSection !== undefined || $page.data.nextSection !== undefined || $page.data.prevChapter !== undefined || $page.data.nextChapter !== undefined || $page.data.currentChapterSlug}
+            <PageNav
+              prevSection={$page.data.prevSection}
+              nextSection={$page.data.nextSection}
+              prevChapter={$page.data.prevChapter}
+              nextChapter={$page.data.nextChapter}
+              currentChapterSlug={$page.data.currentChapterSlug}
+              currentChapterTitle={$page.data.chapterTitle}
+              currentChapterNumber={$page.data.chapterNumber}
+            />
+          {/if}
+        </div>
+        <!-- Empty spacer to represent SectionMap width on desktop -->
+        <div class="page-nav-spacer"></div>
+      </div>
     </div>
     <slot />
   </main>
@@ -307,28 +315,71 @@
     z-index: 10; /* Ensure it's above content but below overlays/modals if any */
     display: flex; /* Use flex to easily center/align content */
     align-items: center;
-    justify-content: center;
+    justify-content: center; /* Center the wrapper inside */
 
-    /* Remove default padding from PageNav when inside the bar */
-    :global([slot="page-nav"] .page-nav) {
-      padding: 0;
-      margin: 0;
-      border: none;
-      width: 100%; /* Make PageNav take full width */
-      height: 100%; /* Make PageNav take full height */
-      max-width: var(
-        --max-content-width,
-        1200px
-      ); /* Apply max-width like the content */
-      margin: 0 auto; /* Center PageNav content */
-      padding-inline: var(
-        --space-s
-      ); /* Add some horizontal padding inside the bar */
+    // ADD styles for the wrapper structure
+    .page-nav-wrapper {
+      display: flex;
+      justify-content: center; // Center items within the wrapper
+      align-items: center; // Align items vertically
+      width: 100%;
+      gap: var(--space-l, 1rem); // Match SectionTemplate gap
+      // Optional: Set max-width similar to SectionTemplate's container
+      // max-width: calc(var(--wide-content-width, 800px) + var(--section-map-width, 220px) + var(--space-l, 1rem));
+      padding-inline: var(--space-s); // Add horizontal padding
     }
+
+    .page-nav-container {
+      flex: 1; // Takes up space left by spacer
+      max-width: var(--wide-content-width, 800px); // Match main content width
+      min-width: 0;
+      display: flex; // Needed to contain the PageNav properly
+      justify-content: center;
+      align-items: center;
+      height: 100%; // Take full height of bar
+    }
+
+    .page-nav-spacer {
+      width: var(--section-map-width, 220px); // Mimic SectionMap width
+      flex-shrink: 0;
+    }
+
+    /* Remove default padding/margin/width from PageNav when inside the bar */
+    // MODIFY existing global rule
+    :global(.page-nav) {
+      padding: 0 !important; // Remove internal padding
+      margin: 0 !important; // Remove internal margin
+      border: none !important; // Remove internal border
+      width: 100%;
+      height: 100%;
+      // REMOVE max-width & margin: 0 auto - handled by container now
+      // max-width: var(--max-content-width, 1200px);
+      // margin: 0 auto;
+      // REMOVE padding-inline - handled by wrapper now
+      // padding-inline: var(--space-s);
+    }
+
     @media (max-width: variables.$breakpoint-lg) {
       background-color: var(
         --color-background
       ); /* Match main background on mobile maybe? */
+
+      // ADD mobile adjustments for wrapper structure
+      .page-nav-wrapper {
+        gap: 0;
+        padding-inline: 0; // Use PageNav's internal padding on mobile? Or adjust here.
+      }
+      .page-nav-spacer {
+        display: none; // Hide spacer on mobile
+      }
+      .page-nav-container {
+        max-width: 100%; // Allow container to be full width
+      }
+      // Ensure PageNav internal padding is restored/correct on mobile if needed
+      // Might need adjustments depending on desired mobile PageNav appearance
+      :global(.page-nav) {
+        padding: 0 var(--space-s) !important; // Example: restore horizontal padding
+      }
     }
   }
 
@@ -352,8 +403,8 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    top: var(--space-s, 10px);
-    left: var(--space-s, 10px);
+    bottom: var(--space-s, 10px);
+    right: var(--space-s, 10px);
     z-index: 1060;
     background-color: var(--color-background, white);
     border: 1px solid var(--color-border, #ccc);
