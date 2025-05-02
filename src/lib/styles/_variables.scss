@@ -75,8 +75,8 @@ $max-viewport: 1240px;
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
-$breakpoint-2xl: 1536px;
 $breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
 
 // Transitions - Match with _animations.scss
 $transition-fast: 150ms;
@@ -88,7 +88,7 @@ $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 // Dimensions
 $max-content-width: 900px;
 $wide-content-width: 1400px;
-$section-map-width: 300px;
+$section-map-width: 320px;
 $readable-max-width: 70ch; // Optimal reading width (ch units are width of "0" character)
 $sidebar-width: 400px;
 $sidebar-collapsed-width:80px;

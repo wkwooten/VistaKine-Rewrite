@@ -92,6 +92,15 @@
           <!-- Standardized Section Title -->
           {#if section}
             <h1 class="section-title">
+              <PageNav
+                {prevSection}
+                {nextSection}
+                {prevChapter}
+                {nextChapter}
+                {currentChapterSlug}
+                currentChapterTitle={chapter?.title}
+                currentChapterNumber={chapter?.number}
+              />
               <span class="section-number-prefix"
                 >Section {section.number}:</span
               >
@@ -323,9 +332,14 @@
     width: 100%;
     box-sizing: border-box;
 
-    @media (max-width: vars.$breakpoint-lg) {
+    @media (max-width: vars.$breakpoint-xl) {
       flex-direction: column;
+      margin-left: var(--sidebar-collapsed-width);
       gap: 0;
+    }
+
+    @media (max-width: vars.$breakpoint-lg) {
+      margin-left: 0;
     }
   }
 
@@ -333,12 +347,10 @@
     flex: 1;
     max-width: var(--wide-content-width);
     min-width: 0;
-    padding-left: var(--space-xl);
     box-sizing: border-box;
 
     @media (max-width: vars.$breakpoint-lg) {
       max-width: 100%;
-      padding-left: var(--space-s);
     }
   }
 

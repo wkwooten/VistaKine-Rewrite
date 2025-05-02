@@ -294,7 +294,6 @@
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 50; // Above overlay
-    border-left: 1px solid var(--color-border-subtle);
     transition: transform 0.3s ease; // Add transition for mobile slide
 
     // Mobile Styles (Off-canvas Drawer)
