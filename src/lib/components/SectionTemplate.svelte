@@ -119,6 +119,31 @@
     flex-direction: column;
   }
 
+  .section-title {
+    color: var(--chapter-color);
+    border-bottom: 3px solid var(--chapter-color);
+    margin-top: 0;
+    margin-bottom: var(--space-l);
+    padding: var(--space-s) 0;
+    font-size: var(--step-4);
+    font-weight: 700;
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.2;
+
+    .section-number-prefix {
+      display: block;
+      font-size: var(--step-3);
+      font-weight: 500;
+      opacity: 0.85;
+      margin-bottom: var(--space-3xs);
+    }
+
+    .section-title-main {
+      display: block;
+    }
+  }
+
   .main-content-area {
     display: flex;
     /* flex-direction: column; */
@@ -325,4 +350,38 @@
       display: none;
     }
   }
+
+  // --- Styles moved from chapter-styles.scss ---
+  :global(.section-core) {
+    margin-bottom: var(--space-l);
+
+    p,
+    ul,
+    ol,
+    li,
+    blockquote,
+    figure,
+    pre {
+      margin-bottom: var(--space-m);
+      line-height: 1.7;
+    }
+  }
+
+  :global(.section-review) {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-m);
+    margin-top: var(--space-xl);
+
+    p,
+    ul,
+    ol,
+    li,
+    blockquote,
+    figure,
+    pre {
+      margin-bottom: var(--space-m);
+      line-height: 1.7;
+    }
+  }
+  // --- End moved styles ---
 </style>

@@ -1,20 +1,17 @@
-@use 'sass:color'; // Import the sass:color module
-@use 'variables'; // Revert to this, without "as *"
+/* Global styles for chapter layout, structure, and theme variables */
+@use 'sass:color';
+@use 'variables';
 
 // --- Define Chapter Theme Mixin (Simplified Usage) ---
 // Assigns the pre-defined CSS variables for the given chapter number
 @mixin apply-chapter-theme($chapter-num) {
-  // Use var() with fallbacks to the default chapter colors
   --chapter-color: var(--chapter-color-#{$chapter-num}, var(--chapter-color-default));
   --chapter-color-light: var(--chapter-color-light-#{$chapter-num}, var(--chapter-color-light-default));
   --chapter-color-dark: var(--chapter-color-dark-#{$chapter-num}, var(--chapter-color-dark-default));
   --chapter-header-bg: var(--chapter-header-bg-#{$chapter-num}, var(--chapter-header-bg-default));
   --chapter-bg: var(--chapter-bg-#{$chapter-num}, var(--chapter-bg-default));
   --chapter-sidebar-bg: var(--chapter-sidebar-bg-#{$chapter-num}, var(--chapter-sidebar-bg-default));
-
-  // Define section background (if needed, otherwise remove if always white/surface)
-  // If chapter section bg is always the same (e.g., surface color), define it globally instead.
-  --chapter-section-bg: var(--color-surface); // Assuming sections use the surface color
+  --chapter-section-bg: var(--color-surface);
 }
 // --- End Mixin Definition ---
 
@@ -23,47 +20,41 @@
 @for $i from 1 through 10 {
   // Apply to ChapterTemplate AND SectionTemplate roots
   .chapter.chapter-#{$i}-theme,
-  .section-title-card.chapter-#{$i}-theme {
+  .section-container.chapter-#{$i}-theme {
     @include apply-chapter-theme($i);
   }
 
   // Apply to Sidebar Elements
   nav .nav-items li.nav-chapter-group.chapter-#{$i}-theme {
-    // Sidebar elements just need the correct variables applied too
-     @include apply-chapter-theme($i);
-     // The background color will be handled by the general sidebar styles below now
+    @include apply-chapter-theme($i);
   }
 }
 
 
 // General Chapter Styles (These use the --chapter-color etc. variables applied by the mixin)
 .chapter-header {
-  background-color: var(--chapter-header-bg); // Uses correct variable
+  background-color: var(--chapter-header-bg);
   width: 100%;
   box-shadow: var(--shadow-lg);
   padding: var(--space-m) var(--space-s);
   margin-top: var(--space-l);
   max-width: var(--wide-content-width);
   border-radius: var(--radius-md);
-  color: var(--color-text-on-dark); // Assuming header text is light on dark bg
+  color: var(--color-text-on-dark);
 
   h1 {
     font-size: var(--step-4);
     width: 100%;
     margin-bottom: 0;
-    color: var(--color-text-on-dark); // Ensure h1 text is also light
+    color: var(--color-text-on-dark);
     padding: var(--space-l) var(--space-s);
     display: inline-block;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
-    -webkit-border-radius: var(--radius-md) var(--radius-md) 0 0;
-    -moz-border-radius: var(--radius-md) var(--radius-md) 0 0;
-    -ms-border-radius: var(--radius-md) var(--radius-md) 0 0;
-    -o-border-radius: var(--radius-md) var(--radius-md) 0 0;
-    border-bottom: 2px solid var(--color-text-on-dark); // Use light border on dark bg
+    border-bottom: 2px solid var(--color-text-on-dark);
   }
 
   .chapter-intro {
-    color: var(--color-text-on-dark); // Ensure intro text is also light
+    color: var(--color-text-on-dark);
     margin-block: var(--space-s);
     font-size: var(--step-1);
     padding-inline: var(--space-s);
@@ -74,68 +65,6 @@
 .chapter-section {
   background-color: var(--chapter-section-bg);
 }
-
-// .content-section {
-//   scroll-margin-top: 2rem;
-//   position: relative;
-//   padding: var(--space-l);
-//   border-bottom: none;
-//   padding-top: var(--space-xl);
-//   padding-bottom: var(--space-3xl);
-//   margin-bottom: var(--space-xl);
-//   background-color: var(--color-surface);
-//   box-shadow: var(--shadow-lg);
-//   border-radius: var(--radius-md);
-
-//   // Top Section Number (using ::after)
-//   &::after {
-//     content: attr(data-section);
-//     position: absolute;
-//     left: 30px;
-//     top: var(--space-m);
-//     color: var(--chapter-color);
-//     font-size: var(--step-0);
-//     font-weight: bold;
-//     opacity: 0.7;
-//   }
-
-//   // Bottom Section Number (using ::before)
-//   &::before {
-//     content: attr(data-section);
-//     position: absolute;
-//     left: 30px;
-//     bottom: var(--space-m);
-//     color: var(--chapter-color);
-//     font-size: var(--step-0);
-//     font-weight: bold;
-//     opacity: 0.7;
-//   }
-
-//   // Themed Section Line
-//   .section-line {
-//     position: absolute;
-//     top: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
-//     bottom: calc(var(--space-m) + var(--step-0) * 1.2 + 5px);
-//     left: 45px;
-//     width: 2px;
-//     background-color: var(--chapter-color);
-//     opacity: 0.5;
-//   }
-
-//   /* Responsive adjustments for the section block itself */
-//   @media (max-width: variables.$breakpoint-lg) {
-//     padding: var(--space-s);
-//     margin-bottom: var(--space-l);
-//     border-radius: 0;
-//     border-left: none;
-//     border-right: none;
-//     box-shadow: none;
-
-//     &::before, &::after, .section-line {
-//       display: none;
-//     }
-//   }
-// }
 
 .chapter {
   display: grid;
@@ -148,63 +77,22 @@
   }
 }
 
-.section-title {
-  color: var(--chapter-color); // Uses main chapter color
-  border-bottom: 3px solid var(--chapter-color); // Updated border thickness
-  margin-top: 0;
-  margin-bottom: var(--space-l);
-  padding: var(--space-s) 0; // Updated padding
-  font-size: var(--step-4); // Updated font size
-  font-weight: 700; // Added font-weight
-  text-align: center; // Added text-align
-  text-wrap: balance; // Added text-wrap
-  line-height: 1.2; // Added line-height
 
-  // Keep styling for child spans if needed, now directly nested
-  .section-number-prefix { // No :global needed here
-    display: block;
-    font-size: var(--step-3); // Adjust size as needed
-    font-weight: 500;
-    opacity: 0.85;
-    margin-bottom: var(--space-3xs);
-  }
 
-  .section-title-main { // No :global needed here
-    display: block;
-    // font-size and font-weight are now inherited from the parent .section-title rule
-  }
-}
-
-.section-intro, .subsection-title, .section-core, .section-review {
-  p, ul, ol, li, blockquote, figure, pre {
+.section-intro {
+  p,
+  ul,
+  ol,
+  li,
+  blockquote,
+  figure,
+  pre {
     margin-bottom: var(--space-m);
     line-height: 1.7;
   }
 }
 
-.subsection-title {
-  font-size: var(--step-1);
-  font-weight: bold;
-  text-wrap: balance;
-  margin-top: var(--space-l);
-  margin-bottom: var(--space-s);
-}
-
-.section-core {
-  margin-bottom: var(--space-l);
-
-  p {
-    margin-bottom: var(--space-m);
-  }
-}
-
-.section-review {
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-m);
-  margin-top: var(--space-xl);
-}
-
-/* Readable content class for optimal text readability */
+/* Styles for optimal text readability container */
 .readable-content {
   max-width: var(--readable-max-width, 75ch);
   margin-inline: auto;
@@ -220,7 +108,12 @@
     padding-inline: 0;
   }
 
-  p, ul, ol, li, blockquote, pre {
+  p,
+  ul,
+  ol,
+  li,
+  blockquote,
+  pre {
     margin-bottom: var(--space-m);
     line-height: 1.7;
   }
@@ -231,24 +124,24 @@
 
 // Sidebar Navigation Styling adjustments
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"].is-active {
-  border-left: 3px solid var(--chapter-color); // Correct
-  background-color: var(--chapter-sidebar-bg); // Use the specific sidebar bg variable
+  border-left: 3px solid var(--chapter-color);
+  background-color: var(--chapter-sidebar-bg);
 }
 
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .nav-item.chapter-item {
-   background-color: transparent; // Keep this - avoids overriding the group background
+  background-color: transparent; // Avoids overriding the group background
 }
 
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"]:not(.is-active):hover {
-  // Apply a hover effect, maybe slightly darken the specific sidebar bg
-  background-color: color-mix(in srgb, var(--chapter-sidebar-bg) 90%, black); // Example: Darken sidebar bg
+  // Slightly darken sidebar bg on hover
+  background-color: color-mix(in srgb, var(--chapter-sidebar-bg) 90%, black);
 }
 
-// Additional styling for chapter numbers in the sidebar
+// Chapter numbers in the sidebar
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
   border-color: var(--chapter-color);
-  background-color: color-mix(in srgb, var(--chapter-color) 20%, white); // Mix base chapter color
-  color: var(--chapter-color-dark); // Use the dark variant for text contrast
+  background-color: color-mix(in srgb, var(--chapter-color) 20%, white);
+  color: var(--chapter-color-dark);
 }
 
 .keyword {
@@ -258,8 +151,8 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter
   padding: 0.1em 0;
   border-radius: 3px;
   &:hover {
-   text-decoration: underline dashed;
-   cursor: help;
+    text-decoration: underline dashed;
+    cursor: help;
   }
 }
 
