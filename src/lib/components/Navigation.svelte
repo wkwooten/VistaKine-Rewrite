@@ -383,10 +383,10 @@
     box-sizing: border-box;
 
     /* ADD Media query to disable width/transition on mobile */
-    @media (max-width: variables.$breakpoint-lg) {
+    /* @media (max-width: var(--breakpoint-l)) {
       width: auto;
-      transition: none; /* Disable component's width transition */
-    }
+      transition: none;
+    } */
 
     &.collapsed {
       width: var(--sidebar-collapsed-width);

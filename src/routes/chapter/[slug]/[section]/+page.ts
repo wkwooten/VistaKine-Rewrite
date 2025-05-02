@@ -84,18 +84,25 @@ export const load: PageLoad = async ({ params }) => {
       throw error(500, 'Failed to load section content - no default export');
     }
 
-    return {
+    const chapterNumber = chapterData.number;
+    if (typeof chapterNumber !== 'number') {
+      console.error(`Invalid chapter number found for slug ${slug}: ${chapterNumber}`);
+    }
+
+    const returnData = {
       chapterSlug: slug,
       chapterTitle: chapterData.title,
       currentChapterSlug: slug,
       sectionSlug: section,
       title: sectionData.title,
-      themeClass: `chapter-${chapterData.chapterNumber}-theme`,
+      themeClass: `chapter-${chapterNumber ?? 'default'}-theme`,
       SectionContent,
       prevSection,
       nextSection,
-      chapterNumber: chapterData.chapterNumber
+      chapterNumber: chapterNumber
     };
+    console.log('[section/+page.ts] Returning data:', returnData);
+    return returnData;
   } catch (error: any) {
     // More detailed error logging
     console.error(`Failed to load section content for ${slug}/${section}:`, error);

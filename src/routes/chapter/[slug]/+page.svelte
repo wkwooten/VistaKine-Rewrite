@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ChapterTemplate from '$lib/components/ChapterTemplate.svelte';
-  import { currentSection } from '$lib/stores/appState';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import ChapterTemplate from "$lib/components/ChapterTemplate.svelte";
+  import { currentSection } from "$lib/stores/appState";
+  import { onMount } from "svelte";
+  import { browser } from "$app/environment";
 
   // Import the data from the load function
   export let data;
@@ -20,11 +20,10 @@
 <ChapterTemplate
   themeClass={data.themeClass}
   chapterTitle={data.chapterTitle}
-  chapterNumber={data.chapterNumber ? `Chapter ${data.chapterNumber}` : ''}
+  chapterNumber={data.chapterNumber ? `Chapter ${data.chapterNumber}` : ""}
   chapterIntro={data.chapterIntro}
   chapterSections={data.chapterSections}
   prevChapter={data.prevChapter}
   nextChapter={data.nextChapter}
   currentChapterSlug={data.currentChapterSlug}
->
-</ChapterTemplate>
+></ChapterTemplate>

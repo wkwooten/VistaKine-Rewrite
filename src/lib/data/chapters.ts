@@ -12,7 +12,7 @@ export interface Section {
 export interface Chapter {
   slug: string;
   title: string;
-  number?: string | number; // Optional chapter number
+  number: number; // Changed to required number for theme class
   description: string;
   themeColor?: string; // Optional theme color
   sections: Section[];
@@ -24,6 +24,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Understanding 3D Space',
     slug: 'understanding-3d-space',
+    number: 1,
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
       { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
@@ -35,6 +36,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Kinematics',
     slug: 'kinematics',
+    number: 2,
     description: 'Describing motion in 1D, 2D, and 3D.',
     sections: [
         { id: "displacement-velocity", title: "Displacement & Velocity", slug: "displacement-velocity", description: "Learn about position changes and the rate at which objects move in specific directions.", number: "2.1" },
@@ -47,6 +49,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Dynamics',
     slug: 'dynamics',
+    number: 3,
     description: "Newton's Laws, Forces, and Free Body Diagrams.",
     sections: [
       // Add section IDs for Dynamics later
@@ -57,6 +60,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Work, Energy, and Power',
     slug: 'energy',
+    number: 4,
     description: 'Understanding energy conservation and transfer.',
     sections: [
       // Add section IDs for Energy later
@@ -66,6 +70,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Momentum and Collisions',
     slug: 'momentum',
+    number: 5,
     description: 'Exploring momentum conservation and collisions.',
     sections: [
       // Add section IDs for Momentum later
@@ -75,6 +80,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Circular Motion and Gravitation',
     slug: 'circular-motion',
+    number: 6,
     description: 'Analyzing circular paths and gravitational forces.',
     sections: [
       // Add section IDs for Circular Motion later
@@ -84,6 +90,7 @@ export const chapters: Chapter[] = [
   {
     title: 'Rotational Motion',
     slug: 'rotational-motion',
+    number: 7,
     description: 'Introduction to torque and angular momentum.',
     sections: [
       // Add section IDs for Rotational Motion later

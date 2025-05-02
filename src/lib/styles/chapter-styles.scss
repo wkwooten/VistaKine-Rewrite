@@ -21,7 +21,9 @@
 
 // --- Apply Themes using the Mixin ---
 @for $i from 1 through 10 {
-  .chapter.chapter-#{$i}-theme {
+  // Apply to ChapterTemplate AND SectionTemplate roots
+  .chapter.chapter-#{$i}-theme,
+  .section-title-card.chapter-#{$i}-theme {
     @include apply-chapter-theme($i);
   }
 
@@ -147,13 +149,30 @@
 }
 
 .section-title {
-  background-color: transparent;
   color: var(--chapter-color); // Uses main chapter color
+  border-bottom: 3px solid var(--chapter-color); // Updated border thickness
   margin-top: 0;
   margin-bottom: var(--space-l);
-  padding: var(--space-xs) 0;
-  border-bottom: 2px solid var(--chapter-color);
-  font-size: var(--step-3);
+  padding: var(--space-s) 0; // Updated padding
+  font-size: var(--step-4); // Updated font size
+  font-weight: 700; // Added font-weight
+  text-align: center; // Added text-align
+  text-wrap: balance; // Added text-wrap
+  line-height: 1.2; // Added line-height
+
+  // Keep styling for child spans if needed, now directly nested
+  .section-number-prefix { // No :global needed here
+    display: block;
+    font-size: var(--step-3); // Adjust size as needed
+    font-weight: 500;
+    opacity: 0.85;
+    margin-bottom: var(--space-3xs);
+  }
+
+  .section-title-main { // No :global needed here
+    display: block;
+    // font-size and font-weight are now inherited from the parent .section-title rule
+  }
 }
 
 .section-intro, .subsection-title, .section-core, .section-review {

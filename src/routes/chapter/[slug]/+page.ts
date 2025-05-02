@@ -19,18 +19,23 @@ export const load: PageLoad = async ({ params }) => {
   //   // Keep chapterContent as null, the ChapterTemplate will handle the intro display
   // }
 
+  // --- FIX PROPERTY ACCESS ---
+  const chapterNumber = chapter.number; // Use .number
+  if (typeof chapterNumber !== 'number') {
+     console.error(`Invalid chapter number found for slug ${params.slug}: ${chapterNumber}`);
+     // Handle error or default?
+  }
+
   return {
     chapter,
     // chapterContent, // Remove chapterContent from the return value
-    chapterNumber: chapter.chapterNumber, // Use chapterNumber instead of number
+    chapterNumber: chapterNumber, // Pass the correct number
     chapterTitle: chapter.title,
-    chapterIntro: chapter.intro, // Pass the intro text
+    chapterIntro: (chapter as any).intro ?? '', // Access safely or remove if not used
     chapterSections: chapter.sections,
     currentChapterSlug: params.slug,
-    // Explicitly pass prev/next chapter data if it exists on the chapter object
-    prevChapter: chapter.prevChapter || null,
-    nextChapter: chapter.nextChapter || null,
-    // Calculate and add themeClass based on chapter number
-    themeClass: `chapter-${chapter.chapterNumber}-theme`
+    prevChapter: (chapter as any).prevChapter || null, // Access safely or remove
+    nextChapter: (chapter as any).nextChapter || null, // Access safely or remove
+    themeClass: `chapter-${chapterNumber ?? 'default'}-theme` // Use .number (with fallback)
   };
 };
