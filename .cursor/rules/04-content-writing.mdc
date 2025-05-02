@@ -1,0 +1,26 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Content Structure & Writing Style
+
+## Content Organization
+
+- **Chapters & Sections:** Content is broken down into chapters and further into sections. Each section corresponds to a Svelte component located in `src/lib/content/chapters/[chapter-slug]/sections/[section-slug].svelte`.
+- **Dynamic Loading:** Sections are loaded dynamically via the `[slug]/[section]` route ([src/routes/chapter/[slug]/[section]/+page.ts](mdc:src/routes/chapter/[slug]/[section]/+page.ts)).
+- **Chapter Data:** Metadata about chapters and their sections (order, slugs, titles) is defined in [src/lib/data/chapters.ts](mdc:src/lib/data/chapters.ts).
+- **Glossary Data:** Terms and definitions are stored in [src/lib/data/glossary-data.ts](mdc:src/lib/data/glossary-data.ts).
+
+## Writing Tone & Style Guidelines
+
+Refer to the [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md) for full details.
+
+- **Goal:** Guide students (high school/college) to understand complex physics concepts in a digestible, engaging way.
+- **Tone:** Friendly, informative, concise.
+- **Structure:**
+    - Avoid long blocks of text; use paragraphs, lists, and proper HTML structure (`<h2>`, `<ul>`, `<strong>`, etc.).
+    - Vary sentence length.
+- **Keywords:** Use the `<Keyword>` component ([src/lib/components/Keyword.svelte](mdc:src/lib/components/Keyword.svelte)) *judiciously* to link important terms to the glossary.
+- **Equations:** Use `mathlifier` functions (`{@html math('...')}` or `{@html display('...')}`) for rendering LaTeX via KaTeX. See [src/lib/styles/_katex-custom.scss](mdc:src/lib/styles/_katex-custom.scss) for custom styling.
+- **Engagement:** Keep content interesting but accurate. Use pop-culture references very sparingly.

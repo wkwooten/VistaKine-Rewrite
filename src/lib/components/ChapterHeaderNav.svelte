@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ChevronsRight } from 'lucide-svelte';
+  import { ChevronsRight } from "lucide-svelte";
   // Props definition
   export let chapterSections: { id: string; title: string }[] = [];
 </script>
@@ -22,12 +22,11 @@
   .chapter-header-nav {
     margin-top: var(--space-m);
     padding: var(--space-s);
+    background-color: var(--color-background);
     /* border-top: 1px solid var(--color-background); */
   }
 
   nav {
-
-
     p {
       color: var(--color-text-inverted);
       font-size: var(--step-1);
@@ -65,8 +64,6 @@
       text-decoration: underline;
       border-radius: var(--radius-sm, 4px);
       font-size: var(--step-0, 0.875rem);
-
-
     }
   }
 </style>

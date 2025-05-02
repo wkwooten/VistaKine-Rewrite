@@ -1,0 +1,37 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Project Overview & Core Technologies
+
+This project, VistaKine, is an interactive 3D engineering textbook built with Svelte 5 (using the Runes API) and SvelteKit. It aims to teach kinematic and dynamic concepts through visualizations and simulations.
+
+## Key Technologies
+
+- **Frontend Framework:** [Svelte 5 (Runes)](mdc:https:/svelte.dev/docs/runes) / [SvelteKit](mdc:https:/kit.svelte.dev/docs/introduction)
+- **3D Visualization:** [Threlte](mdc:https:/threlte.xyz) (Svelte wrapper for Three.js)
+- **Physics Engine:** [@threlte/rapier](mdc:https:/threlte.xyz/rapier/introduction) (Rapier physics integration for Threlte)
+- **Styling:** [SCSS](mdc:https:/sass-lang.com) with [Utopia](mdc:https:/utopia.fyi) for fluid typography/spacing. See [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md).
+- **Math Rendering:** [Mathlifier](mdc:https:/svelte-math.vercel.app/function-based) (wrapper around KaTeX) for LaTeX equations.
+- **Routing:** SvelteKit's file-based routing.
+
+## Core Structure
+
+- **Main Layout:** [src/routes/+layout.svelte](mdc:src/routes/+layout.svelte)
+- **Chapter Content:** Organized by section under `src/lib/content/chapters/[slug]/sections/`. See [src/lib/content/chapters/understanding-3d-space/sections/](mdc:src/lib/content/chapters/understanding-3d-space/sections).
+- **Chapter Routing:** Managed by `src/routes/chapter/[slug]/[section]/+page.ts` and `+page.svelte`.
+- **Reusable Components:** Located in `src/lib/components/`.
+- **Styles:** Primarily in `src/lib/styles/` and component `<style>` blocks.
+- **State Management:** Uses Svelte 5 Runes (`$state`, `$derived`) and Svelte Stores (`src/lib/stores/`).
+
+See [Memory.md](mdc:Memory.md) for project history and decisions.
+
+## High-Priority Coding Guidelines
+
+These rules should always be followed:
+
+- Provide command line prompts in PowerShell format.
+- **DO NOT** write inline comments within Threlte component props (e.g., `<Mesh {prop_name /* comment */} />`), as this causes syntax errors. Comments should be placed outside the props.
+- Prefer Markdown format for text-based content files.
+- Avoid commenting every line of code. Focus comments on non-trivial logic or complex sections.

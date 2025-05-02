@@ -21,6 +21,7 @@
     currentChapterTitle?: string | null; // Can be derived if not passed
     currentChapterSlug: string;
     chapterNumber?: number | string | undefined; // Can be derived if not passed
+    children: any; // Add children prop for default slot content
   };
 
   let {
@@ -28,6 +29,7 @@
     sectionSlug,
     themeClass = "",
     currentChapterSlug, // Keep this as required from the route
+    children, // Add children prop for default slot content
     // currentChapterTitle is now derived from chapter object
     // chapterNumber is now derived from chapter object
   }: SectionTemplateProps = $props();
@@ -99,7 +101,7 @@
 
           <article class="section-content">
             <!-- Content from specific section .svelte file goes here -->
-            <slot></slot>
+            {@render children()}
           </article>
 
           <!-- Page Navigation (within main content area) -->
@@ -144,7 +146,7 @@
     padding: var(--space-s) 0;
     gap: var(--space-l);
 
-    @media (max-width: 1023px) {
+    @media (max-width: var(--breakpoint-lg)) {
       padding: var(--space-s);
     }
   }

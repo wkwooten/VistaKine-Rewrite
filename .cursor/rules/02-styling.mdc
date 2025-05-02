@@ -1,0 +1,33 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Styling Conventions
+
+Refer to the full [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md) for complete details.
+
+## Core Concepts
+
+- **SCSS & CSS Variables:** Styling uses SCSS (`<style lang="scss">`) and relies heavily on CSS Custom Properties defined in `_variables.scss`.
+- **Utopia Fluid Design:** Employs [Utopia](https://utopia.fyi/) for fluid typography and spacing scales. Variables (`--step-X`, `--space-X`) and mixins are defined in [_typography.scss](mdc:src/lib/styles/_typography.scss) and [_spacing.scss](mdc:src/lib/styles/_spacing.scss).
+- **Theming:**
+    - Light/Dark mode via `@media (prefers-color-scheme: dark)` in [_variables.scss](mdc:src/lib/styles/_variables.scss).
+    - Chapter-specific themes using `--chapter-color-X` variables, also defined in [_variables.scss](mdc:src/lib/styles/_variables.scss).
+- **Component-Scoped Styles:** Most styles should reside within individual Svelte component `<style>` blocks for encapsulation.
+- **Global Styles:** Minimal global styles are in [src/app.scss](mdc:src/app.scss) (which imports [src/lib/styles/main.scss](mdc:src/lib/styles/main.scss)).
+
+## Key Files
+
+- **Main Variables & Themes:** [src/lib/styles/_variables.scss](mdc:src/lib/styles/_variables.scss)
+- **Fluid Typography:** [src/lib/styles/_typography.scss](mdc:src/lib/styles/_typography.scss)
+- **Fluid Spacing:** [src/lib/styles/_spacing.scss](mdc:src/lib/styles/_spacing.scss)
+- **CSS Reset:** [src/lib/styles/_reset.scss](mdc:src/lib/styles/_reset.scss)
+- **KaTeX Customization:** [src/lib/styles/_katex-custom.scss](mdc:src/lib/styles/_katex-custom.scss)
+- **Main Import File:** [src/lib/styles/main.scss](mdc:src/lib/styles/main.scss)
+- **Global Application Styles:** [src/app.scss](mdc:src/app.scss)
+
+## Layout
+
+- **Main App Layout:** Flexbox-based, defined in [src/routes/+layout.svelte](mdc:src/routes/+layout.svelte).
+- **Content Width:** `.u-container` class provides padding. `.readable-content` class (defined in [src/lib/styles/chapter-styles.scss](mdc:src/lib/styles/chapter-styles.scss)) constrains text width.

@@ -55,7 +55,6 @@
   @use "$lib/styles/variables" as vars; // Import variables
 
   .content-card {
-    // --- Base Card Styles (Moved from SectionTemplate) ---
     margin-top: var(--space-l);
     margin-bottom: var(--space-xl);
     margin-inline: auto; // Center the card by default

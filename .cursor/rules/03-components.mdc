@@ -1,0 +1,33 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Component Structure & Key Components
+
+This project uses a component-based architecture with Svelte 5.
+
+## Location
+
+- **Reusable UI/Logic Components:** [src/lib/components/](mdc:src/lib/components/)
+- **Visualization Components (Threlte):** [src/lib/components/visualization/](mdc:src/lib/components/visualization/)
+- **Chapter Section Content:** [src/lib/content/chapters/[slug]/sections/](mdc:src/lib/content/chapters/[slug]/sections/)
+
+## Key Structural/Layout Components
+
+- **`SectionTemplate.svelte`:** ([src/lib/components/SectionTemplate.svelte](mdc:src/lib/components/SectionTemplate.svelte)) Wraps individual chapter section content, provides layout, titles, and integrates `PageNav` and `SectionMap`.
+- **`SectionMap.svelte`:** ([src/lib/components/ui/SectionMap.svelte](mdc:src/lib/components/ui/SectionMap.svelte)) Provides sticky/mobile drawer navigation within a section, based on `data-nav-target` attributes.
+- **`ContentCard.svelte`:** ([src/lib/components/ContentCard.svelte](mdc:src/lib/components/ContentCard.svelte)) A wrapper for content blocks providing consistent card styling, visibility animations, and layout width options (`full`/`condensed`).
+- **`Navigation.svelte`:** ([src/lib/components/Navigation.svelte](mdc:src/lib/components/Navigation.svelte)) The main site navigation sidebar.
+- **`PageNav.svelte`:** ([src/lib/components/PageNav.svelte](mdc:src/lib/components/PageNav.svelte)) Provides previous/next navigation between sections and chapters at the bottom of a section.
+
+## Key Interactive/Feature Components
+
+- **`Keyword.svelte`:** ([src/lib/components/Keyword.svelte](mdc:src/lib/components/Keyword.svelte)) Creates interactive keywords linked to glossary definitions ([src/lib/data/glossary-data.ts](mdc:src/lib/data/glossary-data.ts)). Use judiciously.
+- **`Accordion.svelte`:** ([src/lib/components/Accordion.svelte](mdc:src/lib/components/Accordion.svelte)) Reusable accordion component for hiding/showing content (used by `FormulaAccordion`, `GuidedCalculation`, etc.).
+- **`VisContainer.svelte`:** ([src/lib/components/visualization/VisContainer.svelte](mdc:src/lib/components/visualization/VisContainer.svelte)) Standard wrapper for Threlte scenes, often handling aspect ratio and base container styles.
+- **Interactive Exercises:** Located in `src/lib/components/visualization/interactions/`. These are complex components combining Threlte scenes, HUDs, and state management.
+    - **Printer Calibration:** [src/lib/components/visualization/interactions/printer-calibration/](mdc:src/lib/components/visualization/interactions/printer-calibration/)
+    - **Vector Builder:** [src/lib/components/visualization/interactions/vector-builder/](mdc:src/lib/components/visualization/interactions/vector-builder/)
+
+See [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md) for more details on component styling approaches.

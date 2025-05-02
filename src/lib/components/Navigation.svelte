@@ -400,10 +400,6 @@
         justify-content: center;
       }
 
-      .chapter-item .chapter-link {
-        justify-content: center;
-      }
-
       .icon,
       .chapter-number {
         margin-right: 0;
@@ -776,9 +772,6 @@
     padding: 0;
     margin-left: 0;
     visibility: hidden;
-  }
-
-  a.nav-item.is-active {
   }
 
   .nav-chapter-group.is-active > .chapter-item {
