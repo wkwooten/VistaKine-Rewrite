@@ -34,6 +34,17 @@
     currentChapterNumber = null,
   }: PageNavProps = $props();
 
+  // ADD CONSOLE LOGGING
+  console.log("[PageNav] Received Props:", {
+    prevChapter,
+    nextChapter,
+    prevSection,
+    nextSection,
+    currentChapterSlug,
+    currentChapterTitle,
+    currentChapterNumber,
+  });
+
   // Determine navigation mode using $derived
   const hasChapterNav = $derived(prevChapter !== null || nextChapter !== null);
   const hasSectionNav = $derived(prevSection !== null || nextSection !== null);
