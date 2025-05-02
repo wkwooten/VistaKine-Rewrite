@@ -12,8 +12,8 @@
 
   let { children } = $props(); // Add children prop
 
-  let mobileNavOpen = false;
-  let isMobile = false;
+  let mobileNavOpen = $state(false);
+  let isMobile = $state(false);
   let lgBreakpointValue = 1024; // Default fallback (numeric)
 
   let mainContentElement: HTMLElement | null = null;

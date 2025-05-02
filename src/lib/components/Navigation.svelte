@@ -377,16 +377,15 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    width: var(--sidebar-width);
+    /* width: var(--sidebar-width); */
     transition: width var(--sidebar-transition-duration)
       var(--sidebar-transition-timing);
     box-sizing: border-box;
 
     /* ADD Media query to disable width/transition on mobile */
-    /* @media (max-width: var(--breakpoint-l)) {
-      width: auto;
-      transition: none;
-    } */
+    @media (max-width: var(--breakpoint-l)) {
+      display: none;
+    }
 
     &.collapsed {
       width: var(--sidebar-collapsed-width);
