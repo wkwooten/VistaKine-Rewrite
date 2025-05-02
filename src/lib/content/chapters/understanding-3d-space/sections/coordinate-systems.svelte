@@ -54,8 +54,15 @@
         Section Introduction
       </h2>
       <p>
-        _Placeholder: Describe what this section will cover and the introductory
-        scenario._
+        Welcome to the world of 3D space! Ever wonder how a 3D printer knows
+        exactly where to place material, or how a GPS pinpoints your location?
+        It all relies on a fundamental concept: <strong
+          >coordinate systems</strong
+        >. In this section, we'll break down how we use three dimensions (X, Y,
+        and Z) to map out space, define precise locations using coordinates, and
+        understand key terms like the origin and axes. We'll see how crucial
+        this system is, especially when giving instructions to machines, as our
+        characters Surya and Leo are about to discover.
       </p>
       <Scenario>
         <p data-speaker="Surya">
@@ -136,7 +143,7 @@
       </h2>
       <p>
         Now, let's see this system in action with a 3D printer. Imagine a device
-        with a small nozzle that needs to move *very precisely* to build objects
+        with a small nozzle that needs to move <em>very precisely</em> to build objects
         layer by layer. How does it know where to go? It uses those same axes!
       </p>
       <ul>
@@ -197,6 +204,21 @@
     <!-- Block 6: Activity - Review/Quiz -->
     <ContentCard blockType="activity-block" class="-review" layoutWidth="full">
       <h2 id="section-review" data-nav-target="true">Section Review</h2>
+      <p>
+        This section introduced the fundamental concepts of 3D coordinate
+        systems. We learned why three dimensions (X, Y, Z) are necessary to
+        precisely locate points in space, unlike 2D systems. Key terms included
+        the <strong>axes</strong> (the reference lines), the
+        <strong>origin</strong>
+        (where axes meet, 0,0,0), and
+        <strong>coordinates</strong> (the unique (x, y, z) address of a point).
+      </p>
+      <p>
+        We saw how this system applies directly to 3D printing, guiding the
+        nozzle's movement, and explored the common
+        <strong>right-handed coordinate system</strong> convention. Now, let's test
+        your understanding with a quick quiz!
+      </p>
       <SectionReview>
         <Quiz questions={coordinateQuizData} showFeedback={true} />
       </SectionReview>
