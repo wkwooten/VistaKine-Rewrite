@@ -287,12 +287,11 @@
   .section-map-container {
     // Default Desktop Styles (Sticky Sidebar)
     position: sticky;
-    top: calc(var(--navbar-height, 60px) + var(--space-s));
+    top: calc(var(--navbar-height, 80px));
     align-self: flex-start;
     background-color: var(--color-background);
     width: var(--section-map-width, 220px);
     overflow-y: auto;
-    padding: var(--space-s) 0 var(--space-s) var(--space-s);
     flex-shrink: 0;
     z-index: 50; // Above overlay
     border-left: 1px solid var(--color-border-subtle);
@@ -326,6 +325,11 @@
       @media (max-width: vars.$breakpoint-lg) {
         padding-right: 0; // No right padding needed inside mobile drawer
       }
+    }
+
+    nav {
+      border: 1px solid var(--color-border);
+      padding: var(--space-s) 0 var(--space-s) var(--space-s);
     }
 
     // Style for the heading
@@ -384,7 +388,7 @@
       white-space: normal;
       line-height: 1.4;
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      margin-right: var(--space-s); // Add margin for desktop
+      margin-left: 0;
 
       @media (max-width: vars.$breakpoint-lg) {
         margin-right: 0; // No right margin needed on mobile

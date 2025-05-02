@@ -1,37 +1,37 @@
-// Simple and fluid grid system
+// Utopia fluid grid system
 
 @use 'variables';
 
-// Base grid values
-$grid-min-columns: 4;   // Number of columns at min viewport
-$grid-max-columns: 12;  // Number of columns at max viewport
+// Remove root variables from here, they are now in _variables.scss
+// :root {
+//   --grid-gutter: var(--space-m);
+//   --grid-max-width: clamp(1000px, 90vw, var(--wide-content-width));
+//   --grid-padding: var(--space-s);
+// }
 
-// Create fluid grid variables
-:root {
-  // Fluid gutter calculation using space variable
-  --grid-gutter: var(--space-m);
-
-  // Grid container with fluid max-width and auto margins
-  --grid-max-width: clamp(1000px, 90vw, var(--wide-content-width));
-  --grid-padding: var(--space-s);
-}
-
-// Container for grid components
-.container {
+// Utopia Container: Constrains width and adds fluid padding (gutters)
+.u-container {
   width: 100%;
-  max-width: var(--grid-max-width);
+  // max-width: var(--grid-max-width, 77.5rem); // Added fallback just in case
   margin-inline: auto;
-  padding-inline: var(--grid-padding);
+  padding-inline: var(--grid-gutter);
   box-sizing: border-box;
-  overflow-x: hidden;
+  // overflow-x: hidden; // Consider if this is needed, might clip shadows etc.
 
-  @media (max-width: variables.$breakpoint-md) {
-    margin-inline: 0;
-    padding-inline: 0;
-  }
+  // Keep mobile adjustments if desired, or remove if padding should remain
+  // @media (max-width: variables.$breakpoint-md) {
+  //   margin-inline: 0;
+  //   padding-inline: 0;
+  // }
 }
 
-// Auto-fit grid for responsive card layouts
+// Utopia Grid: Basic grid layout helper
+.u-grid {
+  display: grid;
+  gap: var(--grid-gutter);
+}
+
+// Keep your existing auto-grid helper if needed
 .auto-grid {
   display: grid;
   gap: var(--grid-gutter);

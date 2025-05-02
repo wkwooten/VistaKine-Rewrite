@@ -5,13 +5,13 @@
   import Footer from "$lib/components/Footer.svelte";
   import { getChapterBySlug } from "$lib/data/chapters";
   import { onMount } from "svelte";
-  import SectionMap from "$lib/components/ui/SectionMap.svelte";
   import PageNav from "$lib/components/PageNav.svelte";
-  import { sectionMapOpen } from "$lib/stores/uiStores";
   import {
     getAdjacentSections,
     getAdjacentChapters,
   } from "$lib/utils/navigationUtils";
+  import SectionMap from "$lib/components/ui/SectionMap.svelte";
+  import { sectionMapOpen } from "$lib/stores/uiStores";
 
   // Define props using $props
   type SectionTemplateProps = {
@@ -84,35 +84,42 @@
 
 <div class="section-container {themeClass}">
   <main class="main-content-area">
-    <div class="section-content-wrapper">
-      <!-- Standardized Section Title -->
-      {#if section}
-        <h1 class="section-title">
-          <span class="section-number-prefix">Section {section.number}:</span>
-          <br /> <span class="section-title-main">{section.title}</span>
-        </h1>
-      {/if}
+    <div class="section-layout-wrapper">
+      <div class="section-content-column">
+        <div class="section-content-wrapper">
+          <!-- Standardized Section Title -->
+          {#if section}
+            <h1 class="section-title">
+              <span class="section-number-prefix"
+                >Section {section.number}:</span
+              >
+              <br /> <span class="section-title-main">{section.title}</span>
+            </h1>
+          {/if}
 
-      <article class="section-content">
-        <!-- Content from specific section .svelte file goes here -->
-        <slot></slot>
-      </article>
+          <article class="section-content">
+            <!-- Content from specific section .svelte file goes here -->
+            <slot></slot>
+          </article>
 
-      <!-- Page Navigation (within main content area) -->
-      <PageNav
-        {prevSection}
-        {nextSection}
-        {prevChapter}
-        {nextChapter}
-        {currentChapterSlug}
-        currentChapterTitle={chapter?.title}
-        currentChapterNumber={chapter?.number}
-      />
+          <!-- Page Navigation (within main content area) -->
+          <PageNav
+            {prevSection}
+            {nextSection}
+            {prevChapter}
+            {nextChapter}
+            {currentChapterSlug}
+            currentChapterTitle={chapter?.title}
+            currentChapterNumber={chapter?.number}
+          />
+        </div>
+      </div>
+
+      <div class="section-map-column-placeholder">
+        <SectionMap bind:isOpen={$sectionMapOpen} {sectionSlug} />
+      </div>
     </div>
   </main>
-
-  <!-- Section Map (Desktop/Mobile) - Receives open state and sectionSlug -->
-  <SectionMap bind:isOpen={$sectionMapOpen} {sectionSlug} />
 </div>
 <!-- Footer moved outside the main flex container -->
 <Footer />
@@ -121,46 +128,22 @@
   @use "$lib/styles/variables" as vars;
 
   .section-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--space-l);
+    width: 100%;
     min-height: calc(100vh - var(--footer-height, 100px));
     color: var(--color-text-primary);
-    padding: 0 var(--space-s);
-    width: 100%;
-
-    @media (max-width: 1023px) {
-      flex-direction: column;
-      gap: 0;
-      padding: 0;
-      align-items: stretch;
-    }
+    display: flex;
+    flex-direction: column;
   }
 
   .main-content-area {
-    flex: 1;
-    max-width: var(--wide-content-width);
     display: flex;
-    flex-direction: column;
-    min-width: 0;
-
-    @media (max-width: 1023px) {
-      max-width: 100%;
-    }
-  }
-
-  .section-content-wrapper {
-    display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     width: 100%;
+    min-width: 0;
+    flex-grow: 1;
     padding: var(--space-s) 0;
     gap: var(--space-l);
-    flex-grow: 1;
 
-    @media (max-width: vars.$breakpoint-lg) {
-      gap: var(--space-l);
-    }
     @media (max-width: 1023px) {
       padding: var(--space-s);
     }
@@ -327,5 +310,41 @@
   /* Apply scroll margin to nav targets */
   :global([data-nav-target="true"]) {
     scroll-margin-top: calc(var(--navbar-height, 80px) + 4rem);
+  }
+
+  .section-layout-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin-left: var(--sidebar-width);
+    justify-content: center;
+    gap: var(--space-l);
+    width: 100%;
+    box-sizing: border-box;
+
+    @media (max-width: vars.$breakpoint-lg) {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  .section-content-column {
+    flex: 1;
+    max-width: var(--wide-content-width);
+    min-width: 0;
+    padding-left: var(--space-xl);
+    box-sizing: border-box;
+
+    @media (max-width: vars.$breakpoint-lg) {
+      max-width: 100%;
+      padding-left: var(--space-s);
+    }
+  }
+
+  .section-map-column-placeholder {
+    flex-shrink: 0;
+
+    @media (max-width: vars.$breakpoint-lg) {
+      display: none;
+    }
   }
 </style>

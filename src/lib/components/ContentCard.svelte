@@ -60,6 +60,7 @@
     margin-bottom: var(--space-xl);
     margin-inline: auto; // Center the card by default
     background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm); // Use the base shadow defined in variables
     border-radius: var(--radius-md);
     padding: var(--space-l) var(--space-m);

@@ -3,11 +3,12 @@
   import { onMount, onDestroy } from "svelte";
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
-  import PageNav from "$lib/components/PageNav.svelte";
   import { sidebarExpanded } from "$lib/stores/appState";
   import { parallaxBackground } from "$lib/scripts/parallax";
   import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
   import { browser } from "$app/environment";
+  import SectionMap from "$lib/components/ui/SectionMap.svelte";
+  import { sectionMapOpen } from "$lib/stores/uiStores";
 
   let { children } = $props(); // Add children prop
 
@@ -15,25 +16,8 @@
   let isMobile = false;
   let lgBreakpointValue = 1024; // Default fallback (numeric)
 
-  // State for top nav visibility and scroll tracking - Use Svelte 5 $state rune correctly
-  let topNavVisible = $state(true);
-  let lastScrollY = $state(0);
   let mainContentElement: HTMLElement | null = null;
   let navBarHeight = 80; // Default height, will try to read from CSS
-
-  // Define handlers outside the if (browser) block
-  function handleScroll() {
-    if (!mainContentElement) return;
-    const currentScrollY = mainContentElement.scrollTop;
-    if (currentScrollY < navBarHeight) {
-      topNavVisible = true;
-    } else if (currentScrollY > lastScrollY) {
-      topNavVisible = false;
-    } else {
-      topNavVisible = true;
-    }
-    lastScrollY = currentScrollY;
-  }
 
   function checkMobile() {
     if (browser) {
@@ -71,14 +55,6 @@
         console.error("Error reading CSS variables:", error);
       }
 
-      // Add listeners
-      if (mainContentElement) {
-        mainContentElement.addEventListener("scroll", handleScroll, {
-          passive: true,
-        });
-      } else {
-        console.warn("Main content element not found for scroll listener.");
-      }
       window.addEventListener("resize", checkMobile);
 
       // Initial check
@@ -88,9 +64,6 @@
     return () => {
       if (browser) {
         window.removeEventListener("resize", checkMobile);
-        if (mainContentElement) {
-          mainContentElement.removeEventListener("scroll", handleScroll);
-        }
       }
     };
   });
@@ -108,6 +81,7 @@
   }
 
   let currentChapterSlug = $derived($page.params.slug || null);
+  let currentSectionSlug = $derived($page.params.section || null);
 
   // CONVERT $: assignment to $derived
   // $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
@@ -121,7 +95,7 @@
 <div class="parallax-background">
   <div class="grid-background"></div>
 
-  <svg
+  <!-- <svg
     class="bg-svg-illustration svg-illustration-1"
     viewBox="0 0 200 200"
     xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +115,7 @@
       height="160"
       fill="rgba(255, 255, 255, 0.05)"
     />
-  </svg>
+  </svg> -->
 </div>
 
 <div
@@ -200,29 +174,22 @@
   {/if}
 
   <main class="content" bind:this={mainContentElement}>
-    <div class="top-nav-bar" class:hidden={!topNavVisible}>
-      <!-- New Wrapper Structure -->
-      <div class="page-nav-wrapper">
-        <!-- Container for the actual PageNav -->
-        <div class="page-nav-container">
-          <!-- Render PageNav directly if data exists -->
-          {#if $page.data.prevSection !== undefined || $page.data.nextSection !== undefined || $page.data.prevChapter !== undefined || $page.data.nextChapter !== undefined || $page.data.currentChapterSlug}
-            <PageNav
-              prevSection={$page.data.prevSection}
-              nextSection={$page.data.nextSection}
-              prevChapter={$page.data.prevChapter}
-              nextChapter={$page.data.nextChapter}
-              currentChapterSlug={$page.data.currentChapterSlug}
-              currentChapterTitle={$page.data.chapterTitle}
-              currentChapterNumber={$page.data.chapterNumber}
-            />
-          {/if}
-        </div>
-        <!-- Empty spacer to represent SectionMap width on desktop -->
-        <div class="page-nav-spacer"></div>
-      </div>
+    <!-- REMOVE Top Nav Bar -->
+    <!-- <div class="top-nav-bar" class:hidden={!topNavVisible}> ... </div> -->
+
+    <!-- REVERT: Remove column wrapper, place content and map directly -->
+    <!-- REMOVE .main-content-and-map-wrapper -->
+    <!-- Simply render children within the u-container -->
+    <div class="u-container">
+      {@render children()}
     </div>
-    {@render children()}
+    <!-- REMOVE SectionMap rendering from here -->
+    <!-- {#if currentSectionSlug}
+        <SectionMap
+          bind:isOpen={$sectionMapOpen}
+          sectionSlug={currentSectionSlug}
+        />
+      {/if} -->
   </main>
 </div>
 
@@ -234,6 +201,7 @@
     width: 100%;
     position: relative;
     z-index: 2;
+    display: flex; // Use flex for main layout
 
     &.mobile-nav-active {
       .mobile-menu-button {
@@ -245,28 +213,33 @@
   }
 
   .navigation {
+    // Keep most styles, ensure width uses variable
     display: flex;
     align-items: stretch;
     height: 100vh;
     z-index: 1001;
-    position: fixed;
+    position: fixed; // Keep fixed positioning
     top: 0;
     left: 0;
+    /* width: var(--sidebar-width); // Use variable for expanded width
+    transition: width var(--sidebar-transition-duration)
+      var(--sidebar-transition-timing); // Keep transition */
 
     & > :first-child {
       flex-grow: 1;
       min-width: 0;
-      width: 100%;
+      width: 100%; // Make inner nav take full width of container
     }
 
     @media (max-width: variables.$breakpoint-lg) {
+      // Keep mobile overlay styles
       position: fixed;
       top: 0;
       left: 0;
       width: 300px;
       max-width: 80%;
       transform: translateX(-100%);
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease; // Keep mobile transition
       background-color: var(--sidebar-background, var(--color-background));
       flex-direction: column;
       align-items: initial;
@@ -290,12 +263,11 @@
   }
 
   .sidebar-toggle-button {
+    // Keep existing styles
     z-index: 1002;
-
     flex-shrink: 0;
     width: 30px;
     align-self: center;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -319,10 +291,6 @@
       box-shadow: var(--shadow-md);
       color: var(--color-accent);
     }
-
-    @media (max-width: variables.$breakpoint-lg) {
-      // display: none;
-    }
   }
 
   .content {
@@ -330,110 +298,19 @@
     min-width: 0;
     height: 100%;
     overflow-y: auto;
-    margin-left: 80px;
+    // REMOVE fixed margin-left. Let content flow naturally.
     position: relative; /* Needed for sticky positioning context */
-    /* Add padding-top to prevent content from being hidden by sticky top bar */
-    /* padding-top: 40px; */
 
     @media (max-width: variables.$breakpoint-lg) {
-      margin-left: 0;
-      /* Use mobile specific padding or inherit base */
-
-      /* Remove the extra padding-bottom added for the bottom bar */
-      /* padding-bottom: calc(40px + var(--space-s)); REMOVED */
+      // REMOVE margin-left: 0; // No margin needed on mobile
     }
   }
 
-  /* Styles for the top navigation bar */
-  .top-nav-bar {
-    position: sticky;
-    top: 0; /* Changed from bottom */
-    left: 0;
-    width: 100%;
-    height: var(--navbar-height, 80px); // Use variable or default
-    background-color: var(
-      --color-background-alt,
-      var(--color-background)
-    ); /* Slightly different bg or fallback */
-    border-bottom: 1px solid var(--color-border); /* Changed from border-top */
-    z-index: 10; /* Ensure it's above content but below overlays/modals if any */
-    display: flex; /* Use flex to easily center/align content */
-    align-items: center;
-    justify-content: center; /* Center the wrapper inside */
-    transition: transform 0.3s ease; // ADD transition for hiding
-
-    // ADD style for hidden state
-    &.hidden {
-      transform: translateY(-100%);
-    }
-
-    // ADD styles for the wrapper structure
-    .page-nav-wrapper {
-      display: flex;
-      justify-content: center; // Center items within the wrapper
-      align-items: center; // Align items vertically
-      width: 100%;
-      gap: var(--space-l, 1rem); // Match SectionTemplate gap
-      // Optional: Set max-width similar to SectionTemplate's container
-      // max-width: calc(var(--wide-content-width, 800px) + var(--section-map-width, 220px) + var(--space-l, 1rem));
-      padding-inline: var(--space-s); // Add horizontal padding
-    }
-
-    .page-nav-container {
-      flex: 1; // Takes up space left by spacer
-      max-width: var(--wide-content-width, 800px); // Match main content width
-      min-width: 0;
-      display: flex; // Needed to contain the PageNav properly
-      justify-content: center;
-      align-items: center;
-      height: 100%; // Take full height of bar
-    }
-
-    .page-nav-spacer {
-      width: var(--section-map-width, 220px); // Mimic SectionMap width
-      flex-shrink: 0;
-    }
-
-    /* Remove default padding/margin/width from PageNav when inside the bar */
-    // MODIFY existing global rule
-    :global(.page-nav) {
-      padding: 0 !important; // Remove internal padding
-      margin: 0 !important; // Remove internal margin
-      border: none !important; // Remove internal border
-      width: 100%;
-      height: 100%;
-      // REMOVE max-width & margin: 0 auto - handled by container now
-      // max-width: var(--max-content-width, 1200px);
-      // margin: 0 auto;
-      // REMOVE padding-inline - handled by wrapper now
-      // padding-inline: var(--space-s);
-    }
-
-    @media (max-width: variables.$breakpoint-lg) {
-      background-color: var(
-        --color-background
-      ); /* Match main background on mobile maybe? */
-
-      // ADD mobile adjustments for wrapper structure
-      .page-nav-wrapper {
-        gap: 0;
-        padding-inline: 0; // Use PageNav's internal padding on mobile? Or adjust here.
-      }
-      .page-nav-spacer {
-        display: none; // Hide spacer on mobile
-      }
-      .page-nav-container {
-        max-width: 100%; // Allow container to be full width
-      }
-      // Ensure PageNav internal padding is restored/correct on mobile if needed
-      // Might need adjustments depending on desired mobile PageNav appearance
-      :global(.page-nav) {
-        padding: 0 var(--space-s) !important; // Example: restore horizontal padding
-      }
-    }
-  }
+  /* REMOVE styles for the top navigation bar */
+  /* .top-nav-bar { ... } */
 
   .mobile-overlay {
+    // Keep existing styles
     position: fixed;
     top: 0;
     left: 0;
@@ -449,6 +326,7 @@
   }
 
   .mobile-menu-button {
+    // Keep existing styles
     display: flex;
     align-items: center;
     justify-content: center;
@@ -470,8 +348,26 @@
   }
 
   .skip-link {
+    // Keep existing styles
     position: absolute;
     left: -9999px;
     color: var(--color-text-primary);
   }
+
+  /* Keep .u-container styles - This will now wrap all children */
+  .u-container {
+    min-height: 1px;
+    // margin-inline: 0; // Let the flex container handle centering/positioning
+    width: 100%; // Ensure it takes available width
+    padding: var(--space-l); // Add some padding perhaps?
+
+    @media (max-width: variables.$breakpoint-lg) {
+      padding: var(--space-s);
+    }
+  }
+
+  // REMOVE styles for the specific section+map wrapper
+  /* .main-content-and-map-wrapper { ... } */
+  /* .main-slot-container { ... } */
+  /* :global(.section-map-container) { ... } */
 </style>

@@ -19,89 +19,96 @@
   import AnimatedLogo from "$lib/components/ui/AnimatedLogo.svelte";
 </script>
 
-<section class="hero">
-  <!-- Wrap hero content in a ContentCard -->
-  <div class="hero-content-card">
-    <div class="hero-content-inner">
-      <!-- Branding Section -->
-      <div class="hero-branding">
-        <AnimatedLogo />
-        <hr class="branding-separator" />
-        <p class="tagline">
-          Bringing Physics Learning into a New Dimension <br />
-          Explore interactive 3D visualizations that bring kinematics to life.
-        </p>
-        <!-- SearchBar moved back to hero-actions -->
-      </div>
+<div class="hero-container">
+  <section class="hero">
+    <!-- Wrap hero content in a ContentCard -->
+    <div class="hero-content-card">
+      <div class="hero-content-inner">
+        <!-- Branding Section -->
+        <div class="hero-branding">
+          <AnimatedLogo />
+          <hr class="branding-separator" />
+          <p class="tagline">
+            Bringing Physics Learning into a New Dimension <br />
+            Explore interactive 3D visualizations that bring kinematics to life.
+          </p>
+          <!-- SearchBar moved back to hero-actions -->
+        </div>
 
-      <!-- Actions Section -->
-      <div class="hero-actions">
-        <!-- Add the SearchBar component here -->
-        <SearchBar
-          placeholder="Search topics like 'vectors', 'kinematics', 'forces'..."
-        />
+        <!-- Actions Section -->
+        <div class="hero-actions">
+          <!-- Add the SearchBar component here -->
+          <SearchBar
+            placeholder="Search topics like 'vectors', 'kinematics', 'forces'..."
+          />
 
-        <div class="hero-buttons">
-          <a
-            href="/chapter/understanding-3d-space/coordinate-systems"
-            class="btn primary">Begin Learning</a
-          >
-          <!-- Placeholder Sign In button -->
-          <button class="btn secondary">Sign In</button>
-          <!-- Using secondary style for now -->
+          <div class="hero-buttons">
+            <a
+              href="/chapter/understanding-3d-space/coordinate-systems"
+              class="btn primary">Begin Learning</a
+            >
+            <!-- Placeholder Sign In button -->
+            <button class="btn secondary">Sign In</button>
+            <!-- Using secondary style for now -->
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="about" class="about">
-  <!-- Use ContentCard for the intro block -->
-  <ContentCard blockType="about-intro-block" layoutWidth="full">
-    <h2>About VistaKine</h2>
-    <div class="about-content">
-      <p>
-        VistaKine combines educational content with interactive 3D
-        visualizations and physics simulations to create an engaging learning
-        experience.
-      </p>
-      <p>
-        By integrating powerful 3D rendering with physics simulations, VistaKine
-        allows students to explore complex kinematic and dynamic concepts
-        through hands-on interaction.
-      </p>
+  <section id="about" class="about">
+    <!-- Use ContentCard for the intro block -->
+    <ContentCard blockType="about-intro-block" layoutWidth="full">
+      <h2>About VistaKine</h2>
+      <div class="about-content">
+        <p>
+          VistaKine combines educational content with interactive 3D
+          visualizations and physics simulations to create an engaging learning
+          experience.
+        </p>
+        <p>
+          By integrating powerful 3D rendering with physics simulations,
+          VistaKine allows students to explore complex kinematic and dynamic
+          concepts through hands-on interaction.
+        </p>
+      </div>
+    </ContentCard>
+
+    <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
+    <div class="features">
+      <ContentCard blockType="feature-block" layoutWidth="full">
+        <h3>Interactive 3D Visualizations</h3>
+        <p>
+          Understand complex concepts through manipulable 3D models and
+          simulations.
+        </p>
+      </ContentCard>
+
+      <ContentCard blockType="feature-block" layoutWidth="full">
+        <h3>Physics-Based Simulations</h3>
+        <p>
+          Experiment with physical properties and see how systems respond in
+          real-time.
+        </p>
+      </ContentCard>
+
+      <ContentCard blockType="feature-block" layoutWidth="full">
+        <h3>Learn by Doing</h3>
+        <p>
+          Engage with the material through interactive examples and experiments.
+        </p>
+      </ContentCard>
     </div>
-  </ContentCard>
-
-  <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
-  <div class="features">
-    <ContentCard blockType="feature-block" layoutWidth="full">
-      <h3>Interactive 3D Visualizations</h3>
-      <p>
-        Understand complex concepts through manipulable 3D models and
-        simulations.
-      </p>
-    </ContentCard>
-
-    <ContentCard blockType="feature-block" layoutWidth="full">
-      <h3>Physics-Based Simulations</h3>
-      <p>
-        Experiment with physical properties and see how systems respond in
-        real-time.
-      </p>
-    </ContentCard>
-
-    <ContentCard blockType="feature-block" layoutWidth="full">
-      <h3>Learn by Doing</h3>
-      <p>
-        Engage with the material through interactive examples and experiments.
-      </p>
-    </ContentCard>
-  </div>
-  <!-- Removed the outer .container div as ContentCard handles width/centering -->
-</section>
+    <!-- Removed the outer .container div as ContentCard handles width/centering -->
+  </section>
+</div>
 
 <style lang="scss">
+  .hero-container {
+    max-width: var(--max-content-width);
+    margin-inline: auto;
+  }
+
   .hero {
     min-height: 100vh; // Use min-height instead of height for flexibility
     display: flex;

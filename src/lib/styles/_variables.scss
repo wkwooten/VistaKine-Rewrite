@@ -88,6 +88,7 @@ $transition-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 // Dimensions
 $max-content-width: 900px;
 $wide-content-width: 1400px;
+$section-map-width: 300px;
 $readable-max-width: 70ch; // Optimal reading width (ch units are width of "0" character)
 $sidebar-width: 400px;
 $sidebar-collapsed-width:80px;
@@ -150,6 +151,40 @@ $leo-color-light: #1E40AF;  // Blue 800
   --step-4: clamp(1.6018rem, 1.0975rem + 2.5217vw, 3.0518rem);
   --step-5: clamp(1.802rem, 1.102rem + 3.5003vw, 3.8147rem);
   --step-6: clamp(2.0273rem, 1.0739rem + 4.7671vw, 4.7684rem);
+
+  // Utopia Fluid Space Steps (ASSUMING THESE EXIST - ADD YOURS HERE)
+  // Example based on Utopia calculator link - replace with your actual clamp values
+  --space-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+  --space-2xs: clamp(0.5rem, 0.48rem + 0.1vw, 0.5625rem);
+  --space-xs: clamp(0.75rem, 0.7199rem + 0.1504vw, 0.8438rem);
+  --space-s: clamp(1rem, 0.913rem + 0.4348vw, 1.25rem); // Matches step-0
+  --space-m: clamp(1.5rem, 1.3696rem + 0.6522vw, 1.875rem);
+  --space-l: clamp(2rem, 1.8261rem + 0.8696vw, 2.5rem);
+  --space-xl: clamp(3rem, 2.7391rem + 1.3043vw, 3.75rem);
+  --space-2xl: clamp(4rem, 3.6522rem + 1.7391vw, 5rem);
+  --space-3xl: clamp(6rem, 5.4783rem + 2.6087vw, 7.5rem);
+
+  /* One-up pairs */
+  --space-3xs-2xs: clamp(0.3125rem, 0.1976rem + 0.5743vw, 0.6875rem);
+  --space-2xs-xs: clamp(0.5rem, 0.3648rem + 0.6757vw, 0.9375rem);
+  --space-xs-s: clamp(0.75rem, 0.5881rem + 0.8097vw, 1.2813rem);
+  --space-s-m: clamp(1rem, 0.6869rem + 1.5654vw, 1.9375rem);
+  --space-m-l: clamp(1.5rem, 1.1435rem + 1.7827vw, 2.625rem);
+  --space-l-xl: clamp(2rem, 1.3739rem + 3.1307vw, 4rem);
+  --space-xl-2xl: clamp(3rem, 2.287rem + 3.5654vw, 5.25rem);
+  --space-2xl-3xl: clamp(4rem, 2.7478rem + 6.2613vw, 8rem);
+
+  /* Custom pairs */
+  --space-s-l: clamp(1rem, 0.4565rem + 2.7174vw, 2.875rem); // Example custom pair often used for gutters
+
+  // ==================================
+  // Utopia Grid Variables
+  // ==================================
+  --grid-max-width: 77.5rem; /* 1240px / 16px */
+  // Use a fluid space variable for the gutter. Adjust if --space-s-l doesn't exist or you prefer another step.
+  --grid-gutter: var(--space-s-l, clamp(1.125rem, 0.6467rem + 2.3913vw, 2.5rem)); /* Example fallback clamp */
+  --grid-columns: 12;
+  // ==================================
 
   // Core Palette
   --color-background: #{$color-background};
@@ -298,6 +333,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --max-content-width: #{$max-content-width};
   --wide-content-width: #{$wide-content-width};
   --readable-max-width: #{$readable-max-width};
+  --section-map-width: #{$section-map-width};
   --sidebar-width: #{$sidebar-width};
   --sidebar-collapsed-width: #{$sidebar-collapsed-width};
   --sidebar-width-full: #{$sidebar-width-full};
