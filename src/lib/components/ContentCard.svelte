@@ -107,15 +107,6 @@
     // Specific adjustments when it's also an exercise
     &.-exercise {
       // This nested rule now only applies if the card *already* has .visualization-block or .-exercise
-      .exercise-description {
-        font-size: var(--step-0);
-        margin-bottom: var(--space-m);
-        color: var(--color-text-secondary);
-        line-height: 1.6;
-        margin-left: 0;
-        margin-right: 0;
-      }
-
       // Adjustments if it also has .visualization-card (legacy?)
       // This selector might need adjustment if visualization-card is passed via `class` prop
       &.visualization-card {

@@ -395,12 +395,6 @@
 </div>
 
 <style lang="scss">
-  label {
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    /* color: white; */
-  }
-
   /* Styles specific to this panel - copy relevant styles from VectorBuilderHud */
   .vector-input-panel {
     display: flex;

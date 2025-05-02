@@ -245,17 +245,6 @@
 
   /* Target the intro card in the about section */
   .about-intro-block {
-    h2 {
-      font-size: var(--step-4);
-      text-align: center;
-      margin-bottom: var(--space-l);
-      color: var(--color-accent);
-    }
-    .about-content p {
-      margin-bottom: var(--space-m);
-      font-size: var(--step-0); // Adjusted from step-1 for better fit
-      line-height: 1.7; // Slightly increased line-height
-    }
   }
 
   /* Keep the features grid layout */
@@ -273,28 +262,6 @@
   }
 
   /* Target the feature cards */
-  .feature-block {
-    /* Styles previously in .feature are now handled by ContentCard defaults or here */
-    /* Example: Add specific padding or border if needed */
-    padding: var(--space-m);
-    background-color: var(
-      --color-surface
-    ); // Explicitly set background for feature cards if needed
-    border-radius: var(
-      --radius-lg
-    ); // Ensure feature cards have consistent radius
-
-    h3 {
-      color: var(--color-accent);
-      margin-bottom: var(--space-s); // Adjusted margin
-      font-size: var(--step-1); // Adjusted font size
-    }
-
-    p {
-      font-size: var(--step-0);
-      line-height: 1.6;
-    }
-  }
 
   /* Remove original .feature styles */
   /* .feature { ... } */

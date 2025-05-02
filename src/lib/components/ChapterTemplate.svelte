@@ -91,6 +91,7 @@
   /* Consistent Chapter Spacing */
   .chapter-header {
     margin-bottom: var(--space-xl);
+    color: var(--chapter-color);
   }
 
   .chapter-intro {
@@ -175,10 +176,6 @@
 
   .section-card:hover .section-link {
     text-decoration: underline;
-  }
-
-  .section-card:hover .arrow-icon {
-    transform: translateX(4px);
   }
 
   .section-card:hover h2 {

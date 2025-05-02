@@ -401,12 +401,12 @@ $color-dark-text-inverted-dark: $color-dark-text-primary; // Value for dark mode
 $color-dark-parallax-background-color: #1e64c813;
 
 // --- Accent Dark ---
-$color-dark-accent: #a779e1;        // A brighter, vibrant lavender/purple for interaction
-$color-dark-accent-hover: #c099f0;  // Even brighter purple for hover
-$color-dark-accent-light: #7b4db8;  // A less saturated purple (can adjust if needed)
+$color-dark-accent: #66A3FF;        // NEW - Medium-light, vibrant blue
+$color-dark-accent-hover: #80BFFF;  // NEW - Lighter blue for hover
+$color-dark-accent-light: #619AE6;  // NEW - Slightly less saturated/darker blue
 $color-dark-accent-active-bg: rgba($color-dark-accent, 0.15);
-$color-dark-accent-hover-bg: rgba($color-dark-accent-hover, 0.1);
-$color-dark-accent-contrast: #48d1cc; // Vibrant Cyan/Teal
+$color-dark-accent-hover-bg: rgba($color-dark-accent-hover, 0.1); // Use the new hover color here
+$color-dark-accent-contrast: #48d1cc; // Vibrant Cyan/Teal (Keeping this as is for now)
 
 // --- Functional Dark ---
 $color-dark-success: #2ecc71;        // Bright green

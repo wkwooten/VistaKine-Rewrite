@@ -303,7 +303,7 @@
       top: 0;
       right: 0;
       bottom: 0;
-      width: min(80vw, 300px); // Responsive width
+      width: min(80vw, 320px); // Responsive width
       height: 100vh; // Full height
       border-left: 1px solid var(--color-border); // Border on the left now
       transform: translateX(100%); // Start off-screen

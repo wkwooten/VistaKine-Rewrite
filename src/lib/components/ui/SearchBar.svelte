@@ -53,6 +53,8 @@
 </div>
 
 <style lang="scss">
+  @use "sass:color";
+
   .search-bar-container {
     display: flex;
     align-items: center;
@@ -105,7 +107,7 @@
     }
 
     &:hover {
-      background-color: darken(#3b82f6, 10%);
+      background-color: color.adjust(#3b82f6, $lightness: -10%);
     }
 
     &:focus {
