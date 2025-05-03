@@ -10,6 +10,7 @@
     title: string;
     id?: string;
     number?: string;
+    chapterSlug?: string;
   } | null;
 
   // Define props using $props
@@ -21,6 +22,7 @@
     currentChapterSlug: string;
     currentChapterTitle?: string | null;
     currentChapterNumber?: number | string | null;
+    currentSectionSlug?: string | null;
   };
 
   // Revert getting full props object
@@ -32,6 +34,7 @@
     currentChapterSlug,
     currentChapterTitle = null,
     currentChapterNumber = null,
+    currentSectionSlug = null,
   }: PageNavProps = $props();
 
   // ADD CONSOLE LOGGING
@@ -43,6 +46,7 @@
     currentChapterSlug,
     currentChapterTitle,
     currentChapterNumber,
+    currentSectionSlug,
   });
 
   // Determine navigation mode using $derived
@@ -70,8 +74,13 @@
   <div class="nav-links">
     <!-- Previous link logic -->
     {#if prevSection && currentChapterSlug}
+      <!-- Case 1: Navigating from a section to the previous section (or previous chapter's last section) -->
+      {console.log("[PageNav] Rendering Prev Link (Section):", {
+        prevSection,
+        href: `/chapter/${prevSection.chapterSlug ?? currentChapterSlug}/${prevSection.slug}`,
+      })}
       <a
-        href={`/chapter/${currentChapterSlug}/${prevSection.slug}`}
+        href={`/chapter/${prevSection.chapterSlug ?? currentChapterSlug}/${prevSection.slug}`}
         class="nav-link prev"
         data-section-number={prevSection.number ?? ""}
       >
@@ -81,7 +90,12 @@
           <div class="nav-title">{prevSection.title}</div>
         </div>
       </a>
-    {:else if !prevSection && currentChapterSlug}
+    {:else if currentSectionSlug && currentChapterSlug}
+      <!-- Case 2: On first section, link back to current chapter overview -->
+      {console.log("[PageNav] Rendering Prev Link (Chapter Intro):", {
+        currentChapterSlug,
+        href: `/chapter/${currentChapterSlug}`,
+      })}
       <a
         href={`/chapter/${currentChapterSlug}`}
         class="nav-link prev chapter-intro-link"
@@ -94,6 +108,11 @@
         </div>
       </a>
     {:else if prevChapter}
+      <!-- Case 3: On chapter overview (and prevSection was null), link to previous chapter overview -->
+      {console.log("[PageNav] Rendering Prev Link (Previous Chapter):", {
+        prevChapter,
+        href: `/chapter/${prevChapter.slug}`,
+      })}
       <a href={`/chapter/${prevChapter.slug}`} class="nav-link prev">
         <ArrowLeft size={18} />
         <div class="nav-content">
@@ -102,6 +121,8 @@
         </div>
       </a>
     {:else}
+      <!-- Case 4: No previous chapter or section, link Home -->
+      {console.log("[PageNav] Rendering Prev Link (Home)")}
       <a href="/" class="nav-link prev">
         <ArrowLeft size={18} />
         <div class="nav-content">
@@ -172,6 +193,11 @@
   .page-nav {
     text-align: center;
     width: 100%;
+    background-color: var(--color-background);
+    position: sticky;
+    /* margin-bottom: var(--space-s); */
+    bottom: 0;
+    z-index: 10;
   }
 
   .nav-links {

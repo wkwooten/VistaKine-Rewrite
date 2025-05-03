@@ -331,8 +331,8 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    bottom: var(--space-s, 10px);
-    right: var(--space-s, 10px);
+    top: var(--space-s, 10px);
+    left: var(--space-s, 10px);
     z-index: 1060;
     background-color: var(--color-background, white);
     border: 1px solid var(--color-border, #ccc);

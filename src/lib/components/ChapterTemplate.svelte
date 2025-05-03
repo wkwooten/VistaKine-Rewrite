@@ -3,20 +3,34 @@
 <script lang="ts">
   import { currentSection } from "$lib/stores/appState";
   import Footer from "$lib/components/Footer.svelte";
-  import ChapterHeaderNav from "$lib/components/ChapterHeaderNav.svelte";
   import Keyword from "$lib/components/Keyword.svelte";
   import { ArrowRight } from "lucide-svelte";
   import "$lib/styles/chapter-styles.scss";
+  import PageNav from "$lib/components/PageNav.svelte";
 
   interface Chapter {
     slug: string;
     title: string;
   }
 
+  // ADD ChapterLink type for consistency
+  type ChapterLink = { slug: string; title: string } | null;
+  // ADD SectionLink type for consistency
+  type SectionLink = {
+    slug: string;
+    title: string;
+    number?: string;
+    chapterSlug?: string;
+  } | null;
+
   export let chapterTitle: string;
   export let chapterSections: Array<any>;
-  export let prevChapter: string | Chapter | null = null;
-  export let nextChapter: string | Chapter | null = null;
+  // UPDATE prop types to use ChapterLink
+  export let prevChapter: ChapterLink = null;
+  export let nextChapter: ChapterLink = null;
+  // ADD props for prev/next section data from loader
+  export let prevSection: SectionLink = null;
+  export let nextSection: SectionLink = null;
   export let currentChapterSlug: string;
   export let themeClass: string = "";
   export let chapterIntro: string = "";
@@ -77,6 +91,17 @@
       <slot></slot>
     </div>
   </div>
+
+  <PageNav
+    {prevChapter}
+    {nextChapter}
+    {currentChapterSlug}
+    currentChapterTitle={chapterTitle}
+    currentChapterNumber={chapterNumber}
+    {nextSection}
+    {prevSection}
+  />
+
   <Footer />
 </div>
 
@@ -95,7 +120,6 @@
   }
 
   .chapter-intro {
-    max-width: 800px;
     margin: 0 auto;
     padding: var(--space-m) 0;
   }
@@ -103,6 +127,7 @@
   .chapter-overview {
     margin-top: var(--space-xl);
     text-align: center;
+    margin-bottom: var(--space-xl);
   }
 
   .section-intro {
