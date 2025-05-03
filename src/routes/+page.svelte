@@ -27,7 +27,6 @@
         <!-- Branding Section -->
         <div class="hero-branding">
           <AnimatedLogo />
-          <hr class="branding-separator" />
           <p class="tagline">
             Bringing Physics Learning into a New Dimension <br />
             Explore interactive 3D visualizations that bring kinematics to life.

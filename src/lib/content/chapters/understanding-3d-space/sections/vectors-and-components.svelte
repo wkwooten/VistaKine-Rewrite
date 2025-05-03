@@ -29,6 +29,7 @@
   import { onMount } from "svelte";
   import type Vector1dComponentType from "$lib/components/Vector1d.svelte";
   import type Vector2dComponentType from "$lib/components/Vector2d.svelte";
+  import katex from "katex"; // Import katex directly
 
   let Vector1dComponent: typeof Vector1dComponentType | null = null;
   let Vector2dComponent: typeof Vector2dComponentType | null = null;
@@ -126,8 +127,8 @@
         </li>
       </ul>
       <p>
-        Example: A vector <Katex>{"+6"}</Katex> means moving 6 units in the positive
-        direction.
+        Example: A vector {@html katex.renderToString("+6")} means moving 6 units
+        in the positive direction.
       </p>
       {#if Vector1dComponent}
         <figure>
@@ -150,12 +151,12 @@
       </p>
       <ul>
         <li>
-          <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>: How far the
-          vector extends along the X-axis.
+          <span class="katex-axis-x">{@html katex.renderToString("V_x")}</span>:
+          How far the vector extends along the X-axis.
         </li>
         <li>
-          <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>: How far the
-          vector extends along the Y-axis.
+          <span class="katex-axis-y">{@html katex.renderToString("V_y")}</span>:
+          How far the vector extends along the Y-axis.
         </li>
       </ul>
       <p>
@@ -164,7 +165,10 @@
       </p>
       <FormulaAccordion summary="2D Magnitude Formula">
         <p>
-          <Katex displayMode>{"||ec{V}|| = sqrt{V_x^2 + V_y^2}"}</Katex>
+          {@html katex.renderToString(
+            "\\|\\vec{V}\\| = \\sqrt{V_x^2 + V_y^2}",
+            { displayMode: true }
+          )}
         </p>
         <p>
           This calculates the hypotenuse of a right triangle formed by the
@@ -215,34 +219,36 @@
         To work with 3D vectors mathematically, we break them into <Keyword
           term="components"
         /> along the X, Y, and Z axes. These components (<span
-          class="katex-axis-x"><Katex>{"V_x"}</Katex></span
-        >, <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>,
-        <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span>) tell us how
-        much the vector extends along each axis.
+          class="katex-axis-x">{@html katex.renderToString("V_x")}</span
+        >,
+        <span class="katex-axis-y">{@html katex.renderToString("V_y")}</span>,
+        <span class="katex-axis-z">{@html katex.renderToString("V_z")}</span>)
+        tell us how much the vector extends along each axis.
       </p>
       <FormulaAccordion>
         <p>
-          To calculate the components of a 3D vector with tail at <Katex
-            >{"P_1(x_1, y_1, z_1)"}</Katex
-          > and head at <Katex>{"P_2(x_2, y_2, z_2)"}</Katex>:
+          To calculate the components of a 3D vector with tail at {@html katex.renderToString(
+            "P_1(x_1, y_1, z_1)"
+          )}
+          and head at {@html katex.renderToString("P_2(x_2, y_2, z_2)")}:
         </p>
         <ul>
           <p>Change in X:</p>
           <li>
             <span class="katex-axis-x"
-              ><Katex>{"V_x = x_2 - x_1 = Delta x"}</Katex></span
+              >{@html katex.renderToString("V_x = x_2 - x_1 = \\Delta x")}</span
             >
           </li>
           <p>Change in Y:</p>
           <li>
             <span class="katex-axis-y"
-              ><Katex>{"V_y = y_2 - y_1 = Delta y"}</Katex></span
+              >{@html katex.renderToString("V_y = y_2 - y_1 = \\Delta y")}</span
             >
           </li>
           <p>Change in Z:</p>
           <li>
             <span class="katex-axis-z"
-              ><Katex>{"V_z = z_2 - z_1 = Delta z"}</Katex></span
+              >{@html katex.renderToString("V_z = z_2 - z_1 = \\Delta z")}</span
             >
           </li>
         </ul>
@@ -251,11 +257,13 @@
       <ul>
         <p>Angle Bracket Notation:</p>
         <li>
-          <Katex>{"\vec{V} = langle V_x, V_y, V_z \rangle"}</Katex>
+          {@html katex.renderToString(
+            "\\vec{V} = \\langle V_x, V_y, V_z \\rangle"
+          )}
         </li>
         <p>Parentheses Notation:</p>
         <li>
-          <Katex>{"\vec{V} = (V_x, V_y, V_z)"}</Katex>
+          {@html katex.renderToString("\\vec{V} = (V_x, V_y, V_z)")}
         </li>
       </ul>
     </ContentCard>
@@ -265,40 +273,43 @@
         Vector Magnitude in 3D: Measuring Length
       </h2>
       <p>
-        The <Keyword term="magnitude" /> (length) of a 3D vector <Katex
-          >{"\vec{V}"}</Katex
-        > with components
-        <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>,
-        <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>,
-        <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span> extends the 2D concept
-        using the 3D Pythagorean theorem:
+        The <Keyword term="magnitude" /> (length) of a 3D vector {@html katex.renderToString(
+          "\\vec{V}"
+        )}
+        with components
+        <span class="katex-axis-x">{@html katex.renderToString("V_x")}</span>,
+        <span class="katex-axis-y">{@html katex.renderToString("V_y")}</span>,
+        <span class="katex-axis-z">{@html katex.renderToString("V_z")}</span> extends
+        the 2D concept using the 3D Pythagorean theorem:
       </p>
       <FormulaAccordion>
         Where:
         <ul>
           <li>
-            <span class="katex-axis-x"><Katex>{"||\vec{V}||"}</Katex></span>:
-            Represents the
+            <span class="katex-axis-x"
+              >{@html katex.renderToString("\\|\\vec{V}\\|")}</span
+            >: Represents the
             <strong>magnitude</strong>
-            (or length) of the vector <Katex>{"\vec{V}"}</Katex>.
+            (or length) of the vector {@html katex.renderToString("\\vec{V}")}.
           </li>
           <li>
-            <span class="katex-axis-x"><Katex>{"V_x"}</Katex></span>: The
-            component of the vector along the X-axis.
+            <span class="katex-axis-x">{@html katex.renderToString("V_x")}</span
+            >: The component of the vector along the X-axis.
           </li>
           <li>
-            <span class="katex-axis-y"><Katex>{"V_y"}</Katex></span>: The
-            component of the vector along the Y-axis.
+            <span class="katex-axis-y">{@html katex.renderToString("V_y")}</span
+            >: The component of the vector along the Y-axis.
           </li>
           <li>
-            <span class="katex-axis-z"><Katex>{"V_z"}</Katex></span>: The
-            component of the vector along the Z-axis.
+            <span class="katex-axis-z">{@html katex.renderToString("V_z")}</span
+            >: The component of the vector along the Z-axis.
           </li>
         </ul>
         <p>
-          <Katex displayMode
-            >{"||\vec{V}|| = sqrt{V_x^2 + V_y^2 + V_z^2}"}</Katex
-          >
+          {@html katex.renderToString(
+            "\\|\\vec{V}\\| = \\sqrt{V_x^2 + V_y^2 + V_z^2}",
+            { displayMode: true }
+          )}
         </p>
       </FormulaAccordion>
       <p>
@@ -336,41 +347,49 @@
       <ul>
         <li>
           <span class="katex-axis-x"
-            ><Katex>{"hat{mathbf{i}} = langle 1, 0, 0 \rangle"}</Katex></span
+            >{@html katex.renderToString(
+              "\\hat{\\mathbf{i}} = \\langle 1, 0, 0 \\rangle"
+            )}</span
           >
           (Positive X-axis direction)
         </li>
         <li>
           <span class="katex-axis-y"
-            ><Katex>{"hat{mathbf{j}} = langle 0, 1, 0 \rangle"}</Katex></span
+            >{@html katex.renderToString(
+              "\\hat{\\mathbf{j}} = \\langle 0, 1, 0 \\rangle"
+            )}</span
           >
           (Positive Y-axis direction)
         </li>
         <li>
           <span class="katex-axis-z"
-            ><Katex>{"hat{mathbf{k}} = langle 0, 0, 1 \rangle"}</Katex></span
+            >{@html katex.renderToString(
+              "\\hat{\\mathbf{k}} = \\langle 0, 0, 1 \\rangle"
+            )}</span
           >
           (Positive Z-axis direction)
         </li>
       </ul>
       <p>
-        (Note: Sometimes written as bold <Katex>{"i, j, k"}</Katex> without the hat.)
+        (Note: Sometimes written as bold {@html katex.renderToString("i, j, k")}
+        without the hat.)
       </p>
       <p>
-        Unit vector <Katex>{"\vec{V}"}</Katex> can be written as a sum ("linear combination")
-        of components times their corresponding unit vectors:
+        Unit vector {@html katex.renderToString("\\vec{V}")} can be written as a
+        sum ("linear combination") of components times their corresponding unit vectors:
       </p>
       <p>
-        <Katex displayMode
-          >{"\vec{V} = V_xhat{mathbf{i}} + V_yhat{mathbf{j}} + V_zhat{mathbf{k}}"}</Katex
-        >
+        {@html katex.renderToString(
+          "\\vec{V} = V_x\\hat{\\mathbf{i}} + V_y\\hat{\\mathbf{j}} + V_z\\hat{\\mathbf{k}}",
+          { displayMode: true }
+        )}
       </p>
       <p>
         This clearly shows the vector's extent along each axis. <br /> Example:
         <br />
-        <Katex>{"langle 2, -3, 5 \rangle"}</Katex> is also <Katex
-          >{"2hat{mathbf{i}} - 3hat{mathbf{j}} + 5hat{mathbf{k}}"}</Katex
-        >.
+        {@html katex.renderToString("\\langle 2, -3, 5 \\rangle")} is also {@html katex.renderToString(
+          "2\\hat{\\mathbf{i}} - 3\\hat{\\mathbf{j}} + 5\\hat{\\mathbf{k}}"
+        )}.
       </p>
     </ContentCard>
 
@@ -382,14 +401,17 @@
       <p>Vector representation varies by field:</p>
       <ul>
         <li>
-          <strong>Physics & Engineering:</strong> Often use <Katex
-            >{"hat{mathbf{i}}, hat{mathbf{j}}, hat{mathbf{k}}"}</Katex
-          > notation (good for forces, velocities).
+          <strong>Physics & Engineering:</strong> Often use {@html katex.renderToString(
+            "\\hat{\\mathbf{i}}, \\hat{\\mathbf{j}}, \\hat{\\mathbf{k}}"
+          )}
+          notation (good for forces, velocities).
         </li>
         <li>
-          <strong>Computer Science & Graphics:</strong> Often use component form <Katex
-            >{"langle x, y, z \rangle"}</Katex
-          > or <Katex>{"(x, y, z)"}</Katex> (good for points, directions in code).
+          <strong>Computer Science & Graphics:</strong> Often use component form {@html katex.renderToString(
+            "\\langle x, y, z \\rangle"
+          )}
+          or {@html katex.renderToString("(x, y, z)")} (good for points, directions
+          in code).
         </li>
       </ul>
       <p>

@@ -124,11 +124,15 @@ The textual content is a crucial part of VistaKine. Aim for the following:
 
 ## Equations & Formulas (KaTeX)
 
-- **Library:** Use the `svelte-math` library (specifically the `mathlifier` function-based approach) for rendering LaTeX equations. This ensures SSR compatibility and handles dynamic/reactive updates.
-  - **Implementation:** Wrap LaTeX strings with `{@html math('...')}` for inline math or `{@html display('...')}` for display math, as shown in the `svelte-math` documentation.
-  - **Installation:** Ensure `mathlifier` is installed (`npm i mathlifier`) and the KaTeX CSS is linked in `src/app.html`.
-- **Syntax:** Adhere to standard KaTeX/LaTeX syntax for formulas.
-- **Custom Styling:** Apply custom styles or overrides using `src/lib/styles/_katex-custom.scss`. This file includes base font size adjustments and utility classes (`.katex-axis-x`, etc.) for colorizing parts of equations based on context (e.g., matching axis colors).
+- **Library:** Use the `katex` library directly for rendering LaTeX equations.
+- **Implementation:** Render equations using the functional approach: `{@html katex.renderToString('LATEX_STRING', { displayMode: boolean_value })}`.
+  - Import `katex` in the `<script>` section: `import katex from 'katex';`
+  - Use `{ displayMode: true }` for block-level equations.
+- **Escaping:** When writing LaTeX strings within the `katex.renderToString()` function in JavaScript/TypeScript:
+  - Escape backslashes _once_. For example, `\vec` becomes `'\\vec'`, `\|` becomes `'\\|'`, `\langle` becomes `'\\langle'`.
+- **Rationale:** While component wrappers like `svelte-katex` exist, direct use of `katex.renderToString` proved more reliable in this project for handling complex LaTeX syntax and avoiding inconsistent escaping issues encountered with component props.
+- **Installation:** Ensure `katex` and its types (`@types/katex`) are installed (`npm i katex @types/katex --save-dev`).
+- **Styling:** Ensure the KaTeX CSS is linked in `src/app.html` (e.g., via CDN). Apply custom styles or overrides using `src/lib/styles/_katex-custom.scss`. This file includes base font size adjustments and utility classes (`.katex-axis-x`, etc.) for colorizing parts of equations based on context (e.g., matching axis colors).
 
 ## Component Styling
 
