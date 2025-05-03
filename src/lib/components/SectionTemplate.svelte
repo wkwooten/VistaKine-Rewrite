@@ -312,7 +312,7 @@
     flex-shrink: 0;
 
     @media (max-width: vars.$breakpoint-lg) {
-      display: none;
+      display: flex;
     }
   }
 

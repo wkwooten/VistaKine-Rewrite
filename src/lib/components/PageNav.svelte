@@ -195,8 +195,10 @@
     width: 100%;
     background-color: var(--color-background);
     position: sticky;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     /* margin-bottom: var(--space-s); */
-    bottom: 0;
+    bottom: 10px;
     z-index: 10;
   }
 

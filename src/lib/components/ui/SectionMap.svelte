@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from "svelte";
   import { X } from "lucide-svelte"; // Import close icon
+  import { sectionMapOpen } from "$lib/stores/uiStores"; // ADD store import
 
   type NavTarget = {
     id: string;
@@ -9,10 +10,9 @@
 
   // Define props including sectionSlug
   type SectionMapProps = {
-    isOpen?: boolean;
     sectionSlug: string; // Add sectionSlug prop
   };
-  let { isOpen = $bindable(false), sectionSlug }: SectionMapProps = $props();
+  let { sectionSlug }: SectionMapProps = $props();
 
   const debugObserver = false; // Set to false to hide visualizer
 
@@ -167,12 +167,12 @@
         block: "start",
       });
       // Close mobile map after clicking a link
-      isOpen = false;
+      $sectionMapOpen = false;
     }
   }
 
   function closeMap() {
-    isOpen = false;
+    $sectionMapOpen = false;
   }
 
   // Effect to find targets and set up observer when sectionSlug changes
@@ -205,7 +205,7 @@
 {/if}
 
 <!-- Mobile Overlay -->
-{#if isOpen}
+{#if $sectionMapOpen}
   <div
     class="mobile-overlay"
     onclick={closeMap}
@@ -214,7 +214,7 @@
   ></div>
 {/if}
 
-<aside class="section-map-container" class:is-open={isOpen}>
+<aside class="section-map-container" class:is-open={$sectionMapOpen}>
   {#if navTargets.length > 0}
     <nav aria-labelledby="section-map-heading">
       <div class="map-header">
@@ -291,6 +291,8 @@
     align-self: flex-start;
     background-color: var(--color-background);
     width: var(--section-map-width, 220px);
+    border: 1px solid var(--color-border);
+    padding: var(--space-s) 0 var(--space-s) var(--space-s);
     overflow-y: auto;
     flex-shrink: 0;
     z-index: 50; // Above overlay
@@ -324,11 +326,6 @@
       @media (max-width: vars.$breakpoint-lg) {
         padding-right: 0; // No right padding needed inside mobile drawer
       }
-    }
-
-    nav {
-      border: 1px solid var(--color-border);
-      padding: var(--space-s) 0 var(--space-s) var(--space-s);
     }
 
     // Style for the heading
