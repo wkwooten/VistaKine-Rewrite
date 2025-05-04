@@ -1,6 +1,8 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
+  import type { Writable } from "svelte/store"; // Import Writable as type
+  import type { Chapter } from "$lib/data/chapters"; // Import only Chapter type
   import {
     Hexagon,
     BookOpen,
@@ -16,9 +18,10 @@
   import { browser } from "$app/environment";
   import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
 
-  // Add prop for initial chapter slug
+  // --- Props ---
+  // Slug of the currently viewed chapter, used to initialize the expanded state.
   export let currentChapterSlug: string | null = null;
-  // ADD PROP for mobile state
+  // Indicates if the component is in mobile view (detected via media query).
   export let isMobile: boolean = false;
 
   $: console.log(
@@ -26,19 +29,16 @@
     $currentChapter
   );
 
-  export let chapters = getChapterList();
-
-  interface SectionItem {
-    id: string;
-    title: string;
-    slug: string;
-  }
+  export let chapters: Chapter[] = getChapterList();
 
   const iconSize = 18;
 
   let bodyClassApplied = false; // Track if class is applied
 
-  // Function to update body scroll class
+  // Toggles the 'body-no-scroll' class based on sidebar state and mobile view
+  // to prevent background scrolling when the navigation might overlay content.
+  // Note: The sidebar itself is display:none on mobile via CSS, but this logic
+  // was likely intended for a potential overlay behavior.
   function updateBodyScroll() {
     if (browser) {
       const shouldLockScroll = $sidebarExpanded && isMobile;
@@ -52,6 +52,13 @@
     }
   }
 
+  // --- Lifecycle ---
+  // Sets up responsive behavior on mount:
+  // 1. Detects initial mobile state based on CSS variable breakpoint.
+  // 2. Listens for viewport size changes to update mobile state.
+  // 3. Subscribes to sidebarExpanded store changes.
+  // 4. Calls updateBodyScroll initially and on changes to manage scroll lock.
+  // 5. Cleans up listeners and body class on destroy.
   onMount(() => {
     let lgBreakpointValue = "1024px"; // Default fallback
     if (browser) {
@@ -93,9 +100,11 @@
     };
   });
 
-  // Initialize expandedChapter with the prop value from the layout
+  // --- State ---
+  // Initialize the expanded chapter based on the initial prop value.
   let expandedChapter: string | null = currentChapterSlug;
 
+  // Toggles the accordion display for a given chapter's sections.
   function toggleChapterSections(chapterSlug: string): void {
     expandedChapter = expandedChapter === chapterSlug ? null : chapterSlug;
   }
@@ -107,6 +116,11 @@
     }
   }
 
+  // Handles clicks on section links.
+  // If the section belongs to the already active chapter, it attempts
+  // to navigate directly to the section's page URL.
+  // If the section belongs to a different chapter, it navigates to that
+  // chapter/section URL.
   function handleSectionClick(chapterSlug: string, sectionId: string): void {
     if ($currentChapter === chapterSlug) {
       // Find the section slug from the id
@@ -133,11 +147,16 @@
     }
   }
 
-  // Use store value directly, considering mobile state
+  // Determines if the navigation should be visually collapsed.
+  // On mobile, it's controlled differently (always expanded when shown).
+  // On desktop, it depends on the `sidebarExpanded` store.
   $: navCollapsed = isMobile ? false : !$sidebarExpanded;
 
-  // Add a reactive block to handle chapter changes *after* initial load
+  // --- Reactive Logic ---
+  // Tracks the previous chapter to react only when the store changes.
   let previousChapter: string | null = $currentChapter; // Track previous value
+  // Automatically expands the corresponding chapter accordion when the
+  // `$currentChapter` store changes to a new value.
   $: {
     if ($currentChapter && $currentChapter !== previousChapter) {
       // If the current chapter store changes to a new non-null value,
@@ -290,7 +309,7 @@
                     href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
                     class:is-active={$page.params.section === section.slug}
-                    on:click|preventDefault|stopPropagation={() =>
+                    on:click={() =>
                       handleSectionClick(chapter.slug, section.id)}
                   >
                     {section.title}

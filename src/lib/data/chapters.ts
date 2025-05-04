@@ -128,11 +128,12 @@ export function getChapterByNumber(chapterNumber: number): Chapter | undefined {
 // For simplified navigation needs (sidebar, TOC) - returns a structure Navigation.svelte can use
 export function getChapterList() {
   // Note: This returns a slightly different structure than the main Chapter interface
-  // It maps sections to {id, title, slug} which Navigation.svelte expects
-  return chapters.map(({ title, slug, sections, description }) => ({
+  // It maps sections to {id, title, slug, number} which Navigation.svelte expects
+  return chapters.map(({ title, slug, sections, description, number }) => ({
     title,
     slug,
-    sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug })),
+    number, // Include the chapter number
+    sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug, number: sec.number })),
     description // Include description if needed by the component
   }));
 }

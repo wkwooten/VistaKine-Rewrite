@@ -5,7 +5,7 @@ export const currentChapter = writable('');
 export const currentSection = writable('');
 
 // Sidebar state
-export const sidebarExpanded = writable(true);
+export const sidebarExpanded = writable(false);
 
 // User preferences
 export const userPreferences = writable({
