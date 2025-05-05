@@ -23,13 +23,15 @@
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
   import SceneLabel from "../../helpers/SceneLabel.svelte";
+  import {
+    vectorColor as vectorColorStore,
+    labelColor as labelColorStore,
+    xAxisColor as xAxisColorStore,
+    yAxisColor as yAxisColorStore,
+    zAxisColor as zAxisColorStore,
+  } from "$lib/stores/themeColors";
 
   // --- State for Colors (Initialized with defaults) --- //
-  let vectorColor = $state(new Color("#FFA500"));
-  let labelColor = $state(new Color("#cccccc"));
-  let xAxisColor = $state(new Color("#EF5350"));
-  let yAxisColor = $state(new Color("#66BB6A"));
-  let zAxisColor = $state(new Color("#2C8FFF"));
   const originSphereColor = new Color("#ffffff"); // White for origin sphere contrast
 
   // --- Vector Definition (Static) --- //
@@ -70,8 +72,8 @@
     endDir: Vector3,
     angleRad: number,
     radius: number,
-    numPoints: number,
-  ): Vector3[] {
+    numPoints: number
+    ): Vector3[] {
     const points: Vector3[] = [];
     // Axis of rotation: cross product of start and end directions
     const rotationAxis = new Vector3()
@@ -113,21 +115,21 @@
     vNorm,
     angleAlphaRad,
     arcRadius,
-    arcPointsCount,
+    arcPointsCount
   );
   const arcBetaPoints = generateArcPoints(
     yAxisDir,
     vNorm,
     angleBetaRad,
     arcRadius,
-    arcPointsCount,
+    arcPointsCount
   );
   const arcGammaPoints = generateArcPoints(
     zAxisDir,
     vNorm,
     angleGammaRad,
     arcRadius,
-    arcPointsCount,
+    arcPointsCount
   );
 
   // --- Calculated Positions (Static) --- //
@@ -175,17 +177,16 @@
 
   // --- Reactive ArrowHelper (depends on vectorColor) --- //
   let arrow = $derived.by(() => {
-    // console.log("[VectorAnatomy] Recreating ArrowHelper with color:", vectorColor.getHexString());
     const headLength = magnitude * 0.15;
     const headWidth = headLength * 0.6;
-    // Use the current state of vectorColor
+    // Use the current store value
     return new ArrowHelper(
       direction,
       origin,
       magnitude,
-      vectorColor.getHex(),
+      new Color($vectorColorStore).getHex(),
       headLength,
-      headWidth,
+      headWidth
     );
   });
 
@@ -199,32 +200,13 @@
     let geomZ: LineGeometry | undefined;
 
     if (browser && wrapperElement) {
-      // console.log('[VectorAnatomy] Fetching initial colors and size...');
-      const styles = getComputedStyle(document.documentElement);
       const wrapperRect = wrapperElement.getBoundingClientRect();
       const currentSize = new Vector2(wrapperRect.width, wrapperRect.height);
 
-      // Update color state (will trigger arrow update)
-      vectorColor = new Color(
-        styles.getPropertyValue("--color-accent").trim() || "#FFA500",
-      );
-      labelColor = new Color(
-        styles.getPropertyValue("--color-white").trim() || "#cccccc",
-      );
-      xAxisColor = new Color(
-        styles.getPropertyValue("--axis-color-x").trim() || "#EF5350",
-      );
-      yAxisColor = new Color(
-        styles.getPropertyValue("--axis-color-y").trim() || "#66BB6A",
-      );
-      zAxisColor = new Color(
-        styles.getPropertyValue("--axis-color-z").trim() || "#2C8FFF",
-      );
-
       if (currentSize.width > 0 && currentSize.height > 0) {
-        // Create Materials using updated state colors
+        // Create Materials using updated store values
         matX = new LineMaterial({
-          color: xAxisColor,
+          color: new Color($xAxisColorStore),
           linewidth: lineWidth,
           resolution: currentSize,
           dashed: true,
@@ -233,7 +215,7 @@
           gapSize: gapSize,
         });
         matY = new LineMaterial({
-          color: yAxisColor,
+          color: new Color($yAxisColorStore),
           linewidth: lineWidth,
           resolution: currentSize,
           dashed: true,
@@ -242,7 +224,7 @@
           gapSize: gapSize,
         });
         matZ = new LineMaterial({
-          color: zAxisColor,
+          color: new Color($zAxisColorStore),
           linewidth: lineWidth,
           resolution: currentSize,
           dashed: true,
@@ -277,18 +259,15 @@
         const tempLineZ = new Line2(geomZ, matZ);
         tempLineZ.computeLineDistances();
         lineZ = tempLineZ;
-
-        // console.log('[VectorAnatomy] Component Lines created.');
       } else {
         console.warn(
-          "[VectorAnatomy] Wrapper size is zero, cannot create component lines.",
+          "[VectorAnatomy] Wrapper size is zero, cannot create component lines."
         );
       }
     }
 
     // Return cleanup function
     return () => {
-      // console.log('[VectorAnatomy] Cleaning up component lines (onMount cleanup)...');
       matX?.dispose();
       matY?.dispose();
       matZ?.dispose();
@@ -334,7 +313,7 @@
       axisIndicatorRadius,
       axisIndicatorRadius,
       axisIndicatorLength,
-      8,
+      8
     )}
     <!-- X Axis Indicator -->
     <T.Mesh
@@ -342,25 +321,25 @@
       position.x={axisIndicatorLength / 2}
       rotation.z={-Math.PI / 2}
     >
-      <T.MeshBasicMaterial color={xAxisColor} />
+      <T.MeshBasicMaterial color={$xAxisColorStore} />
     </T.Mesh>
     <SceneLabel
       position={[axisIndicatorLength + axisLabelOffset, 0, 0]}
       text="X+"
       anchorY="top"
       fontSize={axisLabelFontSize}
-      color={xAxisColor}
+      color={$xAxisColorStore}
     />
 
     <!-- Y Axis Indicator -->
     <T.Mesh geometry={axisGeom} position.y={axisIndicatorLength / 2}>
-      <T.MeshBasicMaterial color={yAxisColor} />
+      <T.MeshBasicMaterial color={$yAxisColorStore} />
     </T.Mesh>
     <SceneLabel
       position={[0, axisIndicatorLength + axisLabelOffset, 0]}
       text="Y+"
       fontSize={axisLabelFontSize}
-      color={yAxisColor}
+      color={$yAxisColorStore}
     />
 
     <!-- Z Axis Indicator -->
@@ -369,13 +348,13 @@
       position.z={axisIndicatorLength / 2}
       rotation.x={Math.PI / 2}
     >
-      <T.MeshBasicMaterial color={zAxisColor} />
+      <T.MeshBasicMaterial color={$zAxisColorStore} />
     </T.Mesh>
     <SceneLabel
       position={[0, 0, axisIndicatorLength + axisLabelOffset]}
       text="Z+"
       fontSize={axisLabelFontSize}
-      color={zAxisColor}
+      color={$zAxisColorStore}
     />
 
     <!-- Component Lines (Render Line2 instances) -->
@@ -395,7 +374,7 @@
         <MeshLineGeometry points={arcAlphaPoints} />
         <MeshLineMaterial
           width={arcLineWidth}
-          color={xAxisColor}
+          color={$xAxisColorStore}
           transparent={true}
           opacity={0.4}
           dashArray={0.1}
@@ -408,7 +387,7 @@
         <MeshLineGeometry points={arcBetaPoints} />
         <MeshLineMaterial
           width={arcLineWidth}
-          color={yAxisColor}
+          color={$yAxisColorStore}
           transparent={true}
           opacity={0.4}
           dashArray={0.1}
@@ -421,7 +400,7 @@
         <MeshLineGeometry points={arcGammaPoints} />
         <MeshLineMaterial
           width={arcLineWidth}
-          color={zAxisColor}
+          color={$zAxisColorStore}
           transparent={true}
           opacity={0.4}
           dashArray={0.1}
@@ -435,7 +414,7 @@
       position={tailLabelPos}
       text="Tail (Start)"
       fontSize={labelFontSize}
-      color={labelColor}
+      color={$labelColorStore}
       anchorX="center"
       anchorY="top"
       depthTest={false}
@@ -444,7 +423,7 @@
       position={headLabelPos}
       text="Head (End)"
       fontSize={labelFontSize}
-      color={labelColor}
+      color={$labelColorStore}
       anchorX="center"
       anchorY="bottom"
       depthTest={false}
@@ -453,7 +432,7 @@
       position={magnitudeLabelPos}
       text={`Magnitude`}
       fontSize={labelFontSize}
-      color={labelColor}
+      color={$labelColorStore}
       anchorX="center"
       anchorY="middle"
       depthTest={false}
@@ -465,7 +444,7 @@
         position={xCompLabelPos}
         text={`X Component`}
         fontSize={labelFontSize * 0.9}
-        color={xAxisColor}
+        color={$xAxisColorStore}
         anchorX="center"
         anchorY="bottom"
         depthTest={false}
@@ -476,7 +455,7 @@
         position={yCompLabelPos}
         text={`Y Component`}
         fontSize={labelFontSize * 0.9}
-        color={yAxisColor}
+        color={$yAxisColorStore}
         anchorX="left"
         anchorY="middle"
         depthTest={false}
@@ -487,7 +466,7 @@
         position={zCompLabelPos}
         text={`Z Component`}
         fontSize={labelFontSize * 0.9}
-        color={zAxisColor}
+        color={$zAxisColorStore}
         anchorX="center"
         anchorY="bottom"
         depthTest={false}
@@ -499,7 +478,7 @@
       position={alphaLabelPos}
       text="α"
       fontSize={angleLabelFontSize}
-      color={xAxisColor}
+      color={$xAxisColorStore}
       anchorX="center"
       anchorY="middle"
       depthTest={false}
@@ -508,7 +487,7 @@
       position={betaLabelPos}
       text="β"
       fontSize={angleLabelFontSize}
-      color={yAxisColor}
+      color={$yAxisColorStore}
       anchorX="center"
       anchorY="middle"
       depthTest={false}
@@ -517,7 +496,7 @@
       position={gammaLabelPos}
       text="γ"
       fontSize={angleLabelFontSize}
-      color={zAxisColor}
+      color={$zAxisColorStore}
       anchorX="center"
       anchorY="middle"
       depthTest={false}

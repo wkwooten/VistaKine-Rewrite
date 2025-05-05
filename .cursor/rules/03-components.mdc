@@ -1,7 +1,7 @@
 ---
 description:
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Component Structure & Key Components
 
@@ -9,8 +9,8 @@ This project uses a component-based architecture with Svelte 5.
 
 ## Location
 
-- **Reusable UI/Logic Components:** [src/lib/components/](mdc:src/lib/components/)
-- **Visualization Components (Threlte):** [src/lib/components/visualization/](mdc:src/lib/components/visualization/)
+- **Reusable UI/Logic Components:** [src/lib/components/](mdc:src/lib/components)
+- **Visualization Components (Threlte):** [src/lib/components/visualization/](mdc:src/lib/components/visualization)
 - **Chapter Section Content:** [src/lib/content/chapters/[slug]/sections/](mdc:src/lib/content/chapters/[slug]/sections/)
 
 ## Key Structural/Layout Components
@@ -27,7 +27,7 @@ This project uses a component-based architecture with Svelte 5.
 - **`Accordion.svelte`:** ([src/lib/components/Accordion.svelte](mdc:src/lib/components/Accordion.svelte)) Reusable accordion component for hiding/showing content (used by `FormulaAccordion`, `GuidedCalculation`, etc.).
 - **`VisContainer.svelte`:** ([src/lib/components/visualization/VisContainer.svelte](mdc:src/lib/components/visualization/VisContainer.svelte)) Standard wrapper for Threlte scenes, often handling aspect ratio and base container styles.
 - **Interactive Exercises:** Located in `src/lib/components/visualization/interactions/`. These are complex components combining Threlte scenes, HUDs, and state management.
-    - **Printer Calibration:** [src/lib/components/visualization/interactions/printer-calibration/](mdc:src/lib/components/visualization/interactions/printer-calibration/)
-    - **Vector Builder:** [src/lib/components/visualization/interactions/vector-builder/](mdc:src/lib/components/visualization/interactions/vector-builder/)
+    - **Printer Calibration:** [src/lib/components/visualization/interactions/printer-calibration/](mdc:src/lib/components/visualization/interactions/printer-calibration)
+    - **Vector Builder:** [src/lib/components/visualization/interactions/vector-builder/](mdc:src/lib/components/visualization/interactions/vector-builder)
 
 See [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md) for more details on component styling approaches.

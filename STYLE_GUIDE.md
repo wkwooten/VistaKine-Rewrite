@@ -173,6 +173,11 @@ This section highlights some of the core reusable or structural components withi
 - **`src/lib/components/visualization/` (Directory):**
 
   - This directory houses all Threlte/Three.js related components.
+  - **Color Management (`themeColors.ts`):** Visualization components that require colors derived from the application theme (e.g., axis colors, bed colors, vector colors) **must** utilize the central `src/lib/stores/themeColors.ts` store. This store defines writable Svelte stores for each theme-dependent color (e.g., `xAxisColor`, `labelColor`, `vectorColor`).
+    - Components should **import** the required color stores from `themeColors.ts`.
+    - They should **not** fetch CSS variables directly using `getComputedStyle` or manage theme colors using local `$state`.
+    - The actual color values are populated into these stores by the `updateThemeColors()` function (defined in `themeColors.ts`), which is called once client-side (typically in `src/routes/+layout.svelte`) to read the CSS custom properties defined in `_variables.scss`.
+    - To use the color value in the component's template or script logic that expects a color string/representation, use Svelte's auto-subscription syntax (e.g., `color={$xAxisColorStore}` or `new Color($vectorColorStore)`). This ensures components react automatically to theme changes.
   - **`VisContainer.svelte`:** Often used as a standard wrapper around Threlte scenes. Provides a consistent container with potential aspect ratio control, borders, and might handle common scene setup or overlays (like fullscreen buttons, although fullscreen logic is often pushed to the specific exercise component).
   - **`elements/`:** Contains reusable 3D building blocks like `Axes.svelte`, `Grid.svelte`, `Ground.svelte`.
   - **`interactions/`:** Holds complex interactive exercises built with Threlte, combining scenes, UI/HUDs, and state management. Examples include `printer-calibration/` and `vector-builder/`.

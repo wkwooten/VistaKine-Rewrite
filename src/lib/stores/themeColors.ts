@@ -25,6 +25,10 @@ export const targetHitColor = writable<string>('#32CD32'); // LimeGreen
 export const targetLabelPendingColor = writable<string>('#FFA500'); // Darker Amber/Orange
 export const targetLabelHitColor = writable<string>('#32CD32'); // Darker Green
 
+// --- General UI/Label Colors ---
+export const labelColor = writable<string>('#cccccc'); // Default fallback
+export const originColor = writable<string>('#cccccc'); // Default fallback
+
 /**
  * Fetches color values from CSS custom properties and updates the stores.
  * Should be called once client-side, e.g., in the root layout.
@@ -58,7 +62,7 @@ export function updateThemeColors() {
 		updateColorStore(gridSectionColor, '--scene-grid-section-color');
 
 		// Update vector builder specific colors
-		updateColorStore(vectorColor, '--vector-builder-vector-color');
+		updateColorStore(vectorColor, '--vector-color');
 		updateColorStore(startPointColor, '--vector-builder-start-color');
 		updateColorStore(endPointColor, '--vector-builder-end-color');
 
@@ -67,6 +71,10 @@ export function updateThemeColors() {
 		updateColorStore(targetHitColor, '--calibration-target-hit-color');
 		updateColorStore(targetLabelPendingColor, '--calibration-target-label-pending-color');
 		updateColorStore(targetLabelHitColor, '--calibration-target-label-hit-color');
+
+		// Update general label color
+		updateColorStore(labelColor, '--color-text-primary'); // Corrected target variable
+		updateColorStore(originColor, '--color-text-secondary');
 
 		console.log("[ThemeColors] Finished updating color stores.");
 	} else {

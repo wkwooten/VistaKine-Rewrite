@@ -13,8 +13,8 @@
 
   // Accept the questions data as a prop
   let { questions = [], showFeedback = false } = $props<{
-    questions?: QuizQuestion[],
-    showFeedback?: boolean
+    questions?: QuizQuestion[];
+    showFeedback?: boolean;
   }>();
 
   // Track user answers
@@ -31,7 +31,10 @@
     // Calculate score
     let correct = 0;
     for (const question of questions) {
-      if (question.correctAnswer && userAnswers[question.id] === question.correctAnswer) {
+      if (
+        question.correctAnswer &&
+        userAnswers[question.id] === question.correctAnswer
+      ) {
         correct++;
       }
     }
@@ -47,32 +50,43 @@
 
   // Check if a specific answer is correct
   function isCorrect(questionId: string) {
-    const question = questions.find(q => q.id === questionId);
-    return question?.correctAnswer && userAnswers[questionId] === question.correctAnswer;
+    const question = questions.find((q) => q.id === questionId);
+    return (
+      question?.correctAnswer &&
+      userAnswers[questionId] === question.correctAnswer
+    );
   }
 </script>
 
 <div class="quiz">
   {#each questions as question (question.id)}
     <div class="quiz-question-group">
-       <!-- Use @html to render spans inside text -->
-       <p>{@html question.text}</p>
-       <form class="multiple-choice-question">
-          {#each question.options as option (option.value)}
-             <label class:selected={userAnswers[question.id] === option.value}
-                    class:correct={submitted && showFeedback && question.correctAnswer === option.value}
-                    class:incorrect={submitted && showFeedback && userAnswers[question.id] === option.value && question.correctAnswer !== option.value}>
-                <input
-                  type="radio"
-                  name={question.id}
-                  value={option.value}
-                  disabled={submitted}
-                  on:change={() => userAnswers[question.id] = option.value}>
-                <!-- Use @html to render spans inside label -->
-                {@html option.label}
-             </label>
-          {/each}
-       </form>
+      <!-- Use @html to render spans inside text -->
+      <p>{@html question.text}</p>
+      <form class="multiple-choice-question">
+        {#each question.options as option (option.value)}
+          <label
+            class:selected={userAnswers[question.id] === option.value}
+            class:correct={submitted &&
+              showFeedback &&
+              question.correctAnswer === option.value}
+            class:incorrect={submitted &&
+              showFeedback &&
+              userAnswers[question.id] === option.value &&
+              question.correctAnswer !== option.value}
+          >
+            <input
+              type="radio"
+              name={question.id}
+              value={option.value}
+              disabled={submitted}
+              on:change={() => (userAnswers[question.id] = option.value)}
+            />
+            <!-- Use @html to render spans inside label -->
+            {@html option.label}
+          </label>
+        {/each}
+      </form>
     </div>
   {/each}
 
@@ -81,7 +95,10 @@
       <button class="quiz-submit" on:click={submitQuiz}>Submit Answers</button>
     {:else if showFeedback}
       <div class="quiz-results">
-        <p>You got <strong>{score}</strong> out of <strong>{questions.length}</strong> correct!</p>
+        <p>
+          You got <strong>{score}</strong> out of
+          <strong>{questions.length}</strong> correct!
+        </p>
         <button class="quiz-reset" on:click={resetQuiz}>Try Again</button>
       </div>
     {:else}
@@ -96,7 +113,7 @@
 <style lang="scss">
   /* Styles for quiz */
   .quiz {
-    padding: var(--space-l); /* Increased padding a bit */
+    padding: var(--space-s);
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
@@ -115,7 +132,8 @@
     }
   }
 
-  .quiz-question-group > p { /* Styling the question text */
+  .quiz-question-group > p {
+    /* Styling the question text */
     font-weight: 700;
     margin-bottom: var(--space-xs);
     &::before {
@@ -135,8 +153,9 @@
     margin-left: var(--space-s);
   }
 
-  form { /* Reset default form margin if any */
-      margin: 0;
+  form {
+    /* Reset default form margin if any */
+    margin: 0;
   }
 
   label {
@@ -144,7 +163,9 @@
     margin-bottom: var(--space-2xs);
     padding: var(--space-s); /* Adjusted padding */
     border-radius: var(--radius-md);
-    background-color: var(--bg-primary); /* Slightly different background for options */
+    background-color: var(
+      --bg-primary
+    ); /* Slightly different background for options */
     cursor: pointer;
     transition: background-color 0.2s ease;
 
@@ -153,7 +174,7 @@
     }
 
     /* Remove bottom margin from the last label in a group */
-     &:last-child {
+    &:last-child {
       margin-bottom: 0;
     }
   }
@@ -185,7 +206,8 @@
     justify-content: center;
   }
 
-  .quiz-submit, .quiz-reset {
+  .quiz-submit,
+  .quiz-reset {
     padding: var(--space-s) var(--space-m);
     background-color: var(--color-accent);
     color: white;
@@ -212,7 +234,7 @@
   /* Styling for the keyword span if needed within the Quiz context */
   /* Although keywords are likely styled globally, you could add scoped overrides */
   :global(.keyword) {
-     /* Example: override global keyword style just within quiz if needed */
-     /* color: blue; */
-   }
+    /* Example: override global keyword style just within quiz if needed */
+    /* color: blue; */
+  }
 </style>
