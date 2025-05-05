@@ -29,45 +29,50 @@ export const MAX_Z = 12;
 
 // Raw coordinate inputs from the HUD
 export const startCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: '0', y: '0', z: '0' });
-export const endCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: null, y: null, z: null });
+export const endCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: '0', y: '0', z: '0' }); // Default end to 0,0,0 as well for immediate feedback
 
-// Parsed and validated coordinate numbers (null if invalid/empty or out of bounds)
+// Parsed coordinate numbers, defaulting invalid/empty/out-of-bounds to 0
 export const startCoordsNum = derived(startCoordsRaw, ($raw) => {
-    const x = parseFloat($raw.x ?? '');
-    const y = parseFloat($raw.y ?? '');
-    const z = parseFloat($raw.z ?? '');
-    if (
-        isNaN(x) || isNaN(y) || isNaN(z) ||
-        x < MIN_X || x > MAX_X ||
-        y < MIN_Y || y > MAX_Y ||
-        z < MIN_Z || z > MAX_Z
-    ) {
-        return null;
-    }
+    let x = parseFloat($raw.x ?? '0');
+    let y = parseFloat($raw.y ?? '0');
+    let z = parseFloat($raw.z ?? '0');
+
+    // Default to 0 if NaN
+    if (isNaN(x)) x = 0;
+    if (isNaN(y)) y = 0;
+    if (isNaN(z)) z = 0;
+
+    // Clamp values (optional, but good practice)
+    x = Math.max(MIN_X, Math.min(MAX_X, x));
+    y = Math.max(MIN_Y, Math.min(MAX_Y, y));
+    z = Math.max(MIN_Z, Math.min(MAX_Z, z));
+
     return { x, y, z };
 });
 
 export const endCoordsNum = derived(endCoordsRaw, ($raw) => {
-    const x = parseFloat($raw.x ?? '');
-    const y = parseFloat($raw.y ?? '');
-    const z = parseFloat($raw.z ?? '');
-    if (
-        isNaN(x) || isNaN(y) || isNaN(z) ||
-        x < MIN_X || x > MAX_X ||
-        y < MIN_Y || y > MAX_Y ||
-        z < MIN_Z || z > MAX_Z
-    ) {
-        return null;
-    }
+    let x = parseFloat($raw.x ?? '0');
+    let y = parseFloat($raw.y ?? '0');
+    let z = parseFloat($raw.z ?? '0');
+
+    // Default to 0 if NaN
+    if (isNaN(x)) x = 0;
+    if (isNaN(y)) y = 0;
+    if (isNaN(z)) z = 0;
+
+     // Clamp values (optional, but good practice)
+    x = Math.max(MIN_X, Math.min(MAX_X, x));
+    y = Math.max(MIN_Y, Math.min(MAX_Y, y));
+    z = Math.max(MIN_Z, Math.min(MAX_Z, z));
+
     return { x, y, z };
 });
 
-// Vector representation (null if points are invalid)
+// Vector representation - should now always be valid unless start/end are identical initially
+// (or if you add specific logic to return null for zero-length vectors)
 export const vectorData = derived(
     [startCoordsNum, endCoordsNum],
     ([$start, $end]) => {
-        if (!$start || !$end) return null;
-
         const dx = $end.x - $start.x;
         const dy = $end.y - $start.y;
         const dz = $end.z - $start.z;

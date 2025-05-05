@@ -122,7 +122,7 @@
     return new Vector3(
       vectorEndWorld.x,
       vectorStartWorld.y,
-      vectorStartWorld.z,
+      vectorStartWorld.z
     );
   });
 
@@ -257,53 +257,53 @@
     if (typeof window !== "undefined") {
       const styles = getComputedStyle(document.documentElement);
       xAxisColor.set(
-        styles.getPropertyValue("--axis-color-x").trim() || get(xAxisColor),
+        styles.getPropertyValue("--axis-color-x").trim() || get(xAxisColor)
       );
       yAxisColor.set(
-        styles.getPropertyValue("--axis-color-y").trim() || get(yAxisColor),
+        styles.getPropertyValue("--axis-color-y").trim() || get(yAxisColor)
       );
       zAxisColor.set(
-        styles.getPropertyValue("--axis-color-z").trim() || get(zAxisColor),
+        styles.getPropertyValue("--axis-color-z").trim() || get(zAxisColor)
       );
       nozzleColor.set(
         styles.getPropertyValue("--calibration-nozzle-color").trim() ||
-          get(nozzleColor),
+          get(nozzleColor)
       );
       nozzleEdgesColor.set(
         styles.getPropertyValue("--calibration-nozzle-edges-color").trim() ||
-          get(nozzleEdgesColor),
+          get(nozzleEdgesColor)
       );
       heightIndicatorColor.set(
         styles
           .getPropertyValue("--calibration-height-indicator-color")
-          .trim() || get(heightIndicatorColor),
+          .trim() || get(heightIndicatorColor)
       );
       bedColor.set(
-        styles.getPropertyValue("--color-surface").trim() || get(bedColor),
+        styles.getPropertyValue("--color-surface").trim() || get(bedColor)
       );
       bedEdgesColor.set(
         styles.getPropertyValue("--calibration-bed-edges-color").trim() ||
-          get(bedEdgesColor),
+          get(bedEdgesColor)
       );
       gridCellColor.set(
         styles.getPropertyValue("--scene-grid-cell-color").trim() ||
-          get(gridCellColor),
+          get(gridCellColor)
       );
       gridSectionColor.set(
         styles.getPropertyValue("--scene-grid-section-color").trim() ||
-          get(gridSectionColor),
+          get(gridSectionColor)
       );
       vectorColor.set(
         styles.getPropertyValue("--vector-builder-vector-color").trim() ||
-          get(vectorColor),
+          get(vectorColor)
       );
       startPointColor.set(
         styles.getPropertyValue("--vector-builder-start-color").trim() ||
-          get(startPointColor),
+          get(startPointColor)
       );
       endPointColor.set(
         styles.getPropertyValue("--vector-builder-end-color").trim() ||
-          get(endPointColor),
+          get(endPointColor)
       );
       console.log("[VectorScene] Fetched Colors and updated stores");
     }
@@ -475,7 +475,7 @@
       distance,
       vectorColorObj.getHex(),
       distance * 0.1,
-      distance * 0.05,
+      distance * 0.05
     )}
     <T is={arrow} />
   {/if}
