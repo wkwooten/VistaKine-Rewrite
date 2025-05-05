@@ -4,9 +4,6 @@
     endCoordsRaw,
     vectorData,
     traceVectorRequested,
-    xAxisColor,
-    yAxisColor,
-    zAxisColor, // Import color stores
     // Import MIN/MAX constants for clamping
     MIN_X,
     MAX_X,
@@ -15,6 +12,7 @@
     MIN_Z,
     MAX_Z,
   } from "$lib/stores/vectorBuilderState";
+  import { xAxisColor, yAxisColor, zAxisColor } from "$lib/stores/themeColors"; // Import colors from correct store
   import { get } from "svelte/store";
   import { onDestroy } from "svelte";
   // Import a Toggle component if available, otherwise use checkbox

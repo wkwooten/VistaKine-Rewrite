@@ -1,0 +1,75 @@
+import { writable } from 'svelte/store';
+import { get } from 'svelte/store'; // Needed for reading current value in update function
+import type { Writable } from 'svelte/store'; // Import Writable type
+
+// --- Common Visual State (Colors) ---
+export const xAxisColor = writable<string>('red');
+export const yAxisColor = writable<string>('lime');
+export const zAxisColor = writable<string>('blue');
+export const nozzleColor = writable<string>('#4682b4');
+export const nozzleEdgesColor = writable<string>('#ADD8E6');
+export const heightIndicatorColor = writable<string>('#ADD8E6');
+export const bedColor = writable<string>('#ffffff');
+export const bedEdgesColor = writable<string>('#ADD8E6');
+export const gridCellColor = writable<string>('#ADD8E6');
+export const gridSectionColor = writable<string>('#64B5F6');
+
+// --- Vector Builder Specific Colors ---
+export const vectorColor = writable<string>('#ff00ff');
+export const startPointColor = writable<string>('#FFA500');
+export const endPointColor = writable<string>('#1E90FF');
+
+// --- Printer Calibration Specific Colors ---
+export const targetPendingColor = writable<string>('#FFA500'); // Orange
+export const targetHitColor = writable<string>('#32CD32'); // LimeGreen
+export const targetLabelPendingColor = writable<string>('#FFA500'); // Darker Amber/Orange
+export const targetLabelHitColor = writable<string>('#32CD32'); // Darker Green
+
+/**
+ * Fetches color values from CSS custom properties and updates the stores.
+ * Should be called once client-side, e.g., in the root layout.
+ */
+export function updateThemeColors() {
+	if (typeof window !== "undefined") {
+		console.log("[ThemeColors] Fetching CSS color variables...");
+		const styles = getComputedStyle(document.documentElement);
+
+		// Helper function to get style and update store
+		const updateColorStore = (store: Writable<string>, varName: string) => {
+			const value = styles.getPropertyValue(varName).trim();
+			if (value) {
+				store.set(value);
+			} else {
+				console.warn(`[ThemeColors] CSS variable ${varName} not found, using default.`);
+				// No need to set, default is already there
+			}
+		};
+
+		// Update common colors
+		updateColorStore(xAxisColor, '--axis-color-x');
+		updateColorStore(yAxisColor, '--axis-color-y');
+		updateColorStore(zAxisColor, '--axis-color-z');
+		updateColorStore(nozzleColor, '--calibration-nozzle-color');
+		updateColorStore(nozzleEdgesColor, '--calibration-nozzle-edges-color');
+		updateColorStore(heightIndicatorColor, '--calibration-height-indicator-color');
+		updateColorStore(bedColor, '--color-surface');
+		updateColorStore(bedEdgesColor, '--calibration-bed-edges-color');
+		updateColorStore(gridCellColor, '--scene-grid-cell-color');
+		updateColorStore(gridSectionColor, '--scene-grid-section-color');
+
+		// Update vector builder specific colors
+		updateColorStore(vectorColor, '--vector-builder-vector-color');
+		updateColorStore(startPointColor, '--vector-builder-start-color');
+		updateColorStore(endPointColor, '--vector-builder-end-color');
+
+		// Update printer calibration specific colors
+		updateColorStore(targetPendingColor, '--calibration-target-pending-color');
+		updateColorStore(targetHitColor, '--calibration-target-hit-color');
+		updateColorStore(targetLabelPendingColor, '--calibration-target-label-pending-color');
+		updateColorStore(targetLabelHitColor, '--calibration-target-label-hit-color');
+
+		console.log("[ThemeColors] Finished updating color stores.");
+	} else {
+		console.warn("[ThemeColors] updateThemeColors called on server, skipping CSS variable fetch.");
+	}
+}

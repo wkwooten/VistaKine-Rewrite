@@ -9,6 +9,7 @@
   import { browser } from "$app/environment";
   import SectionMap from "$lib/components/ui/SectionMap.svelte";
   import { sectionMapOpen } from "$lib/stores/uiStores";
+  import { updateThemeColors } from "$lib/stores/themeColors";
 
   let { children } = $props(); // Add children prop
 
@@ -30,6 +31,7 @@
 
   onMount(() => {
     parallaxBackground();
+    updateThemeColors();
 
     if (browser) {
       // Read CSS variables

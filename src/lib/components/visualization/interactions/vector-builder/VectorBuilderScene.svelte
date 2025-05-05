@@ -34,6 +34,15 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
+    showVectorDialog,
+    showDeltaX,
+    showDeltaY,
+    showDeltaZ,
+    vectorBuilderDialogTurns,
+    showVectorBuilderDialog,
+    hideVectorDialog,
+  } from "$lib/stores/vectorBuilderState";
+  import {
     xAxisColor,
     yAxisColor,
     zAxisColor,
@@ -47,11 +56,7 @@
     vectorColor,
     startPointColor,
     endPointColor,
-    showVectorDialog,
-    showDeltaX,
-    showDeltaY,
-    showDeltaZ,
-  } from "$lib/stores/vectorBuilderState";
+  } from "$lib/stores/themeColors";
 
   // Component Imports
   import SceneLabel from "../../helpers/SceneLabel.svelte";
@@ -250,82 +255,6 @@
         materialZ = undefined;
       }
     };
-  });
-
-  onMount(() => {
-    // Fetch CSS Colors and update stores
-    if (typeof window !== "undefined") {
-      const styles = getComputedStyle(document.documentElement);
-      xAxisColor.set(
-        styles.getPropertyValue("--axis-color-x").trim() || get(xAxisColor)
-      );
-      yAxisColor.set(
-        styles.getPropertyValue("--axis-color-y").trim() || get(yAxisColor)
-      );
-      zAxisColor.set(
-        styles.getPropertyValue("--axis-color-z").trim() || get(zAxisColor)
-      );
-      nozzleColor.set(
-        styles.getPropertyValue("--calibration-nozzle-color").trim() ||
-          get(nozzleColor)
-      );
-      nozzleEdgesColor.set(
-        styles.getPropertyValue("--calibration-nozzle-edges-color").trim() ||
-          get(nozzleEdgesColor)
-      );
-      heightIndicatorColor.set(
-        styles
-          .getPropertyValue("--calibration-height-indicator-color")
-          .trim() || get(heightIndicatorColor)
-      );
-      bedColor.set(
-        styles.getPropertyValue("--color-surface").trim() || get(bedColor)
-      );
-      bedEdgesColor.set(
-        styles.getPropertyValue("--calibration-bed-edges-color").trim() ||
-          get(bedEdgesColor)
-      );
-      gridCellColor.set(
-        styles.getPropertyValue("--scene-grid-cell-color").trim() ||
-          get(gridCellColor)
-      );
-      gridSectionColor.set(
-        styles.getPropertyValue("--scene-grid-section-color").trim() ||
-          get(gridSectionColor)
-      );
-      vectorColor.set(
-        styles.getPropertyValue("--vector-builder-vector-color").trim() ||
-          get(vectorColor)
-      );
-      startPointColor.set(
-        styles.getPropertyValue("--vector-builder-start-color").trim() ||
-          get(startPointColor)
-      );
-      endPointColor.set(
-        styles.getPropertyValue("--vector-builder-end-color").trim() ||
-          get(endPointColor)
-      );
-      console.log("[VectorScene] Fetched Colors and updated stores");
-    }
-
-    // Show initial dialog
-    showVectorDialog([
-      {
-        speaker: "Leo",
-        message:
-          "Okay, Surya, let's test a specific move. Define a start and end point using the controls. This defines a vector – the exact path the nozzle will follow.",
-      },
-      {
-        speaker: "Surya",
-        message:
-          "Got it. Start point... end point... So the vector is just the straight line between them?",
-      },
-      {
-        speaker: "Leo",
-        message:
-          "Precisely! And it has both a direction and a length, or magnitude. Enter some points and see.",
-      },
-    ]);
   });
 
   // --- Updates / Sync ---

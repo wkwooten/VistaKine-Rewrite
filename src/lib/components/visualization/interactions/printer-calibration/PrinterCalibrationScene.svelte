@@ -25,6 +25,22 @@
     MIN_Z,
     MAX_Z,
   } from "$lib/stores/calibrationState";
+  import {
+    xAxisColor,
+    yAxisColor,
+    zAxisColor,
+    nozzleColor,
+    nozzleEdgesColor,
+    heightIndicatorColor,
+    bedColor,
+    bedEdgesColor,
+    gridCellColor,
+    gridSectionColor,
+    targetPendingColor,
+    targetHitColor,
+    targetLabelPendingColor,
+    targetLabelHitColor,
+  } from "$lib/stores/themeColors";
   import { get } from "svelte/store";
   import SceneLabel from "../../helpers/SceneLabel.svelte";
 
@@ -51,22 +67,6 @@
     relativeNozzleY?: number;
     relativeNozzleZ?: number;
   }>();
-
-  // --- Resolved CSS Color State ---
-  let xAxisColor = $state("red");
-  let yAxisColor = $state("lime");
-  let zAxisColor = $state("blue");
-  let nozzleColor = $state("#4682b4");
-  let nozzleEdgesColor = $state("#ADD8E6");
-  let heightIndicatorColor = $state("#ADD8E6");
-  let bedColor = $state("#ffffff");
-  let bedEdgesColor = $state("#ADD8E6");
-  let gridCellColor = $state("#ADD8E6");
-  let gridSectionColor = $state("#64B5F6");
-  let targetPendingColor = $state("#FFA500"); // Orange
-  let targetHitColor = $state("#32CD32"); // LimeGreen
-  let targetLabelPendingColor = $state("#FFA500"); // Darker Amber/Orange
-  let targetLabelHitColor = $state("#32CD32"); // Darker Green
 
   // --- Constants ---
   const cornerOriginOffset = new Vector3(-6, 1, -6);
@@ -281,59 +281,8 @@
     ]);
   }
 
-  // --- Fetch CSS Variables on Mount ---
+  // Show initial dialog
   onMount(() => {
-    const styles = getComputedStyle(document.documentElement);
-    // Update state variables from CSS
-    xAxisColor = styles.getPropertyValue("--axis-color-x").trim() || xAxisColor;
-    yAxisColor = styles.getPropertyValue("--axis-color-y").trim() || yAxisColor;
-    zAxisColor = styles.getPropertyValue("--axis-color-z").trim() || zAxisColor;
-    nozzleColor =
-      styles.getPropertyValue("--calibration-nozzle-color").trim() ||
-      nozzleColor;
-    nozzleEdgesColor =
-      styles.getPropertyValue("--calibration-nozzle-edges-color").trim() ||
-      nozzleEdgesColor;
-    heightIndicatorColor =
-      styles.getPropertyValue("--calibration-height-indicator-color").trim() ||
-      heightIndicatorColor;
-    bedColor = styles.getPropertyValue("--color-surface").trim() || bedColor;
-    bedEdgesColor =
-      styles.getPropertyValue("--calibration-bed-edges-color").trim() ||
-      bedEdgesColor;
-    gridCellColor =
-      styles.getPropertyValue("--scene-grid-cell-color").trim() ||
-      gridCellColor;
-    gridSectionColor =
-      styles.getPropertyValue("--scene-grid-section-color").trim() ||
-      gridSectionColor;
-    targetPendingColor =
-      styles.getPropertyValue("--calibration-target-pending-color").trim() ||
-      targetPendingColor;
-    targetHitColor =
-      styles.getPropertyValue("--calibration-target-hit-color").trim() ||
-      targetHitColor;
-    targetLabelPendingColor =
-      styles
-        .getPropertyValue("--calibration-target-label-pending-color")
-        .trim() || targetLabelPendingColor;
-    targetLabelHitColor =
-      styles.getPropertyValue("--calibration-target-label-hit-color").trim() ||
-      targetLabelHitColor;
-
-    console.log("[PrinterCalibration] Fetched Colors:", {
-      xAxisColor,
-      yAxisColor,
-      zAxisColor,
-      nozzleColor,
-      bedColor,
-      targetPendingColor,
-      targetHitColor,
-      targetLabelPendingColor,
-      targetLabelHitColor,
-    });
-
-    // Show initial dialog
     if (!get(showDialog)) {
       showCalibrationDialog([
         {
@@ -376,13 +325,18 @@
 </T.PerspectiveCamera>
 
 <!-- Use Extracted Components -->
-<PrinterBed {bedColor} {bedEdgesColor} {gridCellColor} {gridSectionColor} />
+<PrinterBed
+  bedColor={$bedColor}
+  bedEdgesColor={$bedEdgesColor}
+  gridCellColor={$gridCellColor}
+  gridSectionColor={$gridSectionColor}
+/>
 
 <CoordinateAxes
   {cornerOriginOffset}
-  {xAxisColor}
-  {yAxisColor}
-  {zAxisColor}
+  xAxisColor={$xAxisColor}
+  yAxisColor={$yAxisColor}
+  zAxisColor={$zAxisColor}
   axisLengthX={MAX_X}
   axisLengthY={MAX_Y}
   axisLengthZ={MAX_Z}
@@ -391,19 +345,19 @@
 <AnimatedNozzle
   position={$animatedPosition}
   {cornerOriginOffset}
-  {nozzleColor}
-  {nozzleEdgesColor}
-  {heightIndicatorColor}
+  nozzleColor={$nozzleColor}
+  nozzleEdgesColor={$nozzleEdgesColor}
+  heightIndicatorColor={$heightIndicatorColor}
 />
 
 <!-- Target Point Markers (Specific to this scene) -->
 {#each targetDetails as target (target.id)}
   {@const isHit = hitTargets.has(target.id)}
-  {@const sphereColor = isHit ? targetHitColor : targetPendingColor}
-  {@const labelColor = isHit ? targetLabelHitColor : targetLabelPendingColor}
+  {@const sphereColor = isHit ? $targetHitColor : $targetPendingColor}
+  {@const labelColor = isHit ? $targetLabelHitColor : $targetLabelPendingColor}
   {@const labelOffsetY = 0.7}
   {@const labelOffsetZ = -0}
-  {@const labelFontSize = 0.7} // Note: This uses a local constant, not the one removed
+  {@const labelFontSize = 0.7}
   {@const coordinateText = `(${target.x}, ${target.y}, ${target.z})`}
 
   <!-- Target Sphere -->
@@ -414,7 +368,7 @@
 
   <!-- Vertical Line for Stage 2 targets (Y > 0) -->
   {#if target.y > 0}
-    {@const lineColor = isHit ? targetHitColor : targetPendingColor}
+    {@const lineColor = isHit ? $targetHitColor : $targetPendingColor}
     {@const lineOpacity = isHit ? 1 : 0.5}
     {@const lineHeight = target.worldPos.y - 1}
     {@const lineCenterY = 1 + lineHeight / 2}

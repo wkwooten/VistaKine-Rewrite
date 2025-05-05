@@ -2,20 +2,7 @@ import { writable, derived } from 'svelte/store';
 import { Vector3 } from 'three';
 import type { DialogTurn } from './calibrationState'; // Assuming it's exported there or define locally
 
-// --- Visual State (Colors) ---
-export const xAxisColor = writable<string>('red');
-export const yAxisColor = writable<string>('lime');
-export const zAxisColor = writable<string>('blue');
-export const nozzleColor = writable<string>('#4682b4');
-export const nozzleEdgesColor = writable<string>('#ADD8E6');
-export const heightIndicatorColor = writable<string>('#ADD8E6');
-export const bedColor = writable<string>('#ffffff');
-export const bedEdgesColor = writable<string>('#ADD8E6');
-export const gridCellColor = writable<string>('#ADD8E6');
-export const gridSectionColor = writable<string>('#64B5F6');
-export const vectorColor = writable<string>('#ff00ff');
-export const startPointColor = writable<string>('#FFA500');
-export const endPointColor = writable<string>('#1E90FF');
+// Color stores removed, moved to themeColors.ts
 
 // --- Constants (inherited from calibration, adjust if needed) ---
 export const MIN_X = 0;

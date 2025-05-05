@@ -1,14 +1,12 @@
 <script lang="ts">
   import {
     vectorData,
-    xAxisColor,
-    yAxisColor,
-    zAxisColor,
     // Import the delta visibility states
     showDeltaX,
     showDeltaY,
     showDeltaZ,
   } from "$lib/stores/vectorBuilderState";
+  import { xAxisColor, yAxisColor, zAxisColor } from "$lib/stores/themeColors"; // Import colors from correct store
   import Katex from "svelte-katex"; // Import Katex
 
   // Use $props() for runes mode
