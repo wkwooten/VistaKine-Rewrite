@@ -9,7 +9,6 @@
     startCoordsRaw,
     endCoordsRaw,
     vectorData,
-    resetVectorBuilderRequested,
     showVectorBuilderDialog,
     vectorBuilderDialogTurns,
     MIN_X,
@@ -27,10 +26,9 @@
 
   // Function to handle reset
   function handleResetScene() {
-    console.log(`[VectorBuilderHud] Requesting reset via store`);
+    console.log(`[VectorBuilderHud] Resetting coordinate inputs.`);
     startCoordsRaw.set({ x: "0", y: "0", z: "0" });
-    endCoordsRaw.set({ x: null, y: null, z: null });
-    resetVectorBuilderRequested.set(true);
+    endCoordsRaw.set({ x: "0", y: "0", z: "0" }); // Reset end coords to origin as well
   }
 
   // Forward the request from the button
@@ -119,9 +117,8 @@
   /* Positioning for Output Panel */
   :global(.vector-output-positioned) {
     position: absolute;
-    top: 50%;
-    left: var(--space-s);
-    transform: translateY(-50%);
+    top: var(--space-s);
+    right: var(--space-s);
     max-width: 40%;
     z-index: 10;
     pointer-events: auto;

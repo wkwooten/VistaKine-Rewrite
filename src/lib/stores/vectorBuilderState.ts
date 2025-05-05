@@ -4,21 +4,23 @@ import type { DialogTurn } from './calibrationState'; // Assuming it's exported 
 
 // Color stores removed, moved to themeColors.ts
 
-// --- Constants (inherited from calibration, adjust if needed) ---
-export const MIN_X = 0;
-export const MAX_X = 12;
-export const MIN_Y = 0;
-export const MAX_Y = 12;
-export const MIN_Z = 0;
-export const MAX_Z = 12;
+// --- Constants (Symmetrical Range) ---
+const BOUND = 6;
+export const MIN_X = -BOUND;
+export const MAX_X = BOUND;
+export const MIN_Y = -BOUND;
+export const MAX_Y = BOUND;
+export const MIN_Z = -BOUND;
+export const MAX_Z = BOUND;
 
 // --- Core State --- //
 
 // Raw coordinate inputs from the HUD
+// Default to 0,0,0 for both start and end initially
 export const startCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: '0', y: '0', z: '0' });
-export const endCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: '0', y: '0', z: '0' }); // Default end to 0,0,0 as well for immediate feedback
+export const endCoordsRaw = writable<{ x: string | null, y: string | null, z: string | null }>({ x: '0', y: '0', z: '0' });
 
-// Parsed coordinate numbers, defaulting invalid/empty/out-of-bounds to 0
+// Parsed coordinate numbers, defaulting invalid/empty to 0, and clamping to new bounds
 export const startCoordsNum = derived(startCoordsRaw, ($raw) => {
     let x = parseFloat($raw.x ?? '0');
     let y = parseFloat($raw.y ?? '0');
@@ -76,16 +78,13 @@ export const vectorData = derived(
 
 // --- Control State --- //
 
-// Flag to trigger the scene to trace the vector
-export const traceVectorRequested = writable<boolean>(false);
-
-// Flag to trigger a reset
-export const resetVectorBuilderRequested = writable<boolean>(false);
-
 // Flags to control visibility of delta component lines
 export const showDeltaX = writable<boolean>(true);
 export const showDeltaY = writable<boolean>(true);
 export const showDeltaZ = writable<boolean>(true);
+
+// --- Notation State --- //
+export const useIjkNotation = writable<boolean>(false);
 
 // --- Dialog State (using DialogTurn) --- //
 export const vectorBuilderDialogTurns = writable<DialogTurn[]>([]);

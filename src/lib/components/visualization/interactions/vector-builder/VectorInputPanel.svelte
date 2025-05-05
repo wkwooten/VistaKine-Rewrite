@@ -3,7 +3,6 @@
     startCoordsRaw,
     endCoordsRaw,
     vectorData,
-    traceVectorRequested,
     // Import MIN/MAX constants for clamping
     MIN_X,
     MAX_X,
@@ -117,15 +116,6 @@
     }
     holdTimers = { ...holdTimers };
     holdIntervals = { ...holdIntervals };
-  }
-
-  // --- Trace Logic (Keep existing) ---
-  function handleTrace() {
-    // TODO: Add input validation (ensure numbers, maybe check bounds)
-    if (get(vectorData)) {
-      // Only trace if vector is valid
-      traceVectorRequested.set(true);
-    }
   }
 
   // --- Clamping Effects ---
@@ -382,13 +372,6 @@
         </div>
       </div>
     </fieldset>
-  </div>
-
-  <!-- Moved controls-section here -->
-  <div class="controls-section">
-    <button onclick={handleTrace} disabled={!$vectorData}
-      >Create & Trace Vector</button
-    >
   </div>
 </div>
 
