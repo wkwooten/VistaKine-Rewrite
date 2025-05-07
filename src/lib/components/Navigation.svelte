@@ -170,7 +170,10 @@
 
 <!-- Navigation -->
 <nav class:collapsed={navCollapsed}>
-  <div class="nav-header-container">
+  <div
+    class="nav-header-container"
+    class:is-active={$page.url.pathname === "/"}
+  >
     <a href="/" class="nav-header-link">
       <div class="logo">
         <div class="logo-with-text">
@@ -212,12 +215,8 @@
 
   <div class="nav-content">
     <ul class="nav-items">
-      <li>
-        <a
-          href="/chapter/toc"
-          class="nav-item"
-          class:is-active={$page.url.pathname === "/chapter/toc"}
-        >
+      <li class:is-active={$page.url.pathname === "/chapter/toc"}>
+        <a href="/chapter/toc" class="nav-item">
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
@@ -332,12 +331,8 @@
         </li>
       {/each}
 
-      <li>
-        <a
-          href="/physics-pg"
-          class="nav-item"
-          class:is-active={$page.url.pathname === "/physics-pg"}
-        >
+      <li class:is-active={$page.url.pathname === "/physics-pg"}>
+        <a href="/physics-pg" class="nav-item">
           <div class="icon">
             <Shapes size={iconSize} />
           </div>
@@ -348,24 +343,16 @@
   </div>
 
   <ul class="bottom-item">
-    <li>
-      <a
-        href="/glossary"
-        class="nav-item"
-        class:is-active={$page.url.pathname === "/glossary"}
-      >
+    <li class:is-active={$page.url.pathname === "/glossary"}>
+      <a href="/glossary" class="nav-item">
         <div class="icon">
           <List size={iconSize} />
         </div>
         <span>Glossary</span>
       </a>
     </li>
-    <li>
-      <a
-        href="/settings"
-        class="nav-item"
-        class:is-active={$page.url.pathname === "/settings"}
-      >
+    <li class:is-active={$page.url.pathname === "/settings"}>
+      <a href="/settings" class="nav-item">
         <div class="icon">
           <Settings size={iconSize} />
         </div>
@@ -394,6 +381,33 @@
   li {
     list-style: none;
     margin: 0;
+    // New active styles for LI elements containing nav items
+    &.is-active {
+      background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
+
+      > .nav-item {
+        // Target the direct child a.nav-item
+        color: var(--color-accent);
+        font-weight: bold;
+
+        .icon {
+          border-color: var(--color-accent-dark);
+        }
+
+        // When an ACTIVE item is hovered:
+        &:hover {
+          background-color: transparent; // Ensure the LI's active background shows through
+          color: var(
+            --color-accent
+          ); // Text remains accent (no change from active state)
+          .icon {
+            border-color: var(
+              --color-accent-dark
+            ); // Icon remains in ACTIVE state style
+          }
+        }
+      }
+    }
   }
 
   nav {
@@ -442,6 +456,18 @@
         margin: 0 auto;
       }
     }
+
+    min-width: 0;
+    overflow: hidden;
+
+    span {
+      opacity: 1;
+      transition: opacity 0.1s ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
   }
 
   .icon {
@@ -459,6 +485,9 @@
     &:hover {
       background-color: rgba(59, 130, 246, 0.1);
     }
+    &.is-active {
+      background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
+    }
   }
 
   .nav-header-link {
@@ -475,6 +504,17 @@
     width: 100%;
     justify-content: center;
     text-decoration: none;
+    min-width: 0;
+    overflow: hidden;
+
+    span {
+      opacity: 1;
+      transition: opacity 0.1s ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
   }
 
   .logo-with-text {
@@ -613,7 +653,11 @@
     overflow: hidden;
 
     &:hover {
-      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--color-accent);
+
+      .icon {
+        border-color: var(--color-accent);
+      }
     }
 
     span {
@@ -637,17 +681,24 @@
   .chapter-title {
     text-decoration: none;
     color: inherit;
-    white-space: normal;
-    word-break: break-word;
-    display: inline-block;
+    display: block;
+    flex-grow: 1;
+    min-width: 0;
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
-    white-space: nowrap;
-    overflow: hidden;
 
     &:hover {
       text-decoration: underline;
       color: var(--color-accent);
+    }
+
+    span {
+      display: block;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.3;
+      overflow: visible;
+      text-overflow: clip;
     }
   }
 
@@ -707,7 +758,7 @@
 
   .chapter-item {
     cursor: pointer;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .chapter-sections {
