@@ -202,6 +202,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --color-accent-light: #{$color-accent-light};
   --color-accent-active-bg: #{$color-accent-active-bg};
   --color-accent-hover-bg: #{$color-accent-hover-bg};
+  --color-surface-hover: #{rgba($color-accent-light, 0.15)};
 
 
   // Functional Colors
@@ -480,6 +481,16 @@ $leo-color-dark: #93C5FD;  // Blue 300
 
   // Accent Palette
   // ... rest of light mode :root ...
+  --color-accent-active-bg: #{$color-dark-accent-active-bg};
+  --color-accent-hover-bg: #{$color-dark-accent-hover-bg};
+  --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
+
+  // Functional Colors
+  --color-success: #{$color-dark-success};
+  --color-error: #{$color-dark-error};
+  --color-error-bg: #{$color-dark-error-bg};
+  --color-error-border: #{$color-dark-error-border};
+  --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
 }
 
 // ==================================
@@ -503,6 +514,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --color-accent-light: #{$color-dark-accent-light};
     --color-accent-active-bg: #{$color-dark-accent-active-bg};
     --color-accent-hover-bg: #{$color-dark-accent-hover-bg};
+    --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
 
     // -- Functional Colors Override --
     --color-success: #{$color-dark-success};
@@ -510,7 +522,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --color-error-bg: #{$color-dark-error-bg};
     --color-error-border: #{$color-dark-error-border};
     --color-text-on-dark: #{$color-dark-text-on-dark};
-    // Consider adding --color-text-on-accent if needed: #{$color-dark-text-on-accent};
+    --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
 
     // -- Axis Colors Override --
     --axis-color-x: #{$axis-dark-color-x};

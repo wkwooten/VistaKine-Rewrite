@@ -28,10 +28,13 @@ src/
 │   │       └── elements/        # Reusable 3D elements (Axes, Grid, etc.)
 │   │       └── interactions/    # Interactive exercises (PrinterCalibration, VectorBuilder)
 │   │       └── scenes/          # Specific Threlte scenes
+│   │       └── interactions/    # Interactive exercises (PrinterCalibration, VectorBuilder)
+│   │       └── scenes/          # Specific Threlte scenes
 │   ├── content/
 │   │   └── chapters/            # Chapter content root
 │   │       └── [slug]/          # Specific chapter folder (e.g., understanding-3d-space)
 │   │           └── sections/    # Individual section components
+│   │           └── +page.svelte  # Loads section component
 │   ├── data/                    # Data files (e.g., glossary-data.ts, chapters.ts)
 │   └── stores/                  # Svelte stores for global/shared state
 ├── routes/                      # SvelteKit routes
@@ -224,6 +227,17 @@ This section highlights some of the core reusable or structural components withi
 - **Focus Management:** Ensure clear `:focus-visible` styles (defined globally or per-component) for keyboard navigation.
 - **Color Contrast:** Verify text and UI elements meet contrast requirements, considering both light and dark modes.
 - **Labels:** Ensure all inputs and controls have associated labels (`<label for="...">` or `aria-label`).
+
+### Accessible Interactive Components (e.g., Custom Selects, Comboboxes)
+
+- When building custom interactive elements like dropdowns, search-with-suggestions (comboboxes), or custom selects, prioritize established ARIA patterns.
+- **Comboboxes (like `NavSearch.svelte`):**
+  - Prefer the `aria-activedescendant` pattern. DOM focus should remain on the main input field.
+  - Use arrow keys to navigate a non-focusable list of suggestions (`role="option"`). The input's `aria-activedescendant` attribute should be updated to the ID of the currently highlighted option.
+  - `aria-selected` should reflect the highlighted option.
+  - Tab key from the input should close the suggestion list and move focus to the next/previous focusable element in the page, not into the suggestion list items themselves.
+  - Ensure clear visual differentiation between `:hover` states (for mouse users) and the programmatically highlighted "active descendant" state (for keyboard users). This typically involves styling a specific class (e.g., `.is-active-descendant`) in addition to `:hover`.
+  - Ensure the actively highlighted item is scrolled into view within its container.
 
 ## Performance
 

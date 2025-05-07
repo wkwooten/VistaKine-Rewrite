@@ -13,7 +13,7 @@
     if (linesExist) {
       animate(svg.createDrawable(selector), {
         draw: ["0 0", "0 1"], // Simple draw animation
-        duration: 5000, // Duration in ms
+        duration: 4000, // Duration in ms
         delay: stagger(50), // Delay between each path animation
         easing: "easeInOutSine",
         loop: false,

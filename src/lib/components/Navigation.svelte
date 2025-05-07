@@ -17,6 +17,7 @@
   import { quintOut } from "svelte/easing";
   import { browser } from "$app/environment";
   import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
+  import NavSearch from "$lib/components/NavSearch.svelte";
 
   // --- Props ---
   // Slug of the currently viewed chapter, used to initialize the expanded state.
@@ -188,14 +189,24 @@
   </div>
 
   <div class="search">
-    <div class="search-input-container">
-      <Search size={iconSize} color="var(--color-text-primary)" opacity="0.6" />
-      <input type="text" placeholder="Search textbook..." />
-    </div>
     {#if navCollapsed}
-      <div class="icon-search">
+      <div
+        class="icon-search"
+        role="button"
+        tabindex="0"
+        on:click={() => ($sidebarExpanded = true)}
+        on:keydown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            $sidebarExpanded = true;
+          }
+        }}
+        aria-label="Open search and expand sidebar"
+      >
         <Search size={24} />
       </div>
+    {:else}
+      <NavSearch />
     {/if}
   </div>
 
@@ -210,7 +221,7 @@
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>
-          <span>Chapters</span>
+          <span>Table of Contents</span>
         </a>
       </li>
 
@@ -548,7 +559,12 @@
 
   nav.collapsed .icon-search {
     position: relative;
-    width: auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     visibility: visible;
   }
 
