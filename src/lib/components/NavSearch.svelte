@@ -265,6 +265,16 @@
         ? `result-item-${activeIndex}`
         : undefined}
     />
+    {#if searchQuery}
+      <button
+        class="clear-button"
+        onclick={clearSearch}
+        aria-label="Clear search"
+        tabindex={clearButtonTabindex}
+      >
+        <ClearIcon size={iconSize * 0.9} />
+      </button>
+    {/if}
   </div>
 
   {#if isFocused && filteredResults.length > 0}
@@ -280,6 +290,7 @@
           id="result-item-{i}"
           role="option"
           aria-selected={i === activeIndex}
+          class="result-item"
           class:is-active-descendant={i === activeIndex}
           onclick={() => handleResultClick(result)}
         >
@@ -385,6 +396,10 @@
         outline-offset: 2px;
       }
     }
+  }
+
+  .result-item {
+    margin: var(--space-xs);
   }
 
   .result-title {

@@ -242,10 +242,6 @@
     /* Remove background-color, ContentCards handle their own */
   }
 
-  /* Target the intro card in the about section */
-  .about-intro-block {
-  }
-
   /* Keep the features grid layout */
   .features {
     display: grid;

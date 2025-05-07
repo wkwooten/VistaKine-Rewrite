@@ -10,6 +10,7 @@
   import ContentCard from "$lib/components/ContentCard.svelte";
   import { vectorOpsQuizData } from "$lib/content/chapters/data/quizzes/vector-operations-quiz"; // TODO: Adjust quiz data if needed
   import katex from "katex"; // Import katex directly
+  import EquationDisplay from "$lib/components/EquationDisplay.svelte"; // Added import
 
   // Determine the section number (Placeholder - will be set in chapter data)
   const sectionNumber = "1.3";
@@ -89,9 +90,8 @@
         resulting vector (the "sum" or "resultant") goes from the tail of the
         first vector to the head of the last vector.
       </p>
-      <p>
-        Numerically, we add the corresponding components of the vectors:
-
+      <p>Numerically, we add the corresponding components of the vectors:</p>
+      <EquationDisplay>
         {@html katex.renderToString("\\vec{A} + \\vec{B} = \\langle ")}
         <span class="katex-axis-x"
           >{@html katex.renderToString("A_x + B_x")}</span
@@ -105,7 +105,7 @@
           >{@html katex.renderToString("A_z + B_z")}</span
         >
         {@html katex.renderToString(" \\rangle")}
-      </p>
+      </EquationDisplay>
       <h5>Use Cases</h5>
       <ul>
         <li>
@@ -131,9 +131,8 @@
           "\\vec{B}"
         )} (a vector with the same magnitude but opposite direction).
       </p>
-      <p>
-        Numerically, we subtract the corresponding components:
-
+      <p>Numerically, we subtract the corresponding components:</p>
+      <EquationDisplay>
         {@html katex.renderToString("\\vec{A} - \\vec{B} = \\langle ")}
         <span class="katex-axis-x"
           >{@html katex.renderToString("A_x - B_x")}</span
@@ -147,7 +146,7 @@
           >{@html katex.renderToString("A_z - B_z")}</span
         >
         {@html katex.renderToString(" \\rangle")}
-      </p>
+      </EquationDisplay>
       <p>
         Graphically, subtraction {@html katex.renderToString(
           "\\vec{A} - \\vec{B}"
@@ -209,7 +208,8 @@
         {@html katex.renderToString("c")} multiplies each component by {@html katex.renderToString(
           "c"
         )}:
-
+      </p>
+      <EquationDisplay>
         {@html katex.renderToString("c\\vec{A} = \\langle ")}
         <span class="katex-axis-x">{@html katex.renderToString("cA_x")}</span>
         {@html katex.renderToString(", ")}
@@ -217,7 +217,7 @@
         {@html katex.renderToString(", ")}
         <span class="katex-axis-z">{@html katex.renderToString("cA_z")}</span>
         {@html katex.renderToString(" \\rangle")}
-      </p>
+      </EquationDisplay>
       <ul>
         <li>
           If {@html katex.renderToString("c > 0")}, the vector's magnitude is
@@ -277,13 +277,15 @@
       </p>
     </ContentCard>
 
-    <ContentCard blockType="conclusion-block">
+    <!-- Added Section Review and Quiz -->
+
+    <ContentCard blockType="activity-block" class="-review">
       <h2
-        id="basic-ops-conclusion"
+        id="basic-ops-review"
         data-nav-target="true"
-        aria-label="Section Conclusion: Basic Operations"
+        aria-label="Section Review"
       >
-        Section Conclusion: Basic Operations
+        Section Review
       </h2>
       <p>
         You've now learned the fundamental arithmetic for vectors: adding them
@@ -298,17 +300,6 @@
         These operations form the building blocks for analyzing motion, forces,
         and many other physical concepts explored in later chapters.
       </p>
-    </ContentCard>
-
-    <!-- Added Section Review and Quiz -->
-    <ContentCard blockType="activity-block" class="-review">
-      <h2
-        id="basic-ops-review"
-        data-nav-target="true"
-        aria-label="Section Review"
-      >
-        Section Review
-      </h2>
       <SectionReview>
         <!-- TODO: May need to adjust or split quiz data -->
         <Quiz questions={vectorOpsQuizData} />

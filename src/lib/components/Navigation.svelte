@@ -322,7 +322,7 @@
                     on:click={() =>
                       handleSectionClick(chapter.slug, section.id)}
                   >
-                    {section.title}
+                    <span>{section.number} - {section.title}</span>
                   </a>
                 </li>
               {/each}
@@ -581,12 +581,6 @@
       position: absolute;
       left: 8px;
     }
-
-    input {
-      padding-left: 32px;
-      background-color: var(--color-surface);
-      color: var(--color-text-primary);
-    }
   }
 
   nav.collapsed .search-input-container {
@@ -606,13 +600,6 @@
     justify-content: center;
     cursor: pointer;
     visibility: visible;
-  }
-
-  input {
-    width: 100%;
-    padding: var(--space-xs);
-    border-radius: 4px;
-    border: 1px solid var(--color-border);
   }
 
   .icon-search {

@@ -5,7 +5,7 @@ import type { DialogTurn } from './calibrationState'; // Assuming it's exported 
 // Color stores removed, moved to themeColors.ts
 
 // --- Constants (Symmetrical Range) ---
-const BOUND = 6;
+const BOUND = 10;
 export const MIN_X = -BOUND;
 export const MAX_X = BOUND;
 export const MIN_Y = -BOUND;

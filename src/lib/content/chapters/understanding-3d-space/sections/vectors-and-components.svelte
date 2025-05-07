@@ -30,6 +30,7 @@
   import type Vector1dComponentType from "$lib/components/Vector1d.svelte";
   import type Vector2dComponentType from "$lib/components/Vector2d.svelte";
   import katex from "katex"; // Import katex directly
+  import EquationDisplay from "$lib/components/EquationDisplay.svelte";
 
   let Vector1dComponent: typeof Vector1dComponentType | null = null;
   let Vector2dComponent: typeof Vector2dComponentType | null = null;
@@ -257,13 +258,17 @@
       <ul>
         <p>Angle Bracket Notation:</p>
         <li>
-          {@html katex.renderToString(
-            "\\vec{V} = \\langle V_x, V_y, V_z \\rangle"
-          )}
+          <EquationDisplay>
+            {@html katex.renderToString(
+              "\\vec{V} = \\langle V_x, V_y, V_z \\rangle"
+            )}
+          </EquationDisplay>
         </li>
         <p>Parentheses Notation:</p>
         <li>
-          {@html katex.renderToString("\\vec{V} = (V_x, V_y, V_z)")}
+          <EquationDisplay
+            >{@html katex.renderToString("\\vec{V} = (V_x, V_y, V_z)")}
+          </EquationDisplay>
         </li>
       </ul>
     </ContentCard>
@@ -378,12 +383,12 @@
         Unit vector {@html katex.renderToString("\\vec{V}")} can be written as a
         sum ("linear combination") of components times their corresponding unit vectors:
       </p>
-      <p>
+      <EquationDisplay>
         {@html katex.renderToString(
           "\\vec{V} = V_x\\hat{\\mathbf{i}} + V_y\\hat{\\mathbf{j}} + V_z\\hat{\\mathbf{k}}",
           { displayMode: true }
         )}
-      </p>
+      </EquationDisplay>
       <p>
         This clearly shows the vector's extent along each axis. <br /> Example:
         <br />
