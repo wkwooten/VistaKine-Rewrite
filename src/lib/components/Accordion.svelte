@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { slide } from 'svelte/transition';
-  import { ChevronRight } from 'lucide-svelte';
+  import { slide } from "svelte/transition";
+  import { ChevronRight } from "lucide-svelte";
 
   // Props
   export let initiallyOpen: boolean = true; // Allow controlling initial state
@@ -21,8 +21,12 @@
     tabindex="0"
     aria-expanded={showContent}
     aria-controls={contentId}
-    on:click={() => showContent = !showContent}
-    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { showContent = !showContent; } }}
+    on:click={() => (showContent = !showContent)}
+    on:keydown={(e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        showContent = !showContent;
+      }
+    }}
   >
     <div class="header-content">
       <slot name="header" />
@@ -38,7 +42,7 @@
       id={contentId}
       role="region"
       aria-labelledby={headerId}
-      transition:slide={{ duration: 300, axis: 'y' }}
+      transition:slide={{ duration: 300, axis: "y" }}
     >
       <slot name="content">Default Content</slot>
     </div>
@@ -46,7 +50,6 @@
 </div>
 
 <style lang="scss">
-
   /* Generic Accordion Styles */
   .accordion {
     /* Add any overall container styles if needed, e.g., margin */
@@ -74,7 +77,6 @@
       outline-offset: 2px;
     }
   }
-
 
   .header-content {
     display: flex;

@@ -30,10 +30,11 @@ export const chapters: Chapter[] = [
       { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
       { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2" },
       { id: "basic-vector-operations", title: "Basic Vector Operations", slug: "basic-vector-operations", number: "1.3" },
-      { id: "advanced-vector-products", title: "Advanced Vector Products", slug: "advanced-vector-products", number: "1.4" }
+      { id: "advanced-vector-operations", title: "Advanced Vector Operations", slug: "advanced-vector-operations", number: "1.4" }
     ],
     component: undefined
   },
+  // TODO: Add chapter 1 descriptions
   {
     title: 'Kinematics',
     slug: 'kinematics',

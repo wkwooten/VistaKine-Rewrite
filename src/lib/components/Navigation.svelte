@@ -215,8 +215,8 @@
 
   <div class="nav-content">
     <ul class="nav-items">
-      <li class:is-active={$page.url.pathname === "/chapter/toc"}>
-        <a href="/chapter/toc" class="nav-item">
+      <li class:is-active={$page.url.pathname === "/table_of_contents"}>
+        <a href="/table_of_contents" class="nav-item">
           <div class="icon">
             <BookOpen size={iconSize} />
           </div>

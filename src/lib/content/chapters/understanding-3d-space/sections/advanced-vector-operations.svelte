@@ -20,13 +20,13 @@
     intersectionRatio: number;
   }) {
     if (detail.isIntersecting && detail.intersectionRatio > 0.3) {
-      currentSection.set("advanced-vector-products"); // Update slug
+      currentSection.set("advanced-vector-operations"); // Update slug
     }
   }
 </script>
 
 <section
-  id="advanced-vector-products"
+  id="advanced-vector-operations"
   data-section={sectionNumber}
   use:intersect={{
     threshold: [0.1, 0.3, 0.5],
@@ -41,7 +41,7 @@
         data-nav-target="true"
         aria-label="Section Introduction: Advanced Vector Products"
       >
-        Section Introduction: Advanced Vector Products
+        Section Introduction: Advanced Vector Operations
       </h2>
       <p>
         Beyond basic addition, subtraction, and scaling, there are two powerful
