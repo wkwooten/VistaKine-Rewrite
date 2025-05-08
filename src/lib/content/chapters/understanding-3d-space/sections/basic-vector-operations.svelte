@@ -11,6 +11,7 @@
   import { vectorOpsQuizData } from "$lib/content/chapters/data/quizzes/vector-operations-quiz"; // TODO: Adjust quiz data if needed
   import katex from "katex"; // Import katex directly
   import EquationDisplay from "$lib/components/EquationDisplay.svelte"; // Added import
+  import VectorPrinterExercise from "$lib/components/visualization/interactions/vector-printer/VectorPrinterExercise.svelte"; // Added import
 
   // Determine the section number (Placeholder - will be set in chapter data)
   const sectionNumber = "1.3";
@@ -72,19 +73,12 @@
 
     <ContentCard blockType="concept-block">
       <h2
-        id="vector-addition-and-subtraction"
+        id="vector-addition"
         data-nav-target="true"
-        aria-label="Vector Addition and Subtraction"
+        aria-label="Vector Addition"
       >
-        Vector Addition and Subtraction
+        Vector Addition
       </h2>
-      <p>
-        These operations help us find the net effect of combining vectors or the
-        difference between two vector states.
-      </p>
-
-      <h4>Addition</h4>
-      <h5>Concept</h5>
       <p>
         Graphically, we combine vectors by placing them head-to-tail. The
         resulting vector (the "sum" or "resultant") goes from the tail of the
@@ -120,9 +114,16 @@
           an object relative to a moving observer).
         </li>
       </ul>
+    </ContentCard>
 
-      <h4>Subtraction</h4>
-      <h5>Concept</h5>
+    <ContentCard blockType="concept-block">
+      <h2
+        id="vector-subtraction"
+        data-nav-target="true"
+        aria-label="Vector Subtraction"
+      >
+        Vector Subtraction
+      </h2>
       <p>
         Subtracting a vector {@html katex.renderToString("\\vec{B}")} from {@html katex.renderToString(
           "\\vec{A}"
@@ -172,21 +173,16 @@
 
     <ContentCard
       blockType="visualization-block"
-      class="visualization-card -placeholder"
+      class="visualization-card -full-bleed"
     >
       <h2
-        id="visualizing-addition-subtraction"
+        id="visualizing-vector-operations"
         data-nav-target="true"
-        aria-label="Visualizing Addition & Subtraction"
+        aria-label="Interactive Exercise: Vector Operations"
       >
-        Visualizing Addition & Subtraction
+        Interactive Exercise: Vector Operations
       </h2>
-      <p>
-        <em
-          >(Interactive visualization demonstrating vector head-to-tail addition
-          and tail-to-tail subtraction will be added here.)</em
-        >
-      </p>
+      <VectorPrinterExercise />
     </ContentCard>
 
     <ContentCard blockType="concept-block">
@@ -258,27 +254,6 @@
       </ul>
     </ContentCard>
 
-    <ContentCard
-      blockType="visualization-block"
-      class="visualization-card -placeholder"
-    >
-      <h2
-        id="visualizing-scalar-multiplication"
-        data-nav-target="true"
-        aria-label="Visualizing Scalar Multiplication"
-      >
-        Visualizing Scalar Multiplication
-      </h2>
-      <p>
-        <em
-          >(Interactive visualization showing how scalars change vector
-          magnitude and direction will be added here.)</em
-        >
-      </p>
-    </ContentCard>
-
-    <!-- Added Section Review and Quiz -->
-
     <ContentCard blockType="activity-block" class="-review">
       <h2
         id="basic-ops-review"
@@ -311,4 +286,24 @@
 <style lang="scss">
   /* Remove styles handled by global/template */
   /* Keep styles truly specific to this section if any */
+  .visualization-card {
+    /* Ensure visualization takes space */
+    min-height: 500px; /* Adjust as needed */
+    display: flex;
+    flex-direction: column;
+
+    h2 {
+      margin-bottom: var(--space-s); // Add some space below title
+    }
+
+    &.-full-bleed {
+      // Allow vis to potentially take more width if needed by overriding ContentCard padding
+      // padding-inline: 0;
+      > :global(.vector-printer-exercise-wrapper) {
+        // Target the direct child wrapper
+        flex-grow: 1; // Allow the exercise wrapper to fill the card's height
+        min-height: 450px; // Ensure vis area itself has min height
+      }
+    }
+  }
 </style>

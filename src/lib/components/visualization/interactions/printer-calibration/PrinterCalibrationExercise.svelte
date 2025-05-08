@@ -32,14 +32,6 @@
     { id: "t6", x: 11, y: 2, z: 11 },
   ];
 
-  // --- Printer Boundaries (Could potentially move to store if shared) ---
-  const MIN_X = 0;
-  const MAX_X = 12;
-  const MIN_Y = 0;
-  const MAX_Y = 10;
-  const MIN_Z = 0;
-  const MAX_Z = 12;
-
   // --- Core Exercise State ---
   let currentStage = $state(1);
   let isCalibrationComplete = $state(false);
@@ -57,14 +49,14 @@
 
   // --- Derived State ---
   let activeTargets = $derived(
-    currentStage === 1 ? stage1Targets : stage2Targets,
+    currentStage === 1 ? stage1Targets : stage2Targets
   );
 
   // --- Event Handlers ---
   function goToStage2() {
     if (currentStage === 1) {
       console.log(
-        "[Exercise] Stage 1 Complete event received! Starting Stage 2.",
+        "[Exercise] Stage 1 Complete event received! Starting Stage 2."
       );
       currentStage = 2;
       dialogKey += 1; // Increment key on stage change
@@ -97,7 +89,7 @@
           isFullscreen = true;
         } catch (err) {
           console.error(
-            `[Exercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+            `[Exercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`
           );
           isFullscreen = false;
         }
@@ -115,7 +107,7 @@
           isFullscreen = false;
         } catch (err) {
           console.error(
-            `[Exercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
+            `[Exercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`
           );
         }
       } else {
@@ -133,7 +125,7 @@
         );
         if (isFullscreen !== browserIsFullscreen) {
           console.log(
-            `[Exercise] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`,
+            `[Exercise] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`
           );
           isFullscreen = browserIsFullscreen;
         }
@@ -144,7 +136,7 @@
       document.addEventListener("fullscreenchange", handleFullscreenChange);
       document.addEventListener(
         "webkitfullscreenchange",
-        handleFullscreenChange,
+        handleFullscreenChange
       );
       document.addEventListener("msfullscreenchange", handleFullscreenChange);
     }
@@ -153,15 +145,15 @@
       if (browser) {
         document.removeEventListener(
           "fullscreenchange",
-          handleFullscreenChange,
+          handleFullscreenChange
         );
         document.removeEventListener(
           "webkitfullscreenchange",
-          handleFullscreenChange,
+          handleFullscreenChange
         );
         document.removeEventListener(
           "msfullscreenchange",
-          handleFullscreenChange,
+          handleFullscreenChange
         );
       }
     };
@@ -285,11 +277,6 @@
     position: relative;
     order: 0; /* Ensure dialog is first in non-fullscreen */
     /* min-height might be needed depending on DialogBox */
-  }
-
-  /* Remove order from visualization-container as it's now wrapped */
-  :global(.visualization-container) {
-    /* order: 1; */
   }
 
   /* Fullscreen styles */
