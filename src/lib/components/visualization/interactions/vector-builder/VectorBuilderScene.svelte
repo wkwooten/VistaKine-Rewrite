@@ -54,7 +54,6 @@
 
   // Component Imports
   import SceneLabel from "../../helpers/SceneLabel.svelte";
-
   // ==================================
   // Threlte / Svelte Hooks
   // ==================================
@@ -423,7 +422,7 @@
   <!-- Start Coordinate Label (Always show if vector data exists) -->
   {@const labelOffsetY = 0.5}
   {@const labelFontSize = 0.5}
-  {@const startLabelText = `(${$vectorData.start.x}, ${$vectorData.start.y}, ${$vectorData.start.z})`}
+  {@const startLabelText = `Start (${$vectorData.start.x}, ${$vectorData.start.y}, ${$vectorData.start.z})`}
   <SceneLabel
     position={[
       vectorStartWorld.x,
@@ -432,10 +431,11 @@
     ]}
     text={startLabelText}
     fontSize={labelFontSize}
-    color={$startPointColor}
+    color={"#ffffff"}
     anchorX="center"
     anchorY="middle"
-    depthTest={false}
+    backgroundColor={$startPointColor}
+    padding={0.1}
   />
 
   {#if distance > 0.01}
@@ -459,7 +459,7 @@
     </T.Mesh>
 
     <!-- End Coordinate Label -->
-    {@const endLabelText = `(${$vectorData.end.x}, ${$vectorData.end.y}, ${$vectorData.end.z})`}
+    {@const endLabelText = `End (${$vectorData.end.x}, ${$vectorData.end.y}, ${$vectorData.end.z})`}
     <SceneLabel
       position={[
         vectorEndWorld.x,
@@ -468,10 +468,11 @@
       ]}
       text={endLabelText}
       fontSize={labelFontSize}
-      color={$endPointColor}
+      color={"#ffffff"}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
+      backgroundColor={$endPointColor}
+      padding={0.1}
     />
 
     <!-- Delta Component Lines (Conditional & Refactored) -->
@@ -535,9 +536,11 @@
         ]}
         text={deltaLabelXData.text}
         fontSize={deltaLabelFontSize}
-        color={$xAxisColor}
+        color={"#ffffff"}
         anchorX="center"
         anchorY="middle"
+        backgroundColor={$xAxisColor}
+        padding={0.1}
       />
     {/if}
     {#if deltaLabelYData}
@@ -549,9 +552,11 @@
         ]}
         text={deltaLabelYData.text}
         fontSize={deltaLabelFontSize}
-        color={$yAxisColor}
+        color={"#ffffff"}
         anchorX="center"
         anchorY="middle"
+        backgroundColor={$yAxisColor}
+        padding={0.1}
       />
     {/if}
     {#if deltaLabelZData}
@@ -563,9 +568,11 @@
         ]}
         text={deltaLabelZData.text}
         fontSize={deltaLabelFontSize}
-        color={$zAxisColor}
+        color={"#ffffff"}
         anchorX="center"
         anchorY="middle"
+        backgroundColor={$zAxisColor}
+        padding={0.1}
       />
     {/if}
 
@@ -589,13 +596,15 @@
       .add(vectorEndWorld)
       .multiplyScalar(0.5)}
     <SceneLabel
-      position={midpointPosVec.add(new Vector3(0, 0.4, 0))}
+      position={midpointPosVec.add(new Vector3(0, 0.4, 0)).toArray()}
       text={"Magnitude = " + $vectorData.magnitude.toFixed(2)}
-      color={$vectorColor}
+      color={"#ffffff"}
       fontSize={0.5}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
+      backgroundColor={$vectorColor}
+      padding={0.1}
+      borderRadius={0.25}
     />
   {/if}
   <!-- End of distance > 0.01 check -->

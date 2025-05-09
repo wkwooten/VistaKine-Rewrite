@@ -176,6 +176,7 @@
 <style lang="scss">
   .vector-output-panel {
     display: flex;
+    width: 250px;
     flex-direction: column;
     gap: 0; // Remove gap, manage spacing internally
     padding: 0; // Remove padding, manage internally

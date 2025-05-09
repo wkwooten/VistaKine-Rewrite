@@ -15,7 +15,7 @@ export const gridCellColor = writable<string>('#ADD8E6');
 export const gridSectionColor = writable<string>('#64B5F6');
 
 // --- Vector Builder Specific Colors ---
-export const vectorColor = writable<string>('#ff00ff');
+export const vectorColor = writable<string>('#d32f2f');
 export const startPointColor = writable<string>('#FFA500');
 export const endPointColor = writable<string>('#1E90FF');
 
