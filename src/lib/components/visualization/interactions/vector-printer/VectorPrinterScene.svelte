@@ -87,7 +87,7 @@
   });
 
   // Default axis lengths, can be made props later
-  const axisLength = 10;
+  const axisLength = 12;
 </script>
 
 <T.PerspectiveCamera makeDefault position={[0, 30, 5]}>

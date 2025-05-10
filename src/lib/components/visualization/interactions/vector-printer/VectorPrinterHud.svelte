@@ -1,59 +1,62 @@
 <script lang="ts">
+  import FullscreenButton from "./../../elements/ui/FullscreenButton.svelte";
+  import ResetButton from "../../elements/ui/ResetButton.svelte";
   import type { Vector3 } from "three";
   // Import specific color stores if needed by HUD text, or rely on CSS variables set by themeColors
   // For now, assuming HUD text color is primarily handled by CSS variables or defaults.
   import katex from "katex";
+  import AddButton from "$lib/components/visualization/elements/ui/AddButton.svelte";
 
   let {
     nozzlePosition,
-    currentVectorA,
-    currentVectorB,
-    resultantVector, // Example for vector addition display
+    currentVectorA, // This will be currentDefiningVector from the parent
     dialogMessage,
     dialogSpeaker,
   } = $props<{
     nozzlePosition: Vector3;
-    currentVectorA?: Vector3; // For displaying components of A
-    currentVectorB?: Vector3; // For displaying components of B
-    resultantVector?: Vector3; // Example: A + B
+    currentVectorA?: Vector3; // Represents the vector currently being defined/inputted
     dialogMessage?: string;
     dialogSpeaker?: string;
   }>();
 
-  const formatVector = (v: Vector3 | undefined) => {
-    if (!v) return "⟨?, ?, ?⟩";
+  const formatVector = (v: Vector3 | undefined, defaultText = "⟨0,0,0⟩") => {
+    if (!v || v.lengthSq() === 0) return defaultText; // Show 0,0,0 for zero vectors or undefined
+    return `⟨${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}⟩`;
+  };
+
+  const formatDeltaVector = (v: Vector3 | undefined) => {
+    if (!v || v.lengthSq() === 0) return "⟨0,0,0⟩"; // Show 0,0,0 if not being defined
     return `⟨${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}⟩`;
   };
 </script>
 
 <div class="vector-printer-hud-overlay">
-  <div class="hud-panel top-left">
+  <div class="hud-panel bottom-right">
     <div class="hud-item">
       <span class="label">Nozzle Position:</span>
       <span class="value">{formatVector(nozzlePosition)}</span>
     </div>
     {#if currentVectorA}
+      <!-- Only show if a vector is being defined (non-zero) -->
       <div class="hud-item">
+        <!-- Label changed to reflect it's the components being input -->
         <span class="label">{@html katex.renderToString("\\vec{A}")} =</span>
-        <span class="value">{formatVector(currentVectorA)}</span>
-      </div>
-    {/if}
-    {#if currentVectorB}
-      <div class="hud-item">
-        <span class="label">{@html katex.renderToString("\\vec{B}")} =</span>
-        <span class="value">{formatVector(currentVectorB)}</span>
-      </div>
-    {/if}
-    {#if currentVectorA && currentVectorB && resultantVector}
-      <div class="hud-item resultant">
-        <span class="label"
-          >{@html katex.renderToString("\\vec{A} + \\vec{B}")} =</span
-        >
-        <span class="value bold">{formatVector(resultantVector)}</span>
+        <span class="value">{formatDeltaVector(currentVectorA)}</span>
       </div>
     {/if}
   </div>
 
+  <div class="hud-items">
+    <div class="reset-button">
+      <ResetButton />
+    </div>
+    <div class="add-vector-button">
+      <AddButton />
+    </div>
+    <div class="fullscreen-button">
+      <FullscreenButton />
+    </div>
+  </div>
   <!-- Future placeholder for dialog elements if not using DialogBox component directly in HUD -->
   <!-- {#if dialogMessage && dialogSpeaker}
 		<div class="hud-panel bottom-center dialog-preview">
@@ -93,12 +96,6 @@
     pointer-events: auto; /* Panels themselves can be interacted with if needed */
     box-shadow: var(--shadow-sm);
     max-width: 300px;
-  }
-
-  .top-left {
-    position: absolute;
-    top: var(--space-s);
-    left: var(--space-s);
   }
 
   .hud-item {

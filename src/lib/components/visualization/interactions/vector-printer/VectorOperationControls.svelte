@@ -4,16 +4,12 @@
   import katex from "katex";
 
   let {
-    vectorA = $bindable(new Vector3(1, 0, 0)),
-    vectorB = $bindable(new Vector3(0, 1, 0)),
-    onDefineVectorA,
-    onDefineVectorB,
+    vectorToDefine = $bindable(new Vector3(0, 0, 0)),
+    onPrintVector,
     onReset,
   } = $props<{
-    vectorA?: Vector3;
-    vectorB?: Vector3;
-    onDefineVectorA?: () => void;
-    onDefineVectorB?: () => void;
+    vectorToDefine?: Vector3;
+    onPrintVector?: () => void;
     onReset?: () => void;
   }>();
 
@@ -35,94 +31,49 @@
 
 <div class="vector-operation-controls">
   <fieldset class="vector-definition-fieldset">
-    <legend>{@html katex.renderToString("\\vec{A}")} Components</legend>
+    <legend>Define Next Vector Components</legend>
     <div class="input-row">
       <label class="input-label">
-        X:
+        {@html katex.renderToString("\\Delta X")}:
         <input
           type="number"
-          value={vectorA.x}
-          oninput={(e) => updateVectorComponent(vectorA, "x", e)}
+          value={vectorToDefine.x}
+          oninput={(e) => updateVectorComponent(vectorToDefine, "x", e)}
           step="0.1"
           class="coord-input"
         />
       </label>
       <label class="input-label">
-        Y:
+        {@html katex.renderToString("\\Delta Y")}:
         <input
           type="number"
-          value={vectorA.y}
-          oninput={(e) => updateVectorComponent(vectorA, "y", e)}
+          value={vectorToDefine.y}
+          oninput={(e) => updateVectorComponent(vectorToDefine, "y", e)}
           step="0.1"
           class="coord-input"
         />
       </label>
       <label class="input-label">
-        Z:
+        {@html katex.renderToString("\\Delta Z")}:
         <input
           type="number"
-          value={vectorA.z}
-          oninput={(e) => updateVectorComponent(vectorA, "z", e)}
+          value={vectorToDefine.z}
+          oninput={(e) => updateVectorComponent(vectorToDefine, "z", e)}
           step="0.1"
           class="coord-input"
         />
       </label>
     </div>
-    {#if onDefineVectorA}
-      <Button onclick={onDefineVectorA} variant="primary" fullWidth>
-        Define & Print {@html katex.renderToString("\\vec{A}")}
+    {#if onPrintVector}
+      <Button onclick={onPrintVector} variant="primary" fullWidth>
+        Print Current Vector
       </Button>
     {/if}
   </fieldset>
 
-  <fieldset class="vector-definition-fieldset">
-    <legend>{@html katex.renderToString("\\vec{B}")} Components</legend>
-    <div class="input-row">
-      <label class="input-label">
-        X:
-        <input
-          type="number"
-          value={vectorB.x}
-          oninput={(e) => updateVectorComponent(vectorB, "x", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
-      <label class="input-label">
-        Y:
-        <input
-          type="number"
-          value={vectorB.y}
-          oninput={(e) => updateVectorComponent(vectorB, "y", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
-      <label class="input-label">
-        Z:
-        <input
-          type="number"
-          value={vectorB.z}
-          oninput={(e) => updateVectorComponent(vectorB, "z", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
-    </div>
-    {#if onDefineVectorB}
-      <Button onclick={onDefineVectorB} variant="secondary" fullWidth>
-        Define & Print {@html katex.renderToString("\\vec{B}")}
-      </Button>
-    {/if}
-  </fieldset>
-
-  <!-- Placeholders for future operations -->
-  <!--
-	<fieldset>
-		<legend>Scalar Multiplication</legend>
-		...
-	</fieldset>
-	 -->
+  {#if onReset}
+    <Button onclick={onReset} variant="danger" fullWidth>Reset Exercise</Button>
+  {/if}
 </div>
 
 <style lang="scss">
