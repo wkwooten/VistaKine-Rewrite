@@ -30,7 +30,7 @@
 
   // --- Scene Setup ---
   const axesSize = 5;
-  const labelFontSize = 0.5;
+  const labelFontSize = 0.6;
   const originLabelFontSize = 0.8;
 
   const originGeometry = new SphereGeometry(0.1, 16, 16);
@@ -42,7 +42,7 @@
   const zLabelPos = new Vector3(0, 0, axesSize + labelOffset);
 
   // New, more offset position for the Origin label
-  const originLabelConnectorEndPos = new Vector3(0.5, 0.5, 0.5); // Moved Y higher
+  const originLabelConnectorEndPos = new Vector3(0.5, -2, 0.5); // Moved Y higher
 
   // Define constants for ArrowHelper directions and origin
   const originVec = new Vector3(0, 0, 0);
@@ -138,7 +138,6 @@
       color={$xAxisColorStore}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
     <SceneLabel
       text="Y axis"
@@ -147,7 +146,6 @@
       color={$yAxisColorStore}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
     <SceneLabel
       text="Z axis"
@@ -156,7 +154,6 @@
       color={$zAxisColorStore}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
     <SceneLabel
       text="Origin (0,0,0)"
@@ -164,7 +161,6 @@
       fontSize={originLabelFontSize}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
   </Canvas>
 </div>

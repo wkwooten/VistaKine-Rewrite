@@ -391,9 +391,9 @@
     ]}
     text={isHit ? coordinateText : target.id}
     fontSize={labelFontSize}
-    color={labelColor}
+    color={"white"}
+    backgroundColor={labelColor}
     anchorX="center"
     anchorY="middle"
-    depthTest={false}
   />
 {/each}

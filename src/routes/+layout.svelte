@@ -357,7 +357,7 @@
   }
 
   /* Keep .u-container styles - This will now wrap all children */
-  .u-container {
+  /* .u-container {
     min-height: 1px;
     // margin-inline: 0; // Let the flex container handle centering/positioning
     width: 100%; // Ensure it takes available width
@@ -366,7 +366,7 @@
     @media (max-width: variables.$breakpoint-lg) {
       padding: var(--space-s);
     }
-  }
+  } */
 
   // REMOVE styles for the specific section+map wrapper
   /* .main-content-and-map-wrapper { ... } */

@@ -37,9 +37,7 @@
         <!-- Actions Section -->
         <div class="hero-actions">
           <!-- Add the SearchBar component here -->
-          <SearchBar
-            placeholder="Search topics like 'vectors', 'kinematics', 'forces'..."
-          />
+          <SearchBar />
 
           <div class="hero-buttons">
             <a
@@ -106,6 +104,7 @@
   .hero-container {
     max-width: var(--max-content-width);
     margin-inline: auto;
+    padding: 0;
   }
 
   .hero {
@@ -116,12 +115,13 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    padding: var(--space-xl) var(--space-m); // Changed from var(--space-xl) var(--space-m)
+
+    @media (max-width: 768px) {
+    }
   }
 
   .hero-content-card {
     background-color: var(--color-background);
-    border: 2px solid var(--color-border-light);
     padding: var(--space-xl) var(--space-m); // Increased bottom padding to 60px
     margin-top: 0;
     max-width: 720px;

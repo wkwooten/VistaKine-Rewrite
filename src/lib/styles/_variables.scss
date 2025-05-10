@@ -129,6 +129,11 @@ $calibration-bed-edges-color-light: #ADD8E6;
 $calibration-target-pending-color-light: #FFA500; // orange
 $calibration-target-hit-color-light: #32CD32;   // limegreen
 
+// --- Vector Builder Colors (Light) ---
+$vector-color: #8f2fd3;
+$vector-builder-start-color-light: $color-accent;
+$vector-builder-end-color-light: $color-accent-hover;
+
 // ----------------------------------
 // Character Colors
 // ----------------------------------
@@ -382,6 +387,11 @@ $leo-color-light: #1E40AF;  // Blue 800
   --calibration-target-pending-color: #{$calibration-target-pending-color-light};
   --calibration-target-hit-color: #{$calibration-target-hit-color-light};
 
+  // Vector Builder Colors (Light)
+  --vector-builder-start-color: #{$vector-builder-start-color-light};
+  --vector-builder-end-color: #{$vector-builder-end-color-light};
+  --vector-color: #{$vector-color};
+
   // Character Colors (Light)
   --surya-color: #{$surya-color-light};
   --leo-color: #{$leo-color-light};
@@ -446,6 +456,10 @@ $calibration-bed-edges-color-dark: $color-dark-border-light;  // rgba(dark-text,
 $calibration-target-pending-color-dark: #FFD700; // gold (stands out on dark)
 $calibration-target-hit-color-dark: #50C878;    // emerald (brighter green)
 
+// --- Vector Builder Colors (Dark) ---
+$vector-builder-start-color-dark: $color-dark-accent;
+$vector-builder-end-color-dark: $color-dark-accent-hover;
+
 // ----------------------------------
 // Character Colors (Dark)
 // ----------------------------------
@@ -474,6 +488,10 @@ $leo-color-dark: #93C5FD;  // Blue 300
   --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
   --calibration-target-pending-color: #{$calibration-target-pending-color-light};
   --calibration-target-hit-color: #{$calibration-target-hit-color-light};
+
+  // Vector Builder Colors (Light)
+  --vector-builder-start-color: #{$vector-builder-start-color-light};
+  --vector-builder-end-color: #{$vector-builder-end-color-light};
 
   // Character Colors (Light)
   --surya-color: #{$surya-color-light};
@@ -552,6 +570,10 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --calibration-bed-edges-color: #{$calibration-bed-edges-color-dark};
     --calibration-target-pending-color: #{$calibration-target-pending-color-dark};
     --calibration-target-hit-color: #{$calibration-target-hit-color-dark};
+
+    // Vector Builder Colors (Dark)
+    --vector-builder-start-color: #{$vector-builder-start-color-dark};
+    --vector-builder-end-color: #{$vector-builder-end-color-dark};
 
     // Character Colors (Dark)
     --surya-color: #{$surya-color-dark};

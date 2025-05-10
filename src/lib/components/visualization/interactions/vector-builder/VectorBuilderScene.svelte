@@ -315,8 +315,9 @@
   />
 </T.PerspectiveCamera>
 
+<!-- TODO: Add Toggle for Grid Component -->
 <!-- Use Grid Component Directly -->
-<Grid
+<!-- <Grid
   cellColor={$gridCellColor}
   sectionColor={$gridSectionColor}
   sectionSize={1}
@@ -343,7 +344,7 @@
   infiniteGrid={false}
   fadeDistance={100}
   fadeStrength={1}
-/>
+/> -->
 
 <!-- Origin Marker -->
 <T.Mesh position={[0, 0, 0]}>
