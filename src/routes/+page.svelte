@@ -114,7 +114,6 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
 
     @media (max-width: 768px) {
     }

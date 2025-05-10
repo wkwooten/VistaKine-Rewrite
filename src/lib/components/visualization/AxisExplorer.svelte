@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RendererSetup from "./helpers/RendererSetup.svelte";
   import { T, Canvas } from "@threlte/core";
   import { OrbitControls } from "@threlte/extras";
   import {
@@ -57,6 +58,7 @@
 
 <div class="axis-explorer-wrapper">
   <Canvas>
+    <RendererSetup />
     <T.PerspectiveCamera
       makeDefault
       position={[axesSize * 1.5, axesSize * 1.5, axesSize * 1.5]}
