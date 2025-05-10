@@ -316,7 +316,7 @@
     display: flex;
     align-items: center;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-s);
+    border-radius: var(--radius-sm);
     background-color: var(--color-surface);
     margin-block: var(--space-2xs);
     transition:

@@ -7,9 +7,14 @@
   import type { SearchableItem } from "$lib/searchLogic";
   import { getSearchableData, filterSearchableData } from "$lib/searchLogic";
 
+  interface TopicPromptLink {
+    text: string;
+    href: string;
+  }
+
   let query = $state("");
-  let currentTopicPrompt = $state("VistaKine..."); // Will hold only the topic, e.g., "Vectors"
-  let searchPrompts = $state<string[]>([]); // Will store only topic words
+  let topicPromptLinks = $state<TopicPromptLink[]>([]); // Will store objects with text and href
+  let currentTopicPromptLink = $state<TopicPromptLink | null>(null);
   let promptIndex = $state(0);
   let isInputFocused = $state(false);
 
@@ -30,124 +35,156 @@
   // --- End Filtered Results ---
 
   // Log critical states for debugging - MOVED HERE
-  $inspect(showDropdown, query, filteredResults, isInputFocused);
+  $inspect(
+    showDropdown,
+    query,
+    filteredResults,
+    isInputFocused,
+    currentTopicPromptLink
+  );
 
   function preparePrompts() {
-    const topics: string[] = [];
+    const generatedTopics: TopicPromptLink[] = [];
     const blacklist = [
       "basic",
       "advanced",
       "understanding",
       "introduction",
-      "and",
       "the",
       "of",
       "in",
       "to",
       "a",
-      "&",
-    ]; // Words to be wary of as primary prompts
+    ];
 
     chapters.forEach((chapter) => {
       chapter.sections.forEach((section) => {
         if (section.title) {
+          let promptText = "";
           let titleParts = section.title
             .toLowerCase()
-            .split(/\s+|\-/)
-            .filter((word) => word.length > 2 && !blacklist.includes(word));
-          let prompt = "";
+            .split(/[\s-]+/)
+            .filter(
+              (word) =>
+                (word.length > 2 || word === "&") && !blacklist.includes(word)
+            );
 
           if (titleParts.length > 0) {
             if (titleParts.length === 1) {
-              prompt = titleParts[0];
+              promptText = titleParts[0];
             } else if (titleParts.length >= 2) {
-              // Prefer two-word combinations if they are descriptive
-              prompt = titleParts.slice(0, 2).join(" ");
-              // If first word is short, try second and third or just second if longer
-              if (titleParts[0].length < 4 && titleParts.length > 2) {
-                prompt = titleParts.slice(1, 3).join(" ");
-              } else if (titleParts[0].length < 4 && titleParts[1]) {
-                prompt = titleParts[1];
+              const word1 = titleParts[0];
+              const word2 = titleParts[1];
+              const word3 = titleParts.length > 2 ? titleParts[2] : null;
+
+              if (word2 === "and" && word3) {
+                promptText = `${word1} & ${word3}`;
+              } else if (word2 === "&" && word3) {
+                promptText = `${word1} & ${word3}`;
+              } else {
+                promptText = `${word1} ${word2}`;
               }
             }
           }
 
-          // Capitalize first letter of each word in the prompt
-          if (prompt) {
-            prompt = prompt
+          // Capitalize first letter of each word in the prompt, leave '&' as is
+          if (promptText) {
+            promptText = promptText
               .split(" ")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .map((word) =>
+                word === "&"
+                  ? "&"
+                  : word.charAt(0).toUpperCase() + word.slice(1)
+              )
               .join(" ");
           }
 
-          // Add to topics if it's a meaningful prompt
-          if (prompt && prompt.length > 3 && prompt.length < 25) {
-            topics.push(prompt);
+          if (promptText && promptText.length > 3 && promptText.length < 30) {
+            generatedTopics.push({
+              text: promptText,
+              href: `/chapter/${chapter.slug}/${section.slug}`,
+            });
           } else {
-            // Fallback: use a significant word from the slug if title processing failed
             const slugParts = section.slug
               .split("-")
-              .filter((p) => p.length > 3 && !blacklist.includes(p));
+              .filter(
+                (p) => (p.length > 2 || p === "&") && !blacklist.includes(p)
+              );
             if (slugParts.length > 0) {
-              let slugPrompt = slugParts[0];
+              let slugPromptText = slugParts[0];
               if (
                 slugParts.length > 1 &&
                 slugParts[0].length < 5 &&
                 slugParts[1]
-              )
-                slugPrompt = slugParts.slice(0, 2).join(" ");
-              else if (
+              ) {
+                slugPromptText = slugParts.slice(0, 2).join(" ");
+                if (slugParts[1] === "&" && slugParts.length > 2) {
+                  slugPromptText = slugParts.slice(0, 3).join(" ");
+                }
+              } else if (
                 slugParts.length > 1 &&
                 slugParts[1] &&
                 slugParts[1].length > slugParts[0].length
-              )
-                slugPrompt = slugParts[1];
-
-              topics.push(
-                slugPrompt.charAt(0).toUpperCase() + slugPrompt.slice(1)
-              );
+              ) {
+                slugPromptText = slugParts[1];
+              }
+              generatedTopics.push({
+                text: slugPromptText
+                  .split(" ")
+                  .map((word) =>
+                    word === "&"
+                      ? "&"
+                      : word.charAt(0).toUpperCase() + word.slice(1)
+                  )
+                  .join(" "),
+                href: `/chapter/${chapter.slug}/${section.slug}`,
+              });
             }
           }
         }
       });
     });
 
-    let uniqueTopics = [...new Set(topics.filter((t) => t && t.trim() !== ""))];
+    let uniqueGeneratedTopics = generatedTopics.filter(
+      (topic, index, self) =>
+        index ===
+          self.findIndex(
+            (t) => t.text === topic.text && t.href === topic.href
+          ) &&
+        topic.text &&
+        topic.text.trim() !== ""
+    );
 
-    if (uniqueTopics.length === 0) {
-      // Default fallback prompts if no suitable ones are generated
-      uniqueTopics = [
-        "Vectors",
-        "Motion",
-        "Physics",
-        "Forces",
-        "Energy",
-        "Kinematics",
-        "Dynamics",
+    if (uniqueGeneratedTopics.length === 0) {
+      uniqueGeneratedTopics = [
+        { text: "Vectors", href: "/search?q=Vectors" },
+        { text: "Motion", href: "/search?q=Motion" },
+        { text: "Physics", href: "/search?q=Physics" },
+        { text: "Forces", href: "/search?q=Forces" },
+        { text: "Energy", href: "/search?q=Energy" },
+        { text: "Kinematics", href: "/search?q=Kinematics" },
+        { text: "Dynamics", href: "/search?q=Dynamics" },
       ];
     }
 
-    // Store only topic words, shuffle them
-    searchPrompts = uniqueTopics
-      .map((p) => p.trim())
-      .sort(() => 0.5 - Math.random());
+    topicPromptLinks = uniqueGeneratedTopics.sort(() => 0.5 - Math.random());
 
-    if (searchPrompts.length > 0) {
-      currentTopicPrompt = searchPrompts[0];
+    if (topicPromptLinks.length > 0) {
+      currentTopicPromptLink = topicPromptLinks[0];
     } else {
-      currentTopicPrompt = "Topics..."; // Fallback if no prompts generated
+      currentTopicPromptLink = { text: "Topics...", href: "/search?q=Topics" };
     }
   }
 
   preparePrompts();
 
   $effect(() => {
-    if (searchPrompts.length === 0) return;
+    if (topicPromptLinks.length === 0) return;
 
     const intervalId = setInterval(() => {
-      promptIndex = (promptIndex + 1) % searchPrompts.length;
-      currentTopicPrompt = searchPrompts[promptIndex]; // Update only the topic part
-    }, 4500); // Cycle every 4.5 seconds
+      promptIndex = (promptIndex + 1) % topicPromptLinks.length;
+      currentTopicPromptLink = topicPromptLinks[promptIndex];
+    }, 4500);
 
     return () => {
       clearInterval(intervalId);
@@ -187,14 +224,24 @@
   // --- End effects for dropdown ---
 
   function handleSearch() {
-    // If an item is selected in dropdown, navigate to it. Otherwise, perform general search.
+    // If an item is selected in dropdown, navigate to it.
     if (activeIndex > -1 && filteredResults[activeIndex]) {
       handleResultClick(filteredResults[activeIndex]);
     } else if (query.trim()) {
+      // If user has typed a query, use that.
       goto(`/search?q=${encodeURIComponent(query.trim())}`);
-      showDropdown = false; // Hide dropdown after search
+      showDropdown = false;
+      inputElement?.blur();
+    } else if (topicPromptLinks.length > 0 && currentTopicPromptLink?.href) {
+      // If input is empty, and there's a current animated topic with a valid href.
+      // We also check if the href is a direct link or a search link for generic fallbacks.
+      // The generic fallbacks like "Vectors" were given hrefs like "/search?q=Vectors".
+      // Specific section prompts have hrefs like "/chapter/slug/section-slug".
+      goto(currentTopicPromptLink.href);
+      showDropdown = false;
       inputElement?.blur();
     }
+    // If query is empty and no valid topic prompt link, do nothing or optionally focus input.
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -276,13 +323,13 @@
 <div class="search-bar-container">
   <div class="placeholder-container" class:hidden={query || isInputFocused}>
     <span class="static-placeholder-prefix">Search&nbsp;</span>
-    {#key currentTopicPrompt}
+    {#key currentTopicPromptLink?.text}
       <span
         class="animated-placeholder"
         in:fly|local={{ y: 20, duration: 500, delay: 500, easing: quintOut }}
         out:fly|local={{ y: -20, duration: 500, easing: quintIn }}
       >
-        {currentTopicPrompt}
+        {currentTopicPromptLink?.text ?? "Topics..."}
       </span>
     {/key}
   </div>
@@ -509,7 +556,7 @@
       --color-background
     ); // Use background color, not surface
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-m); // Slightly larger radius than NavSearch
+    border-radius: var(--radius-sm); // Slightly larger radius than NavSearch
     list-style: none;
     margin: 0;
     padding: var(--space-3xs); // Add some padding around items

@@ -253,3 +253,14 @@ This section highlights some of the core reusable or structural components withi
 - **`chapter-styles.scss`:** Contains _minimal_ base styles shared across most chapter/section contexts (e.g., `.readable-content` definition, maybe base link styles).
 - **Theme Application:** Chapter theme colors (`--chapter-color-X`, etc.) are typically applied at a higher level (e.g., in the `[slug]/[section]/+page.svelte` or a layout component wrapping sections) using inline `style` attributes or by adding a theme class (e.g., `class="chapter-theme-1"`) to a container element. Components within the chapter should then inherit or use these variables.
 - **Consistency:** Aim for consistent application of spacing (`--component-space`, `--section-space`), card styling, and typography across different chapter components.
+
+### Section Naming and Content Generation
+
+When creating new sections or programmatic content derived from section titles/slugs (e.g., for navigation, search prompts):
+
+- **Clarity and Conciseness:** Section titles should be clear, concise, and accurately reflect the content within.
+- **Keywords:** Favor descriptive keywords that are likely search terms.
+- **Avoid Generic Terms:** When generating shorter prompts or display names from titles (e.g., for animated placeholders or compact navigation links), try to filter out generic words like "basic," "advanced," "introduction," "the," "of," "in," "to," "a" to keep prompts focused and meaningful.
+- **Capitalization:** Maintain consistent capitalization. For generated prompts, title case (capitalizing the first letter of each significant word) is often preferred. Handle special characters like "&" appropriately.
+- **Length:** Keep generated prompts or short names to a manageable length (e.g., 1-3 meaningful words) for UI elements where space is limited.
+- **Relevance:** Ensure that any generated links or navigation aids derived from section names point to the correct and relevant content. Fallback mechanisms (e.g., linking to a broader search page if a direct link cannot be formed) can be useful.
