@@ -28,7 +28,7 @@ export const targetLabelHitColor = writable<string>('#32CD32'); // Darker Green
 // --- General UI/Label Colors ---
 export const labelColor = writable<string>('#cccccc'); // Default fallback
 export const originColor = writable<string>('#cccccc'); // Default fallback
-
+export const surfaceColor = writable<string>('#cccccc'); // Default fallback
 /**
  * Fetches color values from CSS custom properties and updates the stores.
  * Should be called once client-side, e.g., in the root layout.
@@ -53,6 +53,8 @@ export function updateThemeColors() {
 		updateColorStore(xAxisColor, '--axis-color-x');
 		updateColorStore(yAxisColor, '--axis-color-y');
 		updateColorStore(zAxisColor, '--axis-color-z');
+		updateColorStore(labelColor, '--color-text-primary');
+		updateColorStore(surfaceColor, '--color-surface');
 		updateColorStore(nozzleColor, '--calibration-nozzle-color');
 		updateColorStore(nozzleEdgesColor, '--calibration-nozzle-edges-color');
 		updateColorStore(heightIndicatorColor, '--calibration-height-indicator-color');

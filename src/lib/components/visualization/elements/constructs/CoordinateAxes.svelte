@@ -24,8 +24,9 @@
     numberYOffset = 0.5,
     numberOutwardOffset = 0.8,
     yNumberOffset = 0.4, // Offset for Y numbers
-    labelOffset = 0.5, // Offset for X, Y, Z labels
+    labelOffset = 1, // Offset for X, Y, Z labels
     labelYPos = 0.1, // Y Position for X, Z labels
+    axisLabelFontSize = 0.5,
     labelFontSize = 0.8,
     labelFontSizeGridNum = 0.6,
   } = $props<{
@@ -193,28 +194,31 @@
   <SceneLabel
     position={[axisLengthX + labelOffset, labelYPos, 0]}
     text="+X"
-    fontSize={labelFontSize}
-    color={xAxisColor}
+    fontSize={axisLabelFontSize}
+    color={"white"}
+    backgroundColor={xAxisColor}
     anchorX="center"
     anchorY="middle"
-    depthTest={false}
+    padding={0.2}
   />
   <SceneLabel
     position={[0, axisLengthY + labelOffset, 0]}
     text="+Y"
-    fontSize={labelFontSize}
-    color={yAxisColor}
+    fontSize={axisLabelFontSize}
+    color={"white"}
+    backgroundColor={yAxisColor}
     anchorX="center"
     anchorY="middle"
-    depthTest={false}
+    padding={0.2}
   />
   <SceneLabel
     position={[0, labelYPos, axisLengthZ + labelOffset]}
     text="+Z"
-    fontSize={labelFontSize}
-    color={zAxisColor}
+    fontSize={axisLabelFontSize}
+    color={"white"}
     anchorX="center"
     anchorY="middle"
-    depthTest={false}
+    padding={0.2}
+    backgroundColor={zAxisColor}
   />
 </T.Group>

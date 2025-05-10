@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RendererSetup from "./../../helpers/RendererSetup.svelte";
   import { T, Canvas } from "@threlte/core";
   import {
     OrbitControls,
@@ -26,6 +27,7 @@
   import {
     vectorColor as vectorColorStore,
     labelColor as labelColorStore,
+    surfaceColor as surfaceColorStore,
     xAxisColor as xAxisColorStore,
     yAxisColor as yAxisColorStore,
     zAxisColor as zAxisColorStore,
@@ -66,6 +68,9 @@
   const arcPointsCount = 20; // Number of points for arc smoothness
   const arcLineWidth = 0.03;
 
+  // --- New Padding Constant ---
+  const anatomyLabelPadding = 0.5;
+
   // --- Helper Function to Generate Arc Points --- //
   function generateArcPoints(
     startDir: Vector3,
@@ -73,7 +78,7 @@
     angleRad: number,
     radius: number,
     numPoints: number
-    ): Vector3[] {
+  ): Vector3[] {
     const points: Vector3[] = [];
     // Axis of rotation: cross product of start and end directions
     const rotationAxis = new Vector3()
@@ -133,17 +138,16 @@
   );
 
   // --- Calculated Positions (Static) --- //
-  const tailLabelPos = origin
-    .clone()
-    .add(new Vector3(-labelOffset, -labelOffset, -labelOffset));
-  const headLabelPos = endPoint
-    .clone()
-    .add(new Vector3(labelOffset, labelOffset, labelOffset));
+  const tailLabelPos = origin.clone().add(new Vector3(0, -labelOffset, 0));
+  const headLabelPos = endPoint.clone().add(new Vector3(0, 0, labelOffset));
   const midPoint = origin.clone().lerp(endPoint, 0.5);
   const magnitudeLabelPos = midPoint
     .clone()
     .add(new Vector3(0, labelOffset * 1.5, 0));
-  const xCompLabelPos = origin.clone().lerp(intermediateX, 0.5);
+  const xCompLabelPos = origin
+    .clone()
+    .lerp(intermediateX, 0.5)
+    .sub(new Vector3(0, labelOffset, 0));
   const yCompLabelPos = intermediateX.clone().lerp(intermediateXY, 0.5);
   const zCompLabelPos = intermediateXY.clone().lerp(endPoint, 0.5);
 
@@ -283,6 +287,7 @@
 
 <div class="vector-anatomy-wrapper" bind:this={wrapperElement}>
   <Canvas>
+    <RendererSetup />
     <T.PerspectiveCamera makeDefault position={[2, 20, 8]} fov={50}>
       <OrbitControls
         enableZoom={true}
@@ -326,9 +331,9 @@
     <SceneLabel
       position={[axisIndicatorLength + axisLabelOffset, 0, 0]}
       text="X+"
-      anchorY="top"
       fontSize={axisLabelFontSize}
       color={$xAxisColorStore}
+      backgroundColor={null}
     />
 
     <!-- Y Axis Indicator -->
@@ -340,6 +345,7 @@
       text="Y+"
       fontSize={axisLabelFontSize}
       color={$yAxisColorStore}
+      backgroundColor={null}
     />
 
     <!-- Z Axis Indicator -->
@@ -355,6 +361,7 @@
       text="Z+"
       fontSize={axisLabelFontSize}
       color={$zAxisColorStore}
+      backgroundColor={null}
     />
 
     <!-- Component Lines (Render Line2 instances) -->
@@ -415,27 +422,33 @@
       text="Tail (Start)"
       fontSize={labelFontSize}
       color={$labelColorStore}
+      backgroundColor={$surfaceColorStore}
       anchorX="center"
-      anchorY="top"
-      depthTest={false}
+      anchorY="middle"
+      depthTest={true}
+      padding={anatomyLabelPadding}
     />
     <SceneLabel
       position={headLabelPos}
       text="Head (End)"
       fontSize={labelFontSize}
       color={$labelColorStore}
+      backgroundColor={$surfaceColorStore}
       anchorX="center"
-      anchorY="bottom"
-      depthTest={false}
+      anchorY="middle"
+      depthTest={true}
+      padding={anatomyLabelPadding}
     />
     <SceneLabel
       position={magnitudeLabelPos}
       text={`Magnitude`}
       fontSize={labelFontSize}
       color={$labelColorStore}
+      backgroundColor={$surfaceColorStore}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
+      depthTest={true}
+      padding={anatomyLabelPadding}
     />
 
     <!-- Component Labels -->
@@ -445,9 +458,10 @@
         text={`X Component`}
         fontSize={labelFontSize * 0.9}
         color={$xAxisColorStore}
+        backgroundColor={$surfaceColorStore}
         anchorX="center"
-        anchorY="bottom"
-        depthTest={false}
+        anchorY="middle"
+        padding={anatomyLabelPadding}
       />
     {/if}
     {#if Math.abs(components.y) > 0.01}
@@ -456,9 +470,10 @@
         text={`Y Component`}
         fontSize={labelFontSize * 0.9}
         color={$yAxisColorStore}
-        anchorX="left"
+        backgroundColor={$surfaceColorStore}
+        anchorX="center"
         anchorY="middle"
-        depthTest={false}
+        padding={anatomyLabelPadding}
       />
     {/if}
     {#if Math.abs(components.z) > 0.01}
@@ -467,9 +482,10 @@
         text={`Z Component`}
         fontSize={labelFontSize * 0.9}
         color={$zAxisColorStore}
+        backgroundColor={$surfaceColorStore}
         anchorX="center"
-        anchorY="bottom"
-        depthTest={false}
+        anchorY="middle"
+        padding={anatomyLabelPadding}
       />
     {/if}
 
@@ -479,27 +495,27 @@
       text="α"
       fontSize={angleLabelFontSize}
       color={$xAxisColorStore}
+      backgroundColor={null}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
     <SceneLabel
       position={betaLabelPos}
       text="β"
       fontSize={angleLabelFontSize}
       color={$yAxisColorStore}
+      backgroundColor={null}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
     <SceneLabel
       position={gammaLabelPos}
       text="γ"
       fontSize={angleLabelFontSize}
       color={$zAxisColorStore}
+      backgroundColor={null}
       anchorX="center"
       anchorY="middle"
-      depthTest={false}
     />
   </Canvas>
 </div>

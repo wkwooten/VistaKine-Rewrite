@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error as svelteKitError } from '@sveltejs/kit';
 import { getChapterBySlug } from '$lib/data/chapters';
 import type { PageLoad } from './$types';
 
@@ -34,7 +34,7 @@ export const load: PageLoad = async ({ params }) => {
   // If chapter not found, throw 404 error
   if (!chapterData) {
     console.error(`Chapter not found: ${slug}`);
-    throw error(404, 'Chapter not found');
+    throw svelteKitError(404, 'Chapter not found');
   }
 
   // Find the current section index and data
@@ -43,7 +43,7 @@ export const load: PageLoad = async ({ params }) => {
   // If section not found in the array, throw 404 error
   if (currentSectionIndex === -1) {
     console.error(`Section slug not found in chapter data: ${section} in chapter ${slug}`);
-    throw error(404, 'Section not found');
+    throw svelteKitError(404, 'Section not found');
   }
 
   const sectionData = chapterData.sections[currentSectionIndex];
@@ -82,7 +82,7 @@ export const load: PageLoad = async ({ params }) => {
 
     if (!SectionContent) {
       console.error(`Module imported but no default export found for section ${section}`);
-      throw error(500, 'Failed to load section content - no default export');
+      throw svelteKitError(500, 'Failed to load section content - no default export');
     }
 
     const chapterNumber = chapterData.number;
@@ -104,12 +104,12 @@ export const load: PageLoad = async ({ params }) => {
     };
     console.log('[section/+page.ts] Returning data:', returnData);
     return returnData;
-  } catch (error: any) {
+  } catch (caughtError: any) {
     // More detailed error logging
-    console.error(`Failed to load section content for ${slug}/${section}:`, error);
-    console.error(`Error name: ${error.name}, message: ${error.message}`);
-    if (error.stack) console.error(`Stack trace: ${error.stack}`);
+    console.error(`Failed to load section content for ${slug}/${section}:`, caughtError);
+    console.error(`Error name: ${caughtError.name}, message: ${caughtError.message}`);
+    if (caughtError.stack) console.error(`Stack trace: ${caughtError.stack}`);
 
-    throw error(500, `Failed to load section content: ${error.message}`);
+    throw svelteKitError(500, `Failed to load section content: ${caughtError.message}`);
   }
 };

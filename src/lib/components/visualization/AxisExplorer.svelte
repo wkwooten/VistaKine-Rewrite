@@ -162,9 +162,8 @@
       text="Origin (0,0,0)"
       position={originLabelConnectorEndPos}
       fontSize={originLabelFontSize}
-      color={$originColorStore}
       anchorX="center"
-      anchorY="bottom"
+      anchorY="middle"
       depthTest={false}
     />
   </Canvas>
