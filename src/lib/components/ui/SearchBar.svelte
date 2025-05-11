@@ -7,34 +7,57 @@
   import type { SearchableItem } from "$lib/searchLogic";
   import { getSearchableData, filterSearchableData } from "$lib/searchLogic";
 
+  // Interfaces
   interface TopicPromptLink {
     text: string;
     href: string;
   }
 
+  // Constants
+  const MAX_FILTERED_RESULTS = 7;
+  const PLACEHOLDER_CYCLE_INTERVAL_MS = 4500;
+  const BLUR_TIMEOUT_MS = 150;
+  const DEFAULT_PLACEHOLDER_TEXT = "Topics...";
+  const PROMPT_BLACKLIST = [
+    "basic",
+    "advanced",
+    "understanding",
+    "introduction",
+    "the",
+    "of",
+    "in",
+    "to",
+    "a",
+  ];
+  const MIN_PROMPT_WORD_LENGTH = 2; // For words, unless it's '&'
+  const MIN_GENERATED_PROMPT_LENGTH = 3;
+  const MAX_GENERATED_PROMPT_LENGTH = 30;
+  const MIN_SLUG_WORD_LENGTH = 2; // For words from slugs, unless it's '&'
+  const SHORT_SLUG_PART_LENGTH_THRESHOLD = 5;
+
+  // Component State
   let query = $state("");
-  let topicPromptLinks = $state<TopicPromptLink[]>([]); // Will store objects with text and href
+  let topicPromptLinks = $state<TopicPromptLink[]>([]);
   let currentTopicPromptLink = $state<TopicPromptLink | null>(null);
   let promptIndex = $state(0);
   let isInputFocused = $state(false);
-
-  // --- New state for dropdown ---
   let activeIndex = $state(-1);
   let itemElements = $state<Array<HTMLLIElement | undefined>>([]);
   let listElement: HTMLUListElement | undefined = $state();
   let inputElement: HTMLInputElement | undefined = $state();
   let showDropdown = $state(false);
-  // --- End new state ---
 
-  // --- Filtered Results ---
-  const allSearchableItems = getSearchableData(); // Get all items once
+  // Derived State
+  const allSearchableItems = getSearchableData();
   const filteredResults = $derived.by((): SearchableItem[] => {
     if (!query.trim()) return [];
-    return filterSearchableData(query, allSearchableItems).slice(0, 7); // Limit to 7 results
+    return filterSearchableData(query, allSearchableItems).slice(
+      0,
+      MAX_FILTERED_RESULTS
+    );
   });
-  // --- End Filtered Results ---
 
-  // Log critical states for debugging - MOVED HERE
+  // Debugging (dev-only)
   $inspect(
     showDropdown,
     query,
@@ -43,19 +66,9 @@
     currentTopicPromptLink
   );
 
+  // Generates a list of topic prompts for the animated placeholder from chapter and section data.
   function preparePrompts() {
     const generatedTopics: TopicPromptLink[] = [];
-    const blacklist = [
-      "basic",
-      "advanced",
-      "understanding",
-      "introduction",
-      "the",
-      "of",
-      "in",
-      "to",
-      "a",
-    ];
 
     chapters.forEach((chapter) => {
       chapter.sections.forEach((section) => {
@@ -63,10 +76,11 @@
           let promptText = "";
           let titleParts = section.title
             .toLowerCase()
-            .split(/[\s-]+/)
+            .split(/[\\s-]+/)
             .filter(
               (word) =>
-                (word.length > 2 || word === "&") && !blacklist.includes(word)
+                (word.length > MIN_PROMPT_WORD_LENGTH || word === "&") &&
+                !PROMPT_BLACKLIST.includes(word)
             );
 
           if (titleParts.length > 0) {
@@ -87,7 +101,6 @@
             }
           }
 
-          // Capitalize first letter of each word in the prompt, leave '&' as is
           if (promptText) {
             promptText = promptText
               .split(" ")
@@ -99,7 +112,11 @@
               .join(" ");
           }
 
-          if (promptText && promptText.length > 3 && promptText.length < 30) {
+          if (
+            promptText &&
+            promptText.length > MIN_GENERATED_PROMPT_LENGTH &&
+            promptText.length < MAX_GENERATED_PROMPT_LENGTH
+          ) {
             generatedTopics.push({
               text: promptText,
               href: `/chapter/${chapter.slug}/${section.slug}`,
@@ -108,13 +125,15 @@
             const slugParts = section.slug
               .split("-")
               .filter(
-                (p) => (p.length > 2 || p === "&") && !blacklist.includes(p)
+                (p) =>
+                  (p.length > MIN_SLUG_WORD_LENGTH || p === "&") &&
+                  !PROMPT_BLACKLIST.includes(p)
               );
             if (slugParts.length > 0) {
               let slugPromptText = slugParts[0];
               if (
                 slugParts.length > 1 &&
-                slugParts[0].length < 5 &&
+                slugParts[0].length < SHORT_SLUG_PART_LENGTH_THRESHOLD &&
                 slugParts[1]
               ) {
                 slugPromptText = slugParts.slice(0, 2).join(" ");
@@ -172,85 +191,48 @@
     if (topicPromptLinks.length > 0) {
       currentTopicPromptLink = topicPromptLinks[0];
     } else {
-      currentTopicPromptLink = { text: "Topics...", href: "/search?q=Topics" };
+      currentTopicPromptLink = {
+        text: DEFAULT_PLACEHOLDER_TEXT,
+        href: "/search?q=Topics",
+      };
     }
   }
 
+  // Initialize placeholder prompts
   preparePrompts();
 
-  $effect(() => {
-    if (topicPromptLinks.length === 0) return;
-
-    const intervalId = setInterval(() => {
-      promptIndex = (promptIndex + 1) % topicPromptLinks.length;
-      currentTopicPromptLink = topicPromptLinks[promptIndex];
-    }, 4500);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  });
-
-  // --- Effects for dropdown ---
-  $effect(() => {
-    if (filteredResults.length === 0 || !showDropdown) {
-      if (activeIndex !== -1) {
-        activeIndex = -1;
-      }
-    } else if (activeIndex >= filteredResults.length) {
-      activeIndex = -1;
-    }
-  });
-
-  $effect(() => {
-    const currentActiveIndex = activeIndex;
-    if (currentActiveIndex > -1 && itemElements[currentActiveIndex]) {
-      const targetElement = itemElements[currentActiveIndex];
-      if (targetElement instanceof HTMLElement) {
-        tick().then(() => {
-          if (
-            activeIndex === currentActiveIndex &&
-            itemElements[currentActiveIndex] &&
-            itemElements[currentActiveIndex] instanceof HTMLElement
-          ) {
-            itemElements[currentActiveIndex].scrollIntoView({
-              block: "nearest",
-            });
-          }
-        });
-      }
-    }
-  });
-  // --- End effects for dropdown ---
-
+  // Performs a search action, navigating to a selected result, the current query, or the animated topic prompt.
   function handleSearch() {
-    // If an item is selected in dropdown, navigate to it.
     if (activeIndex > -1 && filteredResults[activeIndex]) {
       handleResultClick(filteredResults[activeIndex]);
     } else if (query.trim()) {
-      // If user has typed a query, use that.
       goto(`/search?q=${encodeURIComponent(query.trim())}`);
       showDropdown = false;
       inputElement?.blur();
     } else if (topicPromptLinks.length > 0 && currentTopicPromptLink?.href) {
-      // If input is empty, and there's a current animated topic with a valid href.
-      // We also check if the href is a direct link or a search link for generic fallbacks.
-      // The generic fallbacks like "Vectors" were given hrefs like "/search?q=Vectors".
-      // Specific section prompts have hrefs like "/chapter/slug/section-slug".
       goto(currentTopicPromptLink.href);
       showDropdown = false;
       inputElement?.blur();
     }
-    // If query is empty and no valid topic prompt link, do nothing or optionally focus input.
   }
 
+  // Handles clicks on a search result item in the dropdown.
+  function handleResultClick(result: SearchableItem) {
+    goto(result.href);
+    query = "";
+    showDropdown = false;
+    activeIndex = -1;
+    inputElement?.blur();
+  }
+
+  // Manages keyboard interactions for navigating dropdown, submitting search, or closing dropdown.
   function handleKeydown(event: KeyboardEvent) {
     const { key } = event;
     const resultsCount = filteredResults.length;
 
     if (key === "Enter") {
       event.preventDefault();
-      handleSearch(); // Uses the modified handleSearch
+      handleSearch();
     } else if (key === "ArrowDown") {
       event.preventDefault();
       if (resultsCount > 0 && showDropdown) {
@@ -268,56 +250,93 @@
       inputElement?.blur();
     } else if (key === "Tab") {
       if (showDropdown && resultsCount > 0) {
-        // Allow tab to move focus out, closing dropdown
         showDropdown = false;
         activeIndex = -1;
       }
     }
   }
 
+  // Sets focus state and shows the dropdown when the input is focused.
   function handleFocus() {
     isInputFocused = true;
     showDropdown = true;
   }
 
+  // Clears focus state and conditionally hides the dropdown when the input loses focus.
   function handleBlur(event: FocusEvent) {
-    isInputFocused = false; // For placeholder animation
+    isInputFocused = false;
 
-    // Delay hiding the dropdown to allow click events on its items to process
     setTimeout(() => {
       const activeEl = document.activeElement;
-      // If focus is NOT on the input itself AND (either the list doesn't exist OR focus is not within the list)
       if (
         activeEl !== inputElement &&
         (!listElement || !listElement.contains(activeEl))
       ) {
         showDropdown = false;
         activeIndex = -1;
-      }
-      // If focus somehow ended up on body or nowhere, and not on an intended target, also hide.
-      else if (activeEl === document.body || activeEl === null) {
+      } else if (activeEl === document.body || activeEl === null) {
         if (
           event.relatedTarget !== null &&
           listElement &&
           listElement.contains(event.relatedTarget as Node)
         ) {
-          // If relatedTarget (where focus is going) is in list, DONT hide. This case is tricky.
-          // The onmousedown on li should prevent blur, but this is a safeguard.
+          // Focus moved to an item in the list, don't hide.
         } else {
           showDropdown = false;
           activeIndex = -1;
         }
       }
-    }, 150); // Increased delay slightly for safety
+    }, BLUR_TIMEOUT_MS);
   }
 
-  function handleResultClick(result: SearchableItem) {
-    goto(result.href);
-    query = ""; // Clear query after selection
-    showDropdown = false;
-    activeIndex = -1;
-    inputElement?.blur();
-  }
+  // --- Effects ---
+
+  // Effect for cycling through topic prompts in the placeholder.
+  $effect(() => {
+    if (topicPromptLinks.length === 0) return;
+
+    const intervalId = setInterval(() => {
+      promptIndex = (promptIndex + 1) % topicPromptLinks.length;
+      currentTopicPromptLink = topicPromptLinks[promptIndex];
+    }, PLACEHOLDER_CYCLE_INTERVAL_MS);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  });
+
+  // Effect for managing activeIndex when results change or dropdown is hidden.
+  $effect(() => {
+    if (filteredResults.length === 0 || !showDropdown) {
+      if (activeIndex !== -1) {
+        activeIndex = -1;
+      }
+    } else if (activeIndex >= filteredResults.length) {
+      activeIndex = -1; // Reset if out of bounds
+    }
+  });
+
+  // Effect for scrolling the active dropdown item into view.
+  $effect(() => {
+    const currentActiveIndex = activeIndex;
+    if (currentActiveIndex > -1 && itemElements[currentActiveIndex]) {
+      const targetElement = itemElements[currentActiveIndex];
+      if (targetElement instanceof HTMLElement) {
+        tick().then(() => {
+          // Check again if still the active item before scrolling
+          if (
+            activeIndex === currentActiveIndex &&
+            itemElements[currentActiveIndex] &&
+            itemElements[currentActiveIndex] instanceof HTMLElement
+          ) {
+            itemElements[currentActiveIndex].scrollIntoView({
+              block: "nearest",
+            });
+          }
+        });
+      }
+    }
+  });
 </script>
 
 <div class="search-bar-container">
@@ -329,7 +348,7 @@
         in:fly|local={{ y: 20, duration: 500, delay: 500, easing: quintOut }}
         out:fly|local={{ y: -20, duration: 500, easing: quintIn }}
       >
-        {currentTopicPromptLink?.text ?? "Topics..."}
+        {currentTopicPromptLink?.text ?? DEFAULT_PLACEHOLDER_TEXT}
       </span>
     {/key}
   </div>

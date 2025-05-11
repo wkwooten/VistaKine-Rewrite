@@ -197,9 +197,10 @@
     position: sticky;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
     /* margin-bottom: var(--space-s); */
     bottom: 10px;
-    z-index: 10;
+    z-index: 1000;
   }
 
   .nav-links {

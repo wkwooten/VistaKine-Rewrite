@@ -1,6 +1,9 @@
 import { error as svelteKitError } from '@sveltejs/kit';
-import { getChapterBySlug } from '$lib/data/chapters';
-import type { PageLoad } from './$types';
+import { getChapterBySlug } from '$lib/data/chapters.js';
+import type { PageLoad } from './$types.js';
+
+// Import stores
+import { currentChapter, currentSection as appStateCurrentSection } from '$lib/stores/appState.js';
 
 // Create a type-safe mapping for dynamic imports
 type SectionImports = {
@@ -10,7 +13,7 @@ type SectionImports = {
 };
 
 // Component imports with type safety
-const sectionComponents: SectionImports = {
+const sectionComponents: Record<string, Record<string, () => Promise<any>>> = {
   'understanding-3d-space': {
     'coordinate-systems': () => import('$lib/content/chapters/understanding-3d-space/sections/coordinate-systems.svelte'),
     'vectors-and-components': () => import('$lib/content/chapters/understanding-3d-space/sections/vectors-and-components.svelte'),
@@ -28,6 +31,10 @@ const sectionComponents: SectionImports = {
 export const load: PageLoad = async ({ params }) => {
   const { slug, section } = params;
   console.log(`Loading chapter: ${slug}, section: ${section}`);
+
+  // Set the stores
+  currentChapter.set(slug);
+  appStateCurrentSection.set(section);
 
   const chapterData = getChapterBySlug(slug);
 

@@ -56,7 +56,7 @@
 
   .content-card {
     margin-top: var(--space-l);
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-3xl);
     margin-inline: auto; // Center the card by default
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -66,12 +66,10 @@
     padding-bottom: var(--space-xl);
     transition:
       box-shadow var(--transition-normal) var(--transition-bezier),
-      transform var(--transition-normal) var(--transition-bezier),
-      max-width var(--transition-normal) var(--transition-bezier); // Added max-width transition
+      max-width var(--transition-normal) var(--transition-bezier);
     width: 100%; // Ensure it tries to take available space up to max-width
 
     /* Default state (not lifted) */
-    transform: translateY(0);
 
     // Default to standard content width
     max-width: var(
@@ -82,7 +80,6 @@
   .content-card.is-visible {
     // --- Lifted Styles (Moved from SectionTemplate) ---
     box-shadow: var(--shadow-lg);
-    transform: translateY(3px);
   }
 
   // --- Layout Width Specific Styles ---

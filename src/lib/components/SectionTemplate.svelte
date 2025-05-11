@@ -92,7 +92,7 @@
       </div>
 
       <div class="section-map-column-placeholder">
-        <SectionMap bind:isOpen={$sectionMapOpen} {sectionSlug} />
+        <SectionMap {sectionSlug} />
       </div>
     </div>
   </main>
@@ -154,6 +154,19 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+
+    max-width: var(--readable-max-width, 75ch);
+    margin-inline: auto;
+    padding-inline: var(--space-m);
+    box-sizing: border-box;
+
+    @media (max-width: vars.$breakpoint-lg) {
+      padding-inline: var(--space-s);
+    }
+
+    @media (max-width: vars.$breakpoint-sm) {
+      padding-inline: 0;
+    }
   }
 
   /* Default styles for figures/figcaptions used within slotted content */
@@ -194,26 +207,6 @@
   /* Specific adjustments for review blocks (which are activity blocks) */
   :global(.activity-block.-review) {
     margin-top: var(--space-xl);
-  }
-
-  /* Constrains width for prose content within slotted blocks */
-  :global(.readable-content) {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-    max-width: var(--readable-max-width, 75ch);
-    margin-inline: auto;
-    padding-inline: var(--space-m);
-    width: 100%;
-    box-sizing: border-box;
-
-    @media (max-width: vars.$breakpoint-lg) {
-      padding-inline: var(--space-s);
-    }
-
-    @media (max-width: vars.$breakpoint-sm) {
-      padding-inline: 0;
-    }
   }
 
   :global(.content-card.activity-block.-review) {

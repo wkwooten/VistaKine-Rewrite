@@ -14,7 +14,7 @@
     term
       .toLowerCase()
       .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, ""),
+      .replace(/[^a-z0-9-]/g, "")
   );
 
   // Find the glossary entry for the given term
@@ -22,7 +22,7 @@
   const glossaryEntry: GlossaryTerm | undefined = $derived(
     glossaryData
       .flatMap((chapter) => chapter.glossaryTerms)
-      .find((entry) => entry.term.toLowerCase() === term.toLowerCase()),
+      .find((entry) => entry.term.toLowerCase() === term.toLowerCase())
   );
 
   function handleClick(event: MouseEvent) {

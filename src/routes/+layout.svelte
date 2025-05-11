@@ -173,6 +173,15 @@
       tabindex="0"
       aria-label="Close Menu"
     ></div>
+  {:else if !isMobile && mobileNavOpen}
+    <script>
+      if (browser) {
+        console.warn(
+          "[Layout Debug] Mobile overlay was open on desktop. Forcing closed."
+        );
+        mobileNavOpen = false;
+      }
+    </script>
   {/if}
 
   <main class="content" bind:this={mainContentElement}>
@@ -197,6 +206,15 @@
 
 <style lang="scss">
   @use "$lib/styles/variables" as variables;
+
+  .parallax-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
 
   .app-container {
     height: 100vh;
