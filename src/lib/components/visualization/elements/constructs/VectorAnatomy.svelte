@@ -38,7 +38,7 @@
 
   // --- Vector Definition (Static) --- //
   const origin = new Vector3(0, 0, 0);
-  const endPoint = new Vector3(3, 4, 2);
+  const endPoint = new Vector3(5, 6, 4); // Increased vector components
   const components = endPoint.clone().sub(origin);
   const vectorV = endPoint.clone(); // Use the endpoint vector for angle calculations
   const direction = components.clone().normalize();
@@ -54,7 +54,7 @@
 
   // --- Scene Setup Constants --- //
   const labelFontSize = 0.3;
-  const labelOffset = 0.3;
+  const labelOffset = 0.5; // Increased labelOffset
   const dashSize = 0.15;
   const gapSize = 0.1;
   const lineWidth = 2;
@@ -64,12 +64,12 @@
   const axisLabelFontSize = 0.25;
   const axisLabelOffset = 0.3;
   const angleLabelFontSize = 0.25;
-  const arcRadius = 0.6; // Radius for the angle arcs
+  const arcRadius = 0.8; // Increased arcRadius
   const arcPointsCount = 20; // Number of points for arc smoothness
   const arcLineWidth = 0.03;
 
   // --- New Padding Constant ---
-  const anatomyLabelPadding = 0.5;
+  const anatomyLabelPadding = 0.75; // Increased anatomyLabelPadding
 
   // --- Helper Function to Generate Arc Points --- //
   function generateArcPoints(
@@ -143,7 +143,7 @@
   const midPoint = origin.clone().lerp(endPoint, 0.5);
   const magnitudeLabelPos = midPoint
     .clone()
-    .add(new Vector3(0, labelOffset * 1.5, 0));
+    .add(new Vector3(0, labelOffset * 2.5, 0)); // Increased multiplier for magnitude label
   const xCompLabelPos = origin
     .clone()
     .lerp(intermediateX, 0.5)

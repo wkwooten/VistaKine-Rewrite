@@ -72,9 +72,7 @@
   aria-expanded={showPopover}
 >
   {term}
-</span>
-
-{#if showPopover && glossaryEntry}
+</span>{#if showPopover && glossaryEntry}
   <div
     class="keyword-popover"
     bind:this={popoverElement}
@@ -150,7 +148,7 @@
     .definition {
       margin: 0 0 var(--space-s) 0;
       line-height: 1.5;
-      max-height: 100px;
+      max-height: 150px;
       padding-bottom: var(--space-s);
       overflow-y: scroll;
     }

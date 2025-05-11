@@ -29,11 +29,8 @@
     "to",
     "a",
   ];
-  const MIN_PROMPT_WORD_LENGTH = 2; // For words, unless it's '&'
+
   const MIN_GENERATED_PROMPT_LENGTH = 3;
-  const MAX_GENERATED_PROMPT_LENGTH = 30;
-  const MIN_SLUG_WORD_LENGTH = 2; // For words from slugs, unless it's '&'
-  const SHORT_SLUG_PART_LENGTH_THRESHOLD = 5;
 
   // Component State
   let query = $state("");
@@ -70,111 +67,103 @@
   function preparePrompts() {
     const generatedTopics: TopicPromptLink[] = [];
 
-    chapters.forEach((chapter) => {
-      chapter.sections.forEach((section) => {
-        if (section.title) {
-          let promptText = "";
-          let titleParts = section.title
-            .toLowerCase()
-            .split(/[\\s-]+/)
-            .filter(
-              (word) =>
-                (word.length > MIN_PROMPT_WORD_LENGTH || word === "&") &&
-                !PROMPT_BLACKLIST.includes(word)
-            );
+    const titleCaseWithAcronyms = (text: string): string => {
+      return text
+        .toLowerCase()
+        .split(" ")
+        .map((word) => {
+          if (word === "&") return "&";
+          // Preserve specific terms/acronyms
+          if (word.toUpperCase() === "3D") return "3D";
+          if (word.toUpperCase() === "IC") return "IC";
+          // Add other acronyms as needed, e.g., API, HTML
 
-          if (titleParts.length > 0) {
-            if (titleParts.length === 1) {
-              promptText = titleParts[0];
-            } else if (titleParts.length >= 2) {
-              const word1 = titleParts[0];
-              const word2 = titleParts[1];
-              const word3 = titleParts.length > 2 ? titleParts[2] : null;
-
-              if (word2 === "and" && word3) {
-                promptText = `${word1} & ${word3}`;
-              } else if (word2 === "&" && word3) {
-                promptText = `${word1} & ${word3}`;
-              } else {
-                promptText = `${word1} ${word2}`;
-              }
-            }
-          }
-
-          if (promptText) {
-            promptText = promptText
-              .split(" ")
-              .map((word) =>
-                word === "&"
-                  ? "&"
-                  : word.charAt(0).toUpperCase() + word.slice(1)
-              )
-              .join(" ");
-          }
-
+          // General acronym check (2-4 letters, all caps)
           if (
-            promptText &&
-            promptText.length > MIN_GENERATED_PROMPT_LENGTH &&
-            promptText.length < MAX_GENERATED_PROMPT_LENGTH
+            word.length >= 2 &&
+            word.length <= 4 &&
+            word === word.toUpperCase() &&
+            /^[A-Z0-9]+$/.test(word) // Ensures it's actually all caps and possibly numbers
+          ) {
+            return word;
+          }
+          // Default to capitalizing the first letter and lowercasing the rest
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(" ");
+    };
+
+    chapters.forEach((chapter) => {
+      const chapterHref = `/chapter/${chapter.slug}`;
+
+      // Handle special chapter titles
+      if (chapter.slug === "understanding-3d-space") {
+        generatedTopics.push({ text: "3D Space", href: chapterHref });
+      } else if (
+        chapter.title.includes(",") ||
+        chapter.title.toLowerCase().includes(" and ")
+      ) {
+        const parts = chapter.title
+          .split(/,|\\s+and\\s+/i) // Split by comma or 'and' (with surrounding spaces, case-insensitive)
+          .map((p) => p.trim())
+          .filter(
+            (p) => p.length > 0 && !PROMPT_BLACKLIST.includes(p.toLowerCase())
+          );
+
+        parts.forEach((partOrigin) => {
+          let cleanPart = partOrigin;
+          if (cleanPart.toLowerCase().startsWith("and ")) {
+            cleanPart = cleanPart.substring(4).trim();
+          } else if (cleanPart.toLowerCase().startsWith("& ")) {
+            cleanPart = cleanPart.substring(2).trim();
+          }
+
+          // Re-validate the cleaned part
+          if (
+            cleanPart &&
+            cleanPart.length >= MIN_GENERATED_PROMPT_LENGTH &&
+            !PROMPT_BLACKLIST.includes(cleanPart.toLowerCase())
           ) {
             generatedTopics.push({
-              text: promptText,
-              href: `/chapter/${chapter.slug}/${section.slug}`,
+              text: titleCaseWithAcronyms(cleanPart),
+              href: chapterHref,
             });
-          } else {
-            const slugParts = section.slug
-              .split("-")
-              .filter(
-                (p) =>
-                  (p.length > MIN_SLUG_WORD_LENGTH || p === "&") &&
-                  !PROMPT_BLACKLIST.includes(p)
-              );
-            if (slugParts.length > 0) {
-              let slugPromptText = slugParts[0];
-              if (
-                slugParts.length > 1 &&
-                slugParts[0].length < SHORT_SLUG_PART_LENGTH_THRESHOLD &&
-                slugParts[1]
-              ) {
-                slugPromptText = slugParts.slice(0, 2).join(" ");
-                if (slugParts[1] === "&" && slugParts.length > 2) {
-                  slugPromptText = slugParts.slice(0, 3).join(" ");
-                }
-              } else if (
-                slugParts.length > 1 &&
-                slugParts[1] &&
-                slugParts[1].length > slugParts[0].length
-              ) {
-                slugPromptText = slugParts[1];
-              }
-              generatedTopics.push({
-                text: slugPromptText
-                  .split(" ")
-                  .map((word) =>
-                    word === "&"
-                      ? "&"
-                      : word.charAt(0).toUpperCase() + word.slice(1)
-                  )
-                  .join(" "),
-                href: `/chapter/${chapter.slug}/${section.slug}`,
-              });
-            }
           }
+        });
+      } else {
+        // Standard chapter title
+        generatedTopics.push({
+          text: titleCaseWithAcronyms(chapter.title),
+          href: chapterHref,
+        });
+      }
+
+      // Section titles
+      chapter.sections.forEach((section) => {
+        if (section.title) {
+          generatedTopics.push({
+            text: titleCaseWithAcronyms(section.title),
+            href: `/chapter/${chapter.slug}/${section.slug}`,
+          });
         }
       });
     });
 
-    let uniqueGeneratedTopics = generatedTopics.filter(
-      (topic, index, self) =>
-        index ===
-          self.findIndex(
-            (t) => t.text === topic.text && t.href === topic.href
-          ) &&
-        topic.text &&
-        topic.text.trim() !== ""
-    );
+    let uniqueGeneratedTopics = generatedTopics
+      .filter((topic) => {
+        return (
+          topic.text.length >= MIN_GENERATED_PROMPT_LENGTH &&
+          topic.text.trim() !== ""
+        );
+      })
+      .filter(
+        (topic, index, self) =>
+          index ===
+          self.findIndex((t) => t.text === topic.text && t.href === topic.href)
+      );
 
     if (uniqueGeneratedTopics.length === 0) {
+      // Fallback to default prompts, ensuring they also fit the new "Search X" or special format
       uniqueGeneratedTopics = [
         { text: "Vectors", href: "/search?q=Vectors" },
         { text: "Motion", href: "/search?q=Motion" },
@@ -465,6 +454,7 @@
     padding-right: calc(44px + var(--space-xs, 12px) + 4px);
     pointer-events: none;
     overflow: hidden;
+    text-overflow: ellipsis;
     width: 100%; // Occupy full width of parent, padding will create space for button
 
     &.hidden {
@@ -481,6 +471,13 @@
 
   .animated-placeholder {
     font-weight: 500;
+    // Ensure it respects max-width and allows text-overflow to work
+    display: inline-block;
+    max-width: 28ch; // Max width of ~22 characters, adjust as needed
+    vertical-align: bottom; // Or middle, adjust for best alignment with prefix
+    // overflow: hidden; // Already in common styles via .placeholder-container or directly
+    // text-overflow: ellipsis; // Already in common styles or directly
+    // white-space: nowrap; // Already in common styles
   }
 
   .static-placeholder-prefix,
@@ -491,16 +488,6 @@
     font-size: var(--step-0);
     white-space: nowrap;
     display: inline; // Ensures they sit side-by-side
-  }
-
-  .animated-placeholder {
-    // No specific text-align needed as it's inline and will follow container's flow
-    // Overflow and ellipsis for the animated part if it gets too long
-    overflow: hidden;
-    text-overflow: ellipsis;
-    // Max width for the animated part to ensure it doesn't push static text or overflow badly
-    // This needs to be dynamic or carefully considered. For now, let it be flexible.
-    // max-width: calc(100% - /* width of "Search " */ - /* other paddings/margins */ );
   }
 
   .search-input {

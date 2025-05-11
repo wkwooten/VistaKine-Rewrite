@@ -187,7 +187,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   // ==================================
   --grid-max-width: 77.5rem; /* 1240px / 16px */
   // Use a fluid space variable for the gutter. Adjust if --space-s-l doesn't exist or you prefer another step.
-  --grid-gutter: var(--space-s-l, clamp(1.125rem, 0.6467rem + 2.3913vw, 2.5rem)); /* Example fallback clamp */
+  --grid-gutter: var(--space-m, clamp(1.125rem, 0.6467rem + 2.3913vw, 2.5rem)); /* Example fallback clamp */
   --grid-columns: 12;
   // ==================================
 
