@@ -143,7 +143,7 @@
   const midPoint = origin.clone().lerp(endPoint, 0.5);
   const magnitudeLabelPos = midPoint
     .clone()
-    .add(new Vector3(0, labelOffset * 2.5, 0)); // Increased multiplier for magnitude label
+    .add(new Vector3(0, labelOffset, 0)); // Increased multiplier for magnitude label
   const xCompLabelPos = origin
     .clone()
     .lerp(intermediateX, 0.5)
@@ -443,8 +443,8 @@
       position={magnitudeLabelPos}
       text={`Magnitude`}
       fontSize={labelFontSize}
-      color={$labelColorStore}
-      backgroundColor={$surfaceColorStore}
+      color={"white"}
+      backgroundColor={$vectorColorStore}
       anchorX="center"
       anchorY="middle"
       depthTest={true}

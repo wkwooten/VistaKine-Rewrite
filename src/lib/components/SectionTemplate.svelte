@@ -205,13 +205,13 @@
   }
 
   /* Specific adjustments for review blocks (which are activity blocks) */
-  :global(.activity-block.-review) {
+  /* :global(.activity-block.-review) {
     margin-top: var(--space-xl);
   }
 
   :global(.content-card.activity-block.-review) {
     margin-top: var(--space-xl);
-  }
+  } */
 
   :global(.content-card.explanation-block) {
     background-color: var(--color-background);

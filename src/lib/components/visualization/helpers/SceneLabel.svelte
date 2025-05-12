@@ -17,6 +17,7 @@
  @prop {'center' | 'left' | 'right'} [anchorX='center'] - Horizontal anchor point for the text.
  @prop {'middle' | 'top' | 'bottom' | 'top-baseline' | 'bottom-baseline'} [anchorY='middle'] - Vertical anchor point for the text.
  @prop {boolean} [depthTest=true] - Whether the label should be depth-tested against other scene objects. Defaults to true (respects scene depth).
+ @prop {number} [renderOrder] - Render order for the background mesh.
  @prop {Record<string, any>} [rest] - Any additional props will be passed directly to the underlying Threlte <Text> component (e.g., maxWidth, letterSpacing).
 -->
 <script lang="ts">
@@ -57,6 +58,7 @@
     anchorX = "center" as AnchorX,
     anchorY = "middle" as AnchorY,
     depthTest = true,
+    renderOrder,
     // Capture any other props passed in
     ...rest // Capture remaining props
   } = $props<{
@@ -72,6 +74,7 @@
     anchorX?: AnchorX;
     anchorY?: AnchorY;
     depthTest?: boolean;
+    renderOrder?: number;
     // Allow any other Text props via index signature
     [key: string]: any;
   }>();
@@ -254,7 +257,7 @@
 <Billboard position={finalPosition}>
   <!-- Manual Background Plane using Custom Geometry -->
   {#if materialBackgroundColor && labelBackgroundGeometry}
-    <T.Mesh position.z={-0.01} material.depthTest={depthTest}>
+    <T.Mesh position.z={-0.01} {renderOrder} {depthTest}>
       <T is={labelBackgroundGeometry} />
       <T.MeshBasicMaterial
         color={materialBackgroundColor}
@@ -274,6 +277,7 @@
       {anchorX}
       {anchorY}
       {depthTest}
+      {renderOrder}
       {...rest}
     />
   </T.Group>

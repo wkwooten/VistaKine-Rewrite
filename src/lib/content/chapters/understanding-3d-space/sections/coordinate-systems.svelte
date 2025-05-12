@@ -33,9 +33,10 @@
     <p>
       Welcome to the world of 3D space! Ever wonder how a 3D printer knows
       exactly where to place material, or how a GPS pinpoints your location? It
-      all relies on a fundamental concept: <strong>coordinate systems</strong>.
-      In this section, we'll break down how we use three dimensions (X, Y, and
-      Z) to map out space, define precise locations using coordinates, and
+      all relies on a fundamental concept: <Keyword
+        term="coordinate systems"
+      />. In this section, we'll break down how we use three dimensions (X, Y,
+      and Z) to map out space, define precise locations using coordinates, and
       understand key terms like the origin and axes. We'll see how crucial this
       system is, especially when giving instructions to machines, as our
       characters Surya and Leo are about to discover.
@@ -156,9 +157,8 @@
 
     <p class="exercise-description">
       Help Surya calibrate her 3D printer by moving the nozzle to the target
-      points. Use the control panel to enter X, Y, and Z coordinates, then press
-      the "Move" button to position the nozzle. Try to hit all the targets to
-      complete the calibration.
+      points. Use the control panel to enter X, Y, and Z coordinates. Try to hit
+      all the targets to complete the calibration.
     </p>
 
     <PrinterCalibrationExercise

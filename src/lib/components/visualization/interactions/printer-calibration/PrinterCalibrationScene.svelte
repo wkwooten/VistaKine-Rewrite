@@ -26,9 +26,6 @@
     MAX_Z,
   } from "$lib/stores/calibrationState";
   import {
-    xAxisColor,
-    yAxisColor,
-    zAxisColor,
     nozzleColor,
     nozzleEdgesColor,
     heightIndicatorColor,
@@ -40,6 +37,7 @@
     targetHitColor,
     targetLabelPendingColor,
     targetLabelHitColor,
+    textColor,
   } from "$lib/stores/themeColors";
   import { get } from "svelte/store";
   import SceneLabel from "../../helpers/SceneLabel.svelte";
@@ -334,9 +332,6 @@
 
 <CoordinateAxes
   {cornerOriginOffset}
-  xAxisColor={$xAxisColor}
-  yAxisColor={$yAxisColor}
-  zAxisColor={$zAxisColor}
   axisLengthX={MAX_X}
   axisLengthY={MAX_Y}
   axisLengthZ={MAX_Z}
@@ -391,7 +386,7 @@
     ]}
     text={isHit ? coordinateText : target.id}
     fontSize={labelFontSize}
-    color={"white"}
+    color={$textColor}
     backgroundColor={labelColor}
     anchorX="center"
     anchorY="middle"
