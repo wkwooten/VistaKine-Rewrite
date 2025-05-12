@@ -17,6 +17,8 @@
   import ContentCard from "$lib/components/ContentCard.svelte";
   // Import the new AnimatedLogo component
   import AnimatedLogo from "$lib/components/ui/AnimatedLogo.svelte";
+  // Import the new AboutSection component
+  import AboutSection from "$lib/components/layout/AboutSection.svelte";
 </script>
 
 <div class="hero-container">
@@ -53,51 +55,7 @@
     </div>
   </section>
 
-  <section id="about" class="about">
-    <!-- Use ContentCard for the intro block -->
-    <ContentCard blockType="about-intro-block" layoutWidth="full">
-      <h2>About VistaKine</h2>
-      <div class="about-content">
-        <p>
-          VistaKine combines educational content with interactive 3D
-          visualizations and physics simulations to create an engaging learning
-          experience.
-        </p>
-        <p>
-          By integrating powerful 3D rendering with physics simulations,
-          VistaKine allows students to explore complex kinematic and dynamic
-          concepts through hands-on interaction.
-        </p>
-      </div>
-    </ContentCard>
-
-    <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
-    <div class="features">
-      <ContentCard blockType="feature-block" layoutWidth="full">
-        <h3>Interactive 3D Visualizations</h3>
-        <p>
-          Understand complex concepts through manipulable 3D models and
-          simulations.
-        </p>
-      </ContentCard>
-
-      <ContentCard blockType="feature-block" layoutWidth="full">
-        <h3>Physics-Based Simulations</h3>
-        <p>
-          Experiment with physical properties and see how systems respond in
-          real-time.
-        </p>
-      </ContentCard>
-
-      <ContentCard blockType="feature-block" layoutWidth="full">
-        <h3>Learn by Doing</h3>
-        <p>
-          Engage with the material through interactive examples and experiments.
-        </p>
-      </ContentCard>
-    </div>
-    <!-- Removed the outer .container div as ContentCard handles width/centering -->
-  </section>
+  <AboutSection />
 </div>
 
 <style lang="scss">
@@ -235,31 +193,8 @@
     }
   }
 
-  .about {
-    min-height: auto; // Let content define height
-    padding: var(--space-xl) var(--space-m);
-    /* Remove background-color, ContentCards handle their own */
-  }
-
-  /* Keep the features grid layout */
-  .features {
-    display: grid;
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(280px, 1fr)
-    ); // Slightly larger min size
-    gap: var(--space-l); // Increased gap
-    max-width: var(
-      --wide-content-width
-    ); // Use wide content width for the grid container
-    margin: var(--space-xl) auto 0; // Add top margin, center grid
-  }
-
   /* Target the feature cards */
 
   /* Remove original .feature styles */
   /* .feature { ... } */
-
-  /* Remove original .container styles from about section */
-  /* .container { ... } */
 </style>
