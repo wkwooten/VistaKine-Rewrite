@@ -32,6 +32,7 @@ See [Memory.md](mdc:Memory.md) for project history and decisions.
 These rules should always be followed:
 
 - Provide command line prompts in PowerShell format.
+- Before making edits requiring variable, check [_variables.scss](mdc:src/lib/styles/_variables.scss) to see how they are used. This should help you to prevent halucinations.
 - **DO NOT** write inline comments within Threlte component props (e.g., `<Mesh {prop_name /* comment */} />`), as this causes syntax errors. Comments should be placed outside the props.
 - Prefer Markdown format for meta-textual content (e.g., Cursor rules, planning documents like [Memory.md](mdc:Memory.md), style guides like [STYLE_GUIDE.md](mdc:STYLE_GUIDE.md)).
 - Avoid commenting every line of code. Focus comments on non-trivial logic or complex sections.

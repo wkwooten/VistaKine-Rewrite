@@ -144,14 +144,41 @@
     flex-direction: row; // Default to visual left, text right
     align-items: center;
     gap: var(--space-l); // Adjusted gap for horizontal layout
+    max-width: 100%;
 
     &:nth-child(even) {
       flex-direction: row-reverse; // Visual right, text left for even items
+    }
+
+    // Mobile responsiveness
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: var(--space-m); // Adjust gap for vertical stacking
+
+      &:nth-child(even) {
+        flex-direction: column; // Ensure it also stacks vertically for even items
+      }
+
+      .visual-placeholder,
+      .feature-text-content {
+        width: 100%; // Make visual and text take full width when stacked
+        max-width: 100%; // Override any max-width from horizontal layout if necessary
+      }
+
+      .visual-placeholder {
+        margin-bottom: var(
+          --space-s
+        ); // Add some space below visual when stacked
+        max-width: 400px;
+        min-width: 0;
+        align-self: center;
+      }
     }
   }
 
   .feature-text-content {
     flex: 1; // Allow text content to take available space
+    min-width: 0;
     // Add any specific padding or alignment for text if needed
   }
 
@@ -171,9 +198,12 @@
     justify-content: center;
     text-align: center;
     padding: var(--space-s);
-    margin-bottom: 0; // Removed margin-bottom as gap is handled by flex
+    margin-bottom: 0; // Removed margin-bottom as gap is handled by flex OR stacked visual
     border-radius: var(--radius-sm);
     flex: 1; // Allow visual to take space, adjust basis if needed e.g., flex: 0 0 40%;
+    max-width: 350px;
+    min-width: 0;
+    box-sizing: border-box;
     // Consider adding max-width to prevent placeholders from becoming too large
     // max-width: 300px; // Example max-width
 
@@ -198,7 +228,8 @@
       margin-top: var(--space-m);
       min-height: 200px; // Larger placeholder for the main visual
       aspect-ratio: 16/9;
-      margin-inline: var(--space-m);
+      margin-inline: auto; // Centering the main visual
+      max-width: 100%;
     }
   }
 </style>
