@@ -10,6 +10,7 @@
   import SectionMap from "$lib/components/ui/SectionMap.svelte";
   import { sectionMapOpen } from "$lib/stores/uiStores";
   import { updateThemeColors } from "$lib/stores/themeColors";
+  import Footer from "$lib/components/Footer.svelte";
 
   let { children } = $props(); // Add children prop
 
@@ -193,6 +194,7 @@
     <!-- Simply render children within the u-container -->
     <div class="u-container">
       {@render children()}
+      <Footer />
     </div>
     <!-- REMOVE SectionMap rendering from here -->
     <!-- {#if currentSectionSlug}
@@ -375,16 +377,18 @@
   }
 
   /* Keep .u-container styles - This will now wrap all children */
-  /* .u-container {
+  .u-container {
     min-height: 1px;
-    // margin-inline: 0; // Let the flex container handle centering/positioning
     width: 100%; // Ensure it takes available width
-    padding: var(--space-l); // Add some padding perhaps?
+    max-width: var(--max-content-width, 1400px);
+    margin-inline: auto;
+    padding: var(--space-m);
+    box-sizing: border-box;
 
     @media (max-width: variables.$breakpoint-lg) {
       padding: var(--space-s);
     }
-  } */
+  }
 
   // REMOVE styles for the specific section+map wrapper
   /* .main-content-and-map-wrapper { ... } */

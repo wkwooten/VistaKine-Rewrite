@@ -24,45 +24,48 @@
   <!-- </ContentCard> -->
 
   <!-- <ContentCard blockType="about-differentiators" layoutWidth="full"> -->
-  <h3>What Makes VistaKine Different?</h3>
-  <div class="differentiators-grid">
-    <div>
-      <div class="visual-placeholder small">
-        <p>Icon</p>
+  <div class="about-section">
+    <h3>What Makes VistaKine Different?</h3>
+    <div class="differentiators-grid">
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">A Bridge to Higher Learning</h4>
+        <p>
+          Master foundational 3D vector concepts and mechanics, building a solid
+          base for success in advanced university physics and engineering
+          courses.
+        </p>
       </div>
-      <h4 class="differentiator-title">A Bridge to Higher Learning</h4>
-      <p>
-        Master foundational 3D vector concepts and mechanics, building a solid
-        base for success in advanced university physics and engineering courses.
-      </p>
-    </div>
-    <div>
-      <div class="visual-placeholder small">
-        <p>Icon</p>
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">Intuition First, Mastery Follows</h4>
+        <p>
+          We focus on building deep conceptual understanding. Manipulate 3D
+          models, experiment with physics parameters, and see instant results to
+          grasp core principles intuitively.
+        </p>
       </div>
-      <h4 class="differentiator-title">Intuition First, Mastery Follows</h4>
-      <p>
-        We focus on building deep conceptual understanding. Manipulate 3D
-        models, experiment with physics parameters, and see instant results to
-        grasp core principles intuitively.
-      </p>
-    </div>
-    <div>
-      <div class="visual-placeholder small">
-        <p>Icon</p>
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">Explore & Discover</h4>
+        <p>
+          Our interactive exercises are your playground. Experiment freely with
+          concepts like forces and motion, and discover physics principles for
+          yourself in a hands-on way.
+        </p>
       </div>
-      <h4 class="differentiator-title">Explore & Discover</h4>
-      <p>
-        Our interactive exercises are your playground. Experiment freely with
-        concepts like forces and motion, and discover physics principles for
-        yourself in a hands-on way.
-      </p>
     </div>
   </div>
   <!-- </ContentCard> -->
 
   <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
-  <div class="features">
+  <div class="features about-section">
     <!-- <ContentCard blockType="feature-block" layoutWidth="full"> -->
     <div class="feature-block">
       <div class="visual-placeholder med">
@@ -124,51 +127,75 @@
     /* Remove background-color, ContentCards handle their own */
   }
 
-  /* Keep the features grid layout */
+  .about-section {
+    margin-block: var(--space-xl);
+    // Responsive spacing for mobile
+    @media (max-width: 768px) {
+      margin-block: var(--space-l);
+      padding-inline: var(--space-s);
+    }
+  }
 
-  .differentiator-title {
+  .about-content {
+    @media (max-width: 768px) {
+      padding-inline: var(--space-s);
+      text-align: center;
+    }
+  }
+
+  .main-about-visual {
+    @media (max-width: 768px) {
+      margin-inline: auto;
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  .differentiators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-m);
+    margin-top: var(--space-m);
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: var(--space-s);
+    }
   }
 
   .features {
     display: flex;
     flex-direction: column;
     gap: var(--space-l); // Increased gap
-    max-width: var(
-      --wide-content-width
-    ); // Use wide content width for the grid container
-    margin: var(--space-xl) auto 0; // Add top margin, center grid
+    max-width: var(--wide-content-width);
+    margin: var(--space-xl) auto 0;
+    @media (max-width: 768px) {
+      gap: var(--space-m);
+      padding-inline: var(--space-s);
+    }
   }
 
   .feature-block {
     display: flex;
-    flex-direction: row; // Default to visual left, text right
+    flex-direction: row;
     align-items: center;
-    gap: var(--space-l); // Adjusted gap for horizontal layout
+    gap: var(--space-l);
     max-width: 100%;
-
     &:nth-child(even) {
-      flex-direction: row-reverse; // Visual right, text left for even items
+      flex-direction: row-reverse;
     }
-
-    // Mobile responsiveness
     @media (max-width: 768px) {
       flex-direction: column;
-      gap: var(--space-m); // Adjust gap for vertical stacking
-
+      gap: var(--space-s);
       &:nth-child(even) {
-        flex-direction: column; // Ensure it also stacks vertically for even items
+        flex-direction: column;
       }
-
       .visual-placeholder,
       .feature-text-content {
-        width: 100%; // Make visual and text take full width when stacked
-        max-width: 100%; // Override any max-width from horizontal layout if necessary
+        width: 100%;
+        max-width: 100%;
       }
-
       .visual-placeholder {
-        margin-bottom: var(
-          --space-s
-        ); // Add some space below visual when stacked
+        margin-bottom: var(--space-s);
         max-width: 400px;
         min-width: 0;
         align-self: center;
@@ -177,16 +204,14 @@
   }
 
   .feature-text-content {
-    flex: 1; // Allow text content to take available space
+    flex: 1;
     min-width: 0;
-    // Add any specific padding or alignment for text if needed
+    @media (max-width: 768px) {
+      text-align: center;
+    }
   }
 
-  .differentiators-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-m);
-    margin-top: var(--space-m);
+  .differentiator-title {
   }
 
   .visual-placeholder {

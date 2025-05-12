@@ -453,8 +453,6 @@
     // Total approx: 44px + 12px + 4px = 60px
     padding-right: calc(44px + var(--space-xs, 12px) + 4px);
     pointer-events: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
     width: 100%; // Occupy full width of parent, padding will create space for button
 
     &.hidden {
@@ -471,6 +469,8 @@
 
   .animated-placeholder {
     font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
     // Ensure it respects max-width and allows text-overflow to work
     display: inline-block;
     max-width: 28ch; // Max width of ~22 characters, adjust as needed

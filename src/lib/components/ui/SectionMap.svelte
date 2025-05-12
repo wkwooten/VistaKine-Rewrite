@@ -285,17 +285,16 @@
   }
 
   .section-map-container {
-    // Default Desktop Styles (Sticky Sidebar)
-    position: sticky;
-    top: calc(var(--navbar-height, 80px));
-    align-self: flex-start;
+    // Default Desktop Styles (Fixed Sidebar)
     background-color: var(--color-background);
     width: var(--section-map-width, 220px);
     border: 1px solid var(--color-border);
     padding: var(--space-s) 0 var(--space-s) var(--space-s);
     overflow-y: auto;
-    flex-shrink: 0;
+    max-height: calc(100vh - var(--navbar-height, 80px) - var(--space-xl));
     z-index: 50; // Above overlay
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease; // Add transition for mobile slide
 
     // Mobile Styles (Off-canvas Drawer)
@@ -304,12 +303,15 @@
       top: 0;
       right: 0;
       bottom: 0;
+      left: auto;
       width: min(80vw, 320px); // Responsive width
       height: 100vh; // Full height
+      max-height: none;
       border-left: 1px solid var(--color-border); // Border on the left now
       transform: translateX(100%); // Start off-screen
       padding: var(--space-l); // More padding for mobile
       overflow-y: auto; // Ensure scrolling within the drawer
+      border-radius: 0;
 
       &.is-open {
         transform: translateX(0); // Slide in when open

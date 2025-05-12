@@ -2,7 +2,6 @@
 
 <script lang="ts">
   import { currentSection } from "$lib/stores/appState";
-  import Footer from "$lib/components/Footer.svelte";
   import Keyword from "$lib/components/Keyword.svelte";
   import { ArrowRight } from "lucide-svelte";
   import "$lib/styles/chapter-styles.scss";
@@ -101,8 +100,6 @@
     {nextSection}
     {prevSection}
   />
-
-  <Footer />
 </div>
 
 <style lang="scss">

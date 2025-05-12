@@ -2,7 +2,6 @@
 
 <script lang="ts">
   import { currentSection } from "$lib/stores/appState.js";
-  import Footer from "$lib/components/Footer.svelte";
   import { getChapterBySlug } from "$lib/data/chapters";
   import { onMount } from "svelte";
   import PageNav from "$lib/components/PageNav.svelte";
@@ -91,14 +90,11 @@
         </div>
       </div>
 
-      <div class="section-map-column-placeholder">
-        <SectionMap {sectionSlug} />
-      </div>
+      <!-- SectionMap now positioned absolutely -->
+      <SectionMap {sectionSlug} />
     </div>
   </main>
 </div>
-<!-- Footer moved outside the main flex container -->
-<Footer />
 
 <style lang="scss">
   @use "$lib/styles/variables" as vars;
@@ -273,11 +269,11 @@
   .section-layout-wrapper {
     display: flex;
     flex-direction: row;
-    margin-left: var(--sidebar-width);
+    /* margin-left: var(--sidebar-width); */
     justify-content: center;
-    gap: var(--space-l);
     width: 100%;
     box-sizing: border-box;
+    position: relative; /* Add position relative for absolutely positioned SectionMap */
 
     @media (max-width: vars.$breakpoint-xl) {
       flex-direction: column;
@@ -292,7 +288,7 @@
 
   .section-content-column {
     flex: 1;
-    max-width: var(--wide-content-width);
+    max-width: 100%; /* Changed from var(--wide-content-width) to 100% */
     min-width: 0;
     box-sizing: border-box;
 
@@ -301,11 +297,16 @@
     }
   }
 
-  .section-map-column-placeholder {
-    flex-shrink: 0;
+  /* Remove section-map-column-placeholder as we're using absolute positioning instead */
+  :global(.section-map-container) {
+    position: fixed;
+    right: var(--space-m);
+    top: calc(var(--navbar-height, 80px) + var(--space-m));
 
-    @media (max-width: vars.$breakpoint-lg) {
-      display: flex;
+    @media (max-width: vars.$breakpoint-xl) {
+      position: sticky;
+      top: var(--navbar-height, 80px);
+      width: 100%;
     }
   }
 
