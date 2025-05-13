@@ -143,7 +143,7 @@
     class:collapsed={!isMobile && !$sidebarExpanded}
     class:mobile-open={mobileNavOpen}
   >
-    <Navigation {currentChapterSlug} {isMobile} />
+    <Navigation {currentChapterSlug} initialIsMobile={isMobile} />
     {#if !isMobile}
       <button
         class="sidebar-toggle-button"

@@ -1,24 +1,21 @@
-Planning sesssion 3.29.2025
+## Navigation.svelte Accordion Debugging (Ended YYYY-MM-DD)
 
-Focus: Chapter Styling, Font Application, and Dark Mode Exploration
+**Goal:** Fix unexpected behavior where hovering over an _inactive_ chapter accordion in `Navigation.svelte` seemed to incorrectly apply active styles.
 
-Goal: Make tangible progress on the visual refinement of chapter content and explore the implementation of a dark mode theme.
+**Actions Taken:**
 
-Actionable Steps:
+1.  Attempted refactor of `Navigation.svelte` to Svelte 5 Runes (`$state`, `$derived`, `$effect`, `$props`) to modernize and potentially resolve the hover issue.
+2.  Encountered and fixed multiple Svelte 4 -> 5 linter errors (`export let`, `$:`, event directives `on:click`).
+3.  **New Issue Emerged:** After refactoring, the chapter accordions stopped expanding visually when clicked, despite logs confirming the underlying `expandedChapter` state variable _was_ updating correctly.
+4.  **Debugging Findings:**
+    - Logs confirmed the `#if !navCollapsed && expandedChapter === chapter.slug` block evaluated correctly.
+    - Console messages _inside_ the `#if` block executed.
+    - Using `debugger;` inside the `#if` block paused execution as expected.
+    - **Crucially:** When paused, the DOM inspector revealed that the HTML elements defined within the `#if` block (tested with both the original `<ul>` and a simple `<p>`) were _not_ being mounted/rendered in the DOM, even though Svelte was processing the block's logic.
+    - Persistent, unexplained linter errors (`Expected token >`, `Unexpected block closing tag`) arose after attempting to simplify/modify the contents within the problematic `#if` block, even when the syntax appeared correct.
 
-Font Verification & Application:
+**Next Steps (New Chat):**
 
-Chapter Styles Refinement:
-
-Review ChapterTemplate.svelte Styles: Examine the SCSS associated with ChapterTemplate.svelte. Ensure base layout, padding, and margins are consistent with the design goals.
-Graphing Paper Theme: Revisit the graphing paper background implementation (mentioned in Memory). Check if the grid lines align reasonably well with content elements as intended. Make minor adjustments if necessary. completionMarch 29, 2025
-Component Style Consistency: Review the styles of 1-2 core chapter components (e.g., Scenario, Quiz) to ensure they visually integrate well within the chapter layout and theme. Address any glaring inconsistencies. (Defer major component redesigns unless quick fixes are obvious).
-Sidebar Styling (If time permits): Check if the chapter navigation sidebar (Navigation.svelte when used in chapter context) needs basic color adjustments to align with chapter themes (using lighter variable versions as noted in Memory).
-Dark Mode Exploration (Initial Steps):
-
-Next Steps (Beyond Today):
-
-Detailed styling of individual components.
-Full implementation and testing of dark mode across all components.
-Adding LaTeX rendering to FormulaAccordion.
-Addressing scroll handling.
+- Start with the reverted, working version of `Navigation.svelte`.
+- Re-investigate the original hover/active state issue without immediately jumping to a full Svelte 5 refactor.
+- If refactoring is desired later, proceed cautiously, testing the accordion functionality frequently. Consider if there's an interaction with SvelteKit routing or store updates causing the rendering glitch observed.

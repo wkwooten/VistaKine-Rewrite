@@ -132,11 +132,10 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .nav-ite
   background-color: transparent; // Avoids overriding the group background
 }
 
-nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"]:not(.is-active):hover {
-  // Slightly darken sidebar bg on hover
-  background-color: color-mix(in srgb, var(--chapter-sidebar-bg) 90%, black);
-}
 
+nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"]:not(.is-active):hover {
+  background-color: color-mix(in srgb, var(--chapter-bg) 90%, black);
+}
 // Chapter numbers in the sidebar
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
   border-color: var(--chapter-color);

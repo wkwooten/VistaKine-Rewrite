@@ -18,7 +18,7 @@
     tickOpacity = 0.8,
     gridNumberStep = 2,
     gridSizeVal = 12,
-    numberYOffset = 0.5,
+    numberYOffset = -0.5,
     numberOutwardOffset = 0.8,
     yNumberOffset = 0.4, // Offset for Y numbers
     labelOffset = 1.0, // Offset for X, Y, Z labels
@@ -184,7 +184,7 @@
       anchorY="middle"
       depthTest={true}
       backgroundOpacity={1}
-      renderOrder={1}
+      renderOrder={2}
     />
   {/each}
 

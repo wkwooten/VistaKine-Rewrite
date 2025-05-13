@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Color } from "three";
   // Import the ContentCard component
   // import ContentCard from "$lib/components/ContentCard.svelte"; // Removed ContentCard import
 </script>
@@ -144,6 +145,9 @@
     padding-bottom: var(--space-2xs); // Subtle separation
     border-bottom: 1px solid var(--color-border-light); // Subtle separation
     text-align: left; // Center section headings
+    @media (max-width: 768px) {
+      text-align: center;
+    }
   }
 
   .differentiators-grid h4 {

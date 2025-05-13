@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
-  import type { Writable } from "svelte/store"; // Import Writable as type
   import type { Chapter } from "$lib/data/chapters"; // Import only Chapter type
   import {
     Hexagon,
@@ -19,152 +18,132 @@
   import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
   import NavSearch from "$lib/components/NavSearch.svelte";
 
-  // --- Props ---
-  // Slug of the currently viewed chapter, used to initialize the expanded state.
-  export let currentChapterSlug: string | null = null;
+  // --- Props (Svelte 5 Runes) ---
+  let {
+    currentChapterSlug = null,
+    // Rename isMobile prop to avoid conflict with internal state
+    initialIsMobile = false,
+    chapters = getChapterList(),
+  }: {
+    currentChapterSlug?: string | null;
+    initialIsMobile?: boolean;
+    chapters?: Chapter[];
+  } = $props();
+
+  // --- State (Svelte 5 Runes) ---
   // Indicates if the component is in mobile view (detected via media query).
-  export let isMobile: boolean = false;
+  let isMobile = $state(initialIsMobile);
+  // Tracks the currently expanded chapter accordion. Initialized from prop.
+  let expandedChapter = $state<string | null>(currentChapterSlug ?? null);
+  // Used to track chapter changes for the effect below.
+  let previousChapter = $state<string | null>(currentChapterSlug ?? null);
 
-  $: console.log(
-    "Navigation.svelte - currentChapter store value:",
-    $currentChapter
-  );
+  // --- Derived State (Svelte 5 Runes) ---
+  // Determines if the navigation should be visually collapsed.
+  const navCollapsed = $derived(isMobile ? false : !$sidebarExpanded);
 
-  export let chapters: Chapter[] = getChapterList();
-
+  // --- Constants ---
   const iconSize = 18;
 
-  let bodyClassApplied = false; // Track if class is applied
+  // --- Effects (Svelte 5 Runes) ---
 
-  // Toggles the 'body-no-scroll' class based on sidebar state and mobile view
-  // to prevent background scrolling when the navigation might overlay content.
-  // Note: The sidebar itself is display:none on mobile via CSS, but this logic
-  // was likely intended for a potential overlay behavior.
-  function updateBodyScroll() {
+  // Effect to manage body scrolling based on sidebar state and mobile view
+  $effect(() => {
     if (browser) {
+      // Depend on sidebarExpanded store and isMobile state
       const shouldLockScroll = $sidebarExpanded && isMobile;
-      if (shouldLockScroll && !bodyClassApplied) {
+
+      if (shouldLockScroll) {
         document.body.classList.add("body-no-scroll");
-        bodyClassApplied = true;
-      } else if (!shouldLockScroll && bodyClassApplied) {
+      } else {
         document.body.classList.remove("body-no-scroll");
-        bodyClassApplied = false;
       }
+
+      // Cleanup function: remove class when effect re-runs or component unmounts
+      return () => {
+        if (browser) {
+          document.body.classList.remove("body-no-scroll");
+        }
+      };
     }
-  }
+  });
+
+  // Effect to automatically expand the accordion when the currentChapter store changes
+  $effect(() => {
+    // Read currentChapter store to establish dependency
+    const current = $currentChapter;
+
+    // Check against previous state value
+    if (current && current !== previousChapter) {
+      expandedChapter = current;
+    }
+
+    // Update the previousChapter state *after* the check
+    previousChapter = current;
+  });
 
   // --- Lifecycle ---
   // Sets up responsive behavior on mount:
   // 1. Detects initial mobile state based on CSS variable breakpoint.
   // 2. Listens for viewport size changes to update mobile state.
-  // 3. Subscribes to sidebarExpanded store changes.
-  // 4. Calls updateBodyScroll initially and on changes to manage scroll lock.
-  // 5. Cleans up listeners and body class on destroy.
+  // 3. Cleans up listeners on destroy.
   onMount(() => {
     let lgBreakpointValue = "1024px"; // Default fallback
+    let mediaQuery: MediaQueryList | null = null;
+
     if (browser) {
-      // Read the CSS custom property
+      // Read the CSS custom property for the breakpoint
       const styles = getComputedStyle(document.documentElement);
       const bpValue = styles.getPropertyValue("--breakpoint-lg").trim();
       if (bpValue) {
-        // Use the value if found
         lgBreakpointValue = bpValue;
       }
-    }
 
-    const mediaQuery = window.matchMedia(`(max-width: ${lgBreakpointValue})`); // Use dynamic value
-    isMobile = mediaQuery.matches;
+      mediaQuery = window.matchMedia(`(max-width: ${lgBreakpointValue})`);
 
-    const handleResize = () => {
+      // Set initial state
       isMobile = mediaQuery.matches;
-      updateBodyScroll(); // Update on resize
-    };
 
-    mediaQuery.addEventListener("change", handleResize);
-    window.addEventListener("resize", handleResize); // Also listen to resize
+      // Handler to update state on change
+      const handleResize = () => {
+        if (mediaQuery) {
+          isMobile = mediaQuery.matches;
+        }
+      };
 
-    const unsubscribeSidebar = sidebarExpanded.subscribe(() => {
-      updateBodyScroll();
-    });
+      mediaQuery.addEventListener("change", handleResize);
+      // Add resize listener as a fallback/alternative
+      window.addEventListener("resize", handleResize);
 
-    // Initial check
-    updateBodyScroll();
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleResize);
-      window.removeEventListener("resize", handleResize);
-      unsubscribeSidebar();
-      // Clean up body class if component is destroyed while scroll is locked
-      if (bodyClassApplied) {
-        document.body.classList.remove("body-no-scroll");
-      }
-    };
+      // Cleanup function
+      return () => {
+        if (mediaQuery) {
+          mediaQuery.removeEventListener("change", handleResize);
+        }
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   });
 
-  // --- State ---
-  // Initialize the expanded chapter based on the initial prop value.
-  let expandedChapter: string | null = currentChapterSlug;
-
+  // --- Functions ---
   // Toggles the accordion display for a given chapter's sections.
   function toggleChapterSections(chapterSlug: string): void {
     expandedChapter = expandedChapter === chapterSlug ? null : chapterSlug;
   }
 
-  function scrollToSection(sectionId: string): void {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-
-  // Handles clicks on section links.
-  // If the section belongs to the already active chapter, it attempts
-  // to navigate directly to the section's page URL.
-  // If the section belongs to a different chapter, it navigates to that
-  // chapter/section URL.
+  // Handles clicks on section links. Navigates to the section page.
   function handleSectionClick(chapterSlug: string, sectionId: string): void {
-    if ($currentChapter === chapterSlug) {
-      // Find the section slug from the id
-      const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
-      const section = chapter?.sections.find((sec) => sec.id === sectionId);
+    const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
+    const section = chapter?.sections.find((sec) => sec.id === sectionId);
 
-      if (section && browser) {
-        // Navigate to the section page instead of scrolling
-        window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
-      }
-    } else {
-      if (browser) {
-        // Find the section slug
-        const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
-        const section = chapter?.sections.find((sec) => sec.id === sectionId);
+    console.log("[NavDebug] Clicked section link:", chapterSlug, sectionId);
 
-        if (section) {
-          window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
-        } else {
-          // Fallback to chapter page if section not found
-          window.location.href = `/chapter/${chapterSlug}`;
-        }
-      }
+    if (section && browser) {
+      window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
+    } else if (chapter && browser) {
+      // Fallback to chapter page if section not found for some reason
+      window.location.href = `/chapter/${chapterSlug}`;
     }
-  }
-
-  // Determines if the navigation should be visually collapsed.
-  // On mobile, it's controlled differently (always expanded when shown).
-  // On desktop, it depends on the `sidebarExpanded` store.
-  $: navCollapsed = isMobile ? false : !$sidebarExpanded;
-
-  // --- Reactive Logic ---
-  // Tracks the previous chapter to react only when the store changes.
-  let previousChapter: string | null = $currentChapter; // Track previous value
-  // Automatically expands the corresponding chapter accordion when the
-  // `$currentChapter` store changes to a new value.
-  $: {
-    if ($currentChapter && $currentChapter !== previousChapter) {
-      // If the current chapter store changes to a new non-null value,
-      // automatically expand the corresponding accordion.
-      expandedChapter = $currentChapter;
-    }
-    previousChapter = $currentChapter;
   }
 </script>
 
@@ -197,8 +176,8 @@
         class="icon-search"
         role="button"
         tabindex="0"
-        on:click={() => ($sidebarExpanded = true)}
-        on:keydown={(e) => {
+        onclick={() => ($sidebarExpanded = true)}
+        onkeydown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             $sidebarExpanded = true;
@@ -226,6 +205,9 @@
 
       {#each chapters as chapter, index}
         {@const isActive = $currentChapter === chapter.slug}
+        {#if process.env.NODE_ENV === "development"}
+          <!-- Debug logic moved to $effect in script block -->
+        {/if}
         <li
           class="nav-chapter-group {`chapter-${index + 1}-theme`}"
           class:is-active={isActive}
@@ -234,10 +216,22 @@
             class="nav-item chapter-item"
             role="button"
             tabindex="0"
-            on:click={(event) => {
-              // If collapsed, trigger expand/navigate (handled by this div now)
+            onclick={(event) => {
+              const targetElement = event.target as HTMLElement;
+              const isInnerLinkClick =
+                targetElement.closest(".chapter-number") ||
+                targetElement.closest(".chapter-title");
+
               if (navCollapsed) {
-                event.preventDefault(); // Prevent default link navigation if click originated from <a>
+                // If collapsed, this div handles expanding and navigating.
+                // Prevent default for any inner links, as we navigate centrally.
+                event.preventDefault();
+                console.log(
+                  "[NavDebug] Clicked chapter header (collapsed branch):",
+                  chapter.slug,
+                  "Target:",
+                  targetElement.className
+                );
                 $sidebarExpanded = true;
                 expandedChapter = chapter.slug;
                 if (browser) {
@@ -247,11 +241,34 @@
                   }, 0);
                 }
               } else {
-                // If expanded, just toggle sections
-                toggleChapterSections(chapter.slug);
+                // Sidebar is expanded.
+                if (isInnerLinkClick) {
+                  console.log(
+                    "[NavDebug] Clicked inner chapter link (expanded branch):",
+                    chapter.slug,
+                    "Target:",
+                    targetElement.className
+                  );
+                  // If click was on an inner link, let the link itself navigate.
+                  // Ensure its accordion is open if not already.
+                  if (expandedChapter !== chapter.slug) {
+                    expandedChapter = chapter.slug;
+                  }
+                  // We don't event.preventDefault() here, allow <a> to navigate.
+                  return; // Stop this handler from doing more.
+                } else {
+                  // Click was on the div itself (e.g., chevron, padding), not an inner link.
+                  console.log(
+                    "[NavDebug] Clicked chapter header area for toggle (expanded branch):",
+                    chapter.slug,
+                    "Target:",
+                    targetElement.className
+                  );
+                  toggleChapterSections(chapter.slug);
+                }
               }
             }}
-            on:keydown={(e) => {
+            onkeydown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault(); // Prevent default action (scrolling)
                 if (navCollapsed) {
@@ -262,7 +279,7 @@
                     const targetHref = `/chapter/${chapter.slug}`;
                     setTimeout(() => {
                       window.location.href = targetHref;
-                    }, 0);
+                    }, 0); // Use setTimeout
                   }
                 } else {
                   // If expanded, just toggle sections
@@ -319,8 +336,7 @@
                     href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
                     class:is-active={$page.params.section === section.slug}
-                    on:click={() =>
-                      handleSectionClick(chapter.slug, section.id)}
+                    onclick={() => handleSectionClick(chapter.slug, section.id)}
                   >
                     <span>{section.number} - {section.title}</span>
                   </a>
@@ -408,6 +424,14 @@
         }
       }
     }
+  }
+
+  // Added: Hover background for non-chapter, non-active items
+  li:not(.nav-chapter-group):not(.is-active):hover {
+    background-color: rgba(
+      var(--color-accent-rgb),
+      0.1
+    ); // Use transparent accent color
   }
 
   nav {
@@ -676,7 +700,7 @@
 
     &:hover {
       text-decoration: underline;
-      color: var(--color-accent);
+      color: var(--chapter-color-dark);
     }
 
     span {
@@ -722,7 +746,7 @@
     font-weight: bold;
     &:hover {
       text-decoration: underline;
-      color: var(--color-accent);
+      color: var(--chapter-color-dark);
     }
   }
 
@@ -775,7 +799,6 @@
     box-sizing: border-box;
 
     &:hover {
-      background-color: var(--color-accent-hover-bg);
       text-decoration: underline;
       color: var(--chapter-color-dark);
       transition:
@@ -784,12 +807,12 @@
     }
 
     &.is-active {
-      background-color: var(--chapter-bg);
+      background-color: color-mix(in srgb, var(--chapter-bg) 85%, black);
       font-weight: bold;
       color: var(--chapter-color-dark);
 
       &:hover {
-        background-color: var(--color-accent-hover-bg);
+        background-color: color-mix(in srgb, var(--chapter-bg) 85%, black);
       }
     }
 
@@ -833,7 +856,12 @@
     }
 
     &:hover {
-      background-color: rgba(59, 130, 246, 0.1);
+      background-color: color-mix(
+        in srgb,
+        var(--chapter-sidebar-bg, var(--color-surface-hover)),
+        /* Use chapter theme or fallback */ 90%,
+        transparent
+      );
     }
   }
 
@@ -852,6 +880,23 @@
     .chapter-title {
       color: var(--chapter-color-dark);
       font-weight: bold;
+    }
+  }
+
+  // Added: Hover styles for INACTIVE chapter items
+  .nav-chapter-group:not(.is-active) > .chapter-item:hover {
+    // Set text/icon color for the item, which chevron inherits
+    color: var(--chapter-color-dark);
+
+    // Explicitly set text color for children, overriding general nav-item hover
+    .chapter-title span,
+    .chapter-number {
+      color: var(--chapter-color-dark);
+    }
+
+    // Style chapter number border on hover
+    .chapter-number {
+      border-color: var(--chapter-color-dark);
     }
   }
 </style>
