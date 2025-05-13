@@ -14,6 +14,12 @@ export const bedEdgesColor = writable<string>('#ADD8E6');
 export const gridCellColor = writable<string>('#ADD8E6');
 export const gridSectionColor = writable<string>('#64B5F6');
 export const backgroundColor = writable<string>('#ffffff');
+export const sceneGroundColor = writable<string>('#e0e0e0');
+
+// --- Accent Colors (New) ---
+export const accentColor = writable<string>('#004d9f'); // Default from $color-accent (light)
+export const accentLightColor = writable<string>('#64B5F6'); // Default from $color-accent-light (light)
+export const accentHoverColor = writable<string>('#1565C0'); // Default from $color-accent-hover (light)
 
 // --- Vector Builder Specific Colors ---
 export const vectorColor = writable<string>('#d32f2f');
@@ -69,6 +75,12 @@ export function updateThemeColors() {
 			updateColorStore(gridSectionColor, '--scene-grid-section-color');
 			updateColorStore(backgroundColor, '--color-background');
 			updateColorStore(textColor, '--color-text-primary');
+			updateColorStore(sceneGroundColor, '--scene-ground-color');
+
+			// Update Accent Colors (New)
+			updateColorStore(accentColor, '--color-accent');
+			updateColorStore(accentLightColor, '--color-accent-light');
+			updateColorStore(accentHoverColor, '--color-accent-hover');
 
 			// Update vector builder specific colors
 			updateColorStore(vectorColor, '--vector-color');

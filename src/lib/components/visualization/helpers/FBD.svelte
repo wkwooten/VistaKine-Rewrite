@@ -19,6 +19,7 @@
   import { fbdVisibilityStore } from "$lib/stores/fbdStores";
   import { isFBDMenuOpen } from "$lib/stores/uiStores";
   import SceneLabel from "./SceneLabel.svelte"; // IMPORT SceneLabel
+  import { surfaceColor } from "$lib/stores/themeColors"; // Added import
 
   // Use $props() instead of export let in runes mode
   let {
@@ -107,11 +108,6 @@
     "position",
     new Float32BufferAttribute(zAxisVertices, 3)
   );
-
-  // REMOVED - computeLineDistances() seems deprecated/unnecessary
-  // xAxisGeometry.computeLineDistances();
-  // yAxisGeometry.computeLineDistances();
-  // zAxisGeometry.computeLineDistances();
 
   const xAxisMaterial = new LineDashedMaterial({
     color: 0xff0000,
@@ -361,7 +357,9 @@
     // --- Update Velocity Vector (Locally relative to COM) ---
     const velocityLength = linvelVec.length();
     const isVelocityVisible =
-      $fbdVisibilityStore.velocity && velocityLength > MIN_VISIBLE_LENGTH;
+      $isFBDMenuOpen &&
+      $fbdVisibilityStore.velocity &&
+      velocityLength > MIN_VISIBLE_LENGTH;
     let velocityArrowTipLocal = new Vector3();
     if (velocityArrowHelperRef) {
       velocityArrowHelperRef.visible = isVelocityVisible;
@@ -392,7 +390,9 @@
     // --- Update Weight Vector (Locally relative to COM) ---
     const weightMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
     const isWeightVisible =
-      $fbdVisibilityStore.weight && weightMagnitude > MIN_VISIBLE_LENGTH;
+      $isFBDMenuOpen &&
+      $fbdVisibilityStore.weight &&
+      weightMagnitude > MIN_VISIBLE_LENGTH;
     let weightArrowTipLocal = new Vector3();
     const weightDirection = new Vector3(0, -1, 0);
     const visualWeightLength = weightMagnitude * 0.1 * vectorScale;
@@ -426,6 +426,7 @@
     // --- Update Acceleration Vector (Locally relative to COM) ---
     const accelerationLength = smoothedAcceleration.length();
     const isAccelerationVisible =
+      $isFBDMenuOpen &&
       $fbdVisibilityStore.acceleration &&
       accelerationLength > MIN_VISIBLE_LENGTH;
     let accelerationArrowTipLocal = new Vector3();
@@ -463,7 +464,9 @@
     // --- Update Net Force Vector (Locally relative to COM) ---
     const netForceLength = netForce.length();
     const isNetForceVisible =
-      $fbdVisibilityStore.netForce && netForceLength > MIN_VISIBLE_LENGTH;
+      $isFBDMenuOpen &&
+      $fbdVisibilityStore.netForce &&
+      netForceLength > MIN_VISIBLE_LENGTH;
     let netForceArrowTipLocal = new Vector3();
     let visualNetForceLength = 0;
     if (netForceArrowHelperRef) {
@@ -497,6 +500,7 @@
     // --- Update Normal Force Vector (Locally relative to COM) ---
     const normalForceLength = normalForce.length();
     const isNormalForceVisible =
+      $isFBDMenuOpen &&
       $fbdVisibilityStore.normalForce &&
       normalForceLength > MIN_VISIBLE_LENGTH &&
       isGrounded;
@@ -535,6 +539,7 @@
     // --- Update Friction Force Vector (Locally relative to COM) ---
     const frictionForceLength = frictionForce.length();
     const isFrictionVisible =
+      $isFBDMenuOpen &&
       $fbdVisibilityStore.friction &&
       frictionForceLength > MIN_VISIBLE_LENGTH &&
       isSliding;
@@ -583,16 +588,19 @@
     bind:ref={xAxisRef}
     geometry={xAxisGeometry}
     material={xAxisMaterial}
+    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
   />
   <T.LineSegments
     bind:ref={yAxisRef}
     geometry={yAxisGeometry}
     material={yAxisMaterial}
+    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
   />
   <T.LineSegments
     bind:ref={zAxisRef}
     geometry={zAxisGeometry}
     material={zAxisMaterial}
+    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
   />
 
   <!-- INNER group positioned at COM relative to RB Origin -->
@@ -604,12 +612,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Velocity Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="v"
       position={velocityLabelLocalPosition}
-      visible={velocityLabelVisible}
+      visible={$isFBDMenuOpen && velocityLabelVisible}
       color={velocityColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
@@ -625,12 +634,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Weight Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="W"
       position={weightLabelLocalPosition}
-      visible={weightLabelVisible}
+      visible={$isFBDMenuOpen && weightLabelVisible}
       color={weightColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
@@ -646,12 +656,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Acceleration Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="a"
       position={accelerationLabelLocalPosition}
-      visible={accelerationLabelVisible}
+      visible={$isFBDMenuOpen && accelerationLabelVisible}
       color={accelerationColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
@@ -667,12 +678,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Net Force Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="ΣF"
       position={netForceLabelLocalPosition}
-      visible={netForceLabelVisible}
+      visible={$isFBDMenuOpen && netForceLabelVisible}
       color={netForceColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
@@ -688,12 +700,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Normal Force Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="N"
       position={normalForceLabelLocalPosition}
-      visible={normalForceLabelVisible}
+      visible={$isFBDMenuOpen && normalForceLabelVisible}
       color={normalForceColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
@@ -709,12 +722,13 @@
       length={MIN_ARROW_LENGTH}
     />
     <!-- Friction Force Text Label (position is relative to COM) -->
-    <!-- REPLACED Billboard/Text with SceneLabel -->
     <SceneLabel
       text="Ff"
       position={frictionLabelLocalPosition}
-      visible={frictionLabelVisible}
+      visible={$isFBDMenuOpen && frictionLabelVisible}
       color={frictionColor}
+      backgroundColor={$surfaceColor}
+      backgroundOpacity={1}
       fontSize={0.75 * vectorScale}
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}

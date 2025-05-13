@@ -79,14 +79,33 @@
     </p>
     <p>
       To map locations precisely in the space around us, we use three reference
-      lines, or <strong>axes</strong> (<strong>X</strong>,
-      <strong>Y</strong>, and <strong>Z</strong>), which meet at a single point
+      lines, or <strong>axes</strong> (yes, the plural of axis is axes). Each
+      line points in a different direction, and all axes meet at a single point
       called the <strong>origin</strong>. This <Keyword
         term="Cartesian coordinate system"
       /> is the standard map for <Keyword term="3D space" />. Engineers
       typically orient these using a <Keyword
         term="right-handed coordinate system"
       /> convention.
+    </p>
+
+    <p>
+      These axes are more than just lines; they establish a framework that
+      defines direction and scale within our 3D map. Each axis provides a clear,
+      unambiguous direction (like 'forward', 'up', or 'right'). The units along
+      these axes (meters, inches, etc.) provide the scale needed to measure
+      distances and positions precisely.
+    </p>
+
+    <p>
+      In physics, this coordinate system is indispensable. We use these axes to
+      define the <strong>position</strong> of an object in space at any given
+      time. We describe its <strong>motion</strong> by how its coordinates change
+      over time, defining concepts like velocity and acceleration relative to these
+      fixed directions. Forces, fields, and other physical quantities that have both
+      magnitude and direction are also described using components along these axes.
+      It's the universal language for quantifying and analyzing physical events in
+      space.
     </p>
   </ContentCard>
 

@@ -11,10 +11,14 @@
   import { RigidBodyType } from "@dimforge/rapier3d-compat";
   import type { RigidBody as RapierRigidBody } from "@dimforge/rapier3d-compat";
   import { Vector3, Group, Quaternion, Euler } from "three";
-  import { onMount } from "svelte";
+  // Remove onMount if it's no longer needed after removing color fetching logic
+  // import { onMount } from "svelte";
 
   import { isDragging } from "$lib/stores/draggingStore";
   import { followedObject } from "$lib/stores/followedObjectStore";
+  // Import color stores
+  import { gridCellColor, gridSectionColor } from "$lib/stores/themeColors";
+
   import Ground from "../elements/constructs/Ground.svelte";
   import Cube from "../elements/constructs/Cube.svelte";
   import Skateboard from "../elements/constructs/Skateboard.svelte";
@@ -30,36 +34,22 @@
   let controls = $state<ThreeOrbitControls | undefined>(undefined);
   let previousFollowedObject: Group | null = null;
 
-  // State for scene colors (reactive)
-  let gridCellColor = $state("#ADD8E6"); // Default light mode
-  let gridSectionColor = $state("#64B5F6"); // Default light mode
+  // Remove local state for scene colors, they will come from the store
+  // let gridCellColor = $state("#ADD8E6");
+  // let gridSectionColor = $state("#64B5F6");
 
-  // Fetch CSS variable colors on mount (client-side only)
+  // Remove onMount logic for fetching CSS variables and updateColors function
+  /*
   onMount(() => {
     const computedStyle = getComputedStyle(document.documentElement);
-    gridCellColor =
-      computedStyle.getPropertyValue("--scene-grid-cell-color").trim() ||
-      gridCellColor;
-    gridSectionColor =
-      computedStyle.getPropertyValue("--scene-grid-section-color").trim() ||
-      gridSectionColor;
-
-    // Optional: Add listener for theme changes if you have a manual toggle
-    // This example assumes you might have a custom event or observable for theme changes
-    // themeStore.subscribe(newTheme => { updateColors(); });
-    // Or using MutationObserver on <html> element's class/style attribute
+    gridCellColor = // ...
+    gridSectionColor = // ...
   });
 
-  // Function to update colors if needed (e.g., on theme toggle)
   function updateColors() {
-    const computedStyle = getComputedStyle(document.documentElement);
-    gridCellColor =
-      computedStyle.getPropertyValue("--scene-grid-cell-color").trim() ||
-      gridCellColor;
-    gridSectionColor =
-      computedStyle.getPropertyValue("--scene-grid-section-color").trim() ||
-      gridSectionColor;
+    // ...
   }
+  */
 
   // Cube Data
   const cubeData = [
@@ -254,8 +244,8 @@
   fadeOrigin={new Vector3(0, 0, 0)}
   sectionsSize={10}
   sectionThickness={1}
-  cellColor={gridCellColor}
-  sectionColor={gridSectionColor}
+  cellColor={$gridCellColor}
+  sectionColor={$gridSectionColor}
   fadeDistance={150}
 />
 <Ground />
