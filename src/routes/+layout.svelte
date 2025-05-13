@@ -1,9 +1,10 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { onMount, onDestroy } from "svelte";
+  import { afterNavigate } from "$app/navigation";
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
-  import { sidebarExpanded } from "$lib/stores/appState";
+  import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
   import { parallaxBackground } from "$lib/scripts/parallax";
   import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
   import { browser } from "$app/environment";
@@ -88,6 +89,35 @@
 
   // CONVERT $: assignment to $derived
   // $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
+
+  // ADDED: afterNavigate logic to update currentChapter store
+  afterNavigate((navigation) => {
+    if (browser) {
+      // Ensure this runs only on the client
+      const routeId = navigation.to?.route?.id;
+      const chapterSlugParam = navigation.to?.params?.slug;
+
+      // Check if it's a chapter page (either chapter intro or a specific section)
+      if (
+        routeId &&
+        (routeId.startsWith("/chapter/[slug]/[section]") ||
+          routeId === "/chapter/[slug]")
+      ) {
+        if (chapterSlugParam) {
+          currentChapter.set(chapterSlugParam);
+        } else {
+          // This case should ideally not happen if routeId implies a slug exists
+          console.warn(
+            "[Layout] Chapter route detected but no slug param found. Clearing chapter."
+          );
+          currentChapter.set(null);
+        }
+      } else {
+        // Not a chapter page, clear the current chapter
+        currentChapter.set(null);
+      }
+    }
+  });
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />

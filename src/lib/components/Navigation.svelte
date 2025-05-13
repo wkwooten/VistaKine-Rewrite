@@ -426,12 +426,10 @@
     }
   }
 
-  // Added: Hover background for non-chapter, non-active items
-  li:not(.nav-chapter-group):not(.is-active):hover {
-    background-color: rgba(
-      var(--color-accent-rgb),
-      0.1
-    ); // Use transparent accent color
+  // Specific hover rule for top-level generic items
+  .nav-items > li:not(.nav-chapter-group):not(.is-active):hover,
+  .bottom-item > li:not(.is-active):hover {
+    background-color: color-mix(in srgb, var(--color-surface) 90%, black);
   }
 
   nav {
