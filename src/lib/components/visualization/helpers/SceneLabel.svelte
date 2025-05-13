@@ -19,6 +19,7 @@
  @prop {boolean} [depthTest=true] - Whether the label should be depth-tested against other scene objects. Defaults to true (respects scene depth).
  @prop {number} [renderOrder] - Render order for the background mesh.
  @prop {Record<string, any>} [rest] - Any additional props will be passed directly to the underlying Threlte <Text> component (e.g., maxWidth, letterSpacing).
+ @prop {boolean} [visible=true] - Whether the label is visible.
 -->
 <script lang="ts">
   import { T } from "@threlte/core";
@@ -59,6 +60,7 @@
     anchorY = "middle" as AnchorY,
     depthTest = true,
     renderOrder,
+    visible = true,
     // Capture any other props passed in
     ...rest // Capture remaining props
   } = $props<{
@@ -75,6 +77,7 @@
     anchorY?: AnchorY;
     depthTest?: boolean;
     renderOrder?: number;
+    visible?: boolean;
     // Allow any other Text props via index signature
     [key: string]: any;
   }>();
@@ -254,7 +257,7 @@
   );
 </script>
 
-<Billboard position={finalPosition}>
+<Billboard {visible} position={finalPosition}>
   <!-- Manual Background Plane using Custom Geometry -->
   {#if materialBackgroundColor && labelBackgroundGeometry}
     <T.Mesh position.z={-0.01} {renderOrder} {depthTest}>
