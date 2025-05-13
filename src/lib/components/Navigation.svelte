@@ -777,7 +777,7 @@
     &:hover {
       background-color: var(--color-accent-hover-bg);
       text-decoration: underline;
-      color: var(--color-accent);
+      color: var(--chapter-color-dark);
       transition:
         background-color 0.2s ease,
         color 0.2s ease;
@@ -786,7 +786,7 @@
     &.is-active {
       background-color: var(--chapter-bg);
       font-weight: bold;
-      color: var(--color-accent);
+      color: var(--chapter-color-dark);
 
       &:hover {
         background-color: var(--color-accent-hover-bg);
@@ -848,5 +848,10 @@
 
   .nav-chapter-group.is-active > .chapter-item {
     background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
+
+    .chapter-title {
+      color: var(--chapter-color-dark);
+      font-weight: bold;
+    }
   }
 </style>
