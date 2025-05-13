@@ -111,8 +111,9 @@
     color: var(--chapter-color);
     border-bottom: 3px solid var(--chapter-color);
     margin-top: 0;
+    background: var(--color-background);
     margin-bottom: var(--space-l);
-    padding: var(--space-s) 0;
+    padding: var(--space-s);
     font-size: var(--step-4);
     font-weight: 700;
     text-align: center;
@@ -288,25 +289,26 @@
 
   .section-content-column {
     flex: 1;
-    max-width: 100%; /* Changed from var(--wide-content-width) to 100% */
+    max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
-
-    @media (max-width: vars.$breakpoint-lg) {
-      max-width: 100%;
-    }
+    margin: 0 auto;
   }
 
-  /* Remove section-map-column-placeholder as we're using absolute positioning instead */
+  /* Update SectionMap positioning to match new layout structure */
   :global(.section-map-container) {
-    position: fixed;
-    right: var(--space-m);
-    top: calc(var(--navbar-height, 80px) + var(--space-m));
-
-    @media (max-width: vars.$breakpoint-xl) {
-      position: sticky;
-      top: var(--navbar-height, 80px);
-      width: 100%;
+    @media (min-width: calc(vars.$breakpoint-xl + 1px)) {
+      position: fixed;
+      right: max(
+        calc(
+          (100% - var(--max-content-width, 1400px)) / 2 - var(
+              --section-map-width,
+              220px
+            ) - var(--space-l)
+        ),
+        var(--space-m)
+      );
+      top: calc(var(--navbar-height, 80px) + var(--space-m));
     }
   }
 

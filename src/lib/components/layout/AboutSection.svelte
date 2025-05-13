@@ -23,47 +23,6 @@
   </div>
   <!-- </ContentCard> -->
 
-  <!-- <ContentCard blockType="about-differentiators" layoutWidth="full"> -->
-  <div class="about-section">
-    <h3>What Makes VistaKine Different?</h3>
-    <div class="differentiators-grid">
-      <div>
-        <div class="visual-placeholder small">
-          <p>Icon</p>
-        </div>
-        <h4 class="differentiator-title">A Bridge to Higher Learning</h4>
-        <p>
-          Master foundational 3D vector concepts and mechanics, building a solid
-          base for success in advanced university physics and engineering
-          courses.
-        </p>
-      </div>
-      <div>
-        <div class="visual-placeholder small">
-          <p>Icon</p>
-        </div>
-        <h4 class="differentiator-title">Intuition First, Mastery Follows</h4>
-        <p>
-          We focus on building deep conceptual understanding. Manipulate 3D
-          models, experiment with physics parameters, and see instant results to
-          grasp core principles intuitively.
-        </p>
-      </div>
-      <div>
-        <div class="visual-placeholder small">
-          <p>Icon</p>
-        </div>
-        <h4 class="differentiator-title">Explore & Discover</h4>
-        <p>
-          Our interactive exercises are your playground. Experiment freely with
-          concepts like forces and motion, and discover physics principles for
-          yourself in a hands-on way.
-        </p>
-      </div>
-    </div>
-  </div>
-  <!-- </ContentCard> -->
-
   <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
   <div class="features about-section">
     <!-- <ContentCard blockType="feature-block" layoutWidth="full"> -->
@@ -113,18 +72,92 @@
     </div>
     <!-- </ContentCard> -->
   </div>
+
+  <!-- <ContentCard blockType="about-differentiators" layoutWidth="full"> -->
+  <div class="about-section">
+    <h3>What Makes VistaKine Different?</h3>
+    <div class="differentiators-grid">
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">A Bridge to Higher Learning</h4>
+        <p>
+          Master foundational 3D vector concepts and mechanics, building a solid
+          base for success in advanced university physics and engineering
+          courses.
+        </p>
+      </div>
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">Intuition First, Mastery Follows</h4>
+        <p>
+          We focus on building deep conceptual understanding. Manipulate 3D
+          models, experiment with physics parameters, and see instant results to
+          grasp core principles intuitively.
+        </p>
+      </div>
+      <div>
+        <div class="visual-placeholder small">
+          <p>Icon</p>
+        </div>
+        <h4 class="differentiator-title">Explore & Discover</h4>
+        <p>
+          Our interactive exercises are your playground. Experiment freely with
+          concepts like forces and motion, and discover physics principles for
+          yourself in a hands-on way.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- </ContentCard> -->
+
   <!-- Removed the outer .container div as ContentCard handles width/centering -->
 </section>
 
 <style lang="scss">
+  @use "$lib/styles/typography" as typography; // Import typography mixins
+
   .about {
     display: flex;
     flex-direction: column;
-    margin-top: var(--space-3xl); // Added top margin for separation
-    min-height: auto; // Let content define height
+    margin-top: var(--space-3xl);
+    min-height: auto;
     padding: var(--space-xl) var(--space-m);
-    gap: var(--space-xl);
+    gap: var(--space-xl); // Increased gap between major sections
     /* Remove background-color, ContentCards handle their own */
+  }
+
+  h2 {
+    @include typography.heading-2; // Use mixin for h2
+    margin-bottom: var(--space-s); // Add spacing below heading
+    padding-bottom: var(--space-2xs); // Subtle separation
+    border-bottom: 1px solid var(--color-border-light); // Subtle separation
+    text-align: center; // Center the main heading
+  }
+
+  h3 {
+    @include typography.heading-3; // Use mixin for h3
+    margin-bottom: var(--space-s); // Add spacing below heading
+    padding-bottom: var(--space-2xs); // Subtle separation
+    border-bottom: 1px solid var(--color-border-light); // Subtle separation
+    text-align: left; // Center section headings
+  }
+
+  .differentiators-grid h4 {
+    @include typography.heading-4; // Use mixin for h4 within differentiators
+    margin-bottom: var(--space-xs); // Adjust spacing
+    text-align: center; // Center differentiator titles
+  }
+
+  .feature-block h3 {
+    @include typography.heading-3; // Use mixin for h3 within feature blocks
+    margin-bottom: var(--space-xs); // Adjust spacing
+    // Keep alignment based on flex context (center in mobile, start/end in desktop)
+    border-bottom: none; // Remove border for these specific h3s
+    padding-bottom: 0;
   }
 
   .about-section {
@@ -156,6 +189,26 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--space-m);
     margin-top: var(--space-m);
+
+    div {
+      // Target direct div children for styling
+      padding: var(--space-s);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface); // Subtle background
+      box-shadow: var(--shadow-sm);
+      transition:
+        transform 0.2s ease-out,
+        box-shadow 0.2s ease-out; // Add transition
+
+      &:hover {
+        // Optional: Add hover effect if desired
+        // background-color: var(--color-surface-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       gap: var(--space-s);
@@ -215,8 +268,8 @@
   }
 
   .visual-placeholder {
-    background-color: var(--color-surface);
-    border: 1px dashed var(--color-border);
+    background-color: var(--color-background); // Use main background
+    border: 1px dashed var(--color-border-light); // Lighter dashed border
     min-height: 150px;
     display: flex;
     align-items: center;

@@ -267,7 +267,7 @@
     }
 
     &.section-map-toggle {
-      display: none; // Hide by default (on desktop)
+      display: flex; // Show on all screen sizes now
       justify-content: center;
       text-align: center;
       flex-grow: 0;
@@ -278,6 +278,10 @@
 
       .nav-content {
         align-items: center;
+      }
+
+      @media (min-width: calc(vars.$breakpoint-xl + 1px)) {
+        display: none; // Hide on very large screens where section map is always visible
       }
     }
 
@@ -341,7 +345,6 @@
 
       // Mobile TOC specific styles - Now Section Map Toggle
       &.section-map-toggle {
-        display: flex; // Show on mobile (overrides default)
         flex-grow: 0;
         flex-basis: auto;
         padding-left: var(--space-s);

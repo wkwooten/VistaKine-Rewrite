@@ -295,7 +295,25 @@
     z-index: 50; // Above overlay
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    transition: transform 0.3s ease; // Add transition for mobile slide
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+
+    // Only show on extra large screens by default (when positioned fixed)
+    @media (max-width: vars.$breakpoint-xl) {
+      opacity: 0;
+      pointer-events: none;
+      position: fixed;
+      top: var(--navbar-height, 80px);
+      right: var(--space-m);
+      transform: translateX(20px);
+
+      &.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+      }
+    }
 
     // Mobile Styles (Off-canvas Drawer)
     @media (max-width: vars.$breakpoint-lg) {
@@ -312,6 +330,7 @@
       padding: var(--space-l); // More padding for mobile
       overflow-y: auto; // Ensure scrolling within the drawer
       border-radius: 0;
+      opacity: 1; // Reset opacity on mobile
 
       &.is-open {
         transform: translateX(0); // Slide in when open
