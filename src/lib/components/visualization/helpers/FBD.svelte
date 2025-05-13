@@ -623,7 +623,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
+      depthTest={true}
       renderOrder={1}
     />
 
@@ -645,7 +645,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
+      depthTest={true}
       renderOrder={1}
     />
 
@@ -667,7 +667,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
+      depthTest={true}
       renderOrder={1}
     />
 
@@ -689,7 +689,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
+      depthTest={true}
       renderOrder={1}
     />
 
