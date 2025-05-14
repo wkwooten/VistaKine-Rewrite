@@ -3,7 +3,7 @@ import { getChapterBySlug } from '$lib/data/chapters.js';
 import type { PageLoad } from './$types.js';
 
 // Import stores
-import { currentChapter, currentSection as appStateCurrentSection } from '$lib/stores/appState.js';
+import { currentChapter, currentSection as appStateCurrentSection } from '$lib/stores/appState.ts';
 
 // Create a type-safe mapping for dynamic imports
 type SectionImports = {

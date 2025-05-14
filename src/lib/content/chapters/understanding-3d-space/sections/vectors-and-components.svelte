@@ -13,7 +13,7 @@
 </script>
 
 <script lang="ts">
-  import { currentSection } from "$lib/stores/appState.js";
+  import { currentSection } from "$lib/stores/appState.ts";
   // REMOVE: import { intersect, type IntersectDetail } from "$lib/utils/intersection"; // No longer needed
   import FormulaAccordion from "$lib/components/FormulaAccordion.svelte";
   import SectionReview from "$lib/components/SectionReview.svelte";

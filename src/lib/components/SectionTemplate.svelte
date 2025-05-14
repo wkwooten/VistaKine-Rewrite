@@ -1,7 +1,7 @@
 <svelte:options namespace="html" />
 
 <script lang="ts">
-  import { currentSection } from "$lib/stores/appState.js";
+  import { currentSection } from "$lib/stores/appState.ts";
   import { getChapterBySlug } from "$lib/data/chapters";
   import { onMount } from "svelte";
   import PageNav from "$lib/components/PageNav.svelte";

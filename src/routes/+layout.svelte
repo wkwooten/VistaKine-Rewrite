@@ -5,8 +5,14 @@
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
+  import { authState, logout as authLogout, type User } from "$lib/stores/auth";
   import { parallaxBackground } from "$lib/scripts/parallax";
-  import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
+  import {
+    ChevronLeft,
+    ChevronRight,
+    Menu,
+    User as UserIcon,
+  } from "lucide-svelte";
   import { browser } from "$app/environment";
   import SectionMap from "$lib/components/ui/SectionMap.svelte";
   import { sectionMapOpen } from "$lib/stores/uiStores";
@@ -118,6 +124,13 @@
       }
     }
   });
+
+  // Helper for logout
+  function handleLogout() {
+    authLogout();
+    // Optionally redirect to home or login page
+    // goto('/');
+  }
 </script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -156,6 +169,33 @@
   class:sidebar-collapsed={!$sidebarExpanded}
   class:mobile-nav-active={mobileNavOpen}
 >
+  <!-- ADDED: Auth UI Block -->
+  <div class="auth-widget">
+    {#if $authState.isAuthenticated && $authState.user}
+      {@const user = $authState.user}
+      <div class="user-profile">
+        <div class="avatar-container">
+          {#if user.avatar}
+            <img src={user.avatar} alt="User avatar" class="avatar-image" />
+          {:else}
+            <UserIcon size={24} class="avatar-placeholder" />
+          {/if}
+        </div>
+        <div class="user-details">
+          <span class="username">{user.username}</span>
+          <button class="sign-out-button" onclick={handleLogout}>
+            Sign out
+          </button>
+        </div>
+      </div>
+    {:else}
+      <div class="auth-buttons">
+        <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
+        <a href="/login" class="auth-button sign-in-button">Sign In</a>
+      </div>
+    {/if}
+  </div>
+
   <!-- Mobile Menu Button - MOVED here -->
   {#if isMobile}
     <button
@@ -417,6 +457,103 @@
 
     @media (max-width: variables.$breakpoint-lg) {
       padding: var(--space-s);
+    }
+  }
+
+  /* ADDED: Auth Widget Styles */
+  .auth-widget {
+    position: fixed; /* Or absolute if app-container is the positioning context */
+    top: var(--space-s, 10px);
+    right: var(--space-s, 10px);
+    z-index: 1100; /* Ensure it's above most other elements */
+    display: flex;
+    gap: var(--space-xs, 8px);
+  }
+
+  .auth-buttons {
+    display: flex;
+    gap: var(--space-xs, 8px);
+  }
+
+  .auth-button {
+    padding: var(--space-xs) var(--space-s);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--step--1);
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-hover);
+    }
+
+    &.sign-up-button {
+      /* Optional: different styling for sign up */
+    }
+    &.sign-in-button {
+      /* Optional: different styling for sign in */
+    }
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    background-color: var(--color-surface-raised);
+    padding: var(--space-xs) var(--space-s);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .avatar-container {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-surface-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* To clip avatar image if it's not perfectly round */
+  }
+
+  .avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: var(--step--1);
+  }
+
+  .username {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .sign-out-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: var(--step--2);
+
+    &:hover {
+      color: var(--color-accent);
     }
   }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import SectionTemplate from "$lib/components/SectionTemplate.svelte";
-  import { currentSection } from "$lib/stores/appState";
+  import { currentSection } from "$lib/stores/appState.ts";
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
 

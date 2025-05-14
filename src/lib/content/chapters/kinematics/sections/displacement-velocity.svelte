@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSection } from "$lib/stores/appState.js";
+  import { currentSection } from "$lib/stores/appState.ts";
   import FormulaAccordion from "$lib/components/FormulaAccordion.svelte";
   import GuidedCalculation from "$lib/components/GuidedCalculation.svelte";
   import SectionReview from "$lib/components/SectionReview.svelte";

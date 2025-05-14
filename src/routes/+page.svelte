@@ -48,7 +48,7 @@
               class="btn primary">Begin Learning</a
             >
             <!-- Placeholder Sign In button -->
-            <button class="btn secondary">Sign In</button>
+            <button class="btn secondary">Sign Up</button>
             <!-- Using secondary style for now -->
           </div>
         </div>

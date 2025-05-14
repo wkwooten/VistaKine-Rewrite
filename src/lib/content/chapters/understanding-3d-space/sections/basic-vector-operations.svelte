@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSection } from "$lib/stores/appState.js";
+  import { currentSection } from "$lib/stores/appState.ts";
   // import { intersect, type IntersectDetail } from "$lib/utils/intersection";
   import SectionReview from "$lib/components/SectionReview.svelte";
   import Quiz from "$lib/components/Quiz.svelte";

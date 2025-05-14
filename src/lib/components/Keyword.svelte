@@ -2,7 +2,7 @@
   // Runes ($state, $derived, $effect) are automatically available in Svelte 5
   import glossaryData from "$lib/data/glossary-data";
   import type { GlossaryTerm } from "$lib/data/glossary-data";
-  import { currentChapter } from "$lib/stores/appState.js"; // Import the store
+  import { currentChapter } from "$lib/stores/appState.ts"; // Import the store
 
   let { term }: { term: string } = $props();
 
