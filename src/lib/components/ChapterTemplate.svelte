@@ -200,10 +200,6 @@
     text-decoration: underline;
   }
 
-  .section-card:hover h2 {
-    color: var(--color-accent);
-  }
-
   .chapter-nav {
     display: flex;
     margin-top: var(--space-lg);

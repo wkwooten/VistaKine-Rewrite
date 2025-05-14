@@ -36,12 +36,14 @@
               {#each chapter.sections as section}
                 <li>
                   <a href={`/chapter/${chapter.slug}/${section.slug}`}>
-                    <span class="section-number">{section.number}</span
-                    >{section.title}
+                    <div>
+                      <span class="section-number">{section.number}</span
+                      >{section.title}
+                    </div>
+                    {#if section.description}
+                      <p class="section-description">{section.description}</p>
+                    {/if}
                   </a>
-                  {#if section.description}
-                    <p class="section-description">{section.description}</p>
-                  {/if}
                 </li>
               {/each}
             </ul>
@@ -98,22 +100,30 @@
       a {
         text-decoration: none;
         font-size: var(--step-1);
-        font-weight: 600;
         color: var(--color-text-primary);
         display: block;
-        margin-bottom: var(--space-3xs);
+        padding: var(--space-xs) var(--space-s);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-s);
+        transition:
+          background-color 0.2s ease,
+          border-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+          background-color: var(--color-surface-hover);
+          border-color: var(--color-accent);
+          outline: none;
+        }
+
+        &:focus-visible {
+          box-shadow: 0 0 0 2px var(--color-accent-focus);
+        }
 
         .section-number {
           margin-right: var(--space-xs);
           color: var(--color-accent);
           font-weight: bold;
-        }
-
-        &:hover {
-          color: var(--color-accent);
-          .section-number {
-            color: var(--color-accent-hover);
-          }
         }
       }
     }
