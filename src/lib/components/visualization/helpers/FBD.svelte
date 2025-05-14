@@ -294,7 +294,6 @@
     const linvel = fullBody.linvel(); // Use fullBody
     const linvelVec = new Vector3(linvel.x, linvel.y, linvel.z);
     const mass = fullBody.mass(); // Use fullBody
-    const gravityScaleValue = fullBody.gravityScale(); // Use fullBody
 
     // Acceleration averaging
     timeAccumulator += delta;
@@ -331,7 +330,7 @@
     let normalForceMagnitude = 0;
     normalForce.set(0, 0, 0);
     if (isGrounded) {
-      normalForceMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
+      normalForceMagnitude = mass * GRAVITY_CONSTANT;
       if (normalForceMagnitude > 1e-6) {
         normalForce.set(0, normalForceMagnitude, 0);
       }
@@ -388,14 +387,15 @@
       : new Vector3();
 
     // --- Update Weight Vector (Locally relative to COM) ---
-    const weightMagnitude = mass * GRAVITY_CONSTANT * gravityScaleValue;
+    const conceptualWeightMagnitude = mass * GRAVITY_CONSTANT * 1.0;
     const isWeightVisible =
       $isFBDMenuOpen &&
       $fbdVisibilityStore.weight &&
-      weightMagnitude > MIN_VISIBLE_LENGTH;
+      conceptualWeightMagnitude > MIN_VISIBLE_LENGTH;
     let weightArrowTipLocal = new Vector3();
     const weightDirection = new Vector3(0, -1, 0);
-    const visualWeightLength = weightMagnitude * 0.1 * vectorScale;
+    const visualWeightLength = conceptualWeightMagnitude * 0.1 * vectorScale;
+
     if (weightArrowHelperRef) {
       weightArrowHelperRef.visible = isWeightVisible && visualWeightLength > 0;
       if (isWeightVisible && visualWeightLength > 0) {
@@ -417,10 +417,12 @@
         weightArrowTipLocal.set(0, 0, 0);
       }
     }
-    weightLabelVisible = weightArrowHelperRef?.visible ?? false; // Update label visibility state
+    weightLabelVisible = weightArrowHelperRef?.visible ?? false;
     weightLabelLocalPosition =
-      isWeightVisible && visualWeightLength > 0 // Update label position state
-        ? weightArrowTipLocal.clone().add(new Vector3(0, -0.2 * vectorScale, 0))
+      isWeightVisible && visualWeightLength > 0 // Redundant check with arrow's visibility, but safe
+        ? weightArrowTipLocal
+            .clone()
+            .add(new Vector3(0.1 * vectorScale, 0.2 * vectorScale, 0))
         : new Vector3();
 
     // --- Update Acceleration Vector (Locally relative to COM) ---
@@ -623,7 +625,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
 
@@ -645,7 +647,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
 
@@ -667,7 +669,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
 
@@ -689,7 +691,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
 
@@ -711,7 +713,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
 
@@ -733,7 +735,7 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={true}
+      depthTest={false}
       renderOrder={1}
     />
   </T.Group>

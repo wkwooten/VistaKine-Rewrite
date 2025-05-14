@@ -248,7 +248,6 @@
   sectionColor={$gridSectionColor}
   fadeDistance={150}
 />
-<Ground />
 
 <!-- Scene Objects -->
 {#each cubeData as cube, index (cube.id)}
@@ -269,3 +268,5 @@
     scale={0.3}
   />
 {/each}
+
+<Ground />

@@ -1,5 +1,8 @@
-<script>
-  import { getChapterList } from '$lib/data/chapters';
+<script lang="ts">
+  import { getChapterList } from "$lib/data/chapters";
+  import ContentCard from "$lib/components/ContentCard.svelte";
+  import type { Snippet } from "svelte";
+  import { sectionMapOpen } from "$lib/stores/uiStores";
 
   // Use centralized chapter data
   const chapters = getChapterList();
@@ -14,26 +17,37 @@
 
   <div class="chapters">
     {#each chapters as chapter}
-      <div class="chapter">
-        <h2>
-          <a href={`/chapter/${chapter.slug}`}>{chapter.title}</a>
-        </h2>
-        {#if chapter.description}
-          <p class="description">{chapter.description}</p>
-        {/if}
+      <ContentCard class="chapter-card">
+        {#snippet children()}
+          <h2
+            style={`color: var(--chapter-color-${chapter.number}, var(--chapter-color-default));`}
+          >
+            <a href={`/chapter/${chapter.slug}`}>
+              {chapter.number}
+              {chapter.title}
+            </a>
+          </h2>
+          {#if chapter.description}
+            <p class="description">{chapter.description}</p>
+          {/if}
 
-        {#if chapter.sections && chapter.sections.length > 0}
-          <ul class="sections">
-            {#each chapter.sections as section}
-              <li>
-                <a href={`/chapter/${chapter.slug}#${section.id}`}>
-                  {section.title}
-                </a>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
+          {#if chapter.sections && chapter.sections.length > 0}
+            <ul class="sections">
+              {#each chapter.sections as section}
+                <li>
+                  <a href={`/chapter/${chapter.slug}/${section.slug}`}>
+                    <span class="section-number">{section.number}</span
+                    >{section.title}
+                  </a>
+                  {#if section.description}
+                    <p class="section-description">{section.description}</p>
+                  {/if}
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        {/snippet}
+      </ContentCard>
     {/each}
   </div>
 </div>
@@ -57,49 +71,64 @@
     gap: var(--space-l);
   }
 
-  .chapter {
-    h2 {
-      font-size: var(--step-2);
-      margin-bottom: var(--space-s);
+  :global(.chapter-card h2) {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-s);
 
-      a {
-        color: var(--text-color);
-        text-decoration: none;
-        transition: color 0.2s ease;
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
 
-        &:hover {
-          color: var(--color-accent);
-        }
+      &:hover {
+        color: var(--color-accent);
       }
     }
   }
 
   .sections {
     list-style: none;
-    padding-left: var(--space-m);
-    margin: 0;
+    padding-left: 0;
+    margin-top: var(--space-s);
+    margin-bottom: 0;
 
     li {
-      margin-bottom: var(--space-xxs);
-      color: var(--color-text-primary);
+      margin-bottom: var(--space-s);
 
       a {
         text-decoration: none;
         font-size: var(--step-1);
         font-weight: 600;
         color: var(--color-text-primary);
-        border-bottom: 1px solid var(--color-border-light);
-        padding-bottom: var(--space-xs);
-        transition: color 0.2s ease;
+        display: block;
+        margin-bottom: var(--space-3xs);
+
+        .section-number {
+          margin-right: var(--space-xs);
+          color: var(--color-accent);
+          font-weight: bold;
+        }
 
         &:hover {
           color: var(--color-accent);
+          .section-number {
+            color: var(--color-accent-hover);
+          }
         }
       }
     }
   }
 
-  .description {
+  .section-description {
+    font-size: var(--step-0);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    padding-left: var(--space-m);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  :global(.chapter-card .description) {
     font-size: var(--step-0);
     color: var(--color-text-secondary);
     margin-bottom: var(--space-m);

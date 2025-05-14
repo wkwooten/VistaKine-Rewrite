@@ -27,10 +27,10 @@ export const chapters: Chapter[] = [
     number: 1,
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
-      { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1" },
-      { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2" },
-      { id: "basic-vector-operations", title: "Basic Vector Operations", slug: "basic-vector-operations", number: "1.3" },
-      { id: "advanced-vector-operations", title: "Advanced Vector Operations", slug: "advanced-vector-operations", number: "1.4" }
+      { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1", description: "Learn about different ways to define and locate points in 2D and 3D space, including Cartesian, cylindrical, and spherical systems." },
+      { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2", description: "Understand what vectors are, how they represent physical quantities, and how to break them down into their components." },
+      { id: "basic-vector-operations", title: "Basic Vector Operations", slug: "basic-vector-operations", number: "1.3", description: "Explore fundamental vector operations such as addition, subtraction, and scalar multiplication." },
+      { id: "advanced-vector-operations", title: "Advanced Vector Operations", slug: "advanced-vector-operations", number: "1.4", description: "Delve into more complex vector operations like the dot product and cross product and their applications." }
     ],
     component: undefined
   },
@@ -56,6 +56,10 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Dynamics later
       // Example: { id: "newtons-laws", title: "3.1 Newton's Laws" }
+      { id: "section-1", title: "Section 1", slug: "section-1", number: "3.1", description: "A brief overview of the topics covered in Section 3.1." },
+      { id: "section-2", title: "Section 2", slug: "section-2", number: "3.2", description: "A brief overview of the topics covered in Section 3.2." },
+      { id: "section-3", title: "Section 3", slug: "section-3", number: "3.3", description: "A brief overview of the topics covered in Section 3.3." },
+      { id: "section-4", title: "Section 4", slug: "section-4", number: "3.4", description: "A brief overview of the topics covered in Section 3.4." }
     ],
     component: undefined
   },
@@ -66,6 +70,10 @@ export const chapters: Chapter[] = [
     description: 'Understanding energy conservation and transfer.',
     sections: [
       // Add section IDs for Energy later
+      { id: "section-1", title: "Section 1", slug: "section-1", number: "4.1", description: "A brief overview of the topics covered in Section 4.1." },
+      { id: "section-2", title: "Section 2", slug: "section-2", number: "4.2", description: "A brief overview of the topics covered in Section 4.2." },
+      { id: "section-3", title: "Section 3", slug: "section-3", number: "4.3", description: "A brief overview of the topics covered in Section 4.3." },
+      { id: "section-4", title: "Section 4", slug: "section-4", number: "4.4", description: "A brief overview of the topics covered in Section 4.4." }
     ],
     component: undefined
   },
@@ -76,6 +84,10 @@ export const chapters: Chapter[] = [
     description: 'Exploring momentum conservation and collisions.',
     sections: [
       // Add section IDs for Momentum later
+      { id: "section-1", title: "Section 1", slug: "section-1", number: "5.1", description: "A brief overview of the topics covered in Section 5.1." },
+      { id: "section-2", title: "Section 2", slug: "section-2", number: "5.2", description: "A brief overview of the topics covered in Section 5.2." },
+      { id: "section-3", title: "Section 3", slug: "section-3", number: "5.3", description: "A brief overview of the topics covered in Section 5.3." },
+      { id: "section-4", title: "Section 4", slug: "section-4", number: "5.4", description: "A brief overview of the topics covered in Section 5.4." }
     ],
     component: undefined
   },
@@ -86,6 +98,10 @@ export const chapters: Chapter[] = [
     description: 'Analyzing circular paths and gravitational forces.',
     sections: [
       // Add section IDs for Circular Motion later
+      { id: "section-1", title: "Section 1", slug: "section-1", number: "6.1", description: "A brief overview of the topics covered in Section 6.1." },
+      { id: "section-2", title: "Section 2", slug: "section-2", number: "6.2", description: "A brief overview of the topics covered in Section 6.2." },
+      { id: "section-3", title: "Section 3", slug: "section-3", number: "6.3", description: "A brief overview of the topics covered in Section 6.3." },
+      { id: "section-4", title: "Section 4", slug: "section-4", number: "6.4", description: "A brief overview of the topics covered in Section 6.4." }
     ],
     component: undefined
   },
@@ -96,6 +112,10 @@ export const chapters: Chapter[] = [
     description: 'Introduction to torque and angular momentum.',
     sections: [
       // Add section IDs for Rotational Motion later
+      { id: "section-1", title: "Section 1", slug: "section-1", number: "7.1", description: "A brief overview of the topics covered in Section 7.1." },
+      { id: "section-2", title: "Section 2", slug: "section-2", number: "7.2", description: "A brief overview of the topics covered in Section 7.2." },
+      { id: "section-3", title: "Section 3", slug: "section-3", number: "7.3", description: "A brief overview of the topics covered in Section 7.3." },
+      { id: "section-4", title: "Section 4", slug: "section-4", number: "7.4", description: "A brief overview of the topics covered in Section 7.4." }
     ],
     component: undefined
   }
@@ -134,7 +154,7 @@ export function getChapterList() {
     title,
     slug,
     number, // Include the chapter number
-    sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug, number: sec.number })),
+    sections: sections.map(sec => ({ id: sec.id, title: sec.title, slug: sec.slug, number: sec.number, description: sec.description })),
     description // Include description if needed by the component
   }));
 }
