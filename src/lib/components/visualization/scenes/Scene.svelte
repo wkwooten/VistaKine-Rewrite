@@ -264,6 +264,7 @@
   <Skateboard
     bind:groupRef={skateboardGroupRefs[index]}
     bind:rigidBodyRef={skateboardRigidBodyInstances[index]}
+    initialPosition={skate.position}
     {controlMode}
     scale={0.3}
   />

@@ -23,7 +23,7 @@
             style={`color: var(--chapter-color-${chapter.number}, var(--chapter-color-default));`}
           >
             <a href={`/chapter/${chapter.slug}`}>
-              {chapter.number}
+              Chapter {chapter.number} <br />
               {chapter.title}
             </a>
           </h2>

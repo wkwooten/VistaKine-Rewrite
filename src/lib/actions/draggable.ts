@@ -160,6 +160,8 @@ export function createDraggableHandlers(options: {
 
         if (!currentRigidBody) {
 			console.log('[draggable.ts] handlePointerDown: Aborting - RigidBody is not available via getter.');
+			isDraggingLocally = false; // Reset local flag
+			isDraggingStore.set(false); // Reset global store if aborting here
 			return;
         }
 

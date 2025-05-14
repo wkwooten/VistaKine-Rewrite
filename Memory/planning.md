@@ -1,4 +1,4 @@
-## Navigation.svelte Accordion Debugging (Ended YYYY-MM-DD)
+## Navigation.svelte Accordion Debugging (Ended 2025-05-10)
 
 **Goal:** Fix unexpected behavior where hovering over an _inactive_ chapter accordion in `Navigation.svelte` seemed to incorrectly apply active styles.
 

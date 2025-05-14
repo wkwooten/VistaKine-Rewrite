@@ -34,7 +34,6 @@ export const chapters: Chapter[] = [
     ],
     component: undefined
   },
-  // TODO: Add chapter 1 descriptions
   {
     title: 'Kinematics',
     slug: 'kinematics',
