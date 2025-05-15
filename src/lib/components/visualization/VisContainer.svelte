@@ -21,21 +21,9 @@
     children, // Destructure children from props
     ...restProps
   }: $$Props = $props();
-
-  // State variables that were bound but not used in script can be removed if not needed elsewhere
-  let width = $state(0);
-  let height = $state(0);
-  let containerElement: HTMLDivElement;
 </script>
 
-<div
-  bind:this={containerElement}
-  class="vis-container-wrapper"
-  class:complete={isComplete}
-  bind:clientWidth={width}
-  bind:clientHeight={height}
-  {...restProps}
->
+<div class="vis-container-wrapper" class:complete={isComplete} {...restProps}>
   {#key resetKey}
     <Canvas>
       <RendererSetup />
@@ -67,6 +55,10 @@
     overflow: hidden;
     background-color: var(--color-background);
 
+    @media (max-width: 768px) {
+      aspect-ratio: auto;
+    }
+
     canvas {
       display: block;
       width: 100%;
@@ -75,7 +67,7 @@
   }
 
   .vis-container-wrapper.complete {
-    border: 3px solid var(--color-accent, mediumseagreen);
-    box-shadow: 0 0 10px var(--color-accent-light, lightgreen);
+    border: 3px solid var(--color-success, mediumseagreen);
+    box-shadow: 0 0 10px var(--color-success, lightgreen);
   }
 </style>
