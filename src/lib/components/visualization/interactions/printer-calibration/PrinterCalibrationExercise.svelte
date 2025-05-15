@@ -15,6 +15,7 @@
   import { HTML } from "@threlte/extras";
   import DialogBox from "../../elements/ui/DialogBox.svelte";
   import { createEventDispatcher } from "svelte";
+  import { fullscreenAction } from "$lib/actions/useFullscreen";
 
   const dispatch = createEventDispatcher();
 
@@ -71,93 +72,14 @@
   }
 
   // --- Fullscreen Logic (Moved from VisContainer) ---
-  async function toggleFullscreen() {
-    if (!browser || !exerciseWrapperElement) return;
-
-    const newState = !isFullscreen;
-
-    if (newState) {
-      if (!document.fullscreenElement) {
-        try {
-          if (exerciseWrapperElement.requestFullscreen) {
-            await exerciseWrapperElement.requestFullscreen();
-          } else if ((exerciseWrapperElement as any).webkitRequestFullscreen) {
-            await (exerciseWrapperElement as any).webkitRequestFullscreen();
-          } else if ((exerciseWrapperElement as any).msRequestFullscreen) {
-            await (exerciseWrapperElement as any).msRequestFullscreen();
-          }
-          isFullscreen = true;
-        } catch (err) {
-          console.error(
-            `[Exercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`
-          );
-          isFullscreen = false;
-        }
-      }
-    } else {
-      if (document.fullscreenElement) {
-        try {
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-          } else if ((document as any).webkitExitFullscreen) {
-            await (document as any).webkitExitFullscreen();
-          } else if ((document as any).msExitFullscreen) {
-            await (document as any).msExitFullscreen();
-          }
-          isFullscreen = false;
-        } catch (err) {
-          console.error(
-            `[Exercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`
-          );
-        }
-      } else {
-        isFullscreen = false; // Sync state if fullscreen exited via other means (e.g., ESC key)
-      }
+  // The new request function, to be called by HUD's event
+  function requestToggleFullscreenDispatch() {
+    if (exerciseWrapperElement) {
+      exerciseWrapperElement.dispatchEvent(
+        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
+      );
     }
   }
-
-  onMount(() => {
-    function handleFullscreenChange() {
-      if (browser) {
-        const browserIsFullscreen = !!(
-          document.fullscreenElement ||
-          (document as any).webkitFullscreenElement
-        );
-        if (isFullscreen !== browserIsFullscreen) {
-          console.log(
-            `[Exercise] Syncing fullscreen state. Browser: ${browserIsFullscreen}, Component: ${isFullscreen}.`
-          );
-          isFullscreen = browserIsFullscreen;
-        }
-      }
-    }
-
-    if (browser) {
-      document.addEventListener("fullscreenchange", handleFullscreenChange);
-      document.addEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange
-      );
-      document.addEventListener("msfullscreenchange", handleFullscreenChange);
-    }
-
-    return () => {
-      if (browser) {
-        document.removeEventListener(
-          "fullscreenchange",
-          handleFullscreenChange
-        );
-        document.removeEventListener(
-          "webkitfullscreenchange",
-          handleFullscreenChange
-        );
-        document.removeEventListener(
-          "msfullscreenchange",
-          handleFullscreenChange
-        );
-      }
-    };
-  });
 
   // --- Reset Logic ---
   $effect(() => {
@@ -184,6 +106,9 @@
   bind:this={exerciseWrapperElement}
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
+  use:fullscreenAction={{
+    isFullscreenStore: { set: (val) => (isFullscreen = val) },
+  }}
 >
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showDialog && !isFullscreen}
@@ -214,7 +139,7 @@
         bind:relativeNozzleX
         bind:relativeNozzleY
         bind:relativeNozzleZ
-        on:requestToggleFullscreen={toggleFullscreen}
+        on:requestToggleFullscreen={requestToggleFullscreenDispatch}
       />
     </div>
 

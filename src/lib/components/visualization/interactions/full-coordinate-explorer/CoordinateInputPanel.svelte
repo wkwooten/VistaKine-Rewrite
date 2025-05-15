@@ -1,21 +1,23 @@
 <script lang="ts">
-  import StyledAxisInput from "$lib/components/ui/StyledAxisInput.svelte"; // Import the new component
+  import AxisInput from "$lib/components/visualization/elements/ui/AxisInput.svelte";
 
-  // Define props, making x, y, and z bindable from the parent
   let {
     x = $bindable(1),
     y = $bindable(1),
     z = $bindable(1),
+    min,
+    max,
   } = $props<{
-    // Explicitly type props
     x?: number;
     y?: number;
     z?: number;
+    min?: number | undefined;
+    max?: number | undefined;
   }>();
 
-  const step = 1; // Step amount for the inputs
+  const stepAmount = 1;
 
-  // Debugging: Log prop changes (can be commented out later)
+  // Debugging logs (can be removed)
   $effect(() => {
     console.log(`[CoordinateInputPanel.svelte] Bound x updated: ${x}`);
   });
@@ -28,36 +30,41 @@
 </script>
 
 <div class="coordinate-input-panel">
-  <StyledAxisInput
+  <AxisInput
     label="X"
     bind:value={x}
     axisColor="var(--axis-color-x)"
-    stepAmount={step}
+    step={stepAmount}
+    {min}
+    {max}
     aria-label="X Coordinate Input"
   />
-  <StyledAxisInput
+  <AxisInput
     label="Y"
     bind:value={y}
     axisColor="var(--axis-color-y)"
-    stepAmount={step}
+    step={stepAmount}
+    {min}
+    {max}
     aria-label="Y Coordinate Input"
   />
-  <StyledAxisInput
+  <AxisInput
     label="Z"
     bind:value={z}
     axisColor="var(--axis-color-z)"
-    stepAmount={step}
+    step={stepAmount}
+    {min}
+    {max}
     aria-label="Z Coordinate Input"
   />
 </div>
 
 <style lang="scss">
-  // Styles for the panel that CONTAINS the StyledAxisInput components
   .coordinate-input-panel {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(3, max-content);
-    justify-content: center; // Center the grid items (the 3 input groups)
+    justify-content: center;
     gap: var(--space-xs);
     padding: var(--space-xs);
     border: 1px solid var(--color-border, var(--border-color));
@@ -73,6 +80,6 @@
 
   /*
   All styles related to .axis-input-group, .axis-label, .input-stepper,
-  input[type="number"], and .stepper-button have been moved to StyledAxisInput.svelte
+  input[type="number"], and .stepper-button are now in AxisInput.svelte
   */
 </style>

@@ -10,6 +10,7 @@
     showVectorBuilderDialog,
     vectorBuilderDialogTurns,
   } from "$lib/stores/vectorBuilderState";
+  import { fullscreenAction } from "$lib/actions/useFullscreen";
 
   // --- Fullscreen State & Logic ---
   let isFullscreen = $state(false);
@@ -23,105 +24,24 @@
     // TODO: Add logic to increment dialogKey if a reset happens
   });
 
-  async function toggleFullscreen() {
-    if (!browser || !exerciseWrapperElement) return;
-    const newState = !isFullscreen;
-    if (newState) {
-      if (!document.fullscreenElement) {
-        try {
-          // Standard fullscreen request
-          if (exerciseWrapperElement.requestFullscreen) {
-            await exerciseWrapperElement.requestFullscreen();
-            // WebKit prefix
-          } else if ((exerciseWrapperElement as any).webkitRequestFullscreen) {
-            await (exerciseWrapperElement as any).webkitRequestFullscreen();
-            // MS prefix
-          } else if ((exerciseWrapperElement as any).msRequestFullscreen) {
-            await (exerciseWrapperElement as any).msRequestFullscreen();
-          }
-          isFullscreen = true;
-        } catch (err) {
-          console.error(
-            `[VectorBuilderExercise] Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
-          );
-          isFullscreen = false;
-        }
-      }
-    } else {
-      if (document.fullscreenElement) {
-        try {
-          // Standard exit fullscreen
-          if (document.exitFullscreen) {
-            await document.exitFullscreen();
-            // WebKit prefix
-          } else if ((document as any).webkitExitFullscreen) {
-            await (document as any).webkitExitFullscreen();
-            // MS prefix
-          } else if ((document as any).msExitFullscreen) {
-            await (document as any).msExitFullscreen();
-          }
-          isFullscreen = false;
-        } catch (err) {
-          console.error(
-            `[VectorBuilderExercise] Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`,
-          );
-        }
-      } else {
-        // Sync state if fullscreen was exited by other means (e.g., Esc key)
-        isFullscreen = false;
-      }
+  // REMOVE OLD FULLSCREEN LOGIC (toggleFullscreen function and onMount listeners)
+  // The new request function, to be called by HUD's event
+  function requestToggleFullscreenDispatch() {
+    if (exerciseWrapperElement) {
+      exerciseWrapperElement.dispatchEvent(
+        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
+      );
     }
   }
-
-  onMount(() => {
-    function handleFullscreenChange() {
-      if (browser) {
-        const browserIsFullscreen = !!(
-          document.fullscreenElement ||
-          (document as any).webkitFullscreenElement
-        );
-        // Sync internal state with browser state if they differ
-        if (isFullscreen !== browserIsFullscreen) {
-          console.log(`[VectorBuilderExercise] Syncing fullscreen state.`);
-          isFullscreen = browserIsFullscreen;
-        }
-      }
-    }
-
-    if (browser) {
-      // Listen to vendor-prefixed events as well
-      document.addEventListener("fullscreenchange", handleFullscreenChange);
-      document.addEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange,
-      );
-      document.addEventListener("msfullscreenchange", handleFullscreenChange);
-    }
-
-    // Cleanup listeners
-    return () => {
-      if (browser) {
-        document.removeEventListener(
-          "fullscreenchange",
-          handleFullscreenChange,
-        );
-        document.removeEventListener(
-          "webkitfullscreenchange",
-          handleFullscreenChange,
-        );
-        document.removeEventListener(
-          "msfullscreenchange",
-          handleFullscreenChange,
-        );
-      }
-    };
-  });
 </script>
 
 <div
   bind:this={exerciseWrapperElement}
   class="exercise-wrapper"
   class:fullscreen={isFullscreen}
+  use:fullscreenAction={{
+    isFullscreenStore: { set: (val) => (isFullscreen = val) },
+  }}
 >
   <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
   {#if $showVectorBuilderDialog && !isFullscreen}
@@ -148,7 +68,7 @@
     <div class="ui-overlay">
       <VectorBuilderHud
         bind:isFullscreen
-        on:requestToggleFullscreen={toggleFullscreen}
+        on:requestToggleFullscreen={requestToggleFullscreenDispatch}
       />
     </div>
 
