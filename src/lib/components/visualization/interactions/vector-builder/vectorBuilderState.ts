@@ -1,6 +1,6 @@
 import { writable, derived } from 'svelte/store';
 import { Vector3 } from 'three';
-import type { DialogTurn } from './calibrationState'; // Assuming it's exported there or define locally
+import type { DialogTurn } from '../printer-calibration/calibrationState'; // Assuming it's exported there or define locally
 
 // Color stores removed, moved to themeColors.ts
 
