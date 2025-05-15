@@ -11,6 +11,7 @@
   import AxisExplorer from "$lib/components/visualization/AxisExplorer.svelte";
   import { onMount } from "svelte"; // Import onMount if needed for intersection observer
   import ContentCard from "$lib/components/ContentCard.svelte"; // Import the new component
+  import FullCoordinateExplorerExercise from "$lib/components/visualization/interactions/full-coordinate-explorer/FullCoordinateExplorerExercise.svelte"; // Added import
 
   // State for completion
   let isCalibrationComplete = false;
@@ -132,7 +133,26 @@
     </p>
   </ContentCard>
 
-  <!-- Block 4: Concept - Application to 3D Printing -->
+  <!-- Block 4: Interactive Full Coordinate Explorer -->
+  <ContentCard blockType="visualization-block" class="-exercise">
+    <h2 id="full-coordinate-explorer" data-nav-target="true">
+      Interactive: Full Coordinate Explorer
+    </h2>
+    <figure>
+      <FullCoordinateExplorerExercise />
+      <figcaption>
+        Use the input fields to change the X, Y, and Z coordinates and see the
+        point move in the 3D space.
+      </figcaption>
+    </figure>
+    <p>
+      This interactive exercise allows you to explore the full Cartesian
+      coordinate system, including negative values. Input different values for
+      X, Y, and Z to understand how they define a point's position.
+    </p>
+  </ContentCard>
+
+  <!-- Block 5: Concept - Application to 3D Printing -->
   <ContentCard blockType="concept-block" layoutWidth="full">
     <h2 id="coordinates-in-3d-space" data-nav-target="true">
       Coordinates in 3D Space
@@ -168,7 +188,7 @@
     </p>
   </ContentCard>
 
-  <!-- Block 5: Activity - Printer Calibration -->
+  <!-- Block 6: Activity - Printer Calibration -->
   <ContentCard blockType="visualization-block" class="-exercise">
     <h2 id="printer-calibration" data-nav-target="true">
       Hands-On: Printer Calibration
@@ -196,7 +216,7 @@
     </p>
   </ContentCard>
 
-  <!-- Block 6: Activity - Review/Quiz -->
+  <!-- Block 7: Activity - Review/Quiz -->
   <ContentCard blockType="activity-block" class="-review" layoutWidth="full">
     <h2 id="section-review" data-nav-target="true">Section Review</h2>
     <p>
