@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import FullscreenButton from "../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
   import DialogBox from "../../elements/ui/DialogBox.svelte";
@@ -16,7 +15,17 @@
     relativeNozzleX = $bindable(0),
     relativeNozzleY = $bindable(0),
     relativeNozzleZ = $bindable(0),
-  } = $props();
+    // Add callback props expected by InteractiveExercise
+    onrequestToggleFullscreen,
+    onrequestReset,
+  } = $props<{
+    isFullscreen?: boolean;
+    relativeNozzleX?: number;
+    relativeNozzleY?: number;
+    relativeNozzleZ?: number;
+    onrequestToggleFullscreen?: () => void;
+    onrequestReset?: () => void;
+  }>();
 
   // --- Derived State for Display ---
   let formattedPosition = $derived(
@@ -27,14 +36,19 @@
 
   // --- Event Handlers ---
   function handleResetScene() {
-    console.log(`[CalibrationHud] Requesting reset via store`);
+    console.log(`[CalibrationHud] Requesting reset via store and prop`);
     resetSceneRequested.set(true);
+    // Call the prop if it exists
+    onrequestReset?.();
   }
 
-  const dispatch = createEventDispatcher();
+  // Remove createEventDispatcher
+  // const dispatch = createEventDispatcher();
+
   function handleRequestToggle() {
-    console.log("[CalibrationHud] Forwarding requestToggleFullscreen");
-    dispatch("requestToggleFullscreen");
+    console.log("[CalibrationHud] Forwarding requestToggleFullscreen via prop");
+    // Call the prop if it exists
+    onrequestToggleFullscreen?.();
   }
 </script>
 
@@ -46,10 +60,10 @@
 >
   <!-- Top Left Controls -->
   <div class="hud-controls-top-left">
-    <ResetButton on:click={handleResetScene} />
+    <ResetButton onclick={handleResetScene} />
     <FullscreenButton
-      bind:isFullscreen
-      on:requestToggle={handleRequestToggle}
+      {isFullscreen}
+      onRequestToggleCallback={handleRequestToggle}
     />
   </div>
 

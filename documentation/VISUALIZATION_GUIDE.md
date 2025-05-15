@@ -45,10 +45,11 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 - **Passed to:** `InteractiveExercise.svelte` via the `HudComponent` prop.
 - **Responsibilities:**
   - Provides a 2D Heads-Up Display (HUD) that overlays the 3D scene.
-  - Typically contains common UI controls like reset and fullscreen buttons (which interact with `InteractiveExercise` via props).
-  - **Must accept `onrequestToggleFullscreen: () => void` and `onrequestReset: () => void` as props** and call them to trigger actions in `InteractiveExercise`.
+  - Typically contains common UI controls like reset and fullscreen buttons.
+  - **Crucially, it must accept `onrequestToggleFullscreen: () => void` and `onrequestReset: () => void` as props** from `InteractiveExercise.svelte` and call these functions when its respective buttons are clicked to trigger the desired actions in the parent.
   - Often provides a `<slot name="controls">` where `InteractiveExercise` will place the `ControlPanelComponent`.
   - An example implementation is `PlaceholderHud.svelte`.
+  - The root element of the `HudComponent` (or any specific interactive areas within it) should have `pointer-events: auto;` applied (often via a class or inline style if not default for the element). This works in conjunction with `InteractiveExercise.svelte`'s `.hud-layer { pointer-events: none; }` styling, which allows click-through to the 3D scene by default, while `pointer-events: auto;` on HUD elements re-enables interaction for them.
 
 ### 4. Custom Control/Input Panel(s) (e.g., `MyExercisePanel.svelte`)
 
@@ -84,6 +85,7 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 ### Layout with `InteractiveExercise.svelte`
 
 - `InteractiveExercise.svelte` uses CSS Grid to manage the layering of the HUD over the visualization (`VisContainer`).
+- The `.hud-layer` within `InteractiveExercise.svelte` is styled with `pointer-events: none;`. The `HudComponent` (or specific interactive elements within it) should ensure `pointer-events: auto;` is set on its interactive parts so they can be used, while allowing non-interactive parts of the HUD area to pass pointer events to the 3D scene below.
 - The `HudComponent` is responsible for the layout of its internal elements (buttons, control panels via slot).
 - `VisContainer` handles the aspect ratio and basic styling of the 3D canvas area.
 
@@ -104,8 +106,8 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 - **Global/Shared State:** Theme colors, global settings.
 - **Dialog Management:** Stores can manage dialog visibility and content.
 - **Cross-component Communication / Exercise-Specific Data:**
-  - For state passed to `InteractiveExercise` (e.g., `sceneProps`, `hudProps`, `controlPanelProps`), these props are the primary mechanism for data flow _into_ the constituent parts.
-  - For data originating _within_ a custom Scene, HUD, or Control Panel that needs to be shared, or for complex state not easily managed by props, dedicated Svelte stores are suitable.
+  - For state passed to `InteractiveExercise` (e.g., `hudProps`, `controlPanelProps`), these props are the primary mechanism for data flow _into_ the constituent parts, especially for initial configuration or less frequently changing data.
+  - For `sceneProps`, while it can be used for initial setup or configuration, **dynamic and frequently updated data for the `SceneComponent` (e.g., object positions, animation states, current stage of an exercise) is often best managed using dedicated Svelte stores.** The `SceneComponent` would then subscribe to these stores directly. The `sceneProps` can then focus on passing down callbacks (e.g., `onStageComplete`, `onAllStagesComplete`) or relatively static configuration. This pattern was successfully used in the `PrinterCalibration` exercise.
   - **Exercise-Specific Store Location:** For better encapsulation, place stores specific to a single exercise within that exercise's interaction folder (e.g., `src/lib/components/visualization/interactions/my-new-exercise/myNewExerciseStore.ts`).
 
 ## V. Creating New Visualizations
@@ -121,28 +123,42 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
     - Import these custom components into the Svelte route or page where the visualization will be used.
     - Use the `<InteractiveExercise>` component, passing your custom components to its `SceneComponent`, `HudComponent`, and `ControlPanelComponent` props. Provide any necessary data via `sceneProps`, `hudProps`, and `controlPanelProps`.
     - Example:
-      \`\`\`svelte
+
+      ```svelte
       <script lang="ts">
         import InteractiveExercise from '$lib/components/visualization/InteractiveExercise.svelte';
         import MyCustomScene from './my-new-exercise/MyNewExerciseScene.svelte';
         import MyCustomHud from './my-new-exercise/MyNewExerciseHud.svelte';
         import MyCustomControls from './my-new-exercise/MyNewExercisePanel.svelte';
-      
-        const mySceneData = { speed: $state(1) };
+        // Import any exercise-specific stores if scene data is managed there
+        // import { myDataStore1, myDataStore2 } from './my-new-exercise/myNewExerciseStore.ts';
+
+        // Props for HUD and ControlPanel can still be passed directly
         const myHudData = { title: "My Awesome Exercise" };
-        const myControlsData = { settings: $state({}) };
+        const myControlsData = { settings: $state({}) }; // Example: control panel specific settings
+
+        // Scene props might now primarily be for callbacks or initial, static config
+        // if dynamic data is handled by stores subscribed to within MyCustomScene.svelte
+        function handleStageCompletion() {
+          console.log("A stage was completed in the scene!");
+        }
+        const mySceneCallbacks = {
+          onCustomStageComplete: handleStageCompletion
+        };
       </script>
 
       <InteractiveExercise
-      exerciseTitle="My Awesome Exercise"
-      SceneComponent={MyCustomScene}
-      sceneProps={{ data: mySceneData }}
-      HudComponent={MyCustomHud}
-      hudProps={{ hudSpecificSetting: myHudData }}
-      ControlPanelComponent={MyCustomControls}
-      controlPanelProps={{ values: myControlsData }}
+        exerciseTitle="My Awesome Exercise"
+        SceneComponent={MyCustomScene}
+        sceneProps={mySceneCallbacks} // Pass callbacks or static config
+        HudComponent={MyCustomHud}
+        hudProps={myHudData}
+        ControlPanelComponent={MyCustomControls}
+        controlPanelProps={myControlsData}
+        onResetRequestedByHudCallback={() => console.log('Exercise reset requested via HUD')}
+        onFullscreenStatusChangeCallback={(isFs) => console.log('Fullscreen status:', isFs)}
       />
-      \`\`\`
+      ```
 
 5.  **Highly Custom Exercises:** If `InteractiveExercise.svelte` is not suitable, you can create a main `MyNewExerciseExercise.svelte` component and manage the integration of Scene, HUD, VisContainer, and fullscreen logic (using `useFullscreen.ts`) manually, following the patterns established in older exercises if necessary.
 

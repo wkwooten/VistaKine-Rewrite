@@ -4,19 +4,29 @@
   import PlaceholderScene from "./generic-exercise-parts/PlaceholderScene.svelte";
   import PlaceholderHud from "./generic-exercise-parts/PlaceholderHud.svelte";
   import PlaceholderControls from "./generic-exercise-parts/PlaceholderControls.svelte";
-  import type { ComponentType, SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
 
   interface ExerciseProps {
-    SceneComponent?: ComponentType<SvelteComponent>;
-    HudComponent?: ComponentType<SvelteComponent>;
-    ControlPanelComponent?: ComponentType<SvelteComponent>;
+    SceneComponent?: any;
+    HudComponent?: any;
+    ControlPanelComponent?: any;
     sceneProps?: Record<string, any>;
     hudProps?: Record<string, any>;
     controlPanelProps?: Record<string, any>;
     exerciseTitle?: string;
+    onResetRequestedByHudCallback?: () => void;
+    onFullscreenStatusChangeCallback?: (isFullscreen: boolean) => void;
   }
 
   const passedProps: ExerciseProps = $props();
+
+  // Log received sceneProps
+  $effect(() => {
+    console.log(
+      "[InteractiveExercise] Received sceneProps:",
+      passedProps.sceneProps
+    );
+  });
 
   const SceneComponent = passedProps.SceneComponent ?? PlaceholderScene;
   const HudComponent = passedProps.HudComponent ?? PlaceholderHud;
@@ -34,16 +44,32 @@
   let isFullscreen = $state(false);
   let exerciseWrapperElement: HTMLDivElement;
 
+  // Effect to call the fullscreen status change callback and log local fullscreen state
+  $effect(() => {
+    console.log(
+      "[InteractiveExercise] isFullscreen state changed to:",
+      isFullscreen
+    );
+    passedProps.onFullscreenStatusChangeCallback?.(isFullscreen);
+  });
+
   function handleRequestToggleFullscreen(): void {
+    console.log(
+      "[InteractiveExercise] handleRequestToggleFullscreen called. Current isFullscreen:",
+      isFullscreen,
+      "Dispatching event with detail:",
+      !isFullscreen
+    );
     if (exerciseWrapperElement) {
       exerciseWrapperElement.dispatchEvent(
-        new CustomEvent("toggleFullscreenRequest")
+        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
       );
     }
   }
 
   function handleRequestReset(): void {
     resetKey++;
+    passedProps.onResetRequestedByHudCallback?.();
   }
 
   const combinedHudProps = $derived({
@@ -97,10 +123,6 @@
     position: relative;
     z-index: 20;
     pointer-events: none;
-
-    & > :global(*) {
-      pointer-events: auto;
-    }
   }
 
   .vis-layer {

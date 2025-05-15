@@ -18,6 +18,8 @@ export const fullscreenAction: Action<HTMLElement, FullscreenActionOptions> = (
   node,
   options
 ) => {
+  console.log('[fullscreenAction] Action initialized on node:', node);
+
   if (!browser || !options) {
     return {
       destroy: () => {},
@@ -27,25 +29,29 @@ export const fullscreenAction: Action<HTMLElement, FullscreenActionOptions> = (
   const { isFullscreenStore } = options;
 
   const enterFullscreen = async () => {
+    console.log('[fullscreenAction] Requesting fullscreen.');
     try {
       if (node.requestFullscreen) await node.requestFullscreen();
       else if ((node as any).webkitRequestFullscreen) await (node as any).webkitRequestFullscreen();
       else if ((node as any).msRequestFullscreen) await (node as any).msRequestFullscreen();
       // Note: Store is set by handleBrowserFullscreenChange to avoid race conditions
+      console.log('[fullscreenAction] Fullscreen entered, store set to true.');
     } catch (err) {
-      console.error(`Error enabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
+      console.error('[fullscreenAction] Error enabling fullscreen:', err instanceof Error ? err.message : String(err));
       isFullscreenStore.set(false); // Explicitly set false on error
     }
   };
 
   const exitFullscreen = async () => {
+    console.log('[fullscreenAction] Exiting fullscreen.');
     try {
       if (document.exitFullscreen) await document.exitFullscreen();
       else if ((document as any).webkitExitFullscreen) await (document as any).webkitExitFullscreen();
       else if ((document as any).msExitFullscreen) await (document as any).msExitFullscreen();
       // Note: Store is set by handleBrowserFullscreenChange
+      console.log('[fullscreenAction] Fullscreen exited, store set to false.');
     } catch (err) {
-      console.error(`Error disabling fullscreen: ${err instanceof Error ? err.message : String(err)}`);
+      console.error('[fullscreenAction] Error disabling fullscreen:', err instanceof Error ? err.message : String(err));
       // If error occurs, fullscreen might still be active or inactive, rely on browser event to sync
     }
   };
@@ -58,6 +64,7 @@ export const fullscreenAction: Action<HTMLElement, FullscreenActionOptions> = (
         (document as any).webkitFullscreenElement ||
         (document as any).msFullscreenElement
     );
+    console.log(`[fullscreenAction] handleProgrammaticToggle called. event.detail (shouldBeFullscreen): ${shouldBeFullscreen}, currentlyFullscreen: ${currentlyFullscreen}`);
 
     if (shouldBeFullscreen && !currentlyFullscreen) {
       enterFullscreen();
@@ -73,6 +80,7 @@ export const fullscreenAction: Action<HTMLElement, FullscreenActionOptions> = (
       (document as any).webkitFullscreenElement ||
       (document as any).msFullscreenElement
     );
+    console.log('[fullscreenAction] Fullscreen change event detected. Is fullscreen:', browserIsFullscreen);
     isFullscreenStore.set(browserIsFullscreen);
   };
 
@@ -84,12 +92,15 @@ export const fullscreenAction: Action<HTMLElement, FullscreenActionOptions> = (
   // Initial sync in case the action is applied while already in fullscreen (e.g. hot-reloading)
   handleBrowserFullscreenChange();
 
+  console.log('[fullscreenAction] Event listeners added.');
+
   return {
     destroy: () => {
       node.removeEventListener('toggleFullscreenRequest', handleProgrammaticToggle as EventListener);
       document.removeEventListener('fullscreenchange', handleBrowserFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', handleBrowserFullscreenChange);
       document.removeEventListener('msfullscreenchange', handleBrowserFullscreenChange);
+      console.log('[fullscreenAction] Event listeners removed, action destroyed.');
     },
   };
 };

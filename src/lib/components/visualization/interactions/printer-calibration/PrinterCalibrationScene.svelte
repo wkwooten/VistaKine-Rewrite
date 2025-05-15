@@ -12,12 +12,17 @@
   import { Vector3, Group, Quaternion, Euler, Vector2, Color } from "three";
   import { tweened } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
   import {
     showCalibrationDialog,
-    requestedNozzlePosition,
     resetSceneRequested,
     showDialog,
+    relativeNozzleXStore,
+    relativeNozzleYStore,
+    relativeNozzleZStore,
+    currentStageStore,
+    activeTargetsStore,
+    type TargetPoint,
     MIN_X,
     MAX_X,
     MIN_Y,
@@ -49,30 +54,26 @@
 
   interactivity();
 
-  const dispatch = createEventDispatcher();
+  // const dispatch = createEventDispatcher(); // Removed
 
   // --- Props (using $props) ---
-  let {
-    targets = [],
-    currentStage = 1,
-    relativeNozzleX = 0,
-    relativeNozzleY = 5,
-    relativeNozzleZ = 0,
-  } = $props<{
-    targets?: { id: string; x: number; y: number; z: number }[];
-    currentStage?: number;
-    relativeNozzleX?: number;
-    relativeNozzleY?: number;
-    relativeNozzleZ?: number;
+  let { onStageComplete, onAllStagesComplete } = $props<{
+    onStageComplete?: () => void;
+    onAllStagesComplete?: () => void;
   }>();
 
   // --- Constants ---
   const cornerOriginOffset = new Vector3(-6, 1, -6);
   const targetProximityThreshold = 0.3;
-  const initialRelativePosition = new Vector3(0, 5, 0);
   const initialWorldPosition = cornerOriginOffset
     .clone()
-    .add(initialRelativePosition);
+    .add(
+      new Vector3(
+        $relativeNozzleXStore,
+        $relativeNozzleYStore,
+        $relativeNozzleZStore
+      )
+    );
 
   // Tweened state for the visual representation
   const animatedPosition = tweened(initialWorldPosition, {
@@ -86,83 +87,85 @@
   let hitTargets = $state(new Set<string>());
 
   // --- Reactive Logic ---
-  // Effect to update the nozzle's animated position
+  let effectRunCount = 0;
   $effect(() => {
+    const rnx = $relativeNozzleXStore;
+    const rny = $relativeNozzleYStore;
+    const rnz = $relativeNozzleZStore;
+    const stage = $currentStageStore;
+
+    effectRunCount++;
+    console.log(
+      `[Scene Effect - Store] Run count: ${effectRunCount}, Stage: ${stage}`
+    );
+    console.log(
+      `[Scene Props - Store] Incoming Nozzle: X=${rnx}, Y=${rny}, Z=${rnz}`
+    );
     const targetWorldPosition = cornerOriginOffset
       .clone()
-      .add(new Vector3(relativeNozzleX, relativeNozzleY, relativeNozzleZ));
+      .add(new Vector3(rnx, rny, rnz));
     console.log(
-      `[PrinterCalibration] Relative state changed. Setting animated target world pos to: ${targetWorldPosition.x}, ${targetWorldPosition.y}, ${targetWorldPosition.z}`
+      `[Scene Logic - Store] Setting animated target world pos to: ${targetWorldPosition.x.toFixed(2)}, ${targetWorldPosition.y.toFixed(2)}, ${targetWorldPosition.z.toFixed(2)}`
     );
     animatedPosition.set(targetWorldPosition);
   });
 
-  // Reset hitTargets when targets prop changes
   $effect(() => {
-    const _numTargets = targets.length;
-    console.log("[PrinterCalibration] targets.length changed, resetting hits.");
+    const currentTargets = $activeTargetsStore;
+    console.log(
+      "[PrinterCalibration - Store] activeTargetsStore changed, resetting hits. Count:",
+      currentTargets.length
+    );
     hitTargets = new Set();
   });
 
-  // Calculate World Positions for Targets (specific to this scene)
   const targetDetails = $derived.by(() => {
-    return targets.map(
-      (target: { id: string; x: number; y: number; z: number }) => ({
-        id: target.id,
-        x: target.x,
-        y: target.y,
-        z: target.z,
-        worldPos: cornerOriginOffset
-          .clone()
-          .add(new Vector3(target.x, target.y, target.z)),
-      })
-    );
+    const currentTargets = $activeTargetsStore;
+    return currentTargets.map((target: TargetPoint) => ({
+      id: target.id,
+      x: target.x,
+      y: target.y,
+      z: target.z,
+      worldPos: cornerOriginOffset
+        .clone()
+        .add(new Vector3(target.x, target.y, target.z)),
+    }));
   });
 
-  // Check for target proximity & stage completion (specific to this scene)
   $effect(() => {
     const currentNozzlePos = $animatedPosition;
+    const stage = $currentStageStore;
+    const currentTargets = $activeTargetsStore;
     let newlyHit = false;
     let firstTargetHitThisUpdate = false;
 
-    targetDetails.forEach(
-      (target: {
-        id: string;
-        x: number;
-        y: number;
-        z: number;
-        worldPos: Vector3;
-      }) => {
-        if (!hitTargets.has(target.id)) {
-          let distance = Infinity;
-          const targetWorldPos = target.worldPos;
-          if (target.y === 0 && currentStage === 1) {
-            const nozzleXZ = new Vector2(
-              currentNozzlePos.x,
-              currentNozzlePos.z
-            );
-            const targetXZ = new Vector2(targetWorldPos.x, targetWorldPos.z);
-            distance = nozzleXZ.distanceTo(targetXZ);
-          } else {
-            distance = currentNozzlePos.distanceTo(targetWorldPos);
-          }
+    targetDetails.forEach((target) => {
+      if (!hitTargets.has(target.id)) {
+        let distance = Infinity;
+        const targetWorldPos = target.worldPos;
+        if (target.y === 0 && stage === 1) {
+          const nozzleXZ = new Vector2(currentNozzlePos.x, currentNozzlePos.z);
+          const targetXZ = new Vector2(targetWorldPos.x, targetWorldPos.z);
+          distance = nozzleXZ.distanceTo(targetXZ);
+        } else {
+          distance = currentNozzlePos.distanceTo(targetWorldPos);
+        }
 
-          if (distance < targetProximityThreshold) {
-            console.log(`[PrinterCalibration] Hit target: ${target.id}`);
-            if (hitTargets.size === 0) {
-              firstTargetHitThisUpdate = true;
-            }
-            hitTargets.add(target.id);
-            hitTargets = new Set(hitTargets);
-            newlyHit = true;
+        if (distance < targetProximityThreshold) {
+          console.log(`[PrinterCalibration] Hit target: ${target.id}`);
+          if (hitTargets.size === 0) {
+            firstTargetHitThisUpdate = true;
           }
+          hitTargets.add(target.id);
+          hitTargets = new Set(hitTargets);
+          newlyHit = true;
         }
       }
-    );
+    });
 
     if (newlyHit) {
       if (firstTargetHitThisUpdate) {
-        if (currentStage === 1) {
+        if (stage === 1) {
           showCalibrationDialog([
             { speaker: "Surya", message: "Nice! Got the first one." },
             {
@@ -170,7 +173,7 @@
               message: "Position acquired. Remember, precision is key!",
             },
           ]);
-        } else if (currentStage === 2) {
+        } else if (stage === 2) {
           showCalibrationDialog([
             { speaker: "Surya", message: "There we go, first 3D point!" },
             {
@@ -179,8 +182,11 @@
             },
           ]);
         }
-      } else if (hitTargets.size === targets.length && targets.length > 0) {
-        if (currentStage === 1) {
+      } else if (
+        hitTargets.size === currentTargets.length &&
+        currentTargets.length > 0
+      ) {
+        if (stage === 1) {
           console.log(
             "[PrinterCalibration] Stage 1 targets hit! Dispatching stageComplete & showing dialog."
           );
@@ -208,11 +214,11 @@
                     "Right, can't have your masterpiece looking like a pancake tower. Time to add the third dimension! Let's hit these next points, getting the Y-value spot on.",
                 },
               ]);
-              dispatch("stageComplete");
+              onStageComplete?.();
             },
             firstTargetHitThisUpdate ? 2500 : 0
           );
-        } else if (currentStage === 2) {
+        } else if (stage === 2) {
           console.log(
             "[PrinterCalibration] Stage 2 targets hit! Dispatching allStagesComplete & showing dialog."
           );
@@ -235,7 +241,7 @@
                     "It's... complicated. But essential. Let's just say it involves quantum foam.",
                 },
               ]);
-              dispatch("allStagesComplete");
+              onAllStagesComplete?.();
             },
             firstTargetHitThisUpdate ? 2500 : 0
           );

@@ -6,12 +6,27 @@ export interface DialogTurn {
 	message: string;
 }
 
+// Define the structure for a target point
+export interface TargetPoint {
+  id: string;
+  x: number;
+  y: number;
+  z: number;
+}
+
 // --- State ---
 // Rename dialogMessages to dialogTurns and update type
 export const dialogTurns = writable<DialogTurn[]>([]);
 export const showDialog = writable<boolean>(false);
 // Remove the speaker store as it will be derived from the turns
 // export const speaker = writable<string>('');
+
+// Nozzle and Stage State for Printer Calibration
+export const relativeNozzleXStore = writable<number>(0);
+export const relativeNozzleYStore = writable<number>(5);
+export const relativeNozzleZStore = writable<number>(0);
+export const currentStageStore = writable<number>(1);
+export const activeTargetsStore = writable<TargetPoint[]>([]); // For the current stage's targets
 
 // --- Actions / Functions ---
 // We'll implement these functions within the components that handle the logic.
