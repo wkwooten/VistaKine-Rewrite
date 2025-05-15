@@ -6,7 +6,7 @@
     showDeltaY,
     showDeltaZ,
     useIjkNotation, // Import from store
-  } from "$lib/stores/vectorBuilderState";
+  } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
   import { xAxisColor, yAxisColor, zAxisColor } from "$lib/stores/themeColors"; // Import colors from correct store
   import { ChevronDown } from "lucide-svelte";
   import Katex from "svelte-katex"; // Import Katex

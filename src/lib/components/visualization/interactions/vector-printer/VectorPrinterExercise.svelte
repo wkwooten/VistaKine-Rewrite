@@ -4,7 +4,7 @@
   import VectorPrinterHud from "./VectorPrinterHud.svelte";
   import VectorOperationControls from "./VectorOperationControls.svelte";
   import DialogBox from "$lib/components/visualization/elements/ui/DialogBox.svelte";
-  import type { DialogTurn } from "$lib/stores/calibrationState";
+  import type { DialogTurn } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
   import VisContainer from "../../VisContainer.svelte";
 
   // --- Component Props ---

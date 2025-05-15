@@ -24,7 +24,7 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
-  } from "$lib/stores/calibrationState";
+  } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
   import {
     nozzleColor,
     nozzleEdgesColor,

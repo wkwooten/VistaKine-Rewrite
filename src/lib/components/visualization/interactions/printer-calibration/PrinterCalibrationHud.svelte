@@ -7,7 +7,7 @@
     resetSceneRequested,
     showDialog,
     dialogTurns,
-  } from "$lib/stores/calibrationState";
+  } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
   import NozzleControlPanel from "./NozzleControlPanel.svelte";
 
   // --- Props ---

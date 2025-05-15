@@ -17,7 +17,7 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
-  } from "$lib/stores/vectorBuilderState";
+  } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
 
   // --- Props ---
   export let isFullscreen = false;

@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { Minimize2, MessageCircle } from 'lucide-svelte';
-  import type { DialogTurn } from '$lib/stores/calibrationState';
+  import type { DialogTurn } from '$lib/components/visualization/interactions/printer-calibration/calibrationState';
 
   let {
     turns = $bindable([]),

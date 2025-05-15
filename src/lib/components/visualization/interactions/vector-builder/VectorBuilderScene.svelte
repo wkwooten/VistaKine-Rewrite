@@ -40,7 +40,7 @@
     showVectorBuilderDialog,
     hideVectorDialog,
     useIjkNotation,
-  } from "$lib/stores/vectorBuilderState";
+  } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
   import {
     xAxisColor,
     yAxisColor,
