@@ -2,30 +2,43 @@
   import { Vector3 } from "three";
   import Button from "$lib/components/ui/Button.svelte";
   import katex from "katex";
+  import { currentDefiningVectorStore } from "./vectorPrinterState"; // Import the store
+  import AxisInput from "$lib/components/visualization/elements/ui/AxisInput.svelte"; // Import AxisInput
+  import {
+    xAxisColor as xAxisColorStore,
+    yAxisColor as yAxisColorStore,
+    zAxisColor as zAxisColorStore,
+  } from "$lib/stores/themeColors"; // Import color stores
 
   let {
-    vectorToDefine = $bindable(new Vector3(0, 0, 0)),
+    // vectorToDefine = $bindable(new Vector3(0, 0, 0)), // Removed prop
     onPrintVector,
     onReset,
   } = $props<{
-    vectorToDefine?: Vector3;
+    // vectorToDefine?: Vector3; // Removed prop type
     onPrintVector?: () => void;
     onReset?: () => void;
   }>();
 
-  // Function to ensure input values are treated as numbers
-  // and to provide a default if parsing fails (e.g. empty input)
-  function updateVectorComponent(
-    vector: Vector3,
+  // Helper reactive variables for input binding, derived from store
+  // Svelte 5 allows direct binding to store properties in many cases,
+  // but for complex objects like Vector3 within a store, it's often clearer
+  // to manage updates explicitly or through intermediate $state if needed.
+
+  // Function to update a component of the vector in the store
+  function updateVectorComponentInStore(
     component: "x" | "y" | "z",
-    event: Event
+    newValue: number // Changed from event: Event
   ) {
-    const target = event.target as HTMLInputElement;
-    let value = parseFloat(target.value);
+    let value = newValue;
     if (isNaN(value)) {
       value = 0; // Default to 0 if input is not a valid number
     }
-    vector[component] = value;
+    currentDefiningVectorStore.update((vec) => {
+      const newVec = vec.clone(); // Clone to ensure reactivity if store holds mutable object instance
+      newVec[component] = value;
+      return newVec;
+    });
   }
 </script>
 
@@ -33,36 +46,30 @@
   <fieldset class="vector-definition-fieldset">
     <legend>Define Next Vector Components</legend>
     <div class="input-row">
-      <label class="input-label">
-        {@html katex.renderToString("\\Delta X")}:
-        <input
-          type="number"
-          value={vectorToDefine.x}
-          oninput={(e) => updateVectorComponent(vectorToDefine, "x", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
-      <label class="input-label">
-        {@html katex.renderToString("\\Delta Y")}:
-        <input
-          type="number"
-          value={vectorToDefine.y}
-          oninput={(e) => updateVectorComponent(vectorToDefine, "y", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
-      <label class="input-label">
-        {@html katex.renderToString("\\Delta Z")}:
-        <input
-          type="number"
-          value={vectorToDefine.z}
-          oninput={(e) => updateVectorComponent(vectorToDefine, "z", e)}
-          step="0.1"
-          class="coord-input"
-        />
-      </label>
+      <AxisInput
+        label={"ΔX"}
+        value={$currentDefiningVectorStore.x}
+        onValueChange={(newValue) =>
+          updateVectorComponentInStore("x", newValue)}
+        step={0.1}
+        axisColor={$xAxisColorStore}
+      />
+      <AxisInput
+        label={"ΔY"}
+        value={$currentDefiningVectorStore.y}
+        onValueChange={(newValue) =>
+          updateVectorComponentInStore("y", newValue)}
+        step={0.1}
+        axisColor={$yAxisColorStore}
+      />
+      <AxisInput
+        label={"ΔZ"}
+        value={$currentDefiningVectorStore.z}
+        onValueChange={(newValue) =>
+          updateVectorComponentInStore("z", newValue)}
+        step={0.1}
+        axisColor={$zAxisColorStore}
+      />
     </div>
     {#if onPrintVector}
       <Button onclick={onPrintVector} variant="primary" fullWidth>

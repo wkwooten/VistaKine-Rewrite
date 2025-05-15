@@ -77,7 +77,7 @@
 </script>
 
 <div class="axis-input-group" style:--axis-input-color={axisColor}>
-  <span class="axis-label">{label}</span>
+  <span class="axis-label">{@html label}</span>
   <div class="input-stepper">
     <button
       class="stepper-button plus-button"

@@ -19,19 +19,17 @@
     zAxisColor as zAxisColorStore,
     bedColor as bedColorStore,
     bedEdgesColor as bedEdgesColorStore,
-    gridCellColor as gridCellColorStore,
   } from "$lib/stores/themeColors";
   import PrinterBed from "$lib/components/visualization/elements/constructs/PrinterBed.svelte";
+  import { currentDefiningVectorStore } from "./vectorPrinterState"; // Import store
 
   let {
     nozzlePosition = $bindable(new Vector3(0, 0.1, 0)), // Nozzle slightly above grid
     printedSegments = [],
-    currentVectorToDisplay = new Vector3(), // The active vector being defined
     currentVectorOrigin = new Vector3(), // Origin for the currentVectorToDisplay
   } = $props<{
     nozzlePosition?: Vector3;
     printedSegments?: { start: Vector3; end: Vector3; vector: Vector3 }[];
-    currentVectorToDisplay?: Vector3;
     currentVectorOrigin?: Vector3;
   }>();
 
@@ -55,9 +53,11 @@
   let currentDisplayVectorHelper = $state<ThreeArrowHelper | null>(null);
 
   useTask((delta) => {
-    if (currentVectorToDisplay && currentVectorToDisplay.lengthSq() > 0) {
-      const dir = currentVectorToDisplay.clone().normalize();
-      const length = currentVectorToDisplay.length();
+    const vectorToDisplayFromStore = $currentDefiningVectorStore; // Use store value
+
+    if (vectorToDisplayFromStore && vectorToDisplayFromStore.lengthSq() > 0) {
+      const dir = vectorToDisplayFromStore.clone().normalize();
+      const length = vectorToDisplayFromStore.length();
       const color = new Color($primaryColorStore);
       const headLength = Math.max(0.1, length * 0.2); // Ensure minimum head length
       const headWidth = Math.max(0.05, length * 0.1); // Ensure minimum head width
@@ -65,7 +65,7 @@
       if (!currentDisplayVectorHelper) {
         currentDisplayVectorHelper = new ThreeArrowHelper(
           dir,
-          currentVectorOrigin,
+          currentVectorOrigin, // Prop still used for origin
           length,
           color.getHex(),
           headLength,
@@ -73,7 +73,7 @@
         );
       } else {
         currentDisplayVectorHelper.setDirection(dir);
-        currentDisplayVectorHelper.position.copy(currentVectorOrigin);
+        currentDisplayVectorHelper.position.copy(currentVectorOrigin); // Prop still used for origin
         currentDisplayVectorHelper.setLength(length, headLength, headWidth);
         currentDisplayVectorHelper.setColor(color);
       }
@@ -97,6 +97,7 @@
     maxPolarAngle={Math.PI / 2}
     maxDistance={50}
     minDistance={10}
+    target={new Vector3(0, 0.5, 0).toArray()}
   />
 </T.PerspectiveCamera>
 
@@ -106,7 +107,7 @@
 <PrinterBed
   bedColor={$bedColorStore}
   bedEdgesColor={$bedEdgesColorStore}
-  gridCellColor={$gridCellColorStore}
+  gridCellColor={$gridColorStore}
   gridSectionColor={$gridSectionColorStore}
 />
 
@@ -114,9 +115,6 @@
   axisLengthX={axisLength}
   axisLengthY={axisLength}
   axisLengthZ={axisLength}
-  xAxisColor={$xAxisColorStore}
-  yAxisColor={$yAxisColorStore}
-  zAxisColor={$zAxisColorStore}
 />
 
 <!-- Nozzle Representation -->
@@ -153,5 +151,3 @@
 {#if currentDisplayVectorHelper}
   <T is={currentDisplayVectorHelper} />
 {/if}
-
-<OrbitControls target={new Vector3(0, 0.5, 0).toArray()} />
