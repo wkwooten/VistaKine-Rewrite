@@ -16,6 +16,7 @@
     exerciseTitle?: string;
     onResetRequestedByHudCallback?: () => void;
     onFullscreenStatusChangeCallback?: (isFullscreen: boolean) => void;
+    class?: string;
   }
 
   const passedProps: ExerciseProps = $props();
@@ -39,6 +40,7 @@
   const hudProps = passedProps.hudProps ?? {};
   const controlPanelProps = passedProps.controlPanelProps ?? {};
   const exerciseTitle = passedProps.exerciseTitle ?? "Interactive Exercise";
+  const extraClass = passedProps.class ?? "";
 
   let resetKey = $state(0);
   let isFullscreen = $state(false);
@@ -80,7 +82,7 @@
 </script>
 
 <div
-  class="interactive-exercise-wrapper"
+  class="interactive-exercise-wrapper {extraClass}"
   use:fullscreenAction={{
     isFullscreenStore: { set: (v) => (isFullscreen = v) },
   }}

@@ -1,50 +1,58 @@
 <script lang="ts">
-  import VisContainer from "../../VisContainer.svelte";
+  import type { SvelteComponent, ComponentType } from "svelte";
+  import InteractiveExercise from "../../InteractiveExercise.svelte";
   import VectorBuilderScene from "./VectorBuilderScene.svelte";
   import VectorBuilderHud from "./VectorBuilderHud.svelte";
   import VectorInputPanel from "./VectorInputPanel.svelte";
-  import { onMount } from "svelte";
-  import { browser } from "$app/environment";
   import DialogBox from "../../elements/ui/DialogBox.svelte";
   import {
     showVectorBuilderDialog,
     vectorBuilderDialogTurns,
+    startCoordsRaw,
+    endCoordsRaw,
   } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
-  import { fullscreenAction } from "$lib/actions/useFullscreen";
+  import { onMount } from "svelte"; // Still needed for initial dialogKey increment if desired
 
-  // --- Fullscreen State & Logic ---
-  let isFullscreen = $state(false);
-  let exerciseWrapperElement: HTMLDivElement;
+  // --- Props for VectorBuilderExercise itself (if any) ---
+  // let { someProp } = $props<{ someProp?: type }>();
 
-  // --- Dialog Key State ---
+  // --- State for VectorBuilderExercise Layout & Dialog ---
+  let isFullscreenForVBELayout = $state(false);
   let dialogKey = $state(0);
 
   onMount(() => {
     dialogKey += 1;
-    // TODO: Add logic to increment dialogKey if a reset happens
+    // Any other onMount logic for VBE can go here.
   });
 
-  // REMOVE OLD FULLSCREEN LOGIC (toggleFullscreen function and onMount listeners)
-  // The new request function, to be called by HUD's event
-  function requestToggleFullscreenDispatch() {
-    if (exerciseWrapperElement) {
-      exerciseWrapperElement.dispatchEvent(
-        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
-      );
-    }
+  // --- Reset Logic for this Exercise ---
+  function handleActualReset(): void {
+    console.log("[VectorBuilderExercise] Resetting exercise state.");
+    // Reset vector coordinates via stores (already handled by HUD, but good for explicit VBE reset)
+    startCoordsRaw.set({ x: "0", y: "0", z: "0" });
+    endCoordsRaw.set({ x: "0", y: "0", z: "0" });
+    dialogKey++; // Re-key dialog box if necessary
+    // Potentially reset other states from vectorBuilderState.ts if needed
+    // For example, if dialog content needs to be reset to an initial state:
+    // showVectorBuilderDialog.set(false); or showVectorDialog([...initialTurns]);
   }
+
+  // --- Props for Child Components (managed by InteractiveExercise) ---
+  // SceneComponent (VectorBuilderScene) does not seem to take explicit props in its current form.
+  const sceneProps = $derived({});
+
+  // HudComponent (VectorBuilderHud) will receive isFullscreen from InteractiveExercise automatically.
+  // It doesn't seem to need other specific props from VBE at this stage.
+  const hudProps = $derived({});
+
+  // ControlPanelComponent (VectorInputPanel) is passed to InteractiveExercise,
+  // which will then slot it into the HUD when the HUD is fullscreen.
+  const controlPanelProps = $derived({}); // VectorInputPanel takes no props
 </script>
 
-<div
-  bind:this={exerciseWrapperElement}
-  class="exercise-wrapper"
-  class:fullscreen={isFullscreen}
-  use:fullscreenAction={{
-    isFullscreenStore: { set: (val) => (isFullscreen = val) },
-  }}
->
-  <!-- Render DialogBox OUTSIDE VisContainer when NOT fullscreen -->
-  {#if $showVectorBuilderDialog && !isFullscreen}
+<div class="vector-builder-exercise-shell">
+  <!-- Render DialogBox OUTSIDE InteractiveExercise when NOT in VBE's fullscreen layout -->
+  {#if $showVectorBuilderDialog && !isFullscreenForVBELayout}
     <div class="dialog-above-vis">
       {#key dialogKey}
         <DialogBox
@@ -55,124 +63,61 @@
     </div>
   {/if}
 
-  <!-- Render VectorInputPanel OUTSIDE VisContainer when NOT fullscreen -->
-  {#if !isFullscreen}
-    <div class="input-panel-outside-vis">
+  <!-- InteractiveExercise now manages Scene, HUD, and ControlPanel (which HUD displays in FS) -->
+  <InteractiveExercise
+    class="interactive-exercise-component"
+    exerciseTitle="Vector Builder"
+    SceneComponent={VectorBuilderScene as unknown as ComponentType<SvelteComponent>}
+    HudComponent={VectorBuilderHud as unknown as ComponentType<SvelteComponent>}
+    ControlPanelComponent={VectorInputPanel as unknown as ComponentType<SvelteComponent>}
+    {sceneProps}
+    {hudProps}
+    {controlPanelProps}
+    onResetRequestedByHudCallback={handleActualReset}
+    onFullscreenStatusChangeCallback={(isFs: boolean) =>
+      (isFullscreenForVBELayout = isFs)}
+  />
+
+  <!-- Render VectorInputPanel directly when NOT in VBE's fullscreen layout -->
+  {#if !isFullscreenForVBELayout}
+    <div class="control-panel-outside-vis">
       <VectorInputPanel />
     </div>
   {/if}
-
-  <!-- Wrapper for VisContainer and its Overlay -->
-  <div class="vis-area-wrapper">
-    <!-- UI Overlay Container -->
-    <div class="ui-overlay">
-      <VectorBuilderHud
-        bind:isFullscreen
-        on:requestToggleFullscreen={requestToggleFullscreenDispatch}
-      />
-    </div>
-
-    <!-- VisContainer -->
-    <VisContainer>
-      <VectorBuilderScene />
-    </VisContainer>
-  </div>
 </div>
 
-<style>
-  /* Wrapper for the visualization area and its overlay */
-  .vis-area-wrapper {
-    position: relative;
-    width: 100%;
-    order: 1;
-    z-index: 1;
-  }
-
-  /* The transparent overlay for HUD elements */
-  .ui-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+<style lang="scss">
+  .vector-builder-exercise-shell {
     width: 100%;
     height: 100%;
-    z-index: 10;
-    pointer-events: none; /* Allows clicks through to canvas */
-  }
-
-  /* Style for the input panel when outside the vis area */
-  .input-panel-outside-vis {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: var(--space-s);
-    order: 2;
-  }
-
-  /* Layout for non-fullscreen mode */
-  .exercise-wrapper:not(.fullscreen) {
     display: flex;
     flex-direction: column;
-  }
 
-  /* Styles for fullscreen mode */
-  .exercise-wrapper.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh; /* Fallback */
-    height: -webkit-fill-available;
-    max-height: 100vh; /* Fallback */
-    max-height: -webkit-fill-available;
-    border-radius: 0;
-    border: none;
-    z-index: 9999;
-    padding: 0;
-    pointer-events: auto; /* Allow events on wrapper in fullscreen */
-
-    /* Hide non-visualization elements when fullscreen */
-    & > .dialog-above-vis,
-    & > .input-panel-outside-vis,
-    & > h3,
-    & > p:first-of-type {
-      display: none;
-    }
-
-    /* Ensure vis area takes full space in fullscreen */
-    & > .vis-area-wrapper {
-      width: 100%;
-      /* height: 100%; Remove or comment out */
-      position: absolute; /* Position relative to the fixed parent */
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 1;
-    }
-
-    /* Style VisContainer specifically in fullscreen */
-    & > .vis-area-wrapper > :global(.visualization-container) {
-      height: 100%;
-      max-height: 100%;
-      border: none;
-      border-radius: 0;
-      aspect-ratio: auto;
-      z-index: 5;
-      position: relative;
-    }
-
-    /* Style overlay specifically in fullscreen (optional, inherits z-index) */
-    & > .vis-area-wrapper > .ui-overlay {
-      z-index: 10; /* Inherited */
+    // Ensure InteractiveExercise takes available space when other elements are present
+    // This might need adjustment based on how height: 100% behaves on children
+    // when the parent (shell) is also height: 100% and a flex container.
+    & > :global(.interactive-exercise-component) {
+      flex-grow: 1; // Allows InteractiveExercise to take remaining space
+      min-height: 300px; // Or some other sensible minimum height for the visualization
     }
   }
 
-  /* Style for the dialog wrapper when above the vis */
   .dialog-above-vis {
     width: 100%;
     box-sizing: border-box;
     min-height: 110px;
     margin-bottom: var(--space-s);
     position: relative;
-    order: 0;
+    order: 1; // Dialog first
+  }
+
+  // The InteractiveExercise component will be order 2 implicitly or explicitly if needed.
+  // For example, if .interactive-exercise-component is given order: 2;
+
+  .control-panel-outside-vis {
+    width: 100%;
+    box-sizing: border-box;
+    margin-block-start: var(--space-s); // Space above the panel
+    order: 3; // Control panel last
   }
 </style>
