@@ -37,7 +37,6 @@
     step={stepAmount}
     {min}
     {max}
-    aria-label="X Coordinate Input"
   />
   <AxisInput
     label="Y"
@@ -46,7 +45,6 @@
     step={stepAmount}
     {min}
     {max}
-    aria-label="Y Coordinate Input"
   />
   <AxisInput
     label="Z"
@@ -55,7 +53,6 @@
     step={stepAmount}
     {min}
     {max}
-    aria-label="Z Coordinate Input"
   />
 </div>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  // import { createEventDispatcher } from "svelte"; // Removed unused import
   import {
     showCalibrationDialog,
     MIN_X,
@@ -8,8 +8,8 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
-  } from "$lib/stores/calibrationState";
-  import { onDestroy } from "svelte";
+  } from "./calibrationState"; // Updated import path
+  // import { onDestroy } from "svelte"; // Removed unused import
   import AxisInput from "../../elements/ui/AxisInput.svelte";
 
   // --- Props ---
@@ -39,7 +39,7 @@
       showCalibrationDialog([
         {
           speaker: "Surya",
-          message: `Whoa, whoa! The Y-axis limit is ${MAX_Y}. We need to stay between ${MIN_Y} and ${MAX_Y}. We don't want to break my printer, its fragile!`,
+          message: `Whoa, whoa! The Y-axis limit is ${MAX_Y}. We need to stay between ${MIN_Y} and ${MAX_Y}. We don\'t want to break my printer, its fragile!`,
         },
       ]);
       y = Math.max(MIN_Y, Math.min(MAX_Y, y));

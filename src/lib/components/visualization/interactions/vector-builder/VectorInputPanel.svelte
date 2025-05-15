@@ -9,7 +9,7 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
-  } from "$lib/stores/vectorBuilderState";
+  } from "./vectorBuilderState";
   import { xAxisColor, yAxisColor, zAxisColor } from "$lib/stores/themeColors";
   import { get, type Writable } from "svelte/store";
   import AxisInput from "../../elements/ui/AxisInput.svelte";

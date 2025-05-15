@@ -9,7 +9,7 @@
   import {
     showVectorBuilderDialog,
     vectorBuilderDialogTurns,
-  } from "$lib/stores/vectorBuilderState";
+  } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
   import { fullscreenAction } from "$lib/actions/useFullscreen";
 
   // --- Fullscreen State & Logic ---

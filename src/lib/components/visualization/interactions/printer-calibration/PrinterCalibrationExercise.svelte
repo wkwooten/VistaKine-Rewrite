@@ -9,7 +9,7 @@
     showDialog,
     hideCalibrationDialog,
     requestedNozzlePosition,
-  } from "$lib/stores/calibrationState";
+  } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
   import { onMount, onDestroy } from "svelte";
   import { browser } from "$app/environment";
   import { HTML } from "@threlte/extras";
