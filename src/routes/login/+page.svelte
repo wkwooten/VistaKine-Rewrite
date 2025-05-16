@@ -1,19 +1,37 @@
 <!-- src/routes/login/+page.svelte -->
 <script lang="ts">
-  import { authState, login as authLogin, type User } from "$lib/stores/auth";
+  // Remove the now non-existent exports
+  // import { authState, login as authLogin, type User } from "$lib/stores/auth";
   import { goto } from "$app/navigation";
+  // Import the Supabase client
+  import { supabase } from "$lib/supabaseClient";
 
   let email = "";
   let password = "";
 
-  function handleLogin(event: SubmitEvent) {
+  async function handleLogin(event: SubmitEvent) {
     event.preventDefault();
-    // In a real app, you'd call your backend here
-    console.log("Attempting login with:", email, password);
-    // Mock successful login:
-    const mockUser: User = { username: email.split("@")[0] || "User" };
-    authLogin(mockUser);
-    goto("/"); // Redirect to home page after login
+
+    // Call Supabase signInWithPassword
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      console.error("Login error:", error.message);
+      alert(error.message); // Display error to the user
+    } else if (data.user) {
+      console.log("User signed in:", data.user);
+      // Supabase automatically updates the authState store via the listener
+      goto("/"); // Redirect to home page on successful login
+    } else {
+      // This case might occur if email confirmation is required but not implemented
+      console.log(
+        "Sign-in initiated, but no user data received. Check email for confirmation if required."
+      );
+      alert("Please check your email to confirm your account."); // Example for email confirmation flow
+    }
   }
 </script>
 

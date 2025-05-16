@@ -1,24 +1,54 @@
 <!-- src/routes/signup/+page.svelte -->
 <script lang="ts">
-  import { authState, login as authLogin, type User } from "$lib/stores/auth";
+  // Remove the now non-existent exports
+  // import { authState, login as authLogin, type User } from "$lib/stores/auth";
   import { goto } from "$app/navigation";
+  // Import the Supabase client
+  import { supabase } from "$lib/supabaseClient";
 
   let email = "";
   let password = "";
   let confirmPassword = "";
 
-  function handleSignUp(event: SubmitEvent) {
+  async function handleSignUp(event: SubmitEvent) {
     event.preventDefault();
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    // In a real app, you'd call your backend here to register the user
-    console.log("Attempting sign up with:", email, password);
-    // Mock successful sign up & login:
-    const mockUser: User = { username: email.split("@")[0] || "User" };
-    authLogin(mockUser);
-    goto("/"); // Redirect to home page after sign up
+
+    // Call Supabase signUp
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      console.error("Sign up error:", error.message);
+      alert(error.message); // Display error to the user
+    } else if (data.user) {
+      console.log("User signed up:", data.user);
+      // Supabase automatically updates the authState store via the listener
+      // Redirect to home or a confirmation page
+      alert(
+        "Sign up successful! Please check your email to confirm your account."
+      ); // Assuming email confirmation is enabled
+      goto("/"); // Redirect after informing the user to check email
+    } else if (data.session) {
+      // This case might occur if auto-confirm is off but no error occurred
+      console.log("Sign-up successful, but email confirmation is required.");
+      alert(
+        "Sign up successful! Please check your email to confirm your account."
+      );
+      goto("/");
+    } else {
+      // Generic success message if data.user and data.session are null (e.g., for email confirmation flows)
+      console.log("Sign-up successful. Check email for confirmation.");
+      alert(
+        "Sign up successful! Please check your email to confirm your account."
+      );
+      goto("/");
+    }
   }
 </script>
 

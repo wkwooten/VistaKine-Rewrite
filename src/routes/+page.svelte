@@ -31,7 +31,9 @@
         <div class="hero-branding">
           <AnimatedLogo />
           <p class="tagline">
-            Bringing Physics Learning into a New Dimension <br />
+            <span class="tagline-highlight">Learn</span> Physics and have
+            <span class="tagline-highlight">fun</span>
+            doing it! <br />
             Explore interactive 3D visualizations that bring kinematics to life.
           </p>
           <!-- SearchBar moved back to hero-actions -->
@@ -106,7 +108,13 @@
   .tagline {
     border-top: 1px solid var(--color-accent);
     width: 100%;
+    font-size: var(--step-1);
     padding: var(--space-s) 0;
+  }
+
+  .tagline-highlight {
+    color: var(--color-accent);
+    font-weight: 600;
   }
 
   .hero-content-card .tagline {
