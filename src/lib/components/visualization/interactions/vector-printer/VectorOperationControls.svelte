@@ -30,6 +30,9 @@
     component: "x" | "y" | "z",
     newValue: number // Changed from event: Event
   ) {
+    console.log(
+      `[VOC updateVectorComponentInStore] component: ${component}, newValue: ${newValue}`
+    );
     let value = newValue;
     if (isNaN(value)) {
       value = 0; // Default to 0 if input is not a valid number
@@ -51,7 +54,6 @@
         value={$currentDefiningVectorStore.x}
         onValueChange={(newValue) =>
           updateVectorComponentInStore("x", newValue)}
-        step={0.1}
         axisColor={$xAxisColorStore}
       />
       <AxisInput
@@ -59,7 +61,6 @@
         value={$currentDefiningVectorStore.y}
         onValueChange={(newValue) =>
           updateVectorComponentInStore("y", newValue)}
-        step={0.1}
         axisColor={$yAxisColorStore}
       />
       <AxisInput
@@ -67,19 +68,28 @@
         value={$currentDefiningVectorStore.z}
         onValueChange={(newValue) =>
           updateVectorComponentInStore("z", newValue)}
-        step={0.1}
         axisColor={$zAxisColorStore}
       />
     </div>
     {#if onPrintVector}
-      <Button onclick={onPrintVector} variant="primary" fullWidth>
+      <Button
+        onclick={() => {
+          console.log(
+            "[VOC] Print Current Vector button CLICKED. onPrintVector prop is:",
+            onPrintVector
+          );
+          onPrintVector?.();
+        }}
+        variant="primary"
+        fullWidth
+      >
         Print Current Vector
       </Button>
     {/if}
   </fieldset>
 
   {#if onReset}
-    <Button onclick={onReset} variant="danger" fullWidth>Reset Exercise</Button>
+    <Button onclick={onReset} variant="secondary" fullWidth>Reset</Button>
   {/if}
 </div>
 

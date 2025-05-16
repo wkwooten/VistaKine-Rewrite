@@ -94,6 +94,7 @@
       {step}
       placeholder={label || "Value"}
       onfocus={(e) => (e.target as HTMLInputElement)?.select()}
+      oninput={() => onValueChange?.(value)}
     />
     <button
       class="stepper-button minus-button"

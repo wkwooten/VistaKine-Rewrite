@@ -1,20 +1,23 @@
 <script lang="ts">
   import FullscreenButton from "./../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
-  import type { Vector3 } from "three";
-  // Import specific color stores if needed by HUD text, or rely on CSS variables set by themeColors
-  // For now, assuming HUD text color is primarily handled by CSS variables or defaults.
+  import type { Vector3, ColorRepresentation } from "three";
   import katex from "katex";
   import AddButton from "$lib/components/visualization/elements/ui/AddButton.svelte";
-  import { currentDefiningVectorStore } from "./vectorPrinterState"; // Import store
+  import {
+    currentDefiningVectorStore, // Existing import
+    definedVectorsStore, // Import store
+    resultantVectorStore, // Import store
+  } from "./vectorPrinterState";
 
+  // Props no longer include definedVectors or resultantVector
   let {
     nozzlePosition,
     dialogMessage,
     dialogSpeaker,
-    isFullscreen = false, // No longer $bindable, driven by InteractiveExercise
-    onrequestToggleFullscreen, // Callback from InteractiveExercise
-    onrequestReset, // Callback from InteractiveExercise
+    isFullscreen = false,
+    onrequestToggleFullscreen,
+    onrequestReset,
   } = $props<{
     nozzlePosition: Vector3;
     dialogMessage?: string;
@@ -24,17 +27,14 @@
     onrequestReset?: () => void;
   }>();
 
-  const formatVector = (v: Vector3 | undefined, defaultText = "⟨0,0,0⟩") => {
+  const formatVector = (
+    v: Vector3 | undefined | null,
+    defaultText = "⟨0,0,0⟩"
+  ) => {
     if (!v || v.lengthSq() === 0) return defaultText;
     return `⟨${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}⟩`;
   };
 
-  const formatStoreDeltaVector = (v: Vector3 | undefined) => {
-    if (!v || v.lengthSq() === 0) return "⟨0,0,0⟩";
-    return `⟨${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}⟩`;
-  };
-
-  // Event Handlers for HUD buttons
   function handleRequestToggle() {
     onrequestToggleFullscreen?.();
   }
@@ -42,6 +42,19 @@
   function handleRequestReset() {
     onrequestReset?.();
   }
+
+  // Use $derived with the stores for the formula
+  let resultantFormula = $derived(() => {
+    const currentResultant = $resultantVectorStore;
+    const currentDefined = $definedVectorsStore;
+    if (currentResultant && currentDefined && currentDefined.length >= 2) {
+      const vectorNames = currentDefined
+        .map((v: { name: string }) => v.name)
+        .join(" + ");
+      return `R = ${vectorNames}`;
+    }
+    return "";
+  });
 </script>
 
 <div class="vector-printer-hud-overlay" class:fullscreen-active={isFullscreen}>
@@ -51,7 +64,6 @@
       {isFullscreen}
       onRequestToggleCallback={handleRequestToggle}
     />
-    <!-- AddButton's functionality is TBD, leaving as is for now -->
     <AddButton />
   </div>
 
@@ -60,29 +72,36 @@
       <span class="label">Nozzle Position:</span>
       <span class="value">{formatVector(nozzlePosition)}</span>
     </div>
+
     {#if $currentDefiningVectorStore && $currentDefiningVectorStore.lengthSq() > 0}
       <div class="hud-item">
-        <span class="label">{@html katex.renderToString("\\vec{A}")} =</span>
-        <span class="value"
-          >{formatStoreDeltaVector($currentDefiningVectorStore)}</span
-        >
+        <span class="label">Current Input:</span>
+        <span class="value">{formatVector($currentDefiningVectorStore)}</span>
+      </div>
+    {/if}
+
+    <!-- Use $definedVectorsStore here -->
+    {#each $definedVectorsStore as defVec (defVec.id)}
+      <div class="hud-item">
+        <span class="label">Vector {defVec.name}:</span>
+        <span class="value">{formatVector(defVec.vector)}</span>
+      </div>
+    {/each}
+
+    <!-- Use $resultantVectorStore here -->
+    {#if $resultantVectorStore}
+      <div class="hud-item resultant">
+        <span class="label">Resultant R:</span>
+        <span class="value">{formatVector($resultantVectorStore)}</span>
       </div>
     {/if}
   </div>
 
-  <!-- Container for ControlPanelComponent, shown only in fullscreen -->
   {#if isFullscreen}
     <div class="controls-panel-slot-container">
       <slot name="controls"></slot>
     </div>
   {/if}
-
-  <!-- Dialog rendering can be added here if needed when fullscreen -->
-  <!-- Example from other HUDs:
-  {#if $showDialogStore && isFullscreen} // Assuming a showDialogStore for vector-printer
-    <DialogBox turns={$dialogTurnsStore} bind:show={$showDialogStore} {isFullscreen} />
-  {/if}
-  -->
 </div>
 
 <style lang="scss">
@@ -94,8 +113,8 @@
     height: 100%;
     pointer-events: none;
     display: flex;
-    flex-direction: column; // Changed for overall layout
-    justify-content: space-between; // Pushes elements to top and bottom
+    flex-direction: column;
+    justify-content: space-between;
     padding: var(--space-xs);
     font-family: var(--font-mono);
     font-size: var(--step--1);
@@ -106,7 +125,7 @@
     display: flex;
     gap: var(--space-xs);
     pointer-events: auto;
-    width: fit-content; // Only take space needed for buttons
+    width: fit-content;
   }
 
   .hud-panel {
@@ -116,44 +135,47 @@
     pointer-events: auto;
     box-shadow: var(--shadow-sm);
     max-width: 300px;
-    align-self: flex-end; // Aligns this panel to the right if flex-direction is row, or bottom if column
-  }
-
-  .bottom-right {
-    // Specific class for positioning if needed, for now using flex properties
-    // align-self: flex-end; // Already on .hud-panel
+    align-self: flex-end;
   }
 
   .hud-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: var(--space-xxs);
-    align-items: center;
+    gap: var(--space-m);
 
     .label {
-      margin-right: var(--space-xs);
-      color: var(--color-text-hud-secondary, lightgray);
+      font-weight: bold;
+      color: var(--color-text-hud-secondary, lightgrey);
     }
+
     .value {
-      font-weight: 500;
-      min-width: 100px;
-      text-align: right;
+      color: var(--color-text-hud, white);
     }
   }
 
-  :global(.vector-printer-hud-overlay .katex) {
-    font-size: inherit !important;
-    color: inherit !important;
+  .hud-item.resultant .value {
+    color: var(--color-accent, lightgreen); /* Or a specific resultant color */
+  }
+
+  .hud-item.formula .value {
+    font-style: italic;
   }
 
   .controls-panel-slot-container {
-    position: absolute; // Example positioning, adjust as needed
+    position: absolute;
     bottom: var(--space-s);
-    left: var(--space-s); // Example: bottom-left
-    // Or right: var(--space-s); for bottom-right
-    z-index: 10;
+    left: 50%;
+    transform: translateX(-50%);
     pointer-events: auto;
-    width: auto; // Or a specific width
-    max-width: calc(100% - 2 * var(--space-s)); // Ensure it fits
+    width: clamp(300px, 80%, 500px); /* Responsive width */
+    z-index: 10; /* Ensure it's above other HUD elements if necessary */
+  }
+
+  /* Ensure consistent styling for slotted controls */
+  :global(.vector-printer-hud-overlay .controls-panel-slot-container > *) {
+    background-color: var(--color-surface-alt, #222);
+    padding: var(--space-s);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
   }
 </style>

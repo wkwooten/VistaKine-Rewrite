@@ -7,19 +7,22 @@
   import VectorOperationControls from "./VectorOperationControls.svelte";
   import DialogBox from "$lib/components/visualization/elements/ui/DialogBox.svelte";
   import type { DialogTurn } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
-  import { currentDefiningVectorStore } from "./vectorPrinterState";
+  import {
+    currentDefiningVectorStore,
+    definedVectorsStore,
+    resultantVectorStore,
+    type DefinedVector,
+  } from "./vectorPrinterState";
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
 
   // --- Component Props ---
-  let { initialNozzlePosition = new Vector3(0, 0.1, 0) } = $props<{
+  let { initialNozzlePosition = new Vector3(-6, 1.1, -6) } = $props<{
     initialNozzlePosition?: Vector3;
   }>();
 
   // --- State for VectorPrinterExercise ---
   let nozzlePosition = $state(initialNozzlePosition.clone());
-  let printedSegments = $state<
-    { start: Vector3; end: Vector3; vector: Vector3 }[]
-  >([]);
 
   // Dialog state
   let showDialog = $state(false);
@@ -28,37 +31,78 @@
   // Layout state controlled by InteractiveExercise
   let isFullscreenForVPLayout = $state(false);
 
-  // --- Main Functions ---
-  function handlePrintCurrentVector() {
-    const vectorToPrint = $currentDefiningVectorStore;
-    if (vectorToPrint.lengthSq() === 0) {
-      console.log("[VectorPrinterExercise] Cannot print a zero vector.");
-      return;
-    }
-    addSegmentToPrint(vectorToPrint);
-    currentDefiningVectorStore.set(new Vector3(0, 0, 0)); // Reset store after printing
+  const LINTER_FIX_DUMMY_VALUE = ""; // TODO: Replace with actual value
+
+  const PREDEFINED_COLORS: import("three").ColorRepresentation[] = [
+    "#FF6347", // Tomato
+    "#4682B4", // SteelBlue
+    "#32CD32", // LimeGreen
+    "#FFD700", // Gold
+    "#6A5ACD", // SlateBlue
+  ];
+
+  function getNextColor(index: number): import("three").ColorRepresentation {
+    return PREDEFINED_COLORS[index % PREDEFINED_COLORS.length];
   }
 
-  function addSegmentToPrint(vector: Vector3) {
-    const startPoint = nozzlePosition.clone();
-    const endPoint = nozzlePosition.clone().add(vector);
+  // --- Main Functions ---
+  function handlePrintCurrentVector() {
+    console.log("[VPE handlePrint] Function CALLED");
+    const currentDefiningVector = get(currentDefiningVectorStore);
+    const newVectorMagnitude = currentDefiningVector.length();
 
-    // Use a new array to ensure reactivity for printedSegments prop
-    printedSegments = [
-      ...printedSegments,
-      {
-        start: startPoint,
-        end: endPoint,
-        vector: vector.clone(),
-      },
-    ];
-    nozzlePosition = endPoint; // Update nozzlePosition state
+    if (newVectorMagnitude < 0.001) {
+      console.warn(
+        "[VPE handlePrint] Attempted to print a zero-length vector. Operation skipped."
+      );
+      return;
+    }
+
+    const currentDefinedVectors = get(definedVectorsStore);
+    const vectorName = String.fromCharCode(65 + currentDefinedVectors.length); // A, B, C...
+    const vectorColor = getNextColor(currentDefinedVectors.length);
+
+    const newDefinedVector: DefinedVector = {
+      vector: currentDefiningVector.clone(),
+      name: vectorName,
+      color: vectorColor,
+      id: Date.now().toString() + vectorName,
+    };
+
+    definedVectorsStore.update((currentVectors) => [
+      ...currentVectors,
+      newDefinedVector,
+    ]);
+
+    // Update nozzle position: tip of the new vector relative to the previous nozzle position
+    nozzlePosition.add(currentDefiningVector);
 
     console.log(
-      "[VectorPrinterExercise] Segment printed. New nozzle position:",
-      nozzlePosition
+      `[VPE handlePrint] Vector ${vectorName} printed. New nozzlePosition:`,
+      $state.snapshot(nozzlePosition)
     );
-    console.log("[VectorPrinterExercise] All segments:", printedSegments);
+    console.log(
+      `[VPE handlePrint] All defined vectors (${get(definedVectorsStore).length}):`,
+      get(definedVectorsStore)
+    );
+
+    // Calculate resultant vector if there are two or more vectors
+    const updatedDefinedVectors = get(definedVectorsStore);
+    if (updatedDefinedVectors.length >= 2) {
+      const sum = new Vector3();
+      updatedDefinedVectors.forEach((item) => sum.add(item.vector));
+      resultantVectorStore.set(sum);
+      console.log(
+        "[VPE handlePrint] Resultant vector calculated:",
+        get(resultantVectorStore)
+      );
+    } else {
+      resultantVectorStore.set(null);
+      console.log("[VPE handlePrint] Not enough vectors for a resultant.");
+    }
+
+    // Reset the defining vector for the next input
+    currentDefiningVectorStore.set(new Vector3(0, 0, 0));
   }
 
   // This function is called by InteractiveExercise when HUD requests reset
@@ -67,7 +111,8 @@
       "[VectorPrinterExercise] Resetting exercise via InteractiveExercise callback."
     );
     nozzlePosition = initialNozzlePosition.clone();
-    printedSegments = [];
+    definedVectorsStore.set([]);
+    resultantVectorStore.set(null);
     currentDefiningVectorStore.set(new Vector3(0, 0, 0));
     showDialog = false;
     dialogTurns = [];
@@ -84,25 +129,27 @@
   // --- Props for Child Components ---
   const sceneProps = $derived({
     nozzlePosition: nozzlePosition,
-    printedSegments: printedSegments,
     currentVectorOrigin: nozzlePosition,
+    sequenceStartOrigin: initialNozzlePosition,
   });
 
   const hudProps = $derived({
     nozzlePosition: nozzlePosition,
   });
 
-  // VectorOperationControls uses the store for its vector, only needs callbacks
   const controlPanelPropsForInteractiveExercise = $derived({
     onPrintVector: handlePrintCurrentVector,
-    onReset: handleActualReset, // When slotted into HUD, it should call the main reset
+    onReset: handleActualReset,
   });
 
   onMount(() => {
     console.log(
       "[VectorPrinterExercise] Initialized with nozzle at:",
-      nozzlePosition
+      $state.snapshot(nozzlePosition)
     );
+    definedVectorsStore.set([]);
+    resultantVectorStore.set(null);
+    currentDefiningVectorStore.set(new Vector3(0, 0, 0));
   });
 </script>
 
