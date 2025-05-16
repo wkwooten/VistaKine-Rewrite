@@ -5,7 +5,7 @@
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
-  import { authState, logout as authLogout, type User } from "$lib/stores/auth";
+  import { authState } from "$lib/stores/auth";
   import { parallaxBackground } from "$lib/scripts/parallax";
   import {
     ChevronLeft,
@@ -18,6 +18,7 @@
   import { sectionMapOpen } from "$lib/stores/uiStores";
   import { updateThemeColors } from "$lib/stores/themeColors";
   import Footer from "$lib/components/Footer.svelte";
+  import { supabase } from "$lib/supabaseClient";
 
   let { children } = $props(); // Add children prop
 
@@ -126,10 +127,19 @@
   });
 
   // Helper for logout
-  function handleLogout() {
-    authLogout();
-    // Optionally redirect to home or login page
-    // goto('/');
+  async function handleLogout() {
+    // Call Supabase signOut
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Logout error:", error.message);
+      alert(error.message); // Display error to the user
+    } else {
+      console.log("User signed out");
+      // Supabase automatically updates the authState store via the listener
+      // Optionally redirect to home or login page
+      // goto('/'); // Consider where to redirect after logout
+    }
   }
 </script>
 
