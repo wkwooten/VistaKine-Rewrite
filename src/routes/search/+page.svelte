@@ -191,11 +191,17 @@
   .prompt-message {
     margin-top: var(--space-l);
     font-size: var(--step-0);
-    color: var(--color-text-secondary);
-    text-align: center;
-    padding: var(--space-xl);
-    background-color: var(--color-surface-alt);
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    box-sizing: border-box;
+
+    &:focus {
+      outline: 2px solid var(--color-accent);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.2);
+    }
+  }
+</style>
+
   }
 </style>

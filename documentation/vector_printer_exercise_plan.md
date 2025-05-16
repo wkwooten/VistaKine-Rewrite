@@ -97,6 +97,7 @@ The plan for Phase 1 (Vector Addition) remains the target, but resolving the ren
   - Resultant R: A third distinct color (e.g., a shade of green).
   - `currentDefiningVectorStore` arrow: `themeColors.primaryColor` (current behavior, often a theme accent color).
 - **Dialog Integration:** Introduce the concept of vector addition and the "tip-to-tail" method through character dialogue, guiding the user through defining Vector A and Vector B.
+- Todo: improve input panel styles
 
 ### Phase 2: Vector Subtraction
 

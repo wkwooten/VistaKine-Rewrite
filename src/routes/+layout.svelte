@@ -301,6 +301,11 @@
         visibility: hidden !important;
         pointer-events: none !important;
       }
+
+      // Prevent scrolling on the main content when the mobile nav is active
+      & > .content {
+        overflow: hidden;
+      }
     }
   }
 
@@ -423,7 +428,7 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    top: var(--space-s, 10px);
+    top: var(--space-m, 10px);
     left: var(--space-s, 10px);
     z-index: 1060;
     background-color: var(--color-background, white);
@@ -472,13 +477,17 @@
 
   .auth-buttons {
     display: flex;
+    padding: var(--space-2xs) var(--space-xs);
+    background-color: var(--color-background);
     gap: var(--space-xs, 8px);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
   }
 
   .auth-button {
     padding: var(--space-xs) var(--space-s);
     border: 1px solid var(--color-border);
-    background-color: var(--color-surface-raised);
     color: var(--color-text-primary);
     text-decoration: none;
     border-radius: var(--radius-sm);

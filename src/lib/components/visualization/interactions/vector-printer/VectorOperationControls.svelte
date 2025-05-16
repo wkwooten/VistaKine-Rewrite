@@ -87,15 +87,12 @@
       </Button>
     {/if}
   </fieldset>
-
-  {#if onReset}
-    <Button onclick={onReset} variant="secondary" fullWidth>Reset</Button>
-  {/if}
 </div>
 
 <style lang="scss">
   .vector-operation-controls {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     gap: var(--space-m);
   }
@@ -119,50 +116,10 @@
   }
 
   .input-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: var(--space-s);
-    align-items: end;
-  }
-
-  .input-label {
     display: flex;
-    flex-direction: column;
-    font-size: var(--step--1);
-    color: var(--color-text-secondary);
-    gap: var(--space-2xs);
-  }
-
-  .coord-input {
-    width: 100%;
-    padding: var(--space-xs);
-    font-size: var(--step-0);
-    background-color: var(--color-surface-input, var(--color-surface));
-    border-radius: var(--radius-sm);
-    color: var(--color-text-primary);
-    border: 1px solid var(--color-border);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--color-accent);
-      box-shadow:
-        inset 0 1px 2px rgba(0, 0, 0, 0.05),
-        0 0 0 2px var(--color-accent-transparent);
-    }
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    &[type="number"] {
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
+    justify-content: center;
+    gap: var(--space-s);
+    align-items: center;
   }
 
   .actions-row {

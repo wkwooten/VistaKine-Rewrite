@@ -3,7 +3,6 @@
   import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
   import FullscreenButton from "../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
-  import AddButton from "$lib/components/visualization/elements/ui/AddButton.svelte";
 
   let {
     nozzlePosition,
@@ -40,8 +39,6 @@
       {isFullscreen}
       onRequestToggleCallback={handleRequestToggleFullscreen}
     />
-    <!-- Basic AddButton, assuming no specific event handler for now -->
-    <AddButton />
   </div>
 
   <div class="output-panel-container">
@@ -103,8 +100,8 @@
 
   // Ensure consistent styling for slotted controls
   :global(.vector-printer-hud-overlay .controls-panel-slot-container > *) {
-    background-color: var(--color-surface-alt, #222);
     padding: var(--space-s);
+    background-color: var(--color-surface);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
   }

@@ -208,7 +208,7 @@
 
   .controls-area-outside-vis {
     padding-block: var(--space-s);
-    background-color: var(--color-surface-alt);
+    background-color: var(--color-surface);
     border-top: 1px solid var(--color-border);
     overflow-y: auto;
     order: 3;
