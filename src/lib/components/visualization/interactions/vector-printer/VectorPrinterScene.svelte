@@ -44,12 +44,7 @@
     new MeshStandardMaterial({ color: new Color($nozzleColorStore) })
   );
 
-  let definedVectorArrows = $state<ThreeArrowHelper[]>([]);
-  let resultantVectorArrow = $state<ThreeArrowHelper | null>(null);
-
   let _currentHelperInstance: ThreeArrowHelper | null = null;
-  const _definedHelperInstances: ThreeArrowHelper[] = [];
-  let _resultantHelperInstance: ThreeArrowHelper | null = null;
 
   const RESULTANT_COLOR = new Color("green");
   const { scene } = useThrelte();
@@ -145,119 +140,6 @@
     );
   });
 
-  $effect(() => {
-    const currentDefinedVectors = $definedVectorsStore;
-    console.log(
-      "[VPS $effect definedVectors] Triggered. Store - definedVectorsStore length:",
-      currentDefinedVectors.length,
-      "sequenceStartOrigin (prop):",
-      sequenceStartOrigin
-        ? {
-            x: sequenceStartOrigin.x,
-            y: sequenceStartOrigin.y,
-            z: sequenceStartOrigin.z,
-          }
-        : null
-    );
-
-    while (_definedHelperInstances.length > 0) {
-      const helper = _definedHelperInstances.pop();
-      helper?.removeFromParent();
-      helper?.dispose();
-    }
-
-    let cumulativeOrigin = sequenceStartOrigin.clone();
-    for (const defVec of currentDefinedVectors) {
-      const dir = defVec.vector.clone().normalize();
-      const length = defVec.vector.length();
-      const color = new Color(defVec.color);
-      const headLength = 0.2;
-      const headWidth = 0.075;
-      const arrow = new ThreeArrowHelper(
-        dir,
-        cumulativeOrigin.clone(),
-        length,
-        color.getHex(),
-        headLength,
-        headWidth
-      );
-      _definedHelperInstances.push(arrow);
-      cumulativeOrigin.add(defVec.vector);
-    }
-    definedVectorArrows = [..._definedHelperInstances];
-    console.log(
-      `[VPS $effect definedVectors] Created ${_definedHelperInstances.length} defined arrow helpers. Reactive state updated.`
-    );
-  });
-
-  $effect(() => {
-    const currentResultantVector = $resultantVectorStore;
-    const currentDefinedVectors = $definedVectorsStore;
-    console.log(
-      "[VPS $effect resultantVector] Triggered. Store - resultantVectorStore:",
-      currentResultantVector
-        ? {
-            x: currentResultantVector.x,
-            y: currentResultantVector.y,
-            z: currentResultantVector.z,
-          }
-        : null,
-      "Store - definedVectorsStore length:",
-      currentDefinedVectors.length,
-      "sequenceStartOrigin (prop):",
-      sequenceStartOrigin
-        ? {
-            x: sequenceStartOrigin.x,
-            y: sequenceStartOrigin.y,
-            z: sequenceStartOrigin.z,
-          }
-        : null
-    );
-
-    if (currentResultantVector && currentDefinedVectors.length > 0) {
-      const dir = currentResultantVector.clone().normalize();
-      const length = currentResultantVector.length();
-      const headLength = 0.2;
-      const headWidth = 0.075;
-
-      if (!_resultantHelperInstance) {
-        _resultantHelperInstance = new ThreeArrowHelper(
-          dir,
-          sequenceStartOrigin.clone(),
-          length,
-          RESULTANT_COLOR.getHex(),
-          headLength,
-          headWidth
-        );
-      } else {
-        _resultantHelperInstance.setDirection(dir);
-        _resultantHelperInstance.position.copy(sequenceStartOrigin.clone());
-        _resultantHelperInstance.setLength(length, headLength, headWidth);
-        _resultantHelperInstance.setColor(RESULTANT_COLOR);
-      }
-      _resultantHelperInstance.visible = true;
-      if (resultantVectorArrow !== _resultantHelperInstance) {
-        resultantVectorArrow = _resultantHelperInstance;
-      }
-    } else {
-      if (_resultantHelperInstance) {
-        _resultantHelperInstance.visible = false;
-      }
-      if (resultantVectorArrow !== null) {
-        resultantVectorArrow = null;
-      }
-    }
-    console.log(
-      "[VPS $effect resultantVector] Resultant arrow helper state:",
-      _resultantHelperInstance
-        ? _resultantHelperInstance.visible
-          ? "Visible"
-          : "Hidden"
-        : "Null",
-      "Reactive state updated."
-    );
-  });
-
   useTask((delta) => {
     // Per-frame logic if needed
   });
@@ -317,78 +199,83 @@
   gridSectionColor={$gridSectionColorStore}
 />
 
-<CoordinateAxes
-  axisLengthX={axisLength}
-  axisLengthY={axisLength}
-  axisLengthZ={axisLength}
-/>
+<T.Group>
+  <!-- Test Arrow using T component with ThreeArrowHelper -->
+  <T
+    is={ThreeArrowHelper}
+    args={[
+      new Vector3(0, 1, 0), // direction (normalized)
+      new Vector3(0, 0, 0), // origin
+      2, // length
+      0xff0000, // color (hex number for red)
+      0.4, // headLength
+      0.2, // headWidth
+    ]}
+  />
+  <!-- End Test Arrow -->
 
-<T.Mesh
-  position={nozzlePosition.toArray()}
-  geometry={nozzleGeometry}
-  material={reactiveNozzleMaterial}
-  castShadow
-/>
+  <CoordinateAxes
+    axisLengthX={axisLength}
+    axisLengthY={axisLength}
+    axisLengthZ={axisLength}
+  />
 
-{#each $definedVectorsStore as defVec, i (defVec.id)}
-  {@const currentSegmentStart = (() => {
-    let start = sequenceStartOrigin.clone();
-    for (let k = 0; k < i; k++) {
-      start.add($definedVectorsStore[k].vector);
-    }
-    return start;
-  })()}
+  <T.Mesh
+    position={nozzlePosition.toArray()}
+    geometry={nozzleGeometry}
+    material={reactiveNozzleMaterial}
+    castShadow
+  />
 
-  {@const segmentEndPoint = currentSegmentStart.clone().add(defVec.vector)}
-  {@const length = defVec.vector.length()}
-  {@const segmentMidpoint = new Vector3()
-    .addVectors(currentSegmentStart, segmentEndPoint)
-    .multiplyScalar(0.5)}
+  {#each $definedVectorsStore as defVec, i (defVec.id)}
+    {@const arrowOrigin = (() => {
+      let origin = sequenceStartOrigin.clone();
+      for (let k = 0; k < i; k++) {
+        origin.add($definedVectorsStore[k].vector);
+      }
+      return origin;
+    })()}
+    {@const direction = defVec.vector.clone().normalize()}
+    {@const length = defVec.vector.length()}
+    {@const colorHex = new Color(defVec.color).getHex()}
+    {@const headLength = 0.2}
+    {@const headWidth = 0.075}
 
-  {#if length > 0.001}
-    <T.Mesh
-      position={segmentMidpoint.toArray()}
-      lookAt={segmentEndPoint}
-      castShadow
-      receiveShadow
-    >
-      <T.BoxGeometry args={[0.1, 0.1, length]} />
-      <T.MeshStandardMaterial color={new Color(defVec.color)} />
-    </T.Mesh>
+    {#if length > 0.0001}
+      <T
+        is={ThreeArrowHelper}
+        args={[direction, arrowOrigin, length, colorHex, headLength, headWidth]}
+      />
+      <SceneLabel
+        text={defVec.name}
+        position={getLabelPosition(arrowOrigin, defVec.vector, defVec.name)}
+        fontSize={0.5}
+        color={"white"}
+        backgroundColor={new Color(defVec.color)}
+        padding={0.1}
+      />
+    {/if}
+  {/each}
+
+  {#if $resultantVectorStore && $resultantVectorStore.lengthSq() > 0.0001 && $definedVectorsStore.length > 0}
+    {@const arrowOrigin = sequenceStartOrigin.clone()}
+    {@const direction = $resultantVectorStore.clone().normalize()}
+    {@const length = $resultantVectorStore.length()}
+    {@const colorHex = RESULTANT_COLOR.getHex()}
+    {@const headLength = 0.2}
+    {@const headWidth = 0.075}
+
+    <T
+      is={ThreeArrowHelper}
+      args={[direction, arrowOrigin, length, colorHex, headLength, headWidth]}
+    />
+    <SceneLabel
+      text={`R = ${formatVectorForLabel($resultantVectorStore)}`}
+      position={getLabelPosition(arrowOrigin, $resultantVectorStore, "R")}
+      fontSize={0.5}
+      color={"white"}
+      backgroundColor={RESULTANT_COLOR}
+      padding={0.1}
+    />
   {/if}
-{/each}
-
-{#each definedVectorArrows as arrow, i ($definedVectorsStore[i].id)}
-  <T is={arrow} />
-  {@const arrowOriginForLabel = arrow.position}
-  {@const vectorForLabel = $definedVectorsStore[i].vector}
-  {@const vectorNameForLabel = $definedVectorsStore[i].name}
-  <SceneLabel
-    text={vectorNameForLabel}
-    position={getLabelPosition(
-      arrowOriginForLabel,
-      vectorForLabel,
-      vectorNameForLabel
-    )}
-    fontSize={0.5}
-    color={"white"}
-    backgroundColor={new Color($definedVectorsStore[i].color)}
-    padding={0.1}
-  />
-{/each}
-
-{#if resultantVectorArrow && $resultantVectorStore}
-  <T is={resultantVectorArrow} />
-  <SceneLabel
-    text={`R = ${formatVectorForLabel($resultantVectorStore)}`}
-    position={getLabelPosition(
-      resultantVectorArrow.position,
-      $resultantVectorStore,
-      "R"
-    )}
-    fontSize={0.5}
-    color={"white"}
-    backgroundColor={"black"}
-    padding={0.1}
-  />
-{/if}
+</T.Group>
