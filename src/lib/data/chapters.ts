@@ -55,10 +55,10 @@ export const chapters: Chapter[] = [
     sections: [
       // Add section IDs for Dynamics later
       // Example: { id: "newtons-laws", title: "3.1 Newton's Laws" }
-      { id: "section-1", title: "Section 1", slug: "section-1", number: "3.1", description: "A brief overview of the topics covered in Section 3.1." },
-      { id: "section-2", title: "Section 2", slug: "section-2", number: "3.2", description: "A brief overview of the topics covered in Section 3.2." },
-      { id: "section-3", title: "Section 3", slug: "section-3", number: "3.3", description: "A brief overview of the topics covered in Section 3.3." },
-      { id: "section-4", title: "Section 4", slug: "section-4", number: "3.4", description: "A brief overview of the topics covered in Section 3.4." }
+      { id: "section-1", title: "Newton's First Law: Inertia", slug: "section-1", number: "3.1", description: "Explore the concept of inertia and how objects in motion stay in motion unless acted upon by a force." },
+      { id: "section-2", title: "Newton's Second Law: Force and Acceleration", slug: "section-2", number: "3.2", description: "Understand the relationship between force, mass, and acceleration (F=ma) and how to apply it." },
+      { id: "section-3", title: "Newton's Third Law: Action and Reaction", slug: "section-3", number: "3.3", description: "Learn about equal and opposite forces and how they apply to interactions between objects." },
+      { id: "section-4", title: "Free Body Diagrams and Force Analysis", slug: "section-4", number: "3.4", description: "Master the technique of drawing free body diagrams to analyze forces acting on an object." }
     ],
     component: undefined
   },
@@ -69,10 +69,10 @@ export const chapters: Chapter[] = [
     description: 'Understanding energy conservation and transfer.',
     sections: [
       // Add section IDs for Energy later
-      { id: "section-1", title: "Section 1", slug: "section-1", number: "4.1", description: "A brief overview of the topics covered in Section 4.1." },
-      { id: "section-2", title: "Section 2", slug: "section-2", number: "4.2", description: "A brief overview of the topics covered in Section 4.2." },
-      { id: "section-3", title: "Section 3", slug: "section-3", number: "4.3", description: "A brief overview of the topics covered in Section 4.3." },
-      { id: "section-4", title: "Section 4", slug: "section-4", number: "4.4", description: "A brief overview of the topics covered in Section 4.4." }
+      { id: "section-1", title: "Work Done by Forces", slug: "section-1", number: "4.1", description: "Define work in physics and calculate work done by constant and variable forces." },
+      { id: "section-2", title: "Kinetic Energy and the Work-Energy Theorem", slug: "section-2", number: "4.2", description: "Understand kinetic energy and how work changes an object's kinetic energy." },
+      { id: "section-3", title: "Potential Energy and Conservation of Energy", slug: "section-3", number: "4.3", description: "Explore gravitational and elastic potential energy and the principle of energy conservation." },
+      { id: "section-4", title: "Power", slug: "section-4", number: "4.4", description: "Define power as the rate of doing work and calculate power in various scenarios." }
     ],
     component: undefined
   },
@@ -83,10 +83,10 @@ export const chapters: Chapter[] = [
     description: 'Exploring momentum conservation and collisions.',
     sections: [
       // Add section IDs for Momentum later
-      { id: "section-1", title: "Section 1", slug: "section-1", number: "5.1", description: "A brief overview of the topics covered in Section 5.1." },
-      { id: "section-2", title: "Section 2", slug: "section-2", number: "5.2", description: "A brief overview of the topics covered in Section 5.2." },
-      { id: "section-3", title: "Section 3", slug: "section-3", number: "5.3", description: "A brief overview of the topics covered in Section 5.3." },
-      { id: "section-4", title: "Section 4", slug: "section-4", number: "5.4", description: "A brief overview of the topics covered in Section 5.4." }
+      { id: "section-1", title: "Momentum and Impulse", slug: "section-1", number: "5.1", description: "Understand momentum as mass in motion and impulse as the change in momentum." },
+      { id: "section-2", title: "Conservation of Momentum", slug: "section-2", number: "5.2", description: "Learn the principle of conservation of momentum and apply it to isolated systems." },
+      { id: "section-3", title: "Elastic and Inelastic Collisions", slug: "section-3", number: "5.3", description: "Analyze different types of collisions, including elastic and inelastic interactions." },
+      { id: "section-4", title: "Collisions in Two Dimensions", slug: "section-4", number: "5.4", description: "Extend momentum conservation and collision analysis to two-dimensional problems." }
     ],
     component: undefined
   },
@@ -97,10 +97,10 @@ export const chapters: Chapter[] = [
     description: 'Analyzing circular paths and gravitational forces.',
     sections: [
       // Add section IDs for Circular Motion later
-      { id: "section-1", title: "Section 1", slug: "section-1", number: "6.1", description: "A brief overview of the topics covered in Section 6.1." },
-      { id: "section-2", title: "Section 2", slug: "section-2", number: "6.2", description: "A brief overview of the topics covered in Section 6.2." },
-      { id: "section-3", title: "Section 3", slug: "section-3", number: "6.3", description: "A brief overview of the topics covered in Section 6.3." },
-      { id: "section-4", title: "Section 4", slug: "section-4", number: "6.4", description: "A brief overview of the topics covered in Section 6.4." }
+      { id: "section-1", title: "Uniform Circular Motion", slug: "section-1", number: "6.1", description: "Describe objects moving in a circle at constant speed and the forces involved." },
+      { id: "section-2", title: "Non-Uniform Circular Motion", slug: "section-2", number: "6.2", description: "Analyze objects moving in a circle with changing speed." },
+      { id: "section-3", title: "Newton's Law of Universal Gravitation", slug: "section-3", number: "6.3", description: "Learn about the force of gravity between any two objects with mass." },
+      { id: "section-4", title: "Orbits and Kepler's Laws", slug: "section-4", number: "6.4", description: "Apply gravitational principles to understand planetary orbits and Kepler's laws." }
     ],
     component: undefined
   },
@@ -111,10 +111,10 @@ export const chapters: Chapter[] = [
     description: 'Introduction to torque and angular momentum.',
     sections: [
       // Add section IDs for Rotational Motion later
-      { id: "section-1", title: "Section 1", slug: "section-1", number: "7.1", description: "A brief overview of the topics covered in Section 7.1." },
-      { id: "section-2", title: "Section 2", slug: "section-2", number: "7.2", description: "A brief overview of the topics covered in Section 7.2." },
-      { id: "section-3", title: "Section 3", slug: "section-3", number: "7.3", description: "A brief overview of the topics covered in Section 7.3." },
-      { id: "section-4", title: "Section 4", slug: "section-4", number: "7.4", description: "A brief overview of the topics covered in Section 7.4." }
+      { id: "section-1", title: "Rotational Kinematics", slug: "section-1", number: "7.1", description: "Describe rotational motion using angular displacement, velocity, and acceleration." },
+      { id: "section-2", title: "Torque", slug: "section-2", number: "7.2", description: "Understand torque as the rotational equivalent of force and how it causes angular acceleration." },
+      { id: "section-3", title: "Moment of Inertia", slug: "section-3", number: "7.3", description: "Learn about moment of inertia as rotational inertia and calculate it for various objects." },
+      { id: "section-4", title: "Rotational Dynamics and Work-Energy", slug: "section-4", number: "7.4", description: "Apply Newton's laws to rotational motion and understand rotational kinetic energy and work." }
     ],
     component: undefined
   }

@@ -146,7 +146,7 @@ $leo-color-light: #1E40AF;  // Blue 800
 // ==================================
 :root {
   --pretentious_ratio: 0.6180339887;
-
+  --font-mono: 'IBM Plex Mono', monospace;
   // Utopia Fluid Type Steps (Keep As Is)
   --step--2: clamp(0.6944rem, 0.6577rem + 0.1836vw, 0.8rem);
   --step--1: clamp(0.8333rem, 0.7754rem + 0.2899vw, 1rem);
