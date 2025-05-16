@@ -1,41 +1,26 @@
 <script lang="ts">
-  import FullscreenButton from "./../../elements/ui/FullscreenButton.svelte";
+  import type { Vector3 } from "three";
+  import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
+  import FullscreenButton from "../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
-  import type { Vector3, ColorRepresentation } from "three";
-  import katex from "katex";
   import AddButton from "$lib/components/visualization/elements/ui/AddButton.svelte";
-  import {
-    currentDefiningVectorStore, // Existing import
-    definedVectorsStore, // Import store
-    resultantVectorStore, // Import store
-  } from "./vectorPrinterState";
 
-  // Props no longer include definedVectors or resultantVector
   let {
     nozzlePosition,
-    dialogMessage,
-    dialogSpeaker,
     isFullscreen = false,
     onrequestToggleFullscreen,
     onrequestReset,
+    // Assuming an onrequestAdd might be needed for AddButton if it has specific logic
+    // onrequestAdd,
   } = $props<{
     nozzlePosition: Vector3;
-    dialogMessage?: string;
-    dialogSpeaker?: string;
     isFullscreen?: boolean;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
+    // onrequestAdd?: () => void;
   }>();
 
-  const formatVector = (
-    v: Vector3 | undefined | null,
-    defaultText = "⟨0,0,0⟩"
-  ) => {
-    if (!v || v.lengthSq() === 0) return defaultText;
-    return `⟨${v.x.toFixed(2)}, ${v.y.toFixed(2)}, ${v.z.toFixed(2)}⟩`;
-  };
-
-  function handleRequestToggle() {
+  function handleRequestToggleFullscreen() {
     onrequestToggleFullscreen?.();
   }
 
@@ -43,18 +28,9 @@
     onrequestReset?.();
   }
 
-  // Use $derived with the stores for the formula
-  let resultantFormula = $derived(() => {
-    const currentResultant = $resultantVectorStore;
-    const currentDefined = $definedVectorsStore;
-    if (currentResultant && currentDefined && currentDefined.length >= 2) {
-      const vectorNames = currentDefined
-        .map((v: { name: string }) => v.name)
-        .join(" + ");
-      return `R = ${vectorNames}`;
-    }
-    return "";
-  });
+  // function handleRequestAdd() {
+  // onrequestAdd?.();
+  // }
 </script>
 
 <div class="vector-printer-hud-overlay" class:fullscreen-active={isFullscreen}>
@@ -62,39 +38,14 @@
     <ResetButton onclick={handleRequestReset} />
     <FullscreenButton
       {isFullscreen}
-      onRequestToggleCallback={handleRequestToggle}
+      onRequestToggleCallback={handleRequestToggleFullscreen}
     />
+    <!-- Basic AddButton, assuming no specific event handler for now -->
     <AddButton />
   </div>
 
-  <div class="hud-panel bottom-right">
-    <div class="hud-item">
-      <span class="label">Nozzle Position:</span>
-      <span class="value">{formatVector(nozzlePosition)}</span>
-    </div>
-
-    {#if $currentDefiningVectorStore && $currentDefiningVectorStore.lengthSq() > 0}
-      <div class="hud-item">
-        <span class="label">Current Input:</span>
-        <span class="value">{formatVector($currentDefiningVectorStore)}</span>
-      </div>
-    {/if}
-
-    <!-- Use $definedVectorsStore here -->
-    {#each $definedVectorsStore as defVec (defVec.id)}
-      <div class="hud-item">
-        <span class="label">Vector {defVec.name}:</span>
-        <span class="value">{formatVector(defVec.vector)}</span>
-      </div>
-    {/each}
-
-    <!-- Use $resultantVectorStore here -->
-    {#if $resultantVectorStore}
-      <div class="hud-item resultant">
-        <span class="label">Resultant R:</span>
-        <span class="value">{formatVector($resultantVectorStore)}</span>
-      </div>
-    {/if}
+  <div class="output-panel-container">
+    <VectorPrinterOutputPanel {nozzlePosition} />
   </div>
 
   {#if isFullscreen}
@@ -115,50 +66,29 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: var(--space-xs);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
-    color: var(--color-text-hud, white);
+    padding: var(--space-s); // Use consistent spacing
+    box-sizing: border-box;
+
+    &.fullscreen-active {
+      // Add any specific styles for fullscreen mode if needed, e.g., different padding
+      // padding: var(--space-m);
+    }
   }
 
   .hud-items-top-left {
     display: flex;
-    gap: var(--space-xs);
+    gap: var(--space-s);
     pointer-events: auto;
     width: fit-content;
+    z-index: 20; // Ensure buttons are above other elements
   }
 
-  .hud-panel {
-    background-color: var(--color-surface-transparent, rgba(0, 0, 0, 0.5));
-    padding: var(--space-xs);
-    border-radius: var(--radius-sm);
+  .output-panel-container {
+    position: absolute;
+    top: var(--space-s);
+    right: var(--space-s);
     pointer-events: auto;
-    box-shadow: var(--shadow-sm);
-    max-width: 300px;
-    align-self: flex-end;
-  }
-
-  .hud-item {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-m);
-
-    .label {
-      font-weight: bold;
-      color: var(--color-text-hud-secondary, lightgrey);
-    }
-
-    .value {
-      color: var(--color-text-hud, white);
-    }
-  }
-
-  .hud-item.resultant .value {
-    color: var(--color-accent, lightgreen); /* Or a specific resultant color */
-  }
-
-  .hud-item.formula .value {
-    font-style: italic;
+    z-index: 10;
   }
 
   .controls-panel-slot-container {
@@ -168,10 +98,10 @@
     transform: translateX(-50%);
     pointer-events: auto;
     width: clamp(300px, 80%, 500px); /* Responsive width */
-    z-index: 10; /* Ensure it's above other HUD elements if necessary */
+    z-index: 30; // Ensure controls are above everything in fullscreen
   }
 
-  /* Ensure consistent styling for slotted controls */
+  // Ensure consistent styling for slotted controls
   :global(.vector-printer-hud-overlay .controls-panel-slot-container > *) {
     background-color: var(--color-surface-alt, #222);
     padding: var(--space-s);
