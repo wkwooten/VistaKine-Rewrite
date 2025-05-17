@@ -128,25 +128,45 @@
 
   // Helper for logout
   async function handleLogout() {
-    // Call Supabase signOut
     const { error } = await supabase.auth.signOut();
-
     if (error) {
       console.error("Logout error:", error.message);
-      alert(error.message); // Display error to the user
+      alert(error.message);
     } else {
       console.log("User signed out");
-      // Supabase automatically updates the authState store via the listener
-      // Optionally redirect to home or login page
-      // goto('/'); // Consider where to redirect after logout
+      // authState store updates automatically via onAuthStateChange
+      // goto('/'); // Optional: redirect to home or login page
     }
   }
 </script>
 
-      <div class="auth-buttons">
-        <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
-        <a href="/login" class="auth-button sign-in-button">Sign In</a>
+<div class="auth-widget-component">
+  {#if $authState.isAuthenticated && $authState.user}
+    {@const user = $authState.user}
+    <div class="user-profile">
+      <div class="avatar-container">
+        {#if user.avatar_url}
+          <img src={user.avatar_url} alt="User avatar" class="avatar-image" />
+        {:else}
+          <UserIcon size={24} class="avatar-placeholder" />
+        {/if}
       </div>
+      <div class="user-details">
+        <span class="username">{user.username}</span>
+        <button class="sign-out-button" onclick={handleLogout}>Sign out</button>
+      </div>
+    </div>
+  {:else if !$authState.loading}
+    <!-- Only show login/signup if not loading -->
+    <div class="auth-buttons">
+      <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
+      <a href="/login" class="auth-button sign-in-button">Sign In</a>
+    </div>
+  {:else}
+    <!-- Optional: Show a loading indicator -->
+    <div class="auth-loading">Loading...</div>
+  {/if}
+</div>
 
 <style lang="scss">
   @use "$lib/styles/variables" as variables;
@@ -436,6 +456,12 @@
     &:hover {
       color: var(--color-accent);
     }
+  }
+
+  .auth-loading {
+    padding: var(--space-xs) var(--space-s);
+    font-size: var(--step--1);
+    color: var(--color-text-secondary);
   }
 
   // REMOVE styles for the specific section+map wrapper
