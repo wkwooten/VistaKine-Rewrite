@@ -6,18 +6,20 @@
     Grid,
     OrbitControls,
     interactivity,
+    Detailed,
   } from "@threlte/extras";
   import type { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
   import { RigidBodyType } from "@dimforge/rapier3d-compat";
   import type { RigidBody as RapierRigidBody } from "@dimforge/rapier3d-compat";
   import { Vector3, Group, Quaternion, Euler } from "three";
-  // Remove onMount if it's no longer needed after removing color fetching logic
-  // import { onMount } from "svelte";
-
   import { isDragging } from "$lib/stores/draggingStore";
   import { followedObject } from "$lib/stores/followedObjectStore";
   // Import color stores
   import { gridCellColor, gridSectionColor } from "$lib/stores/themeColors";
+  import {
+    performanceSetting,
+    type PerformanceSetting,
+  } from "$lib/stores/performanceStore"; // Import performance store
 
   import Ground from "../elements/constructs/Ground.svelte";
   import Cube from "../elements/constructs/Cube.svelte";
@@ -33,6 +35,13 @@
   // State & Refs
   let controls = $state<ThreeOrbitControls | undefined>(undefined);
   let previousFollowedObject: Group | null = null;
+
+  // Reactive derived values based on performance setting
+  let ambientLightIntensity = $derived($performanceSetting === "low" ? 4 : 8);
+  let directionalLightIntensity = $derived(
+    $performanceSetting === "low" ? 4 : 8
+  );
+  let showEnvironmentMap = $derived($performanceSetting === "high");
 
   // Remove local state for scene colors, they will come from the store
   // let gridCellColor = $state("#ADD8E6");
@@ -231,13 +240,32 @@
 </T.PerspectiveCamera>
 
 <!-- Environment -->
+{#if showEnvironmentMap}
+  <Environment files="/env/neutral_studio.hdr" background={false} />
+  <!-- Set background={false} if you want to keep Stars, or true/blur to use HDRI as bg -->
+{/if}
+
+<Detailed />
 <!-- <T.Fog
   color={'#f0f8ff'}
   near={10}
   far={50}
 /> -->
-<T.AmbientLight intensity={0.5} />
-<T.DirectionalLight castShadow position={[8, 20, -3]} />
+<T.AmbientLight intensity={ambientLightIntensity} />
+<T.DirectionalLight
+  castShadow
+  position={[8, 20, -3]}
+  intensity={directionalLightIntensity}
+  shadow.mapSize.width={1024}
+  shadow.mapSize.height={1024}
+  shadow.camera.near={0.5}
+  shadow.camera.far={50}
+  shadow.camera.left={-15}
+  shadow.camera.right={15}
+  shadow.camera.top={15}
+  shadow.camera.bottom={-15}
+  shadow.bias={-0.001}
+/>
 <Grid
   position.y={0.01}
   infiniteGrid={true}

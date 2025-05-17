@@ -272,6 +272,7 @@
     <AutoColliders {mass} shape={"cuboid"}>
       <T.Mesh
         receiveShadow
+        castShadow
         {scale}
         onpointerdown={handlePointerDown}
         onpointerenter={handlePointerEnterModified}

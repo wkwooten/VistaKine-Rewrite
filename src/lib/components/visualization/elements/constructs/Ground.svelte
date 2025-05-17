@@ -38,7 +38,7 @@
     <AutoColliders shape={"cuboid"}>
       <T.Mesh receiveShadow>
         <T.BoxGeometry args={[5000, 0.95, 5000]} />
-        <T.MeshBasicMaterial color={$surfaceColor} />
+        <T.MeshStandardMaterial color={$surfaceColor} />
       </T.Mesh>
     </AutoColliders>
   </T.Group>
