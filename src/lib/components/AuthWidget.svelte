@@ -46,8 +46,13 @@
       <a href="/login" class="auth-button sign-in-button">Sign In</a>
     </div>
   {:else}
-    <!-- Optional: You can add a subtle loading indicator here if desired -->
-    <!-- <div class="auth-loading">Loading...</div> -->
+    <!-- This block will render if isAuthenticated is false AND loading is true -->
+    <div
+      class="auth-fallback-loading"
+      style="border: 1px solid purple; padding: 5px; color: purple;"
+    >
+      Auth Loading...
+    </div>
   {/if}
 </div>
 
