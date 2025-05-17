@@ -5,26 +5,29 @@
   import "../app.scss";
   import Navigation from "$lib/components/Navigation.svelte";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
+  import { authState } from "$lib/stores/auth";
   import { parallaxBackground } from "$lib/scripts/parallax";
-  import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
+  import {
+    ChevronLeft,
+    ChevronRight,
+    Menu,
+    User as UserIcon,
+  } from "lucide-svelte";
   import { browser } from "$app/environment";
   import SectionMap from "$lib/components/ui/SectionMap.svelte";
   import { sectionMapOpen } from "$lib/stores/uiStores";
   import { updateThemeColors } from "$lib/stores/themeColors";
   import Footer from "$lib/components/Footer.svelte";
-  import AuthWidget from "$lib/components/AuthWidget.svelte";
-  import { inject } from "@vercel/analytics";
+  import { supabase } from "$lib/supabaseClient";
 
-  inject();
-
-  let { children } = $props();
+  let { children } = $props(); // Add children prop
 
   let mobileNavOpen = $state(false);
   let isMobile = $state(false);
-  let lgBreakpointValue = 1024;
+  let lgBreakpointValue = 1024; // Default fallback (numeric)
 
   let mainContentElement: HTMLElement | null = null;
-  let navBarHeight = 80;
+  let navBarHeight = 80; // Default height, will try to read from CSS
 
   function checkMobile() {
     if (browser) {
@@ -40,6 +43,7 @@
     updateThemeColors();
 
     if (browser) {
+      // Read CSS variables
       try {
         const styles = getComputedStyle(document.documentElement);
         const bpValueString = styles.getPropertyValue("--breakpoint-lg").trim();
@@ -64,6 +68,7 @@
 
       window.addEventListener("resize", checkMobile);
 
+      // Initial check
       checkMobile();
     }
 
@@ -89,11 +94,17 @@
   let currentChapterSlug = $derived($page.params.slug || null);
   let currentSectionSlug = $derived($page.params.section || null);
 
+  // CONVERT $: assignment to $derived
+  // $: currentChapterSlug = $page.params.slug || null; // Get slug from route params
+
+  // ADDED: afterNavigate logic to update currentChapter store
   afterNavigate((navigation) => {
     if (browser) {
+      // Ensure this runs only on the client
       const routeId = navigation.to?.route?.id;
       const chapterSlugParam = navigation.to?.params?.slug;
 
+      // Check if it's a chapter page (either chapter intro or a specific section)
       if (
         routeId &&
         (routeId.startsWith("/chapter/[slug]/[section]") ||
@@ -102,98 +113,40 @@
         if (chapterSlugParam) {
           currentChapter.set(chapterSlugParam);
         } else {
+          // This case should ideally not happen if routeId implies a slug exists
           console.warn(
             "[Layout] Chapter route detected but no slug param found. Clearing chapter."
           );
           currentChapter.set(null);
         }
       } else {
+        // Not a chapter page, clear the current chapter
         currentChapter.set(null);
       }
     }
   });
+
+  // Helper for logout
+  async function handleLogout() {
+    // Call Supabase signOut
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error("Logout error:", error.message);
+      alert(error.message); // Display error to the user
+    } else {
+      console.log("User signed out");
+      // Supabase automatically updates the authState store via the listener
+      // Optionally redirect to home or login page
+      // goto('/'); // Consider where to redirect after logout
+    }
+  }
 </script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<div class="parallax-background">
-  <div class="grid-background"></div>
-</div>
-
-<div
-  class="app-container"
-  class:sidebar-collapsed={!$sidebarExpanded}
-  class:mobile-nav-active={mobileNavOpen}
->
-  <div class="auth-widget">
-    <AuthWidget />
-  </div>
-
-  {#if isMobile}
-    <button
-      class="mobile-menu-button"
-      onclick={toggleMobileSidebar}
-      aria-label="Open Menu"
-      type="button"
-    >
-      <Menu size={24} />
-    </button>
-  {/if}
-
-  <aside
-    class="navigation"
-    class:collapsed={!isMobile && !$sidebarExpanded}
-    class:mobile-open={mobileNavOpen}
-  >
-    <Navigation {currentChapterSlug} initialIsMobile={isMobile} />
-    {#if !isMobile}
-      <button
-        class="sidebar-toggle-button"
-        onclick={toggleDesktopSidebar}
-        aria-label="Toggle Sidebar"
-        title="Toggle Sidebar"
-      >
-        {#if $sidebarExpanded}
-          <ChevronLeft size={18} stroke-width="3" />
-        {:else}
-          <ChevronRight size={18} stroke-width="3" />
-        {/if}
-      </button>
-    {/if}
-  </aside>
-
-  {#if isMobile && mobileNavOpen}
-    <div
-      class="mobile-overlay active"
-      onclick={closeMobileSidebar}
-      onkeydown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          closeMobileSidebar();
-        }
-      }}
-      role="button"
-      tabindex="0"
-      aria-label="Close Menu"
-    ></div>
-  {:else if !isMobile && mobileNavOpen}
-    <script>
-      if (browser) {
-        console.warn(
-          "[Layout Debug] Mobile overlay was open on desktop. Forcing closed."
-        );
-        mobileNavOpen = false;
-      }
-    </script>
-  {/if}
-
-  <main class="content" bind:this={mainContentElement}>
-    <div class="u-container">
-      {@render children()}
-      <Footer />
-    </div>
-  </main>
-</div>
+      <div class="auth-buttons">
+        <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
+        <a href="/login" class="auth-button sign-in-button">Sign In</a>
+      </div>
 
 <style lang="scss">
   @use "$lib/styles/variables" as variables;
@@ -212,7 +165,7 @@
     width: 100%;
     position: relative;
     z-index: 2;
-    display: flex;
+    display: flex; // Use flex for main layout
 
     &.mobile-nav-active {
       .mobile-menu-button {
@@ -221,6 +174,7 @@
         pointer-events: none !important;
       }
 
+      // Prevent scrolling on the main content when the mobile nav is active
       & > .content {
         overflow: hidden;
       }
@@ -228,28 +182,33 @@
   }
 
   .navigation {
+    // Keep most styles, ensure width uses variable
     display: flex;
     align-items: stretch;
     height: 100vh;
     z-index: 1001;
-    position: fixed;
+    position: fixed; // Keep fixed positioning
     top: 0;
     left: 0;
+    /* width: var(--sidebar-width); // Use variable for expanded width
+    transition: width var(--sidebar-transition-duration)
+      var(--sidebar-transition-timing); // Keep transition */
 
     & > :first-child {
       flex-grow: 1;
       min-width: 0;
-      width: 100%;
+      width: 100%; // Make inner nav take full width of container
     }
 
     @media (max-width: variables.$breakpoint-lg) {
+      // Keep mobile overlay styles
       position: fixed;
       top: 0;
       left: 0;
       width: 300px;
       max-width: 80%;
       transform: translateX(-100%);
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease; // Keep mobile transition
       background-color: var(--sidebar-background, var(--color-background));
       flex-direction: column;
       align-items: initial;
@@ -273,6 +232,7 @@
   }
 
   .sidebar-toggle-button {
+    // Keep existing styles
     z-index: 1002;
     flex-shrink: 0;
     width: 30px;
@@ -307,13 +267,19 @@
     min-width: 0;
     height: 100%;
     overflow-y: auto;
-    position: relative;
+    // REMOVE fixed margin-left. Let content flow naturally.
+    position: relative; /* Needed for sticky positioning context */
 
     @media (max-width: variables.$breakpoint-lg) {
+      // REMOVE margin-left: 0; // No margin needed on mobile
     }
   }
 
+  /* REMOVE styles for the top navigation bar */
+  /* .top-nav-bar { ... } */
+
   .mobile-overlay {
+    // Keep existing styles
     position: fixed;
     top: 0;
     left: 0;
@@ -329,6 +295,7 @@
   }
 
   .mobile-menu-button {
+    // Keep existing styles
     display: flex;
     align-items: center;
     justify-content: center;
@@ -350,14 +317,16 @@
   }
 
   .skip-link {
+    // Keep existing styles
     position: absolute;
     left: -9999px;
     color: var(--color-text-primary);
   }
 
+  /* Keep .u-container styles - This will now wrap all children */
   .u-container {
     min-height: 1px;
-    width: 100%;
+    width: 100%; // Ensure it takes available width
     max-width: var(--max-content-width, 1400px);
     margin-inline: auto;
     padding: var(--space-m);
@@ -368,10 +337,109 @@
     }
   }
 
+  /* ADDED: Auth Widget Styles */
   .auth-widget {
-    position: fixed;
+    position: fixed; /* Or absolute if app-container is the positioning context */
     top: var(--space-s, 10px);
     right: var(--space-s, 10px);
-    z-index: 1100;
+    z-index: 1100; /* Ensure it's above most other elements */
+    display: flex;
+    gap: var(--space-xs, 8px);
   }
+
+  .auth-buttons {
+    display: flex;
+    padding: var(--space-2xs) var(--space-xs);
+    background-color: var(--color-background);
+    gap: var(--space-xs, 8px);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .auth-button {
+    padding: var(--space-xs) var(--space-s);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--step--1);
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+
+    &:hover {
+      background-color: var(--color-surface-hover);
+      border-color: var(--color-border-hover);
+    }
+
+    &.sign-up-button {
+      /* Optional: different styling for sign up */
+    }
+    &.sign-in-button {
+      /* Optional: different styling for sign in */
+    }
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    background-color: var(--color-surface-raised);
+    padding: var(--space-xs) var(--space-s);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+
+  .avatar-container {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-surface-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* To clip avatar image if it's not perfectly round */
+  }
+
+  .avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: var(--step--1);
+  }
+
+  .username {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .sign-out-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: var(--step--2);
+
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+
+  // REMOVE styles for the specific section+map wrapper
+  /* .main-content-and-map-wrapper { ... } */
+  /* .main-slot-container { ... } */
+  /* :global(.section-map-container) { ... } */
 </style>

@@ -31,9 +31,9 @@
         <div class="hero-branding">
           <AnimatedLogo />
           <p class="tagline">
-            <span class="tagline-highlight">Learn</span> Physics and have
-            <span class="tagline-highlight">fun</span>
-            doing it! <br />
+            Where <span class="tagline-highlight">Physics</span> meets
+            <span class="tagline-highlight">Fun</span>
+            <br />
             Explore interactive 3D visualizations that bring kinematics to life.
           </p>
           <!-- SearchBar moved back to hero-actions -->

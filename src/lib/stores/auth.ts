@@ -37,29 +37,37 @@ export const authState: Writable<AuthState> = writable(initialAuthState);
 
 // Subscribe to auth state changes from Supabase
 supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback async
-  console.log(`Supabase Auth State Change: ${event}`);
+  console.log(`Supabase Auth State Change Event: ${event}`, { session });
 
   let profile: Profile | null = null;
   if (session?.user) {
+    console.log('Session and user found, attempting to fetch profile for user ID:', session.user.id);
     // Fetch the user's profile from the 'profiles' table
-    const { data, error } = await supabase
+    const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('id, username, avatar_url') // Select the fields you need
       .eq('id', session.user.id) // Filter by the authenticated user's ID
       .single(); // Expect a single row
 
-    if (error) {
-      console.error('Error fetching profile:', error);
-      // Handle error (e.g., log out user if profile is missing/error)
-    } else if (data) {
-      profile = data; // Assign fetched profile data
+    if (profileError) {
+      console.error('[AuthStore] Error fetching profile:', profileError);
+      // Not setting profile to null here, as an error doesn't mean the user isn't authenticated
+      // However, user-specific UI might not render correctly without a profile.
+    } else if (profileData) {
+      console.log('[AuthStore] Profile data fetched successfully:', profileData);
+      profile = profileData;
+    } else {
+      console.warn('[AuthStore] No profile data found for user ID:', session.user.id, '(Profile might not exist yet)');
     }
+  } else {
+    console.log('[AuthStore] No active session or user, clearing profile.');
   }
 
   authState.set({
-    isAuthenticated: !!session, // True if session exists
+    isAuthenticated: !!session,
     session: session,
-    user: profile, // Set the fetched profile here
-    loading: false, // No longer loading after initial check or change
+    user: profile,
+    loading: false,
   });
+  console.log('[AuthStore] Auth state updated:', { isAuthenticated: !!session, user: profile, loading: false });
 });
