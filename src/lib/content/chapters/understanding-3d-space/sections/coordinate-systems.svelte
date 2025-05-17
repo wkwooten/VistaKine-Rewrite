@@ -68,7 +68,30 @@
     </Scenario>
   </ContentCard>
 
-  <!-- Block 2: Concept - Need for 3D -->
+  <!-- Block 2: Visualization - Axis Explorer -->
+  <ContentCard
+    blockType="visualization-block"
+    class="visualization-card"
+    layoutWidth="condensed"
+  >
+    <h2 id="axis-explorer" data-nav-target="true">Exploring the Axes</h2>
+    <figure>
+      <AxisExplorer />
+      <figcaption>
+        Use your mouse to rotate (left-click drag), pan (right-click drag), and
+        zoom (scroll wheel) the view.
+      </figcaption>
+    </figure>
+    <p>
+      Notice how the <span style="color: var(--axis-color-x);">X (Red)</span>,
+      <span style="color: var(--axis-color-y);">Y (Green)</span>, and
+      <span style="color: var(--axis-color-z);">Z (Blue)</span>
+      axes represent the three dimensions, all meeting at the
+      <strong>Origin</strong> at (0,0,0).
+    </p>
+  </ContentCard>
+
+  <!-- Block 3: Concept - Need for 3D -->
   <ContentCard blockType="concept-block" layoutWidth="full">
     <h2 id="why-three-dimensions" data-nav-target="true">
       Why Three Dimensions?
@@ -107,29 +130,6 @@
       magnitude and direction are also described using components along these axes.
       It's the universal language for quantifying and analyzing physical events in
       space.
-    </p>
-  </ContentCard>
-
-  <!-- Block 3: Visualization - Axis Explorer -->
-  <ContentCard
-    blockType="visualization-block"
-    class="visualization-card"
-    layoutWidth="condensed"
-  >
-    <h2 id="axis-explorer" data-nav-target="true">Exploring the Axes</h2>
-    <figure>
-      <AxisExplorer />
-      <figcaption>
-        Use your mouse to rotate (left-click drag), pan (right-click drag), and
-        zoom (scroll wheel) the view.
-      </figcaption>
-    </figure>
-    <p>
-      Notice how the <span style="color: var(--axis-color-x);">X (Red)</span>,
-      <span style="color: var(--axis-color-y);">Y (Green)</span>, and
-      <span style="color: var(--axis-color-z);">Z (Blue)</span>
-      axes represent the three dimensions, all meeting at the
-      <strong>Origin</strong> at (0,0,0).
     </p>
   </ContentCard>
 

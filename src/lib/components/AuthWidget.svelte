@@ -21,7 +21,10 @@
 <div class="auth-widget-component">
   {#if $authState.isAuthenticated && $authState.user}
     {@const user = $authState.user}
-    <div class="user-profile">
+    <div
+      class="user-profile"
+      style="border: 1px solid blue; background-color: rgba(0,0,255,0.1); min-width: 50px; min-height:20px;"
+    >
       <div class="avatar-container">
         {#if user.avatar_url}
           <img src={user.avatar_url} alt="User avatar" class="avatar-image" />
@@ -35,8 +38,10 @@
       </div>
     </div>
   {:else if !$authState.loading}
-    <!-- Only show login/signup if not loading initial state -->
-    <div class="auth-buttons">
+    <div
+      class="auth-buttons"
+      style="border: 1px solid green; background-color: rgba(0,255,0,0.1); min-width: 50px; min-height:20px;"
+    >
       <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
       <a href="/login" class="auth-button sign-in-button">Sign In</a>
     </div>
@@ -51,12 +56,10 @@
   /* Ensure these styles match the visual requirements of your Figma mockup */
 
   .auth-widget-component {
-    /* This class is the root of your component.
-       Its styles should ensure it behaves like the original .auth-widget div in the layout
-       (e.g., for positioning if it was fixed/absolute in the layout)
-       For now, keeping it simple as a flex container.
-       The parent in +layout.svelte (.auth-widget) will handle positioning.
-    */
+    border: 1px solid orange;
+    background-color: rgba(255, 165, 0, 0.1);
+    min-width: 5px;
+    min-height: 5px;
     display: flex;
     align-items: center;
   }
