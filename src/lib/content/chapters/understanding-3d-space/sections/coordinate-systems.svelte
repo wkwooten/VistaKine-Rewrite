@@ -34,8 +34,8 @@
     <p>
       Welcome to the world of 3D space! Ever wonder how a 3D printer knows
       exactly where to place material, or how a GPS pinpoints your location? It
-      all relies on a fundamental concept: <Keyword
-        term="coordinate systems"
+      all relies on a fundamental concept: the <Keyword
+        term="coordinate system"
       />. In this section, we'll break down how we use three dimensions (X, Y,
       and Z) to map out space, define precise locations using coordinates, and
       understand key terms like the origin and axes. We'll see how crucial this
@@ -69,12 +69,20 @@
   </ContentCard>
 
   <!-- Block 2: Visualization - Axis Explorer -->
-  <ContentCard
-    blockType="visualization-block"
-    class="visualization-card"
-    layoutWidth="condensed"
-  >
+  <ContentCard blockType="visualization-block" class="visualization-card">
     <h2 id="axis-explorer" data-nav-target="true">Exploring the Axes</h2>
+    <p>
+      To map locations precisely in the space around us, we use three reference
+      lines, or <strong>axes</strong> (yes, the plural of axis is axes). Each
+      line points in a different direction, and all axes meet at a single point
+      called the <strong>origin</strong>. This <Keyword
+        term="Cartesian coordinate system"
+      /> is the standard map for <Keyword term="3D space" />. Engineers
+      typically orient these using a <Keyword
+        term="right-handed coordinate system"
+      /> convention. Take a look at the visualization below to see how these three
+      axes meet at the origin.
+    </p>
     <figure>
       <AxisExplorer />
       <figcaption>
@@ -91,45 +99,28 @@
     </p>
   </ContentCard>
 
-  <!-- Block 3: Concept - Need for 3D -->
+  <!-- Block 3: Concept - Why Three Dimensions? & Your Choice of Reference -->
   <ContentCard blockType="concept-block" layoutWidth="full">
     <h2 id="why-three-dimensions" data-nav-target="true">
-      Why Three Dimensions?
+      Why Three Dimensions? Your Choice of Reference
     </h2>
     <p>
-      Giving simple directions like "5 steps forward, 3 steps left" works well
-      on a flat surface (2D). But how do you describe reaching for a high shelf
-      or pinpointing a drone? You need a third dimension – height!
+      Why do we need three dimensions? Simple directions like "5 steps forward,
+      3 steps left" work on a flat surface (2D). But to describe reaching for a
+      high shelf, or navigating a drone, you need a third dimension: height!
+      This is why we map space using three perpendicular <strong>axes</strong>
+      (like X, Y, Z) that meet at a central <strong>origin</strong>.
     </p>
     <p>
-      To map locations precisely in the space around us, we use three reference
-      lines, or <strong>axes</strong> (yes, the plural of axis is axes). Each
-      line points in a different direction, and all axes meet at a single point
-      called the <strong>origin</strong>. This <Keyword
-        term="Cartesian coordinate system"
-      /> is the standard map for <Keyword term="3D space" />. Engineers
-      typically orient these using a <Keyword
-        term="right-handed coordinate system"
-      /> convention.
-    </p>
-
-    <p>
-      These axes are more than just lines; they establish a framework that
-      defines direction and scale within our 3D map. Each axis provides a clear,
-      unambiguous direction (like 'forward', 'up', or 'right'). The units along
-      these axes (meters, inches, etc.) provide the scale needed to measure
-      distances and positions precisely.
-    </p>
-
-    <p>
-      In physics, this coordinate system is indispensable. We use these axes to
-      define the <strong>position</strong> of an object in space at any given
-      time. We describe its <strong>motion</strong> by how its coordinates change
-      over time, defining concepts like velocity and acceleration relative to these
-      fixed directions. Forces, fields, and other physical quantities that have both
-      magnitude and direction are also described using components along these axes.
-      It's the universal language for quantifying and analyzing physical events in
-      space.
+      Crucially, this system is your **frame of reference**. You get to choose
+      where the <strong>origin</strong> (the zero point) is and which way your
+      <strong>axes</strong>
+      point. While conventions like the <strong>right-handed system</strong>
+      exist, the fundamental frame is yours to define! Picking the right frame can
+      make complex problems much simpler – like choosing Earth's center as the origin
+      for tracking satellites. Remember, the <em>coordinates</em>
+      change with your choice, but the <strong>actual physical location</strong>
+      in space remains the same.
     </p>
   </ContentCard>
 
@@ -201,7 +192,7 @@
     </p>
 
     <PrinterCalibrationExercise
-      on:calibrationComplete={handleCalibrationComplete}
+      onCalibrationComplete={handleCalibrationComplete}
     />
 
     <p>

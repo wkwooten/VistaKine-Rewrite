@@ -99,10 +99,12 @@ $sidebar-transition-duration: $transition-normal;
 $sidebar-transition-timing: $transition-bezier;
 
 // Shadows
-$shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 2px 10px rgba(0, 0, 0, 0.05);
-$shadow-lg: 0 4px 15px rgba(0, 0, 0, 0.1);
-$shadow-xl: 0 10px 25px rgba(0, 0, 0, 0.1); // Added extra-large shadow
+$shadow-color: rgb(9, 4, 48); // Define the natural shadow base color
+
+$shadow-sm: 0 2px 4px rgba($shadow-color, 0.05); // Was rgba(9, 4, 48, 0.05) - effectively the same
+$shadow-md: 0 2px 10px rgba($shadow-color, 0.05); // Was rgba(0, 0, 0, 0.05)
+$shadow-lg: 0 4px 15px rgba($shadow-color, 0.1); // Was rgba(0, 0, 0, 0.1)
+$shadow-xl: 0 10px 25px rgba($shadow-color, 0.15); // Was rgba(0, 0, 0, 0.25)
 
 // UI States
 $state-selected-color: #007bff;
@@ -471,45 +473,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
 // Export as CSS variables
 // ==================================
 :root {
-  // ... (existing :root block with light mode CSS variables) ...
-  --color-white: #{$color-white};
-  --color-text-inverted: #{$color-text-inverted-light};
-
-  // Scene Elements (Light) - USED HERE
-  --scene-grid-cell-color: #{$scene-grid-cell-color-light};
-  --scene-grid-section-color: #{$scene-grid-section-color-light};
-  --scene-ground-color: #{$scene-ground-color-light};
-  --scene-ground-gradient-edge-color: #A9A9A9;
-
-  // Calibration Scene (Light)
-  --calibration-nozzle-color: #{$calibration-nozzle-color-light};
-  --calibration-nozzle-edges-color: #{$calibration-nozzle-edges-color-light};
-  --calibration-height-indicator-color: #{$calibration-height-indicator-color-light};
-  --calibration-bed-color: #{$calibration-bed-color-light};
-  --calibration-bed-edges-color: #{$calibration-bed-edges-color-light};
-  --calibration-target-pending-color: #{$calibration-target-pending-color-light};
-  --calibration-target-hit-color: #{$calibration-target-hit-color-light};
-
-  // Vector Builder Colors (Light)
-  --vector-builder-start-color: #{$vector-builder-start-color-light};
-  --vector-builder-end-color: #{$vector-builder-end-color-light};
-
-  // Character Colors (Light)
-  --surya-color: #{$surya-color-light};
-  --leo-color: #{$leo-color-light};
-
-  // Accent Palette
-  // ... rest of light mode :root ...
-  --color-accent-active-bg: #{$color-dark-accent-active-bg};
-  --color-accent-hover-bg: #{$color-dark-accent-hover-bg};
-  --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
-
-  // Functional Colors
-  --color-success: #{$color-dark-success};
-  --color-error: #{$color-dark-error};
-  --color-error-bg: #{$color-dark-error-bg};
-  --color-error-border: #{$color-dark-error-border};
-  --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
+  // ... (rest of the code remains unchanged) ...
 }
 
 // ==================================

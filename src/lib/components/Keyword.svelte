@@ -3,13 +3,14 @@
   import glossaryData from "$lib/data/glossary-data";
   import type { GlossaryTerm } from "$lib/data/glossary-data";
   import { currentChapter } from "$lib/stores/appState.ts"; // Import the store
+  import BookmarkIcon from "$lib/components/ui/BookmarkIcon.svelte"; // Import the new component
 
   let { term }: { term: string } = $props();
 
   let showPopover = $state(false);
   let popoverElement: HTMLElement | undefined = $state();
 
-  // Generate a URL-friendly ID from the term
+  // Generate a URL-friendly ID from the term, also used for bookmarking
   const keywordId = $derived(
     term
       .toLowerCase()
@@ -84,7 +85,16 @@
       onclick={closePopover}
       aria-label="Close definition">&times;</button
     >
-    <p class="popover-term"><strong>{glossaryEntry.term}</strong></p>
+    <div class="popover-header">
+      <p class="popover-term"><strong>{glossaryEntry.term}</strong></p>
+      {#if keywordId}
+        <BookmarkIcon
+          contentId={keywordId}
+          contentType="keyword"
+          class="keyword-bookmark-icon"
+        />
+      {/if}
+    </div>
     <p class="definition">{glossaryEntry.definition}</p>
     <a href="/glossary" class="glossary-link">Go to Glossary</a>
     {#if glossaryEntry.sectionRef}
@@ -122,10 +132,23 @@
     max-width: 400px;
     font-size: var(--step--0);
 
+    .popover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-s);
+    }
+
     .popover-term {
-      margin: 0 0 var(--space-s) 0;
+      margin: 0;
       font-size: inherit;
       color: var(--color-accent);
+      flex-grow: 1;
+    }
+
+    .keyword-bookmark-icon {
+      font-size: var(--step--0);
+      margin-left: var(--space-xs);
     }
 
     .close-button {

@@ -38,6 +38,11 @@ const glossaryData: GlossaryData = [
         sectionRef: "coordinate-systems"
       },
       {
+        term: "Cartesian coordinate system",
+        definition: "A coordinate system in which the position of a point in space is determined by the signed distances to three mutually perpendicular planes whose intersection defines the origin and whose axes are defined by the intersection lines of the planes.",
+        sectionRef: "coordinate-systems"
+      },
+      {
         term: "Vector",
         definition: "A quantity with both magnitude (size or length) and direction.",
         sectionRef: "vectors-and-components"
