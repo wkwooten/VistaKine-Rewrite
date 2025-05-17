@@ -21,10 +21,7 @@
 <div class="auth-widget-component">
   {#if $authState.isAuthenticated && $authState.user}
     {@const user = $authState.user}
-    <div
-      class="user-profile"
-      style="border: 1px solid blue; background-color: rgba(0,0,255,0.1); min-width: 50px; min-height:20px;"
-    >
+    <div class="user-profile">
       <div class="avatar-container">
         {#if user.avatar_url}
           <img src={user.avatar_url} alt="User avatar" class="avatar-image" />
@@ -38,21 +35,13 @@
       </div>
     </div>
   {:else if !$authState.loading}
-    <div
-      class="auth-buttons"
-      style="border: 1px solid green; background-color: rgba(0,255,0,0.1); min-width: 50px; min-height:20px;"
-    >
+    <div class="auth-buttons">
       <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
       <a href="/login" class="auth-button sign-in-button">Sign In</a>
     </div>
   {:else}
     <!-- This block will render if isAuthenticated is false AND loading is true -->
-    <div
-      class="auth-fallback-loading"
-      style="border: 1px solid purple; padding: 5px; color: purple;"
-    >
-      Auth Loading...
-    </div>
+    <div class="auth-fallback-loading">Auth Loading...</div>
   {/if}
 </div>
 
@@ -61,10 +50,6 @@
   /* Ensure these styles match the visual requirements of your Figma mockup */
 
   .auth-widget-component {
-    border: 1px solid orange;
-    background-color: rgba(255, 165, 0, 0.1);
-    min-width: 5px;
-    min-height: 5px;
     display: flex;
     align-items: center;
   }

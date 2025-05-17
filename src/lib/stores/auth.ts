@@ -42,7 +42,9 @@ supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback
   let profile: Profile | null = null;
   if (session?.user) {
     console.log('Session and user found, attempting to fetch profile for user ID:', session.user.id);
-    // Fetch the user's profile from the 'profiles' table
+    // IMPORTANT: Ensure 'profiles' table exists and has RLS policies allowing
+    // authenticated users to read their own profile (e.g., auth.uid() = id).
+    // If testing, RLS might be temporarily disabled - REMEMBER TO RE-ENABLE!
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('id, username, avatar_url') // Select the fields you need
