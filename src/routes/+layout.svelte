@@ -373,9 +373,5 @@
     top: var(--space-s, 10px);
     right: var(--space-s, 10px);
     z-index: 1100;
-    border: 1px solid red;
-    background-color: rgba(255, 0, 0, 0.1);
-    min-width: 10px;
-    min-height: 10px;
   }
 </style>

@@ -106,6 +106,20 @@
     </ul>
   </ContentCard>
 
+  <ContentCard
+    blockType="visualization-block"
+    class="visualization-card -full-bleed"
+  >
+    <h2
+      id="visualizing-vector-operations"
+      data-nav-target="true"
+      aria-label="Interactive Exercise: Vector Operations"
+    >
+      Interactive Exercise: Vector Operations
+    </h2>
+    <VectorPrinterExercise />
+  </ContentCard>
+
   <ContentCard blockType="concept-block">
     <h2
       id="vector-subtraction"
@@ -156,20 +170,6 @@
       </li>
       <li>Determining relative position vectors.</li>
     </ul>
-  </ContentCard>
-
-  <ContentCard
-    blockType="visualization-block"
-    class="visualization-card -full-bleed"
-  >
-    <h2
-      id="visualizing-vector-operations"
-      data-nav-target="true"
-      aria-label="Interactive Exercise: Vector Operations"
-    >
-      Interactive Exercise: Vector Operations
-    </h2>
-    <VectorPrinterExercise />
   </ContentCard>
 
   <ContentCard blockType="concept-block">

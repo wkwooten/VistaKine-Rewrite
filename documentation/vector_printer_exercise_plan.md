@@ -130,7 +130,14 @@ The plan for Phase 1 (Vector Addition) remains the target, but resolving the ren
   - Provide immediate feedback in the HUD and scene upon user actions.
 - **Progression:** Structure the exercise with increasing complexity, starting with simple addition.
 - **Control Panel Design:** `VectorOperationControls.svelte` should be intuitive for defining components and selecting operations without overwhelming the user. Consider dynamically showing relevant inputs based on the current operation.
-- **Formula Display:** TODO: Create a dedicated, more robust formula display component to show vector equations (e.g., R = A + B). The simple text display was removed from the HUD to sidestep KaTeX issues for now.
+- **Formula Display & Output Panel:**
+  - **TODO:** Create a dedicated, more robust formula display component to show vector equations (e.g., R = A + B) in an explicit, equation-like format. This component could reside in the HUD or the `VectorPrinterOutputPanel`.
+  - Consider a table format within the `VectorPrinterOutputPanel` as an alternative or complementary way to display multiple defined vectors, their components, and magnitudes, especially for clarity when many vectors are involved.
+- **Non-Fullscreen Layout (Mobile):**
+  - Position the "Vector Monitor" (`VectorPrinterOutputPanel.svelte`, likely in its collapsed state) above the main visualization container (`VisContainer.svelte` within `InteractiveExercise.svelte`) when the exercise is _not_ in fullscreen mode. This aims to prevent the monitor from overlaying the 3D scene directly in constrained mobile views.
+  - Ensure the `VectorOperationControls.svelte` panel remains clearly positioned below the visualization in this non-fullscreen mode.
+- **Configurable Scene Abstraction (Potential Enhancement):**
+  - Explore making contextual scene elements (like the `PrinterBed`) optional or toggleable. This could allow for a more abstract vector visualization focused purely on the coordinate system and vectors, potentially useful for different learning contexts or advanced scenarios.
 
 ## Dialog System Integration (`DialogBox.svelte`)
 
@@ -144,3 +151,8 @@ The plan for Phase 1 (Vector Addition) remains the target, but resolving the ren
 - "Challenge modes" with less guidance.
 - Free-form "sandbox mode."
 - Integration of interactive 3D gizmos for vector manipulation.
+- **Toggleable Visualization Modes:**
+  - Implement a feature to switch between:
+    - **Tip-to-Tail (Sequential) Mode:** The current method, where each new vector originates from the head of the previous one. Essential for understanding paths and sequential operations.
+    - **Common Origin Mode:** All defined vectors originate from a single, shared starting point (e.g., the world origin or the `sequenceStartOrigin`). Useful for comparing vectors directly or representing multiple forces/fields acting on a single point.
+  - This would require UI controls and significant logic changes in `VectorPrinterScene.svelte` to manage vector origins dynamically based on the selected mode.

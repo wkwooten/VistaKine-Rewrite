@@ -7,6 +7,8 @@
     Vector3,
     Color,
     ArrowHelper as ThreeArrowHelper,
+    LineBasicMaterial,
+    MeshBasicMaterial,
   } from "three";
   import CoordinateAxes from "$lib/components/visualization/elements/constructs/CoordinateAxes.svelte";
   import SceneLabel from "$lib/components/visualization/helpers/SceneLabel.svelte";
@@ -29,14 +31,20 @@
     type DefinedVector,
   } from "./vectorPrinterState";
 
+  // --- Constants for Arrow Appearance ---
+  const ARROW_HEAD_LENGTH = 0.6;
+  const ARROW_HEAD_WIDTH = 0.3;
+
   let {
     nozzlePosition = $bindable(new Vector3(0, 0.1, 0)),
     currentVectorOrigin = new Vector3(),
     sequenceStartOrigin = new Vector3(),
+    undefinedVectorColorHint = "#FFFFFF" as import("three").ColorRepresentation,
   } = $props<{
     nozzlePosition?: Vector3;
     currentVectorOrigin?: Vector3;
     sequenceStartOrigin?: Vector3;
+    undefinedVectorColorHint?: import("three").ColorRepresentation;
   }>();
 
   const nozzleGeometry = new BoxGeometry(0.2, 0.2, 0.2);
@@ -92,7 +100,9 @@
       "[VPS $effect currentDisplayVectorHelper IMPERATIVE] Triggered. Store:",
       $state.snapshot($currentDefiningVectorStore),
       "Origin (prop):",
-      $state.snapshot(currentVectorOrigin)
+      $state.snapshot(currentVectorOrigin),
+      "ColorHint:",
+      undefinedVectorColorHint
     );
 
     const vecDefStore = $currentDefiningVectorStore;
@@ -100,19 +110,45 @@
     if (vecDefStore && vecDefStore.lengthSq() > 0.00001) {
       const dir = vecDefStore.clone().normalize();
       const length = vecDefStore.length();
-      const color = new Color($primaryColorStore);
-      const headLength = 0.2;
-      const headWidth = 0.075;
+      const color = new Color(undefinedVectorColorHint);
+      const headLength = ARROW_HEAD_LENGTH;
+      const headWidth = ARROW_HEAD_WIDTH;
 
       if (!_currentHelperInstance) {
         _currentHelperInstance = new ThreeArrowHelper(
           dir,
           currentVectorOrigin.clone(),
           length,
-          color.getHex(),
+          color,
           headLength,
           headWidth
         );
+        if (
+          _currentHelperInstance.line &&
+          (_currentHelperInstance.line.material as LineBasicMaterial).isMaterial
+        ) {
+          (
+            _currentHelperInstance.line.material as LineBasicMaterial
+          ).transparent = true;
+          (_currentHelperInstance.line.material as LineBasicMaterial).opacity =
+            0.5;
+          (
+            _currentHelperInstance.line.material as LineBasicMaterial
+          ).needsUpdate = true;
+        }
+        if (
+          _currentHelperInstance.cone &&
+          (_currentHelperInstance.cone.material as MeshBasicMaterial).isMaterial
+        ) {
+          (
+            _currentHelperInstance.cone.material as MeshBasicMaterial
+          ).transparent = true;
+          (_currentHelperInstance.cone.material as MeshBasicMaterial).opacity =
+            0.5;
+          (
+            _currentHelperInstance.cone.material as MeshBasicMaterial
+          ).needsUpdate = true;
+        }
         scene.add(_currentHelperInstance);
         console.log(
           "[VPS $effect currentDisplayVectorHelper IMPERATIVE] Created and added _currentHelperInstance",
@@ -123,6 +159,26 @@
         _currentHelperInstance.position.copy(currentVectorOrigin);
         _currentHelperInstance.setLength(length, headLength, headWidth);
         _currentHelperInstance.setColor(color);
+        if (
+          _currentHelperInstance.line &&
+          (_currentHelperInstance.line.material as LineBasicMaterial).isMaterial
+        ) {
+          (
+            _currentHelperInstance.line.material as LineBasicMaterial
+          ).transparent = true;
+          (_currentHelperInstance.line.material as LineBasicMaterial).opacity =
+            0.5;
+        }
+        if (
+          _currentHelperInstance.cone &&
+          (_currentHelperInstance.cone.material as MeshBasicMaterial).isMaterial
+        ) {
+          (
+            _currentHelperInstance.cone.material as MeshBasicMaterial
+          ).transparent = true;
+          (_currentHelperInstance.cone.material as MeshBasicMaterial).opacity =
+            0.5;
+        }
       }
       _currentHelperInstance.visible = true;
     } else {
@@ -200,18 +256,6 @@
 />
 
 <T.Group>
-  <!-- Test Arrow using T component with ThreeArrowHelper -->
-  <T
-    is={ThreeArrowHelper}
-    args={[
-      new Vector3(0, 1, 0), // direction (normalized)
-      new Vector3(0, 0, 0), // origin
-      2, // length
-      0xff0000, // color (hex number for red)
-      0.4, // headLength
-      0.2, // headWidth
-    ]}
-  />
   <!-- End Test Arrow -->
 
   <CoordinateAxes
@@ -238,8 +282,8 @@
     {@const direction = defVec.vector.clone().normalize()}
     {@const length = defVec.vector.length()}
     {@const colorHex = new Color(defVec.color).getHex()}
-    {@const headLength = 0.2}
-    {@const headWidth = 0.075}
+    {@const headLength = ARROW_HEAD_LENGTH}
+    {@const headWidth = ARROW_HEAD_WIDTH}
 
     {#if length > 0.0001}
       <T
@@ -262,8 +306,8 @@
     {@const direction = $resultantVectorStore.clone().normalize()}
     {@const length = $resultantVectorStore.length()}
     {@const colorHex = RESULTANT_COLOR.getHex()}
-    {@const headLength = 0.2}
-    {@const headWidth = 0.075}
+    {@const headLength = ARROW_HEAD_LENGTH}
+    {@const headWidth = ARROW_HEAD_WIDTH}
 
     <T
       is={ThreeArrowHelper}

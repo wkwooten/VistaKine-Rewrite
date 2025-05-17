@@ -131,6 +131,7 @@
     nozzlePosition: nozzlePosition,
     currentVectorOrigin: nozzlePosition,
     sequenceStartOrigin: initialNozzlePosition,
+    undefinedVectorColorHint: getNextColor($definedVectorsStore.length),
   });
 
   const hudProps = $derived({
