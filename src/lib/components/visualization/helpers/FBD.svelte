@@ -24,7 +24,7 @@
   // Use $props() instead of export let in runes mode
   let {
     rigidBody = undefined, // Keep default
-    vectorScale = 0.5, // Keep default
+    vectorScale = 5, // Keep default
     frictionCoefficient = 0.5, // Keep default
     objectHalfHeight = 0.5, // Keep default
   } = $props<{
@@ -52,14 +52,14 @@
 
   // --- Constants ---
   const GRAVITY_CONSTANT = 9.81;
-  const MIN_VISIBLE_LENGTH = 0.01; // Minimum physics value length to display vector
-  const ARROW_HEAD_SIZE_RATIO = 0.2; // Ratio of length for head size
-  const ARROW_HEAD_WIDTH_RATIO = 0.1; // Ratio of length for head width
-  const MIN_ARROW_LENGTH = 0.1; // Smallest visual size for an arrow
-  const ACCELERATION_SMOOTHING_FACTOR = 0.2; // Smoothing factor for acceleration
+  const MIN_VISIBLE_LENGTH = 1; // Minimum physics value length to display vector
+  const ARROW_HEAD_SIZE_RATIO = 0.3; // Ratio of length for head size
+  const ARROW_HEAD_WIDTH_RATIO = 0.2; // Ratio of length for head width
+  const MIN_ARROW_LENGTH = 1; // Smallest visual size for an arrow
+  const ACCELERATION_SMOOTHING_FACTOR = 0.1; // Smoothing factor for acceleration
   const ACCELERATION_AVERAGING_INTERVAL = 0.1; // seconds (100ms)
   // --- Axis Constants ---
-  const AXIS_LENGTH = 1.0 * vectorScale; // Scale axis length with vector scale
+  const AXIS_LENGTH = 1 * vectorScale; // Scale axis length with vector scale
   const AXIS_DASH_SIZE = 0.05 * vectorScale;
   const AXIS_GAP_SIZE = 0.05 * vectorScale;
 
@@ -285,10 +285,10 @@
     }
 
     // --- Position Origin Dot and Axes Locally (at 0,0,0) ---
-    originDotVisible = $isFBDMenuOpen; // Visibility only
-    if (xAxisRef) xAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes; // Visibility only
-    if (yAxisRef) yAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes; // Visibility only
-    if (zAxisRef) zAxisRef.visible = $isFBDMenuOpen && $fbdVisibilityStore.axes; // Visibility only
+    originDotVisible = $fbdVisibilityStore.axes; // Visibility depends only on store
+    if (xAxisRef) xAxisRef.visible = $fbdVisibilityStore.axes; // Visibility depends only on store
+    if (yAxisRef) yAxisRef.visible = $fbdVisibilityStore.axes; // Visibility depends only on store
+    if (zAxisRef) zAxisRef.visible = $fbdVisibilityStore.axes; // Visibility depends only on store
 
     // --- Calculate Physics Vectors using fullBody ---
     const linvel = fullBody.linvel(); // Use fullBody
@@ -356,9 +356,7 @@
     // --- Update Velocity Vector (Locally relative to COM) ---
     const velocityLength = linvelVec.length();
     const isVelocityVisible =
-      $isFBDMenuOpen &&
-      $fbdVisibilityStore.velocity &&
-      velocityLength > MIN_VISIBLE_LENGTH;
+      $fbdVisibilityStore.velocity && velocityLength > MIN_VISIBLE_LENGTH;
     let velocityArrowTipLocal = new Vector3();
     if (velocityArrowHelperRef) {
       velocityArrowHelperRef.visible = isVelocityVisible;
@@ -389,7 +387,6 @@
     // --- Update Weight Vector (Locally relative to COM) ---
     const conceptualWeightMagnitude = mass * GRAVITY_CONSTANT * 1.0;
     const isWeightVisible =
-      $isFBDMenuOpen &&
       $fbdVisibilityStore.weight &&
       conceptualWeightMagnitude > MIN_VISIBLE_LENGTH;
     let weightArrowTipLocal = new Vector3();
@@ -428,7 +425,6 @@
     // --- Update Acceleration Vector (Locally relative to COM) ---
     const accelerationLength = smoothedAcceleration.length();
     const isAccelerationVisible =
-      $isFBDMenuOpen &&
       $fbdVisibilityStore.acceleration &&
       accelerationLength > MIN_VISIBLE_LENGTH;
     let accelerationArrowTipLocal = new Vector3();
@@ -466,9 +462,7 @@
     // --- Update Net Force Vector (Locally relative to COM) ---
     const netForceLength = netForce.length();
     const isNetForceVisible =
-      $isFBDMenuOpen &&
-      $fbdVisibilityStore.netForce &&
-      netForceLength > MIN_VISIBLE_LENGTH;
+      $fbdVisibilityStore.netForce && netForceLength > MIN_VISIBLE_LENGTH;
     let netForceArrowTipLocal = new Vector3();
     let visualNetForceLength = 0;
     if (netForceArrowHelperRef) {
@@ -502,7 +496,6 @@
     // --- Update Normal Force Vector (Locally relative to COM) ---
     const normalForceLength = normalForce.length();
     const isNormalForceVisible =
-      $isFBDMenuOpen &&
       $fbdVisibilityStore.normalForce &&
       normalForceLength > MIN_VISIBLE_LENGTH &&
       isGrounded;
@@ -541,7 +534,6 @@
     // --- Update Friction Force Vector (Locally relative to COM) ---
     const frictionForceLength = frictionForce.length();
     const isFrictionVisible =
-      $isFBDMenuOpen &&
       $fbdVisibilityStore.friction &&
       frictionForceLength > MIN_VISIBLE_LENGTH &&
       isSliding;
@@ -590,19 +582,19 @@
     bind:ref={xAxisRef}
     geometry={xAxisGeometry}
     material={xAxisMaterial}
-    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
+    visible={$fbdVisibilityStore.axes}
   />
   <T.LineSegments
     bind:ref={yAxisRef}
     geometry={yAxisGeometry}
     material={yAxisMaterial}
-    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
+    visible={$fbdVisibilityStore.axes}
   />
   <T.LineSegments
     bind:ref={zAxisRef}
     geometry={zAxisGeometry}
     material={zAxisMaterial}
-    visible={$isFBDMenuOpen && $fbdVisibilityStore.axes}
+    visible={$fbdVisibilityStore.axes}
   />
 
   <!-- INNER group positioned at COM relative to RB Origin -->
@@ -617,7 +609,7 @@
     <SceneLabel
       text="v"
       position={velocityLabelLocalPosition}
-      visible={$isFBDMenuOpen && velocityLabelVisible}
+      visible={velocityLabelVisible}
       color={velocityColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -625,8 +617,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
 
     <!-- Weight ArrowHelper (origin is now COM) -->
@@ -639,7 +629,7 @@
     <SceneLabel
       text="W"
       position={weightLabelLocalPosition}
-      visible={$isFBDMenuOpen && weightLabelVisible}
+      visible={weightLabelVisible}
       color={weightColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -647,8 +637,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
 
     <!-- Acceleration ArrowHelper (origin is now COM) -->
@@ -661,7 +649,7 @@
     <SceneLabel
       text="a"
       position={accelerationLabelLocalPosition}
-      visible={$isFBDMenuOpen && accelerationLabelVisible}
+      visible={accelerationLabelVisible}
       color={accelerationColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -669,8 +657,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
 
     <!-- Net Force ArrowHelper (origin is now COM) -->
@@ -683,7 +669,7 @@
     <SceneLabel
       text="ΣF"
       position={netForceLabelLocalPosition}
-      visible={$isFBDMenuOpen && netForceLabelVisible}
+      visible={netForceLabelVisible}
       color={netForceColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -691,8 +677,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
 
     <!-- Normal Force ArrowHelper (origin is now COM) -->
@@ -705,7 +689,7 @@
     <SceneLabel
       text="N"
       position={normalForceLabelLocalPosition}
-      visible={$isFBDMenuOpen && normalForceLabelVisible}
+      visible={normalForceLabelVisible}
       color={normalForceColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -713,8 +697,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
 
     <!-- Friction Force ArrowHelper (origin is now COM) -->
@@ -727,7 +709,7 @@
     <SceneLabel
       text="Ff"
       position={frictionLabelLocalPosition}
-      visible={$isFBDMenuOpen && frictionLabelVisible}
+      visible={frictionLabelVisible}
       color={frictionColor}
       backgroundColor={$surfaceColor}
       backgroundOpacity={1}
@@ -735,8 +717,6 @@
       padding={0.2 * vectorScale}
       borderRadius={0.2 * vectorScale}
       backgroundSmoothness={4}
-      depthTest={false}
-      renderOrder={1}
     />
   </T.Group>
 </T.Group>
