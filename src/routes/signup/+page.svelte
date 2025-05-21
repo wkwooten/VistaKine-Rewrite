@@ -6,23 +6,127 @@
   // Import the Supabase client
   import { supabase } from "$lib/supabaseClient";
   import GoogleIcon from "$lib/components/icons/GoogleIcon.svelte"; // Import the icon
+  import FormField from "$lib/components/auth/FormField.svelte"; // Import the new component
+  import AuthPageLayout from "$lib/components/auth/AuthPageLayout.svelte"; // Import the layout component
+  import Button from "$lib/components/auth/Button.svelte"; // Import the Button component
 
-  let email = "";
-  let password = "";
-  let confirmPassword = "";
+  let email = $state("");
+  let password = $state("");
+  let confirmPassword = $state("");
+
+  let showPassword = $state(false);
+  let showConfirmPassword = $state(false);
+  let capsLockOnPassword = $state(false);
+  let capsLockOnConfirmPassword = $state(false);
+
+  // Validation states
+  let emailError = $state("");
+  let passwordError = $state("");
+  let confirmPasswordError = $state("");
+
+  const passwordRequirements = $state([
+    { regex: /.{8,}/, text: "At least 8 characters", valid: false },
+    { regex: /[A-Z]/, text: "At least one uppercase letter", valid: false },
+    { regex: /[a-z]/, text: "At least one lowercase letter", valid: false },
+    { regex: /[0-9]/, text: "At least one number", valid: false },
+    {
+      regex: /[^A-Za-z0-9]/,
+      text: "At least one special character",
+      valid: false,
+    },
+  ]);
+
+  let loading = $state(false); // Ensure loading state is present for signup button
+
+  function validateEmail() {
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (!email) {
+      emailError = "Email is required.";
+    } else if (!emailRegex.test(email)) {
+      emailError = "Invalid email format.";
+    } else {
+      emailError = "";
+    }
+  }
+
+  function validatePassword() {
+    passwordError = "";
+    let allValid = true;
+    passwordRequirements.forEach((req) => {
+      req.valid = req.regex.test(password);
+      if (!req.valid) allValid = false;
+    });
+    if (!allValid && password) {
+      // Show general error if any requirement fails and password is not empty
+      passwordError = "Password does not meet all requirements.";
+    }
+    // Also check confirm password if it has a value
+    if (confirmPassword) validateConfirmPassword();
+  }
+
+  function validateConfirmPassword() {
+    if (!confirmPassword) {
+      confirmPasswordError = "Please confirm your password.";
+    } else if (password !== confirmPassword) {
+      confirmPasswordError = "Passwords do not match.";
+    } else {
+      confirmPasswordError = "";
+    }
+  }
+
+  function toggleShowPassword() {
+    showPassword = !showPassword;
+  }
+
+  function toggleShowConfirmPassword() {
+    showConfirmPassword = !showConfirmPassword;
+  }
+
+  function checkCapsLock(
+    event: KeyboardEvent | FocusEvent,
+    field: "password" | "confirmPassword"
+  ) {
+    // Check if getModifierState exists and is a function, as it's specific to KeyboardEvent
+    if (typeof (event as KeyboardEvent).getModifierState === "function") {
+      const capsLockActive = (event as KeyboardEvent).getModifierState(
+        "CapsLock"
+      );
+      if (field === "password") {
+        capsLockOnPassword = capsLockActive;
+      } else if (field === "confirmPassword") {
+        capsLockOnConfirmPassword = capsLockActive;
+      }
+    } else if (event.type === "focus") {
+      // For focus events, we might want to re-check or ensure it doesn't clear a valid caps lock state
+      // For now, let's ensure we don't error and only truly act on keyup for caps lock state.
+      // Alternatively, we could try to get the keyboard state globally on focus, but that's more complex.
+      // We could also remove onfocus for caps lock detection if it's problematic and rely on keyup.
+      // For this iteration, if it's a focus event and not a keyboard event, we can choose to do nothing
+      // or try a different way to assess CapsLock. For simplicity, we'll make sure Password field clears its own caps lock warning if it's just a focus event without key state
+      if (field === "password") {
+        // capsLockOnPassword = false; // Or fetch current global state if possible, for now, let keyup handle it.
+      } else if (field === "confirmPassword") {
+        // capsLockOnConfirmPassword = false;
+      }
+    }
+  }
 
   async function handleSignUp(event: SubmitEvent) {
     event.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+    validateEmail();
+    validatePassword();
+    validateConfirmPassword();
+
+    if (emailError || passwordError || confirmPasswordError) {
       return;
     }
-
+    loading = true; // Set loading true before async operation
     // Call Supabase signUp
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
+    loading = false; // Reset loading after operation
 
     if (error) {
       console.error("Sign up error:", error.message);
@@ -67,56 +171,117 @@
   }
 </script>
 
-<div class="auth-page-container">
-  <h1>Sign Up</h1>
-  <form onsubmit={handleSignUp} class="auth-form">
-    <button class="google-signin-button" onclick={signInWithGoogle}>
-      <GoogleIcon /> Sign Up with Google
-    </button>
-    <div class="divider">
-      <span>OR</span>
-    </div>
-    <div class="form-field">
-      <label for="email">Email</label>
-      <input type="email" id="email" bind:value={email} required />
-    </div>
-    <div class="form-field">
-      <label for="password">Password</label>
-      <input type="password" id="password" bind:value={password} required />
-    </div>
-    <div class="form-field">
-      <label for="confirmPassword">Confirm Password</label>
-      <input
-        type="password"
-        id="confirmPassword"
-        bind:value={confirmPassword}
+<AuthPageLayout title="Sign Up">
+  {#snippet children()}
+    <form onsubmit={handleSignUp} class="auth-form">
+      <Button type="button" variant="google" onclick={signInWithGoogle}>
+        {#snippet children()}
+          <GoogleIcon />
+          <span>Sign Up with Google</span>
+        {/snippet}
+      </Button>
+      <div class="divider">
+        <span>OR</span>
+      </div>
+      <FormField
+        id="email"
+        label="Email"
+        type="email"
+        bind:value={email}
+        oninput={validateEmail}
+        onblur={validateEmail}
+        errorMessage={emailError}
         required
       />
-    </div>
-    <button type="submit" class="submit-button">Sign Up</button>
-  </form>
-  <p>Already have an account? <a href="/login">Sign In</a></p>
-</div>
+      <FormField
+        id="password"
+        label="Password"
+        type={showPassword ? "text" : "password"}
+        bind:value={password}
+        oninput={validatePassword}
+        onblur={(e: FocusEvent) => {
+          validatePassword();
+          capsLockOnPassword = false;
+        }}
+        onkeyup={(e: KeyboardEvent) => checkCapsLock(e, "password")}
+        onfocus={(e: KeyboardEvent | FocusEvent) =>
+          checkCapsLock(e, "password")}
+        errorMessage={passwordError}
+        required
+      >
+        {#snippet children()}
+          <button
+            type="button"
+            class="toggle-password"
+            onclick={toggleShowPassword}
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+          <div class="password-extras">
+            <div class="password-requirements">
+              <small>Password must contain:</small>
+              <ul>
+                {#each passwordRequirements as req}
+                  <li class={req.valid ? "valid" : "invalid"}>
+                    <small>{req.text}</small>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+            {#if capsLockOnPassword}
+              <small class="caps-lock-warning">Caps Lock is ON</small>
+            {/if}
+          </div>
+        {/snippet}
+      </FormField>
 
-<!-- Using existing styles from login page, so no <style> block needed if they are global or if we extract to a shared component/style -->
-<!-- For simplicity, we'll assume the styles from login will apply or you'll manage shared auth form styles -->
+      <FormField
+        id="confirmPassword"
+        label="Confirm Password"
+        type={showConfirmPassword ? "text" : "password"}
+        bind:value={confirmPassword}
+        oninput={validateConfirmPassword}
+        onblur={(e: FocusEvent) => {
+          validateConfirmPassword();
+          capsLockOnConfirmPassword = false;
+        }}
+        onkeyup={(e: KeyboardEvent) => checkCapsLock(e, "confirmPassword")}
+        onfocus={(e: KeyboardEvent | FocusEvent) =>
+          checkCapsLock(e, "confirmPassword")}
+        errorMessage={confirmPasswordError}
+        required
+      >
+        {#snippet children()}
+          <div class="password-extras">
+            <button
+              type="button"
+              class="toggle-password"
+              onclick={toggleShowConfirmPassword}
+            >
+              {showConfirmPassword ? "Hide" : "Show"}
+            </button>
+            {#if capsLockOnConfirmPassword}
+              <small class="caps-lock-warning">Caps Lock is ON</small>
+            {/if}
+          </div>
+        {/snippet}
+      </FormField>
+
+      <Button
+        type="submit"
+        variant="primary"
+        disabled={!!(emailError || passwordError || confirmPasswordError) ||
+          loading}
+      >
+        {#if loading}Loading...{:else}Sign Up{/if}
+      </Button>
+    </form>
+    <p>Already have an account? <a href="/login">Sign In</a></p>
+  {/snippet}
+</AuthPageLayout>
+
 <style lang="scss">
-  // Styles are identical to login page for consistency
-  // In a real app, you might extract these to a shared CSS module or component
-  .auth-page-container {
-    max-width: 400px;
-    margin: var(--space-xl) auto;
-    padding: var(--space-l);
-    background-color: var(--color-surface);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-
-    h1 {
-      text-align: center;
-      margin-bottom: var(--space-l);
-      font-size: var(--step-3);
-    }
-  }
+  // .auth-page-container styles are now in AuthPageLayout.svelte
 
   .auth-form {
     display: flex;
@@ -124,67 +289,49 @@
     gap: var(--space-m);
   }
 
-  .form-field {
+  // Specific styles for content passed into FormField children or other page-specific elements
+  .password-extras {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+  }
 
-    label {
-      font-size: var(--step-0);
-      color: var(--color-text-secondary);
-    }
-
-    input {
-      padding: var(--space-s);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      font-size: var(--step-0);
-      background-color: var(--color-background);
-      color: var(--color-text-primary);
-
-      &:focus {
-        outline: none;
-        border-color: var(--color-accent);
-        box-shadow: 0 0 0 2px var(--color-accent-translucent);
+  .password-requirements {
+    font-size: var(--step--2);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-xs); // Adjusted margin
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-top: var(--space-3xs);
+      li {
+        margin-bottom: var(--space-4xs);
+        &.valid::before {
+          content: "✓ ";
+          color: var(--color-success, green);
+        }
+        &.invalid::before {
+          content: "✗ ";
+          color: var(--color-error, red);
+        }
       }
     }
   }
 
-  .submit-button,
-  .google-signin-button {
-    // Added .google-signin-button here
-    padding: var(--space-s) var(--space-m);
+  .toggle-password {
+    background: none;
     border: none;
-    border-radius: var(--radius-sm);
-    font-size: var(--step-0);
+    color: var(--color-accent);
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    width: 100%; // Make buttons full width
+    font-size: var(--step--1);
+    padding: var(--space-2xs) 0;
+    align-self: flex-end;
   }
 
-  .submit-button {
-    background-color: var(--color-accent);
-    color: var(--color-background);
-    &:hover {
-      background-color: var(--color-accent-dark);
-    }
-  }
-
-  .google-signin-button {
-    background-color: var(--color-surface-raised); // Or Google's blue: #4285F4;
-    color: var(--color-text-primary); // Or white if using Google's blue
-    border: 1px solid var(--color-border);
-    margin-top: var(--space-s); // Add some space above if it's after the form
-    display: flex; // To align icon and text
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-xs); // Space between icon and text
-
-    &:hover {
-      background-color: var(
-        --color-surface-hover
-      ); // Or darken Google blue: #357ae8;
-    }
+  .caps-lock-warning {
+    color: var(--color-warning);
+    font-size: var(--step--2);
+    // margin for caps-lock warning is handled by .password-extras gap
   }
 
   .divider {
@@ -207,15 +354,15 @@
     }
   }
 
-  p {
+  // Styling for the "Already have an account?" link
+  .auth-form + p {
+    // Targets the paragraph immediately after the form
     text-align: center;
     margin-top: var(--space-l);
     font-size: var(--step--1);
-
     a {
       color: var(--color-accent);
       text-decoration: underline;
-
       &:hover {
         text-decoration: none;
       }
