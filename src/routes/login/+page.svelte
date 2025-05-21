@@ -41,10 +41,6 @@
     }
   }
 
-  function toggleShowPassword() {
-    showPassword = !showPassword;
-  }
-
   function checkCapsLock(event: KeyboardEvent | FocusEvent) {
     if (typeof (event as KeyboardEvent).getModifierState === "function") {
       capsLockOn = (event as KeyboardEvent).getModifierState("CapsLock");
@@ -120,15 +116,10 @@
         onfocus={checkCapsLock}
         errorMessage={passwordError}
         required
+        showPasswordToggle={true}
+        bind:isPasswordVisible={showPassword}
       >
         {#snippet children()}
-          <button
-            type="button"
-            class="toggle-password"
-            onclick={toggleShowPassword}
-          >
-            {showPassword ? "Hide" : "Show"}
-          </button>
           {#if capsLockOn}
             <small class="caps-lock-warning">Caps Lock is ON</small>
           {/if}

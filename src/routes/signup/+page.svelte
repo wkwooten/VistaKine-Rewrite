@@ -12,17 +12,13 @@
 
   let email = $state("");
   let password = $state("");
-  let confirmPassword = $state("");
 
   let showPassword = $state(false);
-  let showConfirmPassword = $state(false);
   let capsLockOnPassword = $state(false);
-  let capsLockOnConfirmPassword = $state(false);
 
   // Validation states
   let emailError = $state("");
   let passwordError = $state("");
-  let confirmPasswordError = $state("");
 
   const passwordRequirements = $state([
     { regex: /.{8,}/, text: "At least 8 characters", valid: false },
@@ -60,32 +56,9 @@
       // Show general error if any requirement fails and password is not empty
       passwordError = "Password does not meet all requirements.";
     }
-    // Also check confirm password if it has a value
-    if (confirmPassword) validateConfirmPassword();
   }
 
-  function validateConfirmPassword() {
-    if (!confirmPassword) {
-      confirmPasswordError = "Please confirm your password.";
-    } else if (password !== confirmPassword) {
-      confirmPasswordError = "Passwords do not match.";
-    } else {
-      confirmPasswordError = "";
-    }
-  }
-
-  function toggleShowPassword() {
-    showPassword = !showPassword;
-  }
-
-  function toggleShowConfirmPassword() {
-    showConfirmPassword = !showConfirmPassword;
-  }
-
-  function checkCapsLock(
-    event: KeyboardEvent | FocusEvent,
-    field: "password" | "confirmPassword"
-  ) {
+  function checkCapsLock(event: KeyboardEvent | FocusEvent, field: "password") {
     // Check if getModifierState exists and is a function, as it's specific to KeyboardEvent
     if (typeof (event as KeyboardEvent).getModifierState === "function") {
       const capsLockActive = (event as KeyboardEvent).getModifierState(
@@ -93,8 +66,6 @@
       );
       if (field === "password") {
         capsLockOnPassword = capsLockActive;
-      } else if (field === "confirmPassword") {
-        capsLockOnConfirmPassword = capsLockActive;
       }
     } else if (event.type === "focus") {
       // For focus events, we might want to re-check or ensure it doesn't clear a valid caps lock state
@@ -105,8 +76,6 @@
       // or try a different way to assess CapsLock. For simplicity, we'll make sure Password field clears its own caps lock warning if it's just a focus event without key state
       if (field === "password") {
         // capsLockOnPassword = false; // Or fetch current global state if possible, for now, let keyup handle it.
-      } else if (field === "confirmPassword") {
-        // capsLockOnConfirmPassword = false;
       }
     }
   }
@@ -115,9 +84,8 @@
     event.preventDefault();
     validateEmail();
     validatePassword();
-    validateConfirmPassword();
 
-    if (emailError || passwordError || confirmPasswordError) {
+    if (emailError || passwordError) {
       return;
     }
     loading = true; // Set loading true before async operation
@@ -189,70 +157,30 @@
           checkCapsLock(e, "password")}
         errorMessage={passwordError}
         required
-      >
-        {#snippet children()}
-          <button
-            type="button"
-            class="toggle-password"
-            onclick={toggleShowPassword}
-          >
-            {showPassword ? "Hide" : "Show"}
-          </button>
-          <div class="password-extras">
-            <div class="password-requirements">
-              <small>Password must contain:</small>
-              <ul>
-                {#each passwordRequirements as req}
-                  <li class={req.valid ? "valid" : "invalid"}>
-                    <small>{req.text}</small>
-                  </li>
-                {/each}
-              </ul>
-            </div>
-            {#if capsLockOnPassword}
-              <small class="caps-lock-warning">Caps Lock is ON</small>
-            {/if}
-          </div>
-        {/snippet}
-      </FormField>
-
-      <FormField
-        id="confirmPassword"
-        label="Confirm Password"
-        type={showConfirmPassword ? "text" : "password"}
-        bind:value={confirmPassword}
-        oninput={validateConfirmPassword}
-        onblur={(e: FocusEvent) => {
-          validateConfirmPassword();
-          capsLockOnConfirmPassword = false;
-        }}
-        onkeyup={(e: KeyboardEvent) => checkCapsLock(e, "confirmPassword")}
-        onfocus={(e: KeyboardEvent | FocusEvent) =>
-          checkCapsLock(e, "confirmPassword")}
-        errorMessage={confirmPasswordError}
-        required
-      >
-        {#snippet children()}
-          <div class="password-extras">
-            <button
-              type="button"
-              class="toggle-password"
-              onclick={toggleShowConfirmPassword}
-            >
-              {showConfirmPassword ? "Hide" : "Show"}
-            </button>
-            {#if capsLockOnConfirmPassword}
-              <small class="caps-lock-warning">Caps Lock is ON</small>
-            {/if}
-          </div>
-        {/snippet}
-      </FormField>
+        showPasswordToggle={true}
+        bind:isPasswordVisible={showPassword}
+      />
+      <!-- Password requirements and caps lock warning moved here -->
+      <div class="password-extras-container">
+        <div class="password-requirements">
+          <small>Password must contain:</small>
+          <ul>
+            {#each passwordRequirements as req}
+              <li class:valid={req.valid} class:invalid={!req.valid}>
+                <small>{req.text}</small>
+              </li>
+            {/each}
+          </ul>
+        </div>
+        {#if capsLockOnPassword}
+          <small class="caps-lock-warning">Caps Lock is ON</small>
+        {/if}
+      </div>
 
       <Button
         type="submit"
         variant="primary"
-        disabled={!!(emailError || passwordError || confirmPasswordError) ||
-          loading}
+        disabled={!!(emailError || passwordError) || loading}
       >
         {#if loading}Loading...{:else}Sign Up{/if}
       </Button>
@@ -270,15 +198,16 @@
     gap: var(--space-m);
   }
 
-  // Specific styles for content passed into FormField children or other page-specific elements
-  .password-extras {
+  // Styles for the moved password requirements and caps lock warning
+  .password-extras-container {
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+    // margin-top: var(--space-xs); // Or adjust as needed if FormField doesn't have enough bottom margin
   }
 
   .password-requirements {
-    font-size: var(--step--2);
+    font-size: var(--step--1);
     color: var(--color-text-secondary);
     margin-top: var(--space-xs); // Adjusted margin
     ul {
