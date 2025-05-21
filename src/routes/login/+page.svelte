@@ -5,7 +5,7 @@
   import { goto } from "$app/navigation";
   // Import the Supabase client
   import { supabase } from "$lib/supabaseClient";
-  import GoogleIcon from "$lib/components/icons/GoogleIcon.svelte";
+  import SocialSignInButtons from "$lib/components/auth/SocialSignInButtons.svelte"; // Import new component
   import FormField from "$lib/components/auth/FormField.svelte";
   import AuthPageLayout from "$lib/components/auth/AuthPageLayout.svelte"; // Import the layout component
   import Button from "$lib/components/auth/Button.svelte"; // Import the new Button component
@@ -64,11 +64,13 @@
       return;
     }
 
+    loading = true; // Set loading to true
     // Call Supabase signInWithPassword
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
+    loading = false; // Reset loading to false
 
     if (error) {
       console.error("Login error:", error.message);
@@ -85,34 +87,12 @@
       alert("Please check your email to confirm your account."); // Example for email confirmation flow
     }
   }
-
-  async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        // Optional: Consider if redirectTo is needed here.
-        // If your auth callback handling is robust in +layout.svelte or authStore,
-        // it might not be strictly necessary for login as it is for signup's first-time user flow.
-        // redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      console.error("Error signing in with Google:", error.message);
-      alert(`Error signing in with Google: ${error.message}`);
-    }
-    // No need to handle success here, onAuthStateChange will take care of it
-  }
 </script>
 
 <AuthPageLayout title="Sign In">
   {#snippet children()}
     <form onsubmit={handleLogin} class="auth-form">
-      <Button type="button" variant="google" onclick={signInWithGoogle}>
-        {#snippet children()}
-          <GoogleIcon />
-          <span>Sign In with Google</span>
-        {/snippet}
-      </Button>
+      <SocialSignInButtons mode="login" />
       <div class="divider">
         <span>OR</span>
       </div>

@@ -40,6 +40,13 @@ $color-error-bg: rgba($color-error, 0.1);
 $color-error-border: rgba($color-error, 0.3);
 $color-text-on-dark: #F0F8FF; // Text used on dark/accent backgrounds
 
+// Brand Colors (e.g., for third-party sign-in buttons)
+$color-google-blue: #4285F4;
+$color-google-blue-hover: #357AE8;
+$color-apple-black: #000000;
+$color-apple-black-hover: #1a1a1a; // A slightly lighter black or dark grey for hover
+$color-apple-white: #ffffff;
+
 // ----------------------------------
 // Axis Colors (Used, Keep As Is)
 // ----------------------------------
@@ -398,6 +405,14 @@ $leo-color-light: #1E40AF;  // Blue 800
   // Character Colors (Light)
   --surya-color: #{$surya-color-light};
   --leo-color: #{$leo-color-light};
+
+  // Brand Colors for CSS
+  --color-google-blue: #{$color-google-blue};
+  --color-google-blue-hover: #{$color-google-blue-hover};
+  --color-bg-btn-apple: #{$color-apple-black};              // Default Apple button bg (black)
+  --color-text-btn-apple: #{$color-apple-white};            // Default Apple button text (white)
+  --color-border-btn-apple: #{$color-apple-black};
+  --color-bg-btn-apple-hover: #{$color-apple-black-hover};
 }
 
 // ----------------------------------
@@ -637,6 +652,15 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --chapter-header-bg-default: color-mix(in srgb, var(--color-dark-accent) 30%, #1a1a2e);
     --chapter-bg-default: rgba(167, 121, 225, 0.1); // RGBA of dark accent
     --chapter-sidebar-bg-default: rgba(167, 121, 225, 0.05); // RGBA of dark accent
+
+    // Brand Colors for CSS - Dark Mode (Apple button might invert)
+    --color-google-blue: #{$color-google-blue}; // Google blue usually stays the same
+    --color-google-blue-hover: #{$color-google-blue-hover};
+    // For Apple, common dark mode practice is a white button with black text
+    --color-bg-btn-apple: #{$color-apple-white};              // Apple button bg (white in dark mode)
+    --color-text-btn-apple: #{$color-apple-black};            // Apple button text (black in dark mode)
+    --color-border-btn-apple: #{$color-apple-white};
+    --color-bg-btn-apple-hover: #{darken($color-apple-white, 5%)}; // Slightly off-white/grey for hover
   }
 }
 

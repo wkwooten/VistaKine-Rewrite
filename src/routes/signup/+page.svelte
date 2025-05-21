@@ -5,7 +5,7 @@
   import { goto } from "$app/navigation";
   // Import the Supabase client
   import { supabase } from "$lib/supabaseClient";
-  import GoogleIcon from "$lib/components/icons/GoogleIcon.svelte"; // Import the icon
+  import SocialSignInButtons from "$lib/components/auth/SocialSignInButtons.svelte"; // Import new component
   import FormField from "$lib/components/auth/FormField.svelte"; // Import the new component
   import AuthPageLayout from "$lib/components/auth/AuthPageLayout.svelte"; // Import the layout component
   import Button from "$lib/components/auth/Button.svelte"; // Import the Button component
@@ -155,31 +155,12 @@
       goto("/");
     }
   }
-
-  async function signInWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      console.error("Error signing in with Google:", error.message);
-      alert(`Error signing in with Google: ${error.message}`);
-    }
-    // No need to handle success here, onAuthStateChange in auth.ts will take care of it
-  }
 </script>
 
 <AuthPageLayout title="Sign Up">
   {#snippet children()}
     <form onsubmit={handleSignUp} class="auth-form">
-      <Button type="button" variant="google" onclick={signInWithGoogle}>
-        {#snippet children()}
-          <GoogleIcon />
-          <span>Sign Up with Google</span>
-        {/snippet}
-      </Button>
+      <SocialSignInButtons mode="signup" />
       <div class="divider">
         <span>OR</span>
       </div>
@@ -308,11 +289,11 @@
         margin-bottom: var(--space-4xs);
         &.valid::before {
           content: "✓ ";
-          color: var(--color-success, green);
+          color: var(--color-success, var(--color-success));
         }
         &.invalid::before {
           content: "✗ ";
-          color: var(--color-error, red);
+          color: var(--color-error, var(--color-error));
         }
       }
     }

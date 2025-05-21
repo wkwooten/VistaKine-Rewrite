@@ -1,6 +1,6 @@
 <script lang="ts">
   type ButtonType = "button" | "submit" | "reset";
-  type ButtonVariant = "primary" | "secondary" | "google"; // Added 'google'
+  type ButtonVariant = "primary" | "secondary" | "google" | "apple";
 
   let {
     type = "button" as ButtonType,
@@ -18,17 +18,18 @@
     primary: "btn-primary",
     secondary: "btn-secondary",
     google: "btn-google",
+    apple: "btn-apple",
   };
 
   // Reactive statement to compute the full class string
   let computedClass = $derived(
-    `${baseClass} ${variantClasses[variant]} ${extraClass || ""}`.trim()
+    `${baseClass} ${variantClasses[variant]} ${extraClass || ""} ${loading ? "loading" : ""}`.trim()
   );
 </script>
 
 <button {type} class={computedClass} {disabled} {...restProps}>
   {#if loading}
-    <span class="loading-spinner"></span>
+    <div class="spinner"></div>
     <span>Loading...</span>
   {:else if children}
     {@render children()}
@@ -66,53 +67,78 @@
       cursor: not-allowed;
       border-color: var(--color-disabled, #ccc);
     }
-  }
 
-  .btn-primary {
-    background-color: var(--color-accent);
-    color: var(--color-background);
-    &:hover:not(:disabled) {
-      background-color: var(--color-accent-dark);
+    &.btn-primary {
+      background-color: var(--color-accent);
+      color: var(--color-background);
+      &:hover:not(:disabled) {
+        background-color: var(--color-accent-dark);
+      }
     }
-  }
 
-  .btn-secondary {
-    // Example, can be adjusted
-    background-color: var(--color-surface-raised);
-    color: var(--color-text-primary);
-    border: 1px solid var(--color-border);
-    &:hover:not(:disabled) {
-      background-color: var(--color-surface-hover);
+    &.btn-secondary {
+      // Example, can be adjusted
+      background-color: var(--color-surface-raised);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+      &:hover:not(:disabled) {
+        background-color: var(--color-surface-hover);
+      }
     }
-  }
 
-  .btn-google {
-    background-color: var(--color-surface-raised); // Or Google's blue: #4285F4;
-    color: var(--color-text-primary); // Or white if using Google's blue
-    border: 1px solid var(--color-border);
-    // Icon and text alignment is handled by .btn flex properties
-    &:hover:not(:disabled) {
-      background-color: var(
-        --color-surface-hover
-      ); // Or darken Google blue: #357ae8;
+    &.btn-google {
+      background-color: var(--color-google-blue);
+      color: white;
+      border: none; // Or a subtle border
+
+      &:hover:not(:disabled) {
+        background-color: var(--color-google-blue-hover);
+      }
+
+      // Styles for the icon and text within the Google button if needed globally
+      // For instance, if the icon and text are always structured the same way.
+      // However, this is better handled by passing the icon and text via the children snippet.
+      :global(.google-icon) {
+        margin-right: var(--space-xs);
+      }
     }
-  }
 
-  // Basic Loading Spinner (can be replaced with an SVG or more complex animation)
-  .loading-spinner {
-    display: inline-block;
-    width: 1em; // Adjust size relative to font
-    height: 1em;
-    border: 2px solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.75s linear infinite;
-    margin-right: var(--space-xs); // Removed as flex gap should handle it
-  }
+    &.btn-apple {
+      background-color: var(--color-bg-btn-apple, #000000); // Typically black
+      color: var(--color-text-btn-apple, #ffffff); // Typically white
+      border: 1px solid var(--color-border-btn-apple, #000000); // Or a subtle border
 
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
+      &:hover:not(:disabled) {
+        background-color: var(
+          --color-bg-btn-apple-hover,
+          #333333
+        ); // Darker gray
+      }
+
+      // Consistent icon spacing for apple button
+      :global(.apple-icon) {
+        margin-right: var(--space-xs);
+      }
+    }
+
+    &.loading {
+      // Basic Loading Spinner (can be replaced with an SVG or more complex animation)
+      .spinner {
+        display: inline-block;
+        width: 1em; // Adjust size relative to font
+        height: 1em;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.75s linear infinite;
+        margin-right: var(--space-xs); // Removed as flex gap should handle it
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
     }
   }
 </style>
