@@ -5,6 +5,7 @@
   import { goto } from "$app/navigation";
   // Import the Supabase client
   import { supabase } from "$lib/supabaseClient";
+  import GoogleIcon from "$lib/components/icons/GoogleIcon.svelte"; // Import the icon
 
   let email = "";
   let password = "";
@@ -50,11 +51,31 @@
       goto("/");
     }
   }
+
+  async function signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      console.error("Error signing in with Google:", error.message);
+      alert(`Error signing in with Google: ${error.message}`);
+    }
+    // No need to handle success here, onAuthStateChange in auth.ts will take care of it
+  }
 </script>
 
 <div class="auth-page-container">
   <h1>Sign Up</h1>
   <form onsubmit={handleSignUp} class="auth-form">
+    <button class="google-signin-button" onclick={signInWithGoogle}>
+      <GoogleIcon /> Sign Up with Google
+    </button>
+    <div class="divider">
+      <span>OR</span>
+    </div>
     <div class="form-field">
       <label for="email">Email</label>
       <input type="email" id="email" bind:value={email} required />
@@ -129,18 +150,60 @@
     }
   }
 
-  .submit-button {
+  .submit-button,
+  .google-signin-button {
+    // Added .google-signin-button here
     padding: var(--space-s) var(--space-m);
-    background-color: var(--color-accent);
-    color: var(--color-background);
     border: none;
     border-radius: var(--radius-sm);
     font-size: var(--step-0);
     cursor: pointer;
     transition: background-color 0.2s ease;
+    width: 100%; // Make buttons full width
+  }
 
+  .submit-button {
+    background-color: var(--color-accent);
+    color: var(--color-background);
     &:hover {
       background-color: var(--color-accent-dark);
+    }
+  }
+
+  .google-signin-button {
+    background-color: var(--color-surface-raised); // Or Google's blue: #4285F4;
+    color: var(--color-text-primary); // Or white if using Google's blue
+    border: 1px solid var(--color-border);
+    margin-top: var(--space-s); // Add some space above if it's after the form
+    display: flex; // To align icon and text
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs); // Space between icon and text
+
+    &:hover {
+      background-color: var(
+        --color-surface-hover
+      ); // Or darken Google blue: #357ae8;
+    }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: var(--space-m) 0;
+    color: var(--color-text-secondary);
+    font-size: var(--step--1);
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    span {
+      padding: 0 var(--space-s);
     }
   }
 
