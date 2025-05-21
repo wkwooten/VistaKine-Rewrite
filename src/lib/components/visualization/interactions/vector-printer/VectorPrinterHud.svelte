@@ -1,18 +1,18 @@
 <script lang="ts">
   import type { Vector3 } from "three";
-  import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
+  // import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
   import FullscreenButton from "../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
 
   let {
-    nozzlePosition,
+    // nozzlePosition,
     isFullscreen = false,
     onrequestToggleFullscreen,
     onrequestReset,
     // Assuming an onrequestAdd might be needed for AddButton if it has specific logic
     // onrequestAdd,
   } = $props<{
-    nozzlePosition: Vector3;
+    // nozzlePosition: Vector3;
     isFullscreen?: boolean;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
@@ -39,10 +39,6 @@
       {isFullscreen}
       onRequestToggleCallback={handleRequestToggleFullscreen}
     />
-  </div>
-
-  <div class="output-panel-container">
-    <VectorPrinterOutputPanel {nozzlePosition} />
   </div>
 
   {#if isFullscreen}
@@ -78,14 +74,6 @@
     pointer-events: auto;
     width: fit-content;
     z-index: 20; // Ensure buttons are above other elements
-  }
-
-  .output-panel-container {
-    position: absolute;
-    top: var(--space-s);
-    right: var(--space-s);
-    pointer-events: auto;
-    z-index: 10;
   }
 
   .controls-panel-slot-container {

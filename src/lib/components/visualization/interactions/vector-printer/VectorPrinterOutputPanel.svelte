@@ -89,15 +89,17 @@
     >
       <div class="output-section">
         <!-- Nozzle Position -->
+        <!-- REMOVE THIS and integrate into table
         <div class="data-item">
           <span class="label">Nozzle:</span>
           <span class="value katex-value">
             {formatVectorToKatex(nozzlePosition, useIjkNotation)}
           </span>
         </div>
+        -->
 
         <!-- Current Defining Vector -->
-        {#if $currentDefiningVectorStore && $currentDefiningVectorStore.lengthSq() > 0.00001}
+        <!-- {#if $currentDefiningVectorStore && $currentDefiningVectorStore.lengthSq() > 0.00001}
           <div class="data-item current-input-item">
             <span class="label">Input:</span>
             <div class="component-details">
@@ -157,9 +159,10 @@
               </p>
             </div>
           </div>
-        {/if}
+        {/if} -->
 
         <!-- Defined Vectors -->
+        <!-- REMOVE THIS and integrate into table
         {#each $definedVectorsStore as defVec (defVec.id)}
           <div class="data-item">
             <span class="label" style="color: {defVec.color};"
@@ -170,11 +173,73 @@
             </span>
           </div>
         {/each}
+        -->
 
         <!-- Resultant Vector -->
+        <!-- REMOVE THIS and integrate into table
         {#if $resultantVectorStore && $resultantVectorStore.lengthSq() > 0.00001}
           <div class="data-item resultant-item">
             <span class="label">Resultant R:</span>
+            <span class="value katex-value">
+              {formatVectorToKatex($resultantVectorStore, useIjkNotation)}
+            </span>
+          </div>
+        {/if}
+        -->
+
+        <!-- NEW TABLE STRUCTURE -->
+        <div class="table-container">
+          <table class="vector-data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Z</th>
+                <th>Magnitude</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Nozzle Position Row -->
+              <tr>
+                <td>Nozzle</td>
+                <td>{formatNum(nozzlePosition?.x)}</td>
+                <td>{formatNum(nozzlePosition?.y)}</td>
+                <td>{formatNum(nozzlePosition?.z)}</td>
+                <td>{formatNum(nozzlePosition?.length())}</td>
+              </tr>
+
+              <!-- Defined Vectors Rows -->
+              {#each $definedVectorsStore as defVec (defVec.id)}
+                <tr style="color: {defVec.color};">
+                  <td>Vector {defVec.name}</td>
+                  <td>{formatNum(defVec.vector.x)}</td>
+                  <td>{formatNum(defVec.vector.y)}</td>
+                  <td>{formatNum(defVec.vector.z)}</td>
+                  <td>{formatNum(defVec.vector.length())}</td>
+                </tr>
+              {/each}
+
+              <!-- Resultant Vector Row -->
+              {#if $resultantVectorStore && $resultantVectorStore.lengthSq() > 0.00001}
+                <tr class="resultant-row">
+                  <td>Resultant R</td>
+                  <td>{formatNum($resultantVectorStore.x)}</td>
+                  <td>{formatNum($resultantVectorStore.y)}</td>
+                  <td>{formatNum($resultantVectorStore.z)}</td>
+                  <td>{formatNum($resultantVectorStore.length())}</td>
+                </tr>
+              {/if}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Optional: Display for full vector notation if desired, e.g., for Resultant -->
+        {#if $resultantVectorStore && $resultantVectorStore.lengthSq() > 0.00001}
+          <div class="vector-notation-summary">
+            <span class="label"
+              >Resultant R ({useIjkNotation ? "îĵk̂" : "⟨⟩"}):</span
+            >
             <span class="value katex-value">
               {formatVectorToKatex($resultantVectorStore, useIjkNotation)}
             </span>
@@ -195,12 +260,14 @@
 <style lang="scss">
   .vector-printer-output-panel {
     display: flex;
-    width: 280px; // Slightly wider to accommodate content
+    width: 100%;
     flex-direction: column;
     gap: 0;
     padding: 0;
     border-radius: var(--radius-md);
     background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    padding: var(--space-s);
     pointer-events: auto;
     user-select: none;
     -webkit-user-select: none;
@@ -257,96 +324,78 @@
     gap: var(--space-xs);
   }
 
-  .data-item {
+  /* REMOVE OLD STYLES FOR .data-item, .current-input-item, etc. */
+  /* .data-item { ... } */
+  /* .current-input-item { ... } */
+  /* .component-details { ... } */
+  /* .component { ... } */
+  /* .label, .sub-label { ... } */
+  /* .sub-label { ... } */
+  /* .value, .sub-value { ... } */
+  /* .katex-value { ... } */
+  /* .delta-toggle { ... } */
+  /* .magnitude { ... } */
+  /* .vector-notation { ... } */
+
+  /* NEW TABLE STYLES */
+  .table-container {
+    /* ADDED for horizontal scrolling */
+    overflow-x: auto;
+    width: 100%; /* Ensure it takes available width */
+  }
+
+  .vector-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+
+    th,
+    td {
+      border: 1px solid var(--color-border-subtle);
+      padding: var(--space-3xs) var(--space-2xs);
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: var(--color-surface-alt);
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    td:first-child {
+      /* Name column */
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .resultant-row td {
+      color: var(--color-success);
+      font-weight: bold;
+    }
+
+    /* Alternating row colors for readability */
+    tbody tr:nth-child(odd) {
+      /* background-color: var(--color-surface-alt); // Optional: if more distinction is needed */
+    }
+  }
+
+  .vector-notation-summary {
+    margin-top: var(--space-s);
+    padding: var(--space-xs);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-xs);
-    line-height: 1.5;
-    font-size: var(--step--1);
-
-    &.resultant-item .label,
-    &.resultant-item .value {
-      color: var(--color-success); // Or a specific green
-      font-weight: bold;
-    }
-  }
-
-  .current-input-item {
-    flex-direction: column;
-    align-items: flex-start;
-    border: 1px solid var(--color-border-light);
-    padding: var(--space-xs);
-    border-radius: var(--radius-sm);
-
-    .label {
-      // Label for "Input:"
-      font-weight: 600;
-      margin-bottom: var(--space-2xs);
-      display: block; // Make it block to take full width before details
-    }
-  }
-
-  .component-details {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3xs);
-    padding-left: var(--space-xs); // Indent details slightly
-  }
-
-  .component {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    width: 100%;
-  }
-
-  .label,
-  .sub-label {
-    font-weight: 500;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .sub-label {
-    min-width: 30px; // Ensure alignment for DX, DY, DZ labels
-  }
-
-  .value,
-  .sub-value {
-    font-family: "IBM Plex Mono", var(--font-mono, monospace);
-    text-align: right;
-    flex-grow: 1;
-  }
-
-  .katex-value {
-    font-family: "IBM Plex Mono", var(--font-mono, monospace);
-    text-align: left;
-    min-width: fit-content;
     font-size: var(--step-0);
-  }
-
-  .delta-toggle {
-    margin-left: auto;
-    cursor: pointer;
-    transform: scale(0.9);
-  }
-
-  .magnitude {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    width: 100%;
-    margin-top: var(--space-3xs);
-  }
-
-  .vector-notation {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2xs);
-    width: 100%;
-    margin-top: var(--space-3xs);
+    .label {
+      font-weight: 500;
+    }
+    .value.katex-value {
+      font-family: "IBM Plex Mono", var(--font-mono, monospace);
+    }
   }
 
   .controls-section {

@@ -111,11 +111,11 @@
     class="visualization-card -full-bleed"
   >
     <h2
-      id="visualizing-vector-operations"
+      id="vector-addition-exercise"
       data-nav-target="true"
-      aria-label="Interactive Exercise: Vector Operations"
+      aria-label="Interactive Exercise: Vector Addition"
     >
-      Interactive Exercise: Vector Operations
+      Interactive Exercise: Vector Addition
     </h2>
     <VectorPrinterExercise />
   </ContentCard>
@@ -170,6 +170,19 @@
       </li>
       <li>Determining relative position vectors.</li>
     </ul>
+  </ContentCard>
+  <ContentCard
+    blockType="visualization-block"
+    class="visualization-card -full-bleed"
+  >
+    <h2
+      id="vector-subtraction-exercise"
+      data-nav-target="true"
+      aria-label="Interactive Exercise: Vector Subtraction"
+    >
+      Interactive Exercise: Vector Subtraction
+    </h2>
+    <VectorPrinterExercise />
   </ContentCard>
 
   <ContentCard blockType="concept-block">

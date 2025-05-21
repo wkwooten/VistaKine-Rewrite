@@ -5,6 +5,7 @@
   import VectorPrinterScene from "./VectorPrinterScene.svelte";
   import VectorPrinterHud from "./VectorPrinterHud.svelte";
   import VectorOperationControls from "./VectorOperationControls.svelte";
+  import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
   import DialogBox from "$lib/components/visualization/elements/ui/DialogBox.svelte";
   import type { DialogTurn } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
   import {
@@ -135,7 +136,7 @@
   });
 
   const hudProps = $derived({
-    nozzlePosition: nozzlePosition,
+    // nozzlePosition: nozzlePosition,
   });
 
   const controlPanelPropsForInteractiveExercise = $derived({
@@ -159,6 +160,16 @@
   {#if showDialog && !isFullscreenForVPLayout}
     <div class="dialog-above-vis">
       <DialogBox bind:show={showDialog} bind:turns={dialogTurns} />
+    </div>
+  {/if}
+
+  <!-- ADDED VectorPrinterOutputPanel here (conditionally) -->
+  {#if !isFullscreenForVPLayout}
+    <div class="output-panel-area-outside-vis">
+      <VectorPrinterOutputPanel
+        {nozzlePosition}
+        extraClass="vpe-output-panel-outside"
+      />
     </div>
   {/if}
 
@@ -197,6 +208,7 @@
     & > :global(.interactive-exercise-component) {
       flex-grow: 1;
       min-height: 300px;
+      order: 2;
     }
   }
 
@@ -204,7 +216,7 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: var(--space-s);
-    order: 1;
+    order: 0;
   }
 
   .controls-area-outside-vis {
@@ -213,5 +225,14 @@
     border-top: 1px solid var(--color-border);
     overflow-y: auto;
     order: 3;
+  }
+
+  .output-panel-area-outside-vis {
+    padding-block: var(--space-s);
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: center;
+    order: 1;
   }
 </style>
