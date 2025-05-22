@@ -8,12 +8,18 @@
   import { parallaxBackground } from "$lib/scripts/parallax";
   import { ChevronLeft, ChevronRight, Menu } from "lucide-svelte";
   import { browser } from "$app/environment";
-  import SectionMap from "$lib/components/ui/SectionMap.svelte";
-  import { sectionMapOpen } from "$lib/stores/uiStores";
   import { updateThemeColors } from "$lib/stores/themeColors";
   import Footer from "$lib/components/Footer.svelte";
   import AuthWidget from "$lib/components/AuthWidget.svelte";
   import { inject } from "@vercel/analytics";
+
+  // Auth Modal related imports
+  import AuthModal from "$lib/components/auth/AuthModal.svelte";
+  import {
+    getIsOpen,
+    getReasonMessage,
+    getDefaultView,
+  } from "$lib/stores/authModalStore.svelte.ts";
 
   inject();
 
@@ -25,6 +31,11 @@
 
   let mainContentElement: HTMLElement | null = null;
   let navBarHeight = 80;
+
+  // Auth Modal State from store
+  let modalIsOpen = $derived(getIsOpen());
+  let modalReasonMessage = $derived(getReasonMessage());
+  let modalDefaultView = $derived(getDefaultView());
 
   function checkMobile() {
     if (browser) {
@@ -87,7 +98,6 @@
   }
 
   let currentChapterSlug = $derived($page.params.slug || null);
-  let currentSectionSlug = $derived($page.params.section || null);
 
   afterNavigate((navigation) => {
     if (browser) {
@@ -111,6 +121,18 @@
         currentChapter.set(null);
       }
     }
+  });
+
+  // Debugging logs for modal state
+  $effect(() => {
+    console.log(
+      "[Layout] Modal state changed: isOpen?",
+      modalIsOpen,
+      "Msg:",
+      modalReasonMessage,
+      "View:",
+      modalDefaultView
+    );
   });
 </script>
 
@@ -193,6 +215,15 @@
       <Footer />
     </div>
   </main>
+
+  <!-- Auth Modal Portal: Render at the top level, within app-container -->
+  {#if modalIsOpen}
+    <AuthModal
+      isOpen={modalIsOpen}
+      view={modalDefaultView}
+      message={modalReasonMessage}
+    />
+  {/if}
 </div>
 
 <style lang="scss">

@@ -211,6 +211,8 @@ $leo-color-light: #1E40AF;  // Blue 800
   --color-white: #{$color-white};
   --color-text-inverted: #{$color-text-inverted-light};
   --parallax-background-color: #{$parallax-background-color};
+  --color-overlay: #{rgba($color-white, 0.75)}; // Added for light mode
+
   // Accent Palette
   --color-accent: #{$color-accent};
   --color-accent-hover: #{$color-accent-hover};
@@ -218,7 +220,6 @@ $leo-color-light: #1E40AF;  // Blue 800
   --color-accent-active-bg: #{$color-accent-active-bg};
   --color-accent-hover-bg: #{$color-accent-hover-bg};
   --color-surface-hover: #{rgba($color-accent-light, 0.15)};
-
 
   // Functional Colors
   --color-success: #{$color-success};
@@ -504,6 +505,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --color-border-light: #{$color-dark-border-light};
     --color-text-inverted: #{$color-dark-text-inverted-dark};
     --parallax-background-color: #{$color-dark-parallax-background-color};
+    --color-overlay: #{rgba($color-dark-background, 0.75)}; // Added for dark mode
 
     // -- Accent Palette Override --
     --color-accent: #{$color-dark-accent};
