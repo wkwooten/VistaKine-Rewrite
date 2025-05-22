@@ -51,46 +51,48 @@
     </div>
   {/if}
   <label for={id}>{label}</label>
-  <div class="input-wrapper">
-    <input
-      bind:this={inputElement}
-      {type}
-      {id}
-      bind:value
-      {required}
-      {placeholder}
-      {autocomplete}
-      onfocus={() => {
-        hasFocus = true;
-        onfocus?.();
-      }}
-      onblur={() => {
-        hasFocus = false;
-        onblur?.();
-      }}
-      {oninput}
-      {onkeyup}
-      class={errorMessage ? "invalid-input" : ""}
-    />
-    {#if showPasswordToggle}
-      <button
-        type="button"
-        class="password-toggle"
-        onclick={togglePasswordVisibility}
-        aria-label={isPasswordVisible ? "Hide password" : "Show password"}
-      >
-        {#if isPasswordVisible}
-          <EyeOffIcon />
-        {:else}
-          <EyeIcon />
-        {/if}
-      </button>
-    {/if}
-    {#if children && childrenPosition === "inside"}
-      <div class="slotted-content">
-        {@render children()}
-      </div>
-    {/if}
+  <div class="form-field-visual-box">
+    <div class="input-wrapper">
+      <input
+        bind:this={inputElement}
+        {type}
+        {id}
+        bind:value
+        {required}
+        {placeholder}
+        {autocomplete}
+        onfocus={() => {
+          hasFocus = true;
+          onfocus?.();
+        }}
+        onblur={() => {
+          hasFocus = false;
+          onblur?.();
+        }}
+        {oninput}
+        {onkeyup}
+        class={errorMessage ? "invalid-input" : ""}
+      />
+      {#if showPasswordToggle}
+        <button
+          type="button"
+          class="password-toggle"
+          onclick={togglePasswordVisibility}
+          aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+        >
+          {#if isPasswordVisible}
+            <EyeOffIcon />
+          {:else}
+            <EyeIcon />
+          {/if}
+        </button>
+      {/if}
+      {#if children && childrenPosition === "inside"}
+        <div class="slotted-content">
+          {@render children()}
+        </div>
+      {/if}
+    </div>
   </div>
   {#if errorMessage}
     <small class="error-message">{errorMessage}</small>
@@ -145,44 +147,75 @@
       color: var(--color-error);
     }
 
-    .input-wrapper {
+    .form-field-visual-box {
       position: relative;
       display: flex;
-      align-items: center;
       background-color: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       transition: border-color 0.2s ease-out;
     }
 
-    // When form field is focused, input-wrapper border changes
-    &.focused .input-wrapper {
+    // When form field is focused, visual-box border changes
+    &.focused .form-field-visual-box {
       border-color: var(--color-accent);
     }
-    &.focused.has-error .input-wrapper {
+    &.focused.has-error .form-field-visual-box {
       border-color: var(--color-error);
     }
-    // When form field has an error but is not focused, input-wrapper border also changes
-    &.has-error:not(.focused) .input-wrapper {
+    // When form field has an error but is not focused, visual-box border also changes
+    &.has-error:not(.focused) .form-field-visual-box {
       border-color: var(--color-error);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background-color: transparent;
+      flex-grow: 1;
+      padding: var(--space-s);
+      padding-right: var(--space-xl);
     }
 
     input {
       flex-grow: 1;
-      padding: var(--space-s);
-      padding-right: var(--space-xl); // Make space for the icon if present
+      padding: 0;
       border: none;
       border-radius: 0;
       font-size: var(--step-0);
       background-color: transparent;
       color: var(--color-text-primary);
-      line-height: 1.5; // Added for better vertical alignment of text
-      min-height: calc(
-        var(--step-0) * 1.5 + var(--space-s) * 2 + 2px
-      ); // Ensure consistent height
+      line-height: 1.5;
+      min-height: calc(var(--step-0) * 1.5);
+      width: 100%;
 
       &:focus {
         outline: none;
+      }
+
+      // Autofill styles
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px var(--color-surface) inset !important;
+        box-shadow: 0 0 0 30px var(--color-surface) inset !important;
+        -webkit-text-fill-color: var(
+          --color-text-primary
+        ) !important; // Attempt to style autofill text color
+        caret-color: var(
+          --color-text-primary
+        ); // Ensure cursor color matches text
+      }
+      // Standard :autofill (for Firefox, though its effectiveness can be limited for background)
+      &:autofill,
+      &:autofill:hover,
+      &:autofill:focus,
+      &:autofill:active {
+        box-shadow: 0 0 0 30px var(--color-surface) inset !important;
+        -webkit-text-fill-color: var(--color-text-primary) !important;
+        caret-color: var(--color-text-primary);
       }
 
       &.invalid-input {

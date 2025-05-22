@@ -14,6 +14,7 @@
 <style lang="scss">
   .auth-page-container {
     max-width: 600px;
+    border: 1px solid var(--color-border);
     margin: var(--space-xl) auto;
     padding: var(--space-l);
     background-color: var(--color-surface);
