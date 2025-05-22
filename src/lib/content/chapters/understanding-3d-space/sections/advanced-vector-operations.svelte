@@ -17,6 +17,7 @@
 <section id="advanced-vector-operations" data-section={sectionNumber}>
   <ContentCard blockType="section-header-block">
     <h2
+      class="content-card-title"
       id="section-introduction-advanced-products"
       data-nav-target="true"
       aria-label="Section Introduction: Advanced Vector Products"
@@ -52,6 +53,7 @@
 
   <ContentCard blockType="concept-block">
     <h2
+      class="content-card-title"
       id="dot-product"
       data-nav-target="true"
       aria-label="Dot Product (Scalar Product)"
@@ -135,6 +137,7 @@
     class="visualization-card -placeholder"
   >
     <h2
+      class="content-card-title"
       id="visualizing-dot-product"
       data-nav-target="true"
       aria-label="Visualizing the Dot Product"
@@ -151,6 +154,7 @@
 
   <ContentCard blockType="concept-block">
     <h2
+      class="content-card-title"
       id="cross-product"
       data-nav-target="true"
       aria-label="Cross Product (Vector Product)"
@@ -238,6 +242,7 @@
     class="visualization-card -placeholder"
   >
     <h2
+      class="content-card-title"
       id="visualizing-cross-product"
       data-nav-target="true"
       aria-label="Visualizing the Cross Product"
@@ -254,6 +259,7 @@
 
   <ContentCard blockType="conclusion-block">
     <h2
+      class="content-card-title"
       id="advanced-products-conclusion"
       data-nav-target="true"
       aria-label="Section Conclusion: Advanced Products"

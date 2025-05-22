@@ -363,6 +363,8 @@ $leo-color-light: #1E40AF;  // Blue 800
   --shadow-lg: #{$shadow-lg};
   --shadow-xl: #{$shadow-xl}; // Added extra-large shadow variable
 
+  --shadow-color: #{$shadow-color};
+
   // UI States (Keep As Is)
   --state-selected-color: #{$state-selected-color}; // Maybe rename to --color-selected-bg or similar? Or use accent?
 

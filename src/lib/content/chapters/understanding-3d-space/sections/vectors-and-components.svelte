@@ -44,8 +44,16 @@
 </script>
 
 <section id="vectors-and-components-section" data-section="1.2">
-  <ContentCard blockType="section-header-block">
-    <h2 id="vector-section-introduction" data-nav-target="true">
+  <ContentCard
+    blockType="section-header-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_intro"
+  >
+    <h2
+      class="content-card-title"
+      id="vector-section-introduction"
+      data-nav-target="true"
+    >
       Section Introduction
     </h2>
     <p>
@@ -75,8 +83,12 @@
     </Scenario>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
-    <h2 id="what-are-vectors" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_what-are-vectors"
+  >
+    <h2 class="content-card-title" id="what-are-vectors" data-nav-target="true">
       What are Vectors? Scalar vs. Vector
     </h2>
     <p>
@@ -99,8 +111,12 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
-    <h2 id="vectors-in-1d" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_vectors-in-1d"
+  >
+    <h2 class="content-card-title" id="vectors-in-1d" data-nav-target="true">
       Vectors in One Dimension (1D)
     </h2>
     <p>
@@ -131,8 +147,12 @@
     {/if}
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
-    <h2 id="vectors-in-2d" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_vectors-in-2d"
+  >
+    <h2 class="content-card-title" id="vectors-in-2d" data-nav-target="true">
       Extending to Two Dimensions (2D)
     </h2>
     <p>
@@ -178,8 +198,15 @@
     dimension (Z-axis) to fully understand vectors in 3D space.
   </p>
 
-  <ContentCard blockType="visualization-block" class="visualization-card">
-    <h2 id="vector-anatomy" data-nav-target="true">Anatomy of a Vector (3D)</h2>
+  <ContentCard
+    blockType="visualization-block"
+    class="visualization-card"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_vector-anatomy-vis"
+  >
+    <h2 class="content-card-title" id="vector-anatomy" data-nav-target="true">
+      Anatomy of a Vector (3D)
+    </h2>
     <VectorAnatomy />
     <p>
       In 3D space, a vector is still represented by an arrow. Its <strong
@@ -200,8 +227,16 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
-    <h2 id="describing-3d-vectors" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_describing-3d-vectors"
+  >
+    <h2
+      class="content-card-title"
+      id="describing-3d-vectors"
+      data-nav-target="true"
+    >
       Describing 3D Vectors Precisely: Components & Notation
     </h2>
     <p>
@@ -261,7 +296,11 @@
     </ul>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_vector-magnitude-3d"
+  >
     <h2 id="vector-magnitude-3d" data-nav-target="true">
       Vector Magnitude in 3D: Measuring Length
     </h2>
@@ -312,8 +351,19 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="visualization-block" class="-exercise">
-    <h2 id="build-a-vector" data-nav-target="true">Hands-On: Build-A-Vector</h2>
+  <ContentCard
+    blockType="visualization-block"
+    class="-exercise"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_vector-builder-exercise"
+  >
+    <h2
+      class="content-card-title"
+      id="vector-builder-exercise"
+      data-nav-target="true"
+    >
+      Hands-On: Vector Builder
+    </h2>
     <p class="exercise-description">
       Adjust the start and end points of the vector using the controls. Observe
       how the vector's components (Vx, Vy, Vz) and its angle bracket notation
@@ -322,7 +372,11 @@
     <VectorBuilderExercise />
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_unit-vector-notation"
+  >
     <h2 id="unit-vector-notation" data-nav-target="true">
       An Alternative Language: Unit Vector Notation
     </h2>
@@ -384,7 +438,11 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_comparing-vector-notations"
+  >
     <h2 id="comparing-vector-notations" data-nav-target="true">
       Comparing Vector Notations
     </h2>
@@ -411,8 +469,20 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="activity-block" class="-review">
-    <h2 id="vector-section-review" data-nav-target="true">Section Review</h2>
+  <ContentCard
+    blockType="activity-block"
+    class="-review"
+    layoutWidth="full"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_vectors-and-components_section-review"
+  >
+    <h2
+      class="content-card-title"
+      id="vector-components-review"
+      data-nav-target="true"
+    >
+      Section Review: Vectors and Components
+    </h2>
     <SectionReview>
       <Quiz questions={vectorQuizData} showFeedback={true} />
     </SectionReview>

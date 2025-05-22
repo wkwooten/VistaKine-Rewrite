@@ -10,7 +10,7 @@
     class: klass = "",
     layoutWidth = "full" as LayoutWidth,
     contentId,
-    showBookmarkFeature = false,
+    showBookmarkFeature = true,
     children,
     ...restProps
   } = $props<{
@@ -154,11 +154,12 @@
   // This class is now applied to the BookmarkIcon component itself.
   :global(.card-bookmark-icon) {
     position: absolute;
-    top: var(--space-xs);
+    top: -10px;
     right: var(--space-xs);
     z-index: 10;
-    // Font size and color will be inherited from BookmarkIcon.svelte's own styles
-    // but you can override or add layout-specific styles here if needed.
+
+    // Styles to match the Figma mockup for light mode
+    background-color: var(--color-background);
   }
 
   /*

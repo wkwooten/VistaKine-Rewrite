@@ -181,11 +181,15 @@
   }
 
   /* Generic heading styles for slotted content (typically section sub-headings) */
-  :global(h2) {
-    font-size: var(--step-2);
+  :global(h2.content-card-title) {
+    font-size: var(--step-3);
     margin-bottom: var(--space-m);
     padding-bottom: var(--space-xs);
     border-bottom: 1px solid var(--color-border);
+    font-family: var(--font-family-heading);
+    color: var(--color-accent);
+    font-weight: 700;
+    max-width: calc(100% - 70px);
   }
 
   /* Generic text/list styles for slotted content */

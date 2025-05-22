@@ -29,8 +29,19 @@
 <section id="coordinate-systems-section" data-section={sectionNumber}>
   <div class="section-line" aria-hidden="true"></div>
   <!-- Block 1: Section Introduction -->
-  <ContentCard blockType="section-header-block" layoutWidth="full">
-    <h2 id="coordinate-systems" data-nav-target="true">Section Introduction</h2>
+  <ContentCard
+    blockType="section-header-block"
+    layoutWidth="full"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_intro"
+  >
+    <h2
+      class="content-card-title"
+      id="coordinate-systems"
+      data-nav-target="true"
+    >
+      Section Introduction
+    </h2>
     <p>
       Welcome to the world of 3D space! Ever wonder how a 3D printer knows
       exactly where to place material, or how a GPS pinpoints your location? It
@@ -69,8 +80,15 @@
   </ContentCard>
 
   <!-- Block 2: Visualization - Axis Explorer -->
-  <ContentCard blockType="visualization-block" class="visualization-card">
-    <h2 id="axis-explorer" data-nav-target="true">Exploring the Axes</h2>
+  <ContentCard
+    blockType="visualization-block"
+    class="visualization-card"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_axis-explorer-vis"
+  >
+    <h2 class="content-card-title" id="axis-explorer" data-nav-target="true">
+      Exploring the Axes
+    </h2>
     <p>
       To map locations precisely in the space around us, we use three reference
       lines, or <strong>axes</strong> (yes, the plural of axis is axes). Each
@@ -100,8 +118,17 @@
   </ContentCard>
 
   <!-- Block 3: Concept - Why Three Dimensions? & Your Choice of Reference -->
-  <ContentCard blockType="concept-block" layoutWidth="full">
-    <h2 id="why-three-dimensions" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    layoutWidth="full"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_why-three-dimensions"
+  >
+    <h2
+      class="content-card-title"
+      id="why-three-dimensions"
+      data-nav-target="true"
+    >
       Why Three Dimensions? Your Choice of Reference
     </h2>
     <p>
@@ -125,8 +152,17 @@
   </ContentCard>
 
   <!-- Block 4: Interactive Full Coordinate Explorer -->
-  <ContentCard blockType="visualization-block" class="-exercise">
-    <h2 id="full-coordinate-explorer" data-nav-target="true">
+  <ContentCard
+    blockType="visualization-block"
+    class="-exercise"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_full-coordinate-explorer-exercise"
+  >
+    <h2
+      class="content-card-title"
+      id="full-coordinate-explorer"
+      data-nav-target="true"
+    >
       Interactive: Full Coordinate Explorer
     </h2>
     <figure>
@@ -144,8 +180,17 @@
   </ContentCard>
 
   <!-- Block 5: Concept - Application to 3D Printing -->
-  <ContentCard blockType="concept-block" layoutWidth="full">
-    <h2 id="coordinates-in-3d-space" data-nav-target="true">
+  <ContentCard
+    blockType="concept-block"
+    layoutWidth="full"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_application-3d-printing"
+  >
+    <h2
+      class="content-card-title"
+      id="coordinates-in-3d-space"
+      data-nav-target="true"
+    >
       Coordinates in 3D Space
     </h2>
     <p>
@@ -180,8 +225,17 @@
   </ContentCard>
 
   <!-- Block 6: Activity - Printer Calibration -->
-  <ContentCard blockType="visualization-block" class="-exercise">
-    <h2 id="printer-calibration" data-nav-target="true">
+  <ContentCard
+    blockType="visualization-block"
+    class="-exercise"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_printer-calibration-exercise"
+  >
+    <h2
+      class="content-card-title"
+      id="printer-calibration"
+      data-nav-target="true"
+    >
       Hands-On: Printer Calibration
     </h2>
 
@@ -208,8 +262,16 @@
   </ContentCard>
 
   <!-- Block 7: Activity - Review/Quiz -->
-  <ContentCard blockType="activity-block" class="-review" layoutWidth="full">
-    <h2 id="section-review" data-nav-target="true">Section Review</h2>
+  <ContentCard
+    blockType="activity-block"
+    class="-review"
+    layoutWidth="full"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_coordinate-systems_section-review"
+  >
+    <h2 class="content-card-title" id="section-review" data-nav-target="true">
+      Section Review
+    </h2>
     <p>
       This section introduced the fundamental concepts of 3D coordinate systems.
       We learned why three dimensions (X, Y, Z) are necessary to precisely

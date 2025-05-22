@@ -32,6 +32,7 @@
   <!-- <div class="readable-content"> wrapper removed -->
   <ContentCard blockType="section-header-block">
     <h2
+      class="content-card-title"
       id="section-introduction-basic-ops"
       data-nav-target="true"
       aria-label="Section Introduction: Basic Vector Operations"
@@ -66,6 +67,7 @@
 
   <ContentCard blockType="concept-block">
     <h2
+      class="content-card-title"
       id="vector-addition"
       data-nav-target="true"
       aria-label="Vector Addition"
@@ -111,6 +113,7 @@
     class="visualization-card -full-bleed"
   >
     <h2
+      class="content-card-title"
       id="vector-addition-exercise"
       data-nav-target="true"
       aria-label="Interactive Exercise: Vector Addition"
@@ -122,6 +125,7 @@
 
   <ContentCard blockType="concept-block">
     <h2
+      class="content-card-title"
       id="vector-subtraction"
       data-nav-target="true"
       aria-label="Vector Subtraction"
@@ -176,6 +180,7 @@
     class="visualization-card -full-bleed"
   >
     <h2
+      class="content-card-title"
       id="vector-subtraction-exercise"
       data-nav-target="true"
       aria-label="Interactive Exercise: Vector Subtraction"
@@ -187,6 +192,7 @@
 
   <ContentCard blockType="concept-block">
     <h2
+      class="content-card-title"
       id="scalar-multiplication"
       data-nav-target="true"
       aria-label="Scalar Multiplication"
@@ -257,6 +263,7 @@
 
   <ContentCard blockType="activity-block" class="-review">
     <h2
+      class="content-card-title"
       id="basic-ops-review"
       data-nav-target="true"
       aria-label="Section Review"

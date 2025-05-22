@@ -109,3 +109,14 @@ li {
   /* Use secondary text color for hover */
   background-color: var(--color-text-secondary);
 }
+
+// Style for ContentCard titles - REMOVED as it's now handled in SectionTemplate.svelte
+/*
+.content-card-title {
+  font-size: var(--step-2);
+  font-family: var(--font-family-heading);
+  margin-bottom: var(--space-s); // Example margin, adjust as needed
+  max-width: calc(100% - 70px); // Prevent overlap with bookmark icon
+  // Add any other h2-like styles you want to ensure consistency
+}
+*/
