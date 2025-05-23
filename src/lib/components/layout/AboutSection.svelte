@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Color } from "three";
+  import ContentCard from "$lib/components/ContentCard.svelte";
   // Import the ContentCard component
   // import ContentCard from "$lib/components/ContentCard.svelte"; // Removed ContentCard import
 </script>
@@ -7,21 +8,24 @@
 <section id="about" class="about">
   <!-- Use ContentCard for the intro block -->
   <!-- <ContentCard blockType="about-intro-block" layoutWidth="full"> -->
-  <h2>About VistaKine</h2>
-  <div class="about-content">
-    <p>
-      VistaKine combines educational content with interactive 3D visualizations
-      and physics simulations to create an engaging learning experience.
-    </p>
-    <p>
-      By integrating powerful 3D rendering with physics simulations, VistaKine
-      allows students to explore complex kinematic and dynamic concepts through
-      hands-on interaction.
-    </p>
-    <div class="visual-placeholder main-about-visual">
-      <p>Placeholder for Main About Visual (e.g., GIF/Screenshot)</p>
+  <ContentCard>
+    <div class="about-content">
+      <h2>About VistaKine</h2>
+      <p>
+        VistaKine combines educational content with interactive 3D
+        visualizations and physics simulations to create an engaging learning
+        experience.
+      </p>
+      <p>
+        By integrating powerful 3D rendering with physics simulations, VistaKine
+        allows students to explore complex kinematic and dynamic concepts
+        through hands-on interaction.
+      </p>
+      <div class="visual-placeholder main-about-visual">
+        <p>Placeholder for Main About Visual (e.g., GIF/Screenshot)</p>
+      </div>
     </div>
-  </div>
+  </ContentCard>
   <!-- </ContentCard> -->
 
   <!-- Keep the features grid container, but wrap each feature in a ContentCard -->
@@ -75,7 +79,7 @@
   </div>
 
   <!-- <ContentCard blockType="about-differentiators" layoutWidth="full"> -->
-  <div class="about-section">
+  <!-- <div class="about-section">
     <h3>What Makes VistaKine Different?</h3>
     <div class="differentiators-grid">
       <div>
@@ -112,7 +116,7 @@
         </p>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- </ContentCard> -->
 
   <!-- Removed the outer .container div as ContentCard handles width/centering -->

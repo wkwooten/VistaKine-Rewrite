@@ -51,7 +51,7 @@ supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback
       .eq('id', session.user.id) // Filter by the authenticated user's ID
       .single(); // Expect a single row
 
-    if (profileError) {
+    if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows, which we'll handle
       console.error('[AuthStore] Error fetching profile:', profileError);
       // Not setting profile to null here, as an error doesn't mean the user isn't authenticated
       // However, user-specific UI might not render correctly without a profile.
@@ -59,7 +59,37 @@ supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback
       console.log('[AuthStore] Profile data fetched successfully:', profileData);
       profile = profileData;
     } else {
-      console.warn('[AuthStore] No profile data found for user ID:', session.user.id, '(Profile might not exist yet)');
+      // No profile found, or PGRST116 error (no rows)
+      console.warn('[AuthStore] No profile data found for user ID:', session.user.id, '(Profile might not exist yet). Attempting to create one.');
+      if (session.user.email) {
+        try {
+          // Attempt to create a profile
+          const usernameFromEmail = session.user.email.split('@')[0];
+          const { data: newProfile, error: createProfileError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: session.user.id,
+                username: usernameFromEmail,
+                // avatar_url can be set to a default or left null
+              },
+            ])
+            .select('id, username, avatar_url')
+            .single();
+
+          if (createProfileError) {
+            console.error('[AuthStore] Error creating profile:', createProfileError);
+            // If profile creation fails, profile remains null
+          } else if (newProfile) {
+            console.log('[AuthStore] Profile created successfully:', newProfile);
+            profile = newProfile;
+          }
+        } catch (e) {
+          console.error('[AuthStore] Exception during profile creation:', e);
+        }
+      } else {
+        console.warn('[AuthStore] Cannot create profile: user email is not available.');
+      }
     }
   } else {
     console.log('[AuthStore] No active session or user, clearing profile.');

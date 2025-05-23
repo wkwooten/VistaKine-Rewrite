@@ -146,16 +146,55 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    transition:
+      transform 0.2s ease-out,
+      box-shadow 0.2s ease-out,
+      background-color 0.2s ease-out,
+      color 0.2s ease-out;
+
+    :global(svg) {
+      :global(.lucide-bookmark > path),
+      :global(.lucide-bookmark > polygon) {
+        transition: fill 0.3s ease-in-out;
+      }
+      :global(path),
+      :global(polygon),
+      :global(rect),
+      :global(circle) {
+        transition: fill 0.3s ease-in-out;
+      }
+    }
 
     &:disabled {
       cursor: not-allowed;
       opacity: 0.6;
+      transform: translateY(0);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-5px);
     }
 
     &:not(.not-authenticated):hover:not(:disabled),
     &:not(.not-authenticated):focus-visible:not(:disabled) {
       color: var(--color-accent-hover);
       background-color: var(--color-accent-hover-bg);
+      transform: translateY(-2px);
+      box-shadow: var(
+        --shadow-lg,
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05)
+      );
+    }
+
+    &:not(.not-authenticated):active:not(:disabled) {
+      transform: translateY(0px);
+      box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+      :global(svg) {
+        transform: scale(0.95);
+        transition: transform 0.1s ease-in-out;
+      }
     }
 
     &.not-authenticated {
