@@ -10,7 +10,6 @@
   import { browser } from "$app/environment";
   import { updateThemeColors } from "$lib/stores/themeColors";
   import Footer from "$lib/components/Footer.svelte";
-  import AuthWidget from "$lib/components/AuthWidget.svelte";
   import { inject } from "@vercel/analytics";
 
   // Auth Modal related imports
@@ -147,10 +146,6 @@
   class:sidebar-collapsed={!$sidebarExpanded}
   class:mobile-nav-active={mobileNavOpen}
 >
-  <div class="auth-widget">
-    <AuthWidget />
-  </div>
-
   {#if isMobile}
     <button
       class="mobile-menu-button"
@@ -397,12 +392,5 @@
     @media (max-width: variables.$breakpoint-lg) {
       padding: var(--space-s);
     }
-  }
-
-  .auth-widget {
-    position: fixed;
-    top: var(--space-s, 10px);
-    right: var(--space-s, 10px);
-    z-index: 1100;
   }
 </style>

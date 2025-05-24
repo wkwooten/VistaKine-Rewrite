@@ -5,11 +5,11 @@
   import {
     Hexagon,
     BookOpen,
-    Settings,
     Search,
     ChevronRight,
     List,
     Shapes,
+    User,
   } from "lucide-svelte";
   import { onMount, onDestroy } from "svelte";
   import { slide } from "svelte/transition";
@@ -17,6 +17,7 @@
   import { browser } from "$app/environment";
   import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
   import NavSearch from "$lib/components/NavSearch.svelte";
+  import AccountModal from "$lib/components/auth/AccountModal.svelte";
 
   // --- Props (Svelte 5 Runes) ---
   let {
@@ -37,6 +38,7 @@
   let expandedChapter = $state<string | null>(currentChapterSlug ?? null);
   // Used to track chapter changes for the effect below.
   let previousChapter = $state<string | null>(currentChapterSlug ?? null);
+  let showAccountModal = $state(false);
 
   // --- Derived State (Svelte 5 Runes) ---
   // Determines if the navigation should be visually collapsed.
@@ -358,25 +360,39 @@
     </ul>
   </div>
 
-  <ul class="bottom-item">
-    <li class:is-active={$page.url.pathname === "/glossary"}>
-      <a href="/glossary" class="nav-item">
-        <div class="icon">
-          <List size={iconSize} />
-        </div>
-        <span>Glossary</span>
-      </a>
-    </li>
-    <li class:is-active={$page.url.pathname === "/settings"}>
-      <a href="/settings" class="nav-item">
-        <div class="icon">
-          <Settings size={iconSize} />
-        </div>
-        <span>Settings</span>
-      </a>
-    </li>
-  </ul>
+  <div class="bottom-item">
+    <ul>
+      <li class:is-active={showAccountModal} title="Account">
+        <button
+          class="nav-item"
+          onclick={() => (showAccountModal = true)}
+          aria-label="Open account modal"
+        >
+          <div class="icon">
+            <User size={iconSize} />
+          </div>
+          {#if !navCollapsed}
+            <span>Account</span>
+          {/if}
+        </button>
+      </li>
+      <li class:is-active={$page.url.pathname === "/glossary"}>
+        <a href="/glossary" class="nav-item">
+          <div class="icon">
+            <List size={iconSize} />
+          </div>
+          {#if !navCollapsed}
+            <span>Glossary</span>
+          {/if}
+        </a>
+      </li>
+    </ul>
+  </div>
 </nav>
+
+{#if showAccountModal}
+  <AccountModal close={() => (showAccountModal = false)} />
+{/if}
 
 <!-- Add global style for body scroll lock -->
 <svelte:head>
@@ -751,17 +767,50 @@
   .bottom-item {
     margin-top: auto;
     height: 155px;
-    margin-bottom: 0 !important;
     border-top: 1px solid var(--color-border);
     padding-top: var(--space-xs);
-    flex-shrink: 0;
     box-sizing: border-box;
+
     ul {
+      list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      gap: var(--space-s);
+
+      // Default styling for LI in .bottom-item (expanded state)
+      li {
+        width: 100%;
+        // Intentionally no display:flex or align-items:center here by default
+      }
     }
-    li {
-      margin-bottom: var(--space-xs);
+  }
+
+  nav.collapsed {
+    width: var(--sidebar-collapsed-width);
+
+    .nav-item {
+      justify-content: center;
+      padding: var(--space-xs);
+    }
+
+    .chapter-item {
+      justify-content: center;
+    }
+
+    // Specific styling for LI in .bottom-item when nav is collapsed
+    .bottom-item ul li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon,
+    .chapter-number {
+      margin-right: 0;
     }
   }
 

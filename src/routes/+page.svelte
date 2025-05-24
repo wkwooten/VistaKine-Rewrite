@@ -20,9 +20,15 @@
   // Import the new AboutSection component
   import AboutSection from "$lib/components/layout/AboutSection.svelte";
   // Import the new Footer component
+  import AuthWidget from "$lib/components/AuthWidget.svelte";
 </script>
 
 <div class="hero-container">
+  <div
+    style="position: absolute; top: var(--space-m); right: var(--space-m); z-index: 10;"
+  >
+    <AuthWidget />
+  </div>
   <section class="hero">
     <!-- Wrap hero content in a ContentCard -->
     <div class="hero-content-card">

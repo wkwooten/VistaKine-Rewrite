@@ -61,7 +61,7 @@
     <!-- Still loading initial auth state -->
     <div class="auth-fallback-loading">
       <div class="spinner"></div>
-      <span>Loading...</span>
+      <span>Authenticating...</span>
     </div>
   {/if}
 </div>
@@ -73,6 +73,7 @@
   .auth-widget-component {
     display: flex;
     align-items: center;
+    background-color: var(--color-background);
   }
 
   .auth-buttons {
