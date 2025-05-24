@@ -34,13 +34,31 @@
         <button class="sign-out-button" onclick={handleLogout}>Sign out</button>
       </div>
     </div>
+  {:else if $authState.isAuthenticated && !$authState.user && !$authState.loading}
+    <!-- User is authenticated, but no profile data (and not loading) -->
+    <div class="user-profile minimal-profile">
+      <div class="avatar-container">
+        <UserIcon size={24} class="avatar-placeholder" />
+      </div>
+      <div class="user-details">
+        {#if $authState.session?.user?.email}
+          <span class="username">{$authState.session.user.email}</span>
+        {:else}
+          <span class="username">Logged In</span>
+        {/if}
+        <button class="sign-out-button" onclick={handleLogout}>Sign out</button>
+        <!-- Optional: Add a message or button to prompt profile completion -->
+        <!-- <p class="complete-profile-prompt">Please complete your profile.</p> -->
+      </div>
+    </div>
   {:else if !$authState.loading}
+    <!-- Not authenticated and not loading -->
     <div class="auth-buttons">
       <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
       <a href="/login" class="auth-button sign-in-button">Sign In</a>
     </div>
   {:else}
-    <!-- This block will render if isAuthenticated is false AND loading is true -->
+    <!-- Still loading initial auth state -->
     <div class="auth-fallback-loading">Auth Loading...</div>
   {/if}
 </div>
@@ -144,4 +162,14 @@
     font-size: var(--step--1);
     color: var(--color-text-secondary);
   } */
+
+  /* Added style for minimal profile display */
+  .minimal-profile .username {
+    font-style: italic;
+    color: var(--color-text-secondary); /* Make it look a bit different */
+  }
+  .minimal-profile .avatar-container {
+    /* Optional: slightly different style for placeholder when profile is minimal */
+    background-color: var(--color-surface);
+  }
 </style>
