@@ -16,7 +16,8 @@ type SectionImports = {
 const sectionComponents: Record<string, Record<string, () => Promise<any>>> = {
   'understanding-3d-space': {
     'coordinate-systems': () => import('$lib/content/chapters/understanding-3d-space/sections/coordinate-systems.svelte'),
-    'vectors-and-components': () => import('$lib/content/chapters/understanding-3d-space/sections/vectors-and-components.svelte'),
+    'vector-fundamentals': () => import('$lib/content/chapters/understanding-3d-space/sections/vector-fundamentals.svelte'),
+    'vector-direction-angles': () => import('$lib/content/chapters/understanding-3d-space/sections/vector-direction-angles.svelte'),
     'basic-vector-operations': () => import('$lib/content/chapters/understanding-3d-space/sections/basic-vector-operations.svelte'),
     'advanced-vector-operations': () => import('$lib/content/chapters/understanding-3d-space/sections/advanced-vector-operations.svelte')
   },

@@ -671,7 +671,7 @@
     padding: var(--space-xs) var(--space-m);
     color: var(--color-text-primary);
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: var(--space-xs) 0 0 var(--space-xs);
     position: relative;
     box-sizing: border-box;
     min-width: 0;
@@ -854,13 +854,13 @@
     }
 
     &.is-active {
-      background-color: color-mix(in srgb, var(--chapter-bg) 85%, black);
+      background-color: var(--chapter-color-light);
       font-weight: bold;
       color: var(--chapter-color-dark);
 
-      &:hover {
-        background-color: color-mix(in srgb, var(--chapter-bg) 85%, black);
-      }
+      /* &:hover {
+        background-color: var(--chapter-color-light);
+      } */
     }
 
     span {

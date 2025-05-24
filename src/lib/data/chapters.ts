@@ -28,9 +28,10 @@ export const chapters: Chapter[] = [
     description: 'Introduction to coordinate systems and vectors.',
     sections: [
       { id: "coordinate-systems", title: "Coordinate Systems", slug: "coordinate-systems", number: "1.1", description: "Learn about different ways to define and locate points in 2D and 3D space, including Cartesian, cylindrical, and spherical systems." },
-      { id: "vectors-and-components", title: "Vectors and Components", slug: "vectors-and-components", number: "1.2", description: "Understand what vectors are, how they represent physical quantities, and how to break them down into their components." },
-      { id: "basic-vector-operations", title: "Basic Vector Operations", slug: "basic-vector-operations", number: "1.3", description: "Explore fundamental vector operations such as addition, subtraction, and scalar multiplication." },
-      { id: "advanced-vector-operations", title: "Advanced Vector Operations", slug: "advanced-vector-operations", number: "1.4", description: "Delve into more complex vector operations like the dot product and cross product and their applications." }
+      { id: "vector-fundamentals", title: "Vector Fundamentals", slug: "vector-fundamentals", number: "1.2", description: "Understand what vectors are, how they represent physical quantities, and how to break them down into their components and different notations." },
+      { id: "vector-direction-angles", title: "Vector Direction and Angles", slug: "vector-direction-angles", number: "1.3", description: "Explore how to define vector direction using angles and trigonometric relationships." },
+      { id: "basic-vector-operations", title: "Basic Vector Operations", slug: "basic-vector-operations", number: "1.4", description: "Explore fundamental vector operations such as addition, subtraction, and scalar multiplication." },
+      { id: "advanced-vector-operations", title: "Advanced Vector Operations", slug: "advanced-vector-operations", number: "1.5", description: "Delve into more complex vector operations like the dot product and cross product and their applications." }
     ],
     component: undefined
   },
