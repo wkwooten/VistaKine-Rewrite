@@ -37,52 +37,69 @@ export const authState: Writable<AuthState> = writable(initialAuthState);
 
 // Subscribe to auth state changes from Supabase
 supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback async
-  console.log(`Supabase Auth State Change Event: ${event}`, { session });
+  console.log(`[AuthStore] Event: ${event}. Session available: ${!!session}`);
 
   // Immediately update store to indicate loading has started for this auth event cycle
   authState.update(s => ({ ...s, loading: true }));
 
   let profile: Profile | null = null;
-  // isLoading variable is effectively managed by the try/finally setting loading: false at the end.
+  let isAuthenticated = !!session; // Determine auth status early, can be overridden in catch
 
   try {
     if (session?.user) {
-      console.log('[AuthStore] Session and user found, attempting to fetch profile for user ID:', session.user.id);
-      const { data: profileData, error: profileError } = await supabase
+      console.log(`[AuthStore] Fetching profile for user ID: ${session.user.id}`);
+
+      const profilePromise = supabase
         .from('profiles')
         .select('id, username, avatar_url')
         .eq('id', session.user.id)
         .single();
 
+      // Diagnostic: Timeout for the profile fetch
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timed out after 5 seconds')), 5000)
+      );
+
+      // @ts-ignore - Promise.race might not infer the exact error type from Supabase side.
+      const { data: profileData, error: profileError } = await Promise.race([profilePromise, timeoutPromise]) as { data: Profile | null, error: any | null };
+
       if (profileError) {
-        if (profileError.code !== 'PGRST116') {
+        if (profileError.message && profileError.message.includes('Profile fetch timed out')) {
+          console.error('[AuthStore] Profile fetch critically timed out.');
+        } else if (profileError.code !== 'PGRST116') { // PGRST116 means no rows, which is handled as no profile
             console.error('[AuthStore] Error fetching profile:', profileError);
-        } else {
-            console.warn('[AuthStore] No profile data found for user ID:', session.user.id, '(Profile might not exist or RLS prevents access). Ensure server-side profile creation is in place.');
+        } else { // PGRST116 or other case where data is null but no critical error
+            console.warn(`[AuthStore] No profile data found for user ID: ${session.user.id} (PGRST116 or similar). RLS or missing record likely.`);
         }
+        // profile remains null
       } else if (profileData) {
         console.log('[AuthStore] Profile data fetched successfully:', profileData);
         profile = profileData;
       } else {
-        console.warn('[AuthStore] No profile data returned for user ID:', session.user.id, '(Profile might not exist).');
+        // This case means no error, but profileData is null/undefined.
+        console.warn(`[AuthStore] No profile data returned (but no error) for user ID: ${session.user.id}.`);
+        // profile remains null
       }
     } else {
       console.log('[AuthStore] No active session or user, clearing profile.');
-      // Profile remains null, isAuthenticated will be false
+      // profile remains null, isAuthenticated is already false from !!session
     }
-  } catch (error) {
+  } catch (error: any) { // Catch any other unexpected errors
     console.error('[AuthStore] Unexpected error during auth state change processing:', error);
-    // Ensure profile is null if an unexpected error occurs during its fetch or processing
+    // In case of a truly unexpected error, ensure user isn't considered authenticated
+    // This might be aggressive, but safer if auth state is very broken.
+    isAuthenticated = false;
     profile = null;
   } finally {
     // This block ensures that loading is set to false and authState is updated,
     // regardless of errors in the try block.
+    console.log('[AuthStore] Entering finally block.');
     authState.set({
-      isAuthenticated: !!session, // Re-evaluate based on the session passed to the event
+      isAuthenticated: isAuthenticated, // Use the determined isAuthenticated status
       session: session,
       user: profile,          // user will be the fetched profile or null
       loading: false,         // Crucially, set loading to false here
     });
-    console.log('[AuthStore] Auth state updated (finally block):', { isAuthenticated: !!session, user: profile, loading: false });
+    console.log('[AuthStore] Auth state updated (finally block):', { isAuthenticated: isAuthenticated, session, user: profile, loading: false });
   }
 });
