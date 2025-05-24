@@ -21,7 +21,7 @@ const initialAuthState: AuthState = {
   isAuthenticated: false,
   session: null,
   user: null,
-  loading: true, // Start in loading state
+  loading: false, // Initialize loading to false
 };
 
 export const authState: Writable<AuthState> = writable(initialAuthState);
@@ -39,7 +39,13 @@ export const authState: Writable<AuthState> = writable(initialAuthState);
 supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback async
   console.log(`Supabase Auth State Change Event: ${event}`, { session });
 
+  // Set loading to true only if we are actively going to fetch or determine state.
+  // If there's no session, we might not even need a loading state unless there's an async check.
+  // For simplicity here, we'll manage loading primarily around the profile fetch.
+
   let profile: Profile | null = null;
+  let isLoading = true; // Local loading for this specific auth change processing
+
   if (session?.user) {
     console.log('Session and user found, attempting to fetch profile for user ID:', session.user.id);
     // IMPORTANT: Ensure 'profiles' table exists and has RLS policies allowing
@@ -70,11 +76,13 @@ supabase.auth.onAuthStateChange(async (event, session) => { // Make the callback
     console.log('[AuthStore] No active session or user, clearing profile.');
   }
 
+  isLoading = false; // Processing finished for this event
+
   authState.set({
     isAuthenticated: !!session,
     session: session,
     user: profile,
-    loading: false,
+    loading: isLoading, // Reflect the end of loading for this cycle
   });
-  console.log('[AuthStore] Auth state updated:', { isAuthenticated: !!session, user: profile, loading: false });
+  console.log('[AuthStore] Auth state updated:', { isAuthenticated: !!session, user: profile, loading: isLoading });
 });
