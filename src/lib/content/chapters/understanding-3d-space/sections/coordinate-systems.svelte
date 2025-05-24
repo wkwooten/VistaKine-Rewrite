@@ -44,8 +44,8 @@
     </h2>
     <p>
       Welcome to the world of 3D space! Ever wonder how a 3D printer knows
-      exactly where to place material, or how a GPS pinpoints your location? It
-      all relies on a fundamental concept: the <Keyword
+      exactly where to place material, or how a GPS can pinpoint your location?
+      It all relies on a fundamental concept: the <Keyword
         term="coordinate system"
       />. In this section, we'll break down how we use three dimensions (X, Y,
       and Z) to map out space, define precise locations using coordinates, and
@@ -95,11 +95,8 @@
       line points in a different direction, and all axes meet at a single point
       called the <strong>origin</strong>. This <Keyword
         term="Cartesian coordinate system"
-      /> is the standard map for <Keyword term="3D space" />. Engineers
-      typically orient these using a <Keyword
-        term="right-handed coordinate system"
-      /> convention. Take a look at the visualization below to see how these three
-      axes meet at the origin.
+      /> is the standard map for <Keyword term="3D space" />. Take a look at the
+      visualization below to see how these three axes meet at the origin.
     </p>
     <figure>
       <AxisExplorer />
@@ -139,13 +136,14 @@
       (like X, Y, Z) that meet at a central <strong>origin</strong>.
     </p>
     <p>
-      Crucially, this system is your **frame of reference**. You get to choose
-      where the <strong>origin</strong> (the zero point) is and which way your
+      Crucially, this system is your frame of reference. You get to choose where
+      the <strong>origin</strong> (the zero point) is and which way your
       <strong>axes</strong>
       point. While conventions like the <strong>right-handed system</strong>
-      exist, the fundamental frame is yours to define! Picking the right frame can
-      make complex problems much simpler – like choosing Earth's center as the origin
-      for tracking satellites. Remember, the <em>coordinates</em>
+      exist, <strong> the fundamental frame is yours to define!</strong> Picking
+      the right frame can make complex problems much simpler – like choosing
+      Earth's center as the origin for tracking satellites. Remember, the
+      <em>coordinates</em>
       change with your choice, but the <strong>actual physical location</strong>
       in space remains the same.
     </p>

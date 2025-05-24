@@ -1,46 +1,27 @@
 <script lang="ts">
   import VisContainer from "../../VisContainer.svelte";
   import FullCoordinateExplorerScene from "./FullCoordinateExplorerScene.svelte";
-  import CoordinateInputPanel from "./CoordinateInputPanel.svelte";
-
-  // Local state for the coordinates, serving as the source of truth.
-  let x = $state(1);
-  let y = $state(1);
-  let z = $state(1);
 
   // Optional: Add any exercise-specific logic or state here, like completion status if needed.
   // let isExerciseComplete = $state(false);
-
-  // Debugging: Log state changes
-  $effect(() => {
-    console.log(`[FullCoordinateExplorerExercise] x updated: ${x}`);
-  });
-  $effect(() => {
-    console.log(`[FullCoordinateExplorerExercise] y updated: ${y}`);
-  });
-  $effect(() => {
-    console.log(`[FullCoordinateExplorerExercise] z updated: ${z}`);
-  });
 </script>
 
 <div class="exercise-layout">
   <div class="description">
     <p>
-      Use the input fields below to control the position of the magenta point in
-      the 3D scene. Observe how changing the X, Y, and Z values moves the point
-      along the respective axes. This explorer allows you to use both positive
-      and negative coordinate values.
+      In this explorer, you can directly manipulate the coordinate system's
+      origin. Observe how the coordinates of the fixed reference points (the
+      colored spheres) change as you move the entire axis system (the red,
+      green, and blue lines). This demonstrates that a point's coordinates are
+      relative to the chosen frame of reference.
     </p>
   </div>
 
   <div class="interaction-area">
     <div class="scene-container">
       <VisContainer>
-        <FullCoordinateExplorerScene {x} {y} {z} />
+        <FullCoordinateExplorerScene />
       </VisContainer>
-    </div>
-    <div>
-      <CoordinateInputPanel bind:x bind:y bind:z />
     </div>
   </div>
 
@@ -64,12 +45,6 @@
 
   .scene-container {
     width: 100%;
-    min-width: 0;
-  }
-
-  .controls-container {
-    width: auto;
-    min-width: 200px;
   }
 
   /* Styles for results, if used later

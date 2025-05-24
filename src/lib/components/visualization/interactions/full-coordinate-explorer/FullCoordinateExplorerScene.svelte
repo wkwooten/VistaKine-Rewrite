@@ -1,8 +1,8 @@
 <script lang="ts">
-  import RendererSetup from "../../helpers/RendererSetup.svelte"; // Adjusted path
-  import { T } from "@threlte/core";
-  import { OrbitControls } from "@threlte/extras"; // Text removed
-  import SceneLabel from "$lib/components/visualization/helpers/SceneLabel.svelte"; // Added import
+  import RendererSetup from "../../helpers/RendererSetup.svelte";
+  import { T, useTask } from "@threlte/core";
+  import { OrbitControls, TransformControls } from "@threlte/extras";
+  import SceneLabel from "$lib/components/visualization/helpers/SceneLabel.svelte";
   import XAxisLabel from "$lib/components/visualization/helpers/XAxisLabel.svelte";
   import YAxisLabel from "$lib/components/visualization/helpers/YAxisLabel.svelte";
   import ZAxisLabel from "$lib/components/visualization/helpers/ZAxisLabel.svelte";
@@ -13,35 +13,56 @@
     LineBasicMaterial,
     SphereGeometry,
     MeshBasicMaterial,
+    BoxGeometry,
+    Matrix4,
+    Euler,
+    Group,
   } from "three";
+  import type { TransformControls as ThreeTransformControls } from "three/examples/jsm/controls/TransformControls.js";
   import {
     xAxisColor as xAxisColorStore,
     yAxisColor as yAxisColorStore,
     zAxisColor as zAxisColorStore,
     originColor as originColorStore,
-    surfaceColor as sfcColorStore, // For label backgrounds
-    labelColor as lblColorStore, // For label text if not axis specific
+    surfaceColor as sfcColorStore,
+    labelColor as lblColorStore,
+    accentColor,
+    accentLightColor,
   } from "$lib/stores/themeColors";
 
-  // --- Props for interactivity (will be controlled by CoordinateInputPanel) ---
-  let { x = 1, y = 1, z = 1 } = $props(); // Default point
-
   // --- Scene Setup ---
-  const axesLength = 5; // Length of axis in one direction (e.g., -5 to +5)
-  const originSphereColor = new Color("#ffffff");
+  const axesLength = 5;
 
-  const originGeometry = new SphereGeometry(0.1, 16, 16);
-  const originMaterial = new MeshBasicMaterial({ color: originSphereColor });
+  // --- Movable Axes Group ---
+  let movableAxesGroup: Group;
+  let transformNonce = $state(0);
+  let tcInstance: ThreeTransformControls | undefined = undefined;
 
-  const pointGeometry = new SphereGeometry(0.15, 16, 16);
-  const pointMaterial = new MeshBasicMaterial({ color: "#ff00ff" }); // Bright color for the point
-
-  // Reactive point position
-  let pointPositionVector = $derived(new Vector3(x, y, z));
-  let pointPositionArray: [number, number, number] = $derived([x, y, z]);
-
-  // Reactive label for the point
-  let pointLabelText = $derived(`(${x}, ${y}, ${z})`); // Using template literal
+  // --- Static Reference Points ---
+  const referencePointsData = $state([
+    {
+      id: "p1",
+      worldPosition: new Vector3(2, 2, 1),
+      color: $accentColor,
+      localCoords: { x: 0, y: 0, z: 0 },
+      labelText: "",
+    },
+    {
+      id: "p2",
+      worldPosition: new Vector3(-3, 1, -2),
+      color: $accentLightColor,
+      localCoords: { x: 0, y: 0, z: 0 },
+      labelText: "",
+    },
+    {
+      id: "p3",
+      worldPosition: new Vector3(1, -2, 3),
+      color: $zAxisColorStore,
+      localCoords: { x: 0, y: 0, z: 0 },
+      labelText: "",
+    },
+  ]);
+  const referencePointGeometry = new BoxGeometry(0.5, 0.5, 0.5);
 
   // Helper function to create an axis line
   function createAxisLine(direction: "x" | "y" | "z", color: string) {
@@ -63,81 +84,137 @@
       );
     }
     const geometry = new BufferGeometry().setFromPoints(points);
-    const material = new LineBasicMaterial({ color: new Color(color) });
+    const material = new LineBasicMaterial({
+      color: new Color(color),
+      linewidth: 2,
+    });
     return { geometry, material };
   }
 
   const xAxis = createAxisLine("x", $xAxisColorStore);
   const yAxis = createAxisLine("y", $yAxisColorStore);
   const zAxis = createAxisLine("z", $zAxisColorStore);
+  const originMarkerGeometry = new SphereGeometry(0.15, 16, 16);
 
   const labelOffset = 0.4;
-  const labelFontSize = 0.35; // Adjusted for SceneLabel padding
+  const labelFontSize = 0.35;
   const labelPadding = 0.1;
   const labelBorderRadius = 0.05;
+
+  // Effect to update reference point coordinates when axes move
+  $effect(() => {
+    const _ = transformNonce;
+    if (movableAxesGroup) {
+      const axesMatrixWorld = movableAxesGroup.matrixWorld;
+      const inverseAxesMatrixWorld = new Matrix4()
+        .copy(axesMatrixWorld)
+        .invert();
+
+      referencePointsData.forEach((point) => {
+        const localPos = point.worldPosition
+          .clone()
+          .applyMatrix4(inverseAxesMatrixWorld);
+        point.localCoords.x = parseFloat(localPos.x.toFixed(1));
+        point.localCoords.y = parseFloat(localPos.y.toFixed(1));
+        point.localCoords.z = parseFloat(localPos.z.toFixed(1));
+        point.labelText = `(${point.localCoords.x}, ${point.localCoords.y}, ${point.localCoords.z})`;
+      });
+    }
+  });
+
+  // Effect to attach/detach event listeners to TransformControls instance
+  $effect(() => {
+    if (tcInstance) {
+      const handleObjectChange = () => {
+        console.log("TransformControls: objectChange event fired");
+        transformNonce++;
+      };
+      tcInstance.addEventListener("objectChange", handleObjectChange);
+      console.log(
+        "TransformControls event listener for objectChange attached."
+      );
+
+      return () => {
+        if (tcInstance) {
+          tcInstance.removeEventListener("objectChange", handleObjectChange);
+          console.log(
+            "TransformControls event listener for objectChange removed."
+          );
+        }
+      };
+    }
+  });
 </script>
 
-<!-- Canvas tag removed, content will be slotted into VisContainer's Canvas -->
 <RendererSetup />
 <T.PerspectiveCamera
   makeDefault
-  position={[axesLength * 1.2, axesLength * 1.2, axesLength * 1.2]}
+  position={[axesLength * 1.5, axesLength * 1.2, axesLength * 1.8]}
   fov={75}
 >
   <OrbitControls enablePan={true} enableDamping target={[0, 0, 0]} />
 </T.PerspectiveCamera>
 
-<T.AmbientLight intensity={0.7} />
-<T.DirectionalLight intensity={0.5} position={[5, 5, 5]} />
+<T.AmbientLight intensity={0.8} />
+<T.DirectionalLight intensity={0.6} position={[5, 10, 7]} />
 
-<!-- Axes -->
-<T.Line geometry={xAxis.geometry} material={xAxis.material} />
-<T.Line geometry={yAxis.geometry} material={yAxis.material} />
-<T.Line geometry={zAxis.geometry} material={zAxis.material} />
+<!-- Movable Axes Group -->
+<T.Group bind:ref={movableAxesGroup}>
+  <T.Line geometry={xAxis.geometry} material={xAxis.material} />
+  <T.Line geometry={yAxis.geometry} material={yAxis.material} />
+  <T.Line geometry={zAxis.geometry} material={zAxis.material} />
 
-<!-- Origin Marker -->
-<T.Mesh
-  geometry={originGeometry}
-  material={originMaterial}
-  position={[0, 0, 0]}
-/>
+  <T.Mesh geometry={originMarkerGeometry} position={[0, 0, 0]}>
+    <T.MeshBasicMaterial color={$originColorStore} />
+  </T.Mesh>
 
-<!-- Point Marker -->
-<T.Mesh
-  geometry={pointGeometry}
-  material={pointMaterial}
-  position={pointPositionArray}
-/>
+  <!-- Labels for Axes (relative to the group) -->
+  <XAxisLabel text="+X" position={[axesLength + labelOffset, 0, 0]} />
+  <XAxisLabel text="-X" position={[-axesLength - labelOffset, 0, 0]} />
+  <YAxisLabel text="+Y" position={[0, axesLength + labelOffset, 0]} />
+  <YAxisLabel text="-Y" position={[0, -axesLength - labelOffset, 0]} />
+  <ZAxisLabel text="+Z" position={[0, 0, axesLength + labelOffset]} />
+  <ZAxisLabel text="-Z" position={[0, 0, -axesLength - labelOffset]} />
+  <SceneLabel
+    text="Origin (0,0,0)"
+    position={[0.2, -0.3, 0]}
+    color={$originColorStore}
+    fontSize={labelFontSize * 0.8}
+    backgroundColor={$sfcColorStore}
+    padding={labelPadding * 0.8}
+    borderRadius={labelBorderRadius}
+  />
+</T.Group>
 
-<!-- Labels for Axes -->
-<XAxisLabel text="+X" position={[axesLength + labelOffset, 0, 0]} />
-<XAxisLabel text="-X" position={[-axesLength - labelOffset, 0, 0]} />
-<YAxisLabel text="+Y" position={[0, axesLength + labelOffset, 0]} />
-<YAxisLabel text="-Y" position={[0, -axesLength - labelOffset, 0]} />
-<ZAxisLabel text="+Z" position={[0, 0, axesLength + labelOffset]} />
-<ZAxisLabel text="-Z" position={[0, 0, -axesLength - labelOffset]} />
-<SceneLabel
-  text="Origin (0,0,0)"
-  position={[0.2, -0.2, 0]}
-  color={$originColorStore}
-  fontSize={labelFontSize * 0.9}
-  backgroundColor={$sfcColorStore}
-  padding={labelPadding}
-  borderRadius={labelBorderRadius}
-/>
+<!-- TransformControls for the movableAxesGroup -->
+{#if movableAxesGroup}
+  <TransformControls
+    object={movableAxesGroup}
+    mode="translate"
+    size={0.8}
+    bind:controls={tcInstance}
+  />
+{/if}
 
-<!-- Label for the interactive point -->
-<SceneLabel
-  text={pointLabelText}
-  position={[
-    pointPositionVector.x,
-    pointPositionVector.y + 0.4, // Adjusted offset for SceneLabel
-    pointPositionVector.z,
-  ]}
-  color={$lblColorStore}
-  fontSize={labelFontSize * 0.9}
-  backgroundColor={$sfcColorStore}
-  padding={labelPadding}
-  borderRadius={labelBorderRadius}
-/>
-<!-- Canvas tag and style block removed -->
+<!-- Static Reference Points -->
+{#each referencePointsData as point (point.id)}
+  <T.Mesh
+    geometry={referencePointGeometry}
+    position={point.worldPosition.toArray()}
+  >
+    <T.MeshBasicMaterial color={point.color} />
+  </T.Mesh>
+  <SceneLabel
+    text={point.labelText}
+    position={[
+      point.worldPosition.x,
+      point.worldPosition.y + 0.5,
+      point.worldPosition.z,
+    ]}
+    color={$lblColorStore}
+    fontSize={labelFontSize * 0.9}
+    backgroundColor={$sfcColorStore}
+    padding={labelPadding}
+    borderRadius={labelBorderRadius}
+  />
+{/each}
