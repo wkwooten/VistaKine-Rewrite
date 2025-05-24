@@ -59,7 +59,10 @@
     </div>
   {:else}
     <!-- Still loading initial auth state -->
-    <div class="auth-fallback-loading">Auth Loading...</div>
+    <div class="auth-fallback-loading">
+      <div class="spinner"></div>
+      <span>Loading...</span>
+    </div>
   {/if}
 </div>
 
@@ -171,5 +174,30 @@
   .minimal-profile .avatar-container {
     /* Optional: slightly different style for placeholder when profile is minimal */
     background-color: var(--color-surface);
+  }
+
+  .auth-fallback-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xs) var(--space-s);
+    font-size: var(--step--1);
+    color: var(--color-text-secondary);
+    gap: var(--space-xs);
+  }
+
+  .spinner {
+    width: 1.2em; /* Adjust size as needed */
+    height: 1.2em;
+    border: 2px solid currentColor; /* Use text color for border */
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>
