@@ -85,6 +85,11 @@
     validateEmail();
     validatePassword();
 
+    // Clear previous email error related to "already registered"
+    if (emailError === "This email is already registered. Please sign in.") {
+      emailError = "";
+    }
+
     if (emailError || passwordError) {
       return;
     }
@@ -97,8 +102,14 @@
     loading = false; // Reset loading after operation
 
     if (error) {
-      console.error("Sign up error:", error.message);
-      alert(error.message); // Display error to the user
+      // Check for specific error indicating user already exists
+      if (error.message.includes("User already registered")) {
+        emailError = "This email is already registered. Please sign in.";
+      } else {
+        console.error("Sign up error:", error.message);
+        // Fallback to a generic error or display the specific one if it's not the "already registered" case
+        alert(error.message);
+      }
     } else if (data.user) {
       console.log("User signed up:", data.user);
       // Supabase automatically updates the authState store via the listener
