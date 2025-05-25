@@ -1,7 +1,7 @@
 <script lang="ts">
   import { authState } from "$lib/stores/auth";
   import { supabase } from "$lib/supabaseClient";
-  import { Bookmark } from "lucide-svelte";
+  import { Bookmark, BookmarkPlus, BookmarkMinus } from "lucide-svelte";
   import { openModal } from "$lib/stores/authModalStore.svelte.ts";
 
   let {
@@ -19,6 +19,7 @@
 
   let isBookmarked = $state(false);
   let bookmarkLoading = $state(false);
+  let isHovering = $state(false);
 
   const reasonForModalOpening =
     "You need an account to bookmark this content. Please sign up or sign in below.";
@@ -110,6 +111,9 @@
 <button
   class="bookmark-icon-button {klass}"
   class:not-authenticated={!isAuthenticated}
+  class:is-bookmarked={isAuthenticated && isBookmarked}
+  onmouseenter={() => (isHovering = true)}
+  onmouseleave={() => (isHovering = false)}
   onclick={handleBookmarkClick}
   disabled={bookmarkLoading && isAuthenticated}
   aria-label={isAuthenticated
@@ -125,8 +129,20 @@
 >
   {#if bookmarkLoading && isAuthenticated}
     ⏳
-  {:else if isAuthenticated && isBookmarked}
-    <Bookmark fill="currentColor" size={32} />
+  {:else if isAuthenticated}
+    {#if isBookmarked}
+      {#if isHovering}
+        <BookmarkMinus size={32} />
+      {:else}
+        <Bookmark fill="currentColor" size={32} />
+      {/if}
+    {:else if isHovering}
+      <BookmarkPlus size={32} />
+    {:else}
+      <Bookmark size={32} />
+    {/if}
+  {:else if isHovering}
+    <BookmarkPlus size={32} />
   {:else}
     <Bookmark size={32} />
   {/if}
@@ -198,6 +214,11 @@
     }
 
     &.not-authenticated {
+    }
+
+    &.is-bookmarked {
+      background-color: var(--color-accent);
+      color: var(--color-background);
     }
   }
 </style>

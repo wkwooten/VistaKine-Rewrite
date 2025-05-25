@@ -26,7 +26,6 @@
     zAxisColor as zAxisColorStore,
     originColor as originColorStore,
     surfaceColor as sfcColorStore,
-    labelColor as lblColorStore,
     accentColor,
     accentLightColor,
   } from "$lib/stores/themeColors";
@@ -57,21 +56,18 @@
       worldPosition: new Vector3(2, 2, 1),
       color: $accentColor,
       localCoords: { x: 0, y: 0, z: 0 },
-      labelText: "",
     },
     {
       id: "p2",
       worldPosition: new Vector3(-3, 1, -2),
       color: $accentLightColor,
       localCoords: { x: 0, y: 0, z: 0 },
-      labelText: "",
     },
     {
       id: "p3",
       worldPosition: new Vector3(1, -2, 3),
       color: $zAxisColorStore,
       localCoords: { x: 0, y: 0, z: 0 },
-      labelText: "",
     },
   ]);
   const referencePointGeometry = new BoxGeometry(0.5, 0.5, 0.5);
@@ -129,7 +125,6 @@
         point.localCoords.x = parseFloat(localPos.x.toFixed(1));
         point.localCoords.y = parseFloat(localPos.y.toFixed(1));
         point.localCoords.z = parseFloat(localPos.z.toFixed(1));
-        point.labelText = `(${point.localCoords.x}, ${point.localCoords.y}, ${point.localCoords.z})`;
       });
     }
   });
@@ -142,8 +137,6 @@
       };
       tcInstance.addEventListener("objectChange", handleObjectChange);
 
-      tcInstance.setMode($transformModeStore);
-
       return () => {
         if (tcInstance) {
           tcInstance.removeEventListener("objectChange", handleObjectChange);
@@ -152,28 +145,37 @@
     }
   });
 
-  // Reactive effect to change mode if the prop changes
-  $effect(() => {
-    if (tcInstance) {
-      console.log(
-        `[FCEScene] Effect: transformModeStore is now: ${$transformModeStore}. Setting tcInstance mode.`
-      );
-      tcInstance.setMode($transformModeStore);
-    }
-  });
-
   // Effect to handle scene reset
   $effect(() => {
     const _ = resetKey;
-    if (movableAxesGroup) {
+    if (movableAxesGroup && tcInstance) {
       console.log(
         "Scene: Resetting axes position and rotation due to resetKey change."
       );
+      // tcInstance.enabled = false; // Disable before detaching/resetting
+      // tcInstance.detach();
+
       movableAxesGroup.position.copy(initialAxesPosition);
       movableAxesGroup.quaternion.copy(initialAxesQuaternion);
-      if (tcInstance) {
-        tcInstance.detach();
-        tcInstance.attach(movableAxesGroup);
+      movableAxesGroup.updateMatrixWorld(true); // Ensure matrix world is updated
+
+      // tcInstance.attach(movableAxesGroup);
+      // tcInstance.enabled = true; // Re-enable after attaching
+
+      // Force a refresh of the TransformControls by re-evaluating its object prop binding.
+      // This might be necessary if just updating position/quaternion isn't enough.
+      // However, Threlte's TransformControls should ideally react to object changes.
+      // The most straightforward way to ensure it picks up the new transform
+      // is often by detaching and reattaching, or ensuring its internal state is updated.
+      // For now, let's ensure the object itself is "seen" as potentially changed
+      // by ensuring the reference in the #if block for TransformControls is re-evaluated
+      // or that tcInstance updates its internal representation.
+      // A simple re-attach might be the most robust if direct updates aren't reflected.
+
+      // Minimal change: ensure the gizmo updates to the new position/rotation
+      if (tcInstance.object) {
+        // Check if object is still attached
+        tcInstance.updateMatrixWorld(); // This should update the gizmo's transform based on its object
       }
     }
   });
@@ -235,23 +237,55 @@
 
 <!-- Static Reference Points -->
 {#each referencePointsData as point (point.id)}
+  {@const coordLabelFontSize = 0.28}
+  {@const coordLabelBaseOffsetY = 0.6}
+  {@const coordLabelLineHeight = 0.33}
+  {@const commonLabelProps = {
+    fontSize: coordLabelFontSize,
+    backgroundColor: $sfcColorStore,
+    padding: 0.05,
+    borderRadius: 0.03,
+    depthTest: false, // Make labels always visible for readability
+  }}
+
   <T.Mesh
     geometry={referencePointGeometry}
     position={point.worldPosition.toArray()}
   >
     <T.MeshBasicMaterial color={point.color} />
   </T.Mesh>
+
+  <!-- X Coordinate Label -->
   <SceneLabel
-    text={point.labelText}
+    text={`X: ${point.localCoords.x.toFixed(1)}`}
     position={[
-      point.worldPosition.x,
-      point.worldPosition.y + 0.5,
+      point.worldPosition.x + 0.3, // Slight offset from point center
+      point.worldPosition.y + coordLabelBaseOffsetY,
       point.worldPosition.z,
     ]}
-    color={$lblColorStore}
-    fontSize={labelFontSize * 0.9}
-    backgroundColor={$sfcColorStore}
-    padding={labelPadding}
-    borderRadius={labelBorderRadius}
+    color={$xAxisColorStore}
+    {...commonLabelProps}
+  />
+  <!-- Y Coordinate Label -->
+  <SceneLabel
+    text={`Y: ${point.localCoords.y.toFixed(1)}`}
+    position={[
+      point.worldPosition.x + 0.3,
+      point.worldPosition.y + coordLabelBaseOffsetY - coordLabelLineHeight,
+      point.worldPosition.z,
+    ]}
+    color={$yAxisColorStore}
+    {...commonLabelProps}
+  />
+  <!-- Z Coordinate Label -->
+  <SceneLabel
+    text={`Z: ${point.localCoords.z.toFixed(1)}`}
+    position={[
+      point.worldPosition.x + 0.3,
+      point.worldPosition.y + coordLabelBaseOffsetY - 2 * coordLabelLineHeight,
+      point.worldPosition.z,
+    ]}
+    color={$zAxisColorStore}
+    {...commonLabelProps}
   />
 {/each}

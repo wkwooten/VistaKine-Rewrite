@@ -111,7 +111,7 @@
           --color-accent,
           #007bff
         ); // Active background (blueish)
-        color: var(--color-border-subtle); // Active text (white)
+        color: var(--color-white); // Active text (white)
         font-weight: 500; // Slightly bolder for active
         // The active button's own separator (if it has one on its right) should not be visible
         // And the separator of the button to its left should also not be visible if this one is active.

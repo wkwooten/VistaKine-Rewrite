@@ -521,6 +521,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     --color-error-bg: #{$color-dark-error-bg};
     --color-error-border: #{$color-dark-error-border};
     --color-text-on-dark: #{$color-dark-text-on-dark};
+    --color-dark-text-on-accent: #{$color-dark-text-on-accent};
     --color-surface-hover: #{rgba($color-dark-accent-hover, 0.15)};
 
     // -- Axis Colors Override --

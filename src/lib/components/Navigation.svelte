@@ -946,4 +946,14 @@
       border-color: var(--chapter-color-dark);
     }
   }
+
+  @media (prefers-color-scheme: dark) {
+    .section-link {
+      &.is-active {
+        background-color: var(--chapter-color);
+        color: var(--color-dark-text-on-accent);
+        // font-weight: bold; is inherited
+      }
+    }
+  }
 </style>
