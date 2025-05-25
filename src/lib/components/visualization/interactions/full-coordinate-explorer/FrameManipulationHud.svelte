@@ -101,17 +101,6 @@
       position: relative;
       line-height: 1.2; // Ensure text is vertically centered well
 
-      &:not(:last-child):after {
-        // Separator line
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 15%;
-        bottom: 15%;
-        width: 1px;
-        background-color: var(--color-border-subtle, #cccccc);
-      }
-
       &:hover:not(.active) {
         background-color: var(--color-surface-hover, #f5f5f5);
         color: var(--color-text-primary, black);

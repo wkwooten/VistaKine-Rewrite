@@ -139,9 +139,15 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"]:not(.is-
 // Chapter numbers in the sidebar
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
   border-color: var(--chapter-color);
-  background-color: color-mix(in srgb, var(--chapter-color) 20%, white);
+  background-color: color-mix(in srgb, var(--chapter-color) 10%, var(--color-background));
   color: var(--chapter-color-dark);
 }
+
+// @media (prefers-color-scheme: dark) {
+//   nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
+//     background-color: color-mix(in srgb, var(--chapter-color) 10%, var(--color-background));
+//   }
+// }
 
 .keyword {
   font-weight: 600;
