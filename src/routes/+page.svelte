@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   // Removed animejs imports
+  // Import the openModal function from the auth store
+  import { openModal } from "$lib/stores/authModalStore.svelte.ts";
 
   // Scroll function for the About section
   function scrollToAbout() {
@@ -56,7 +58,17 @@
               class="btn primary">Begin Learning</a
             >
             <!-- Placeholder Sign In button -->
-            <button class="btn secondary">Sign Up</button>
+            <button
+              class="btn secondary"
+              onclick={() =>
+                openModal({
+                  defaultView: "signup",
+                  reasonMessage:
+                    "Create an account to save your progress and access your bookmarks!",
+                })}
+            >
+              Sign Up
+            </button>
             <!-- Using secondary style for now -->
           </div>
         </div>
