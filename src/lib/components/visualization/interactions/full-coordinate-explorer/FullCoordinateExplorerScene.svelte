@@ -17,6 +17,7 @@
     Matrix4,
     Euler,
     Group,
+    Quaternion,
   } from "three";
   import type { TransformControls as ThreeTransformControls } from "three/examples/jsm/controls/TransformControls.js";
   import {
@@ -29,9 +30,20 @@
     accentColor,
     accentLightColor,
   } from "$lib/stores/themeColors";
+  import {
+    transformModeStore,
+    type ExplorerTransformMode,
+  } from "./coordinateExplorerStore";
+
+  // --- Props ---
+  let { resetKey = 0 } = $props<{
+    resetKey?: number;
+  }>();
 
   // --- Scene Setup ---
   const axesLength = 5;
+  const initialAxesPosition = new Vector3(0, 0, 0);
+  const initialAxesQuaternion = new Quaternion();
 
   // --- Movable Axes Group ---
   let movableAxesGroup: Group;
@@ -122,26 +134,47 @@
     }
   });
 
-  // Effect to attach/detach event listeners to TransformControls instance
+  // Effect to attach/detach event listeners and manage tcInstance mode
   $effect(() => {
     if (tcInstance) {
       const handleObjectChange = () => {
-        console.log("TransformControls: objectChange event fired");
         transformNonce++;
       };
       tcInstance.addEventListener("objectChange", handleObjectChange);
-      console.log(
-        "TransformControls event listener for objectChange attached."
-      );
+
+      tcInstance.setMode($transformModeStore);
 
       return () => {
         if (tcInstance) {
           tcInstance.removeEventListener("objectChange", handleObjectChange);
-          console.log(
-            "TransformControls event listener for objectChange removed."
-          );
         }
       };
+    }
+  });
+
+  // Reactive effect to change mode if the prop changes
+  $effect(() => {
+    if (tcInstance) {
+      console.log(
+        `[FCEScene] Effect: transformModeStore is now: ${$transformModeStore}. Setting tcInstance mode.`
+      );
+      tcInstance.setMode($transformModeStore);
+    }
+  });
+
+  // Effect to handle scene reset
+  $effect(() => {
+    const _ = resetKey;
+    if (movableAxesGroup) {
+      console.log(
+        "Scene: Resetting axes position and rotation due to resetKey change."
+      );
+      movableAxesGroup.position.copy(initialAxesPosition);
+      movableAxesGroup.quaternion.copy(initialAxesQuaternion);
+      if (tcInstance) {
+        tcInstance.detach();
+        tcInstance.attach(movableAxesGroup);
+      }
     }
   });
 </script>
@@ -159,7 +192,11 @@
 <T.DirectionalLight intensity={0.6} position={[5, 10, 7]} />
 
 <!-- Movable Axes Group -->
-<T.Group bind:ref={movableAxesGroup}>
+<T.Group
+  bind:ref={movableAxesGroup}
+  position={initialAxesPosition.toArray()}
+  quaternion={initialAxesQuaternion.toArray()}
+>
   <T.Line geometry={xAxis.geometry} material={xAxis.material} />
   <T.Line geometry={yAxis.geometry} material={yAxis.material} />
   <T.Line geometry={zAxis.geometry} material={zAxis.material} />
@@ -190,7 +227,7 @@
 {#if movableAxesGroup}
   <TransformControls
     object={movableAxesGroup}
-    mode="translate"
+    mode={$transformModeStore}
     size={0.8}
     bind:controls={tcInstance}
   />

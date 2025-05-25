@@ -1,60 +1,109 @@
 <script lang="ts">
-  import VisContainer from "../../VisContainer.svelte";
+  // import VisContainer from "../../VisContainer.svelte"; // Removed, InteractiveExercise handles this
   import FullCoordinateExplorerScene from "./FullCoordinateExplorerScene.svelte";
+  import FrameManipulationHud from "./FrameManipulationHud.svelte";
+  import InteractiveExercise from "../../InteractiveExercise.svelte"; // Added
+  import type { ComponentType } from "svelte"; // Added for casting
+  import { onMount, onDestroy } from "svelte"; // Added for keydown listener
+  import { browser } from "$app/environment"; // Added for browser check
+  import {
+    transformModeStore,
+    type ExplorerTransformMode,
+  } from "./coordinateExplorerStore"; // Import the store
 
-  // Optional: Add any exercise-specific logic or state here, like completion status if needed.
-  // let isExerciseComplete = $state(false);
+  // type TransformMode = "translate" | "rotate"; // Type now comes from store
+  // let currentMode = $state<TransformMode>("translate"); // Replaced by store
+  let sceneResetKey = $state(0);
+
+  function setMode(mode: ExplorerTransformMode) {
+    console.log(`[FCEE] Setting mode store to: ${mode}`);
+    transformModeStore.set(mode); // Set the store value
+  }
+
+  // This function will be called by InteractiveExercise when its HUD requests a reset
+  function handleResetRequestedByHud() {
+    console.log(
+      "FullCoordinateExplorerExercise: Resetting scene via InteractiveExercise."
+    );
+    // Incrementing sceneResetKey here will be passed down to FullCoordinateExplorerScene
+    // via sceneProps through InteractiveExercise.
+    // InteractiveExercise also has its own internal resetKey for VisContainer,
+    // but this specific one is for the scene's own reset logic if needed beyond VisContainer's reset.
+    // For this particular scene, its resetKey prop directly triggers its reset effect.
+    sceneResetKey++;
+  }
+
+  // sceneProps will still pass the current mode from the store
+  const sceneProps = $derived({
+    initialMode: $transformModeStore, // Read from store for prop passing
+    resetKey: sceneResetKey,
+  });
+
+  // FrameManipulationHud now reads currentMode from the store directly,
+  // so we only need to pass onModeChange.
+  const completeHudProps = $derived({
+    onModeChange: setMode,
+  });
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key.toLowerCase() === "t") {
+      setMode("translate");
+    } else if (event.key.toLowerCase() === "r") {
+      setMode("rotate");
+    }
+  }
+
+  onMount(() => {
+    if (browser) {
+      // Check if in browser environment
+      window.addEventListener("keydown", handleKeydown);
+    }
+  });
+
+  onDestroy(() => {
+    if (browser) {
+      // Check if in browser environment
+      window.removeEventListener("keydown", handleKeydown);
+    }
+  });
 </script>
 
-<div class="exercise-layout">
+<div class="exercise-wrapper-fcee" role="application">
+  <!-- Changed class -->
   <div class="description">
     <p>
-      In this explorer, you can directly manipulate the coordinate system's
-      origin. Observe how the coordinates of the fixed reference points (the
-      colored spheres) change as you move the entire axis system (the red,
-      green, and blue lines). This demonstrates that a point's coordinates are
-      relative to the chosen frame of reference.
+      Use the controls above the 3D view to switch between
+      <strong>Translate (Move)</strong> and <strong>Rotate</strong> modes for the
+      coordinate axes. Observe how the coordinates of the fixed reference points
+      (the colored blocks) change as you move or rotate the entire axis system. The
+      reset button will reset the axes to their initial state. This demonstrates
+      that a point's coordinates are relative to the chosen frame of reference. Try
+      setting the axes to an "awkward" position or angle to see how it complicates
+      the coordinates!
     </p>
   </div>
 
-  <div class="interaction-area">
-    <div class="scene-container">
-      <VisContainer>
-        <FullCoordinateExplorerScene />
-      </VisContainer>
-    </div>
+  <div class="interaction-area-fcee">
+    <!-- Changed class -->
+    <InteractiveExercise
+      SceneComponent={FullCoordinateExplorerScene as unknown as ComponentType<any>}
+      HudComponent={FrameManipulationHud as unknown as ComponentType<any>}
+      {sceneProps}
+      hudProps={completeHudProps}
+      ControlPanelComponent={null}
+      onResetRequestedByHudCallback={handleResetRequestedByHud}
+      exerciseTitle="Coordinate System Explorer"
+    />
   </div>
 
   <!-- Placeholder for any results or feedback area -->
-  <!-- {#if isExerciseComplete}\n    <div class="results">\n      <p>Congratulations! You've explored the coordinate system.</p>\n    </div>\n  {/if} -->
+  <!-- {#if isExerciseComplete}
+    <div class="results">
+      <p>Congratulations! You've explored the coordinate system.</p>
+    </div>
+  {/if} -->
 </div>
 
 <style lang="scss">
-  .exercise-layout {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-  }
-
-  .interaction-area {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
-    align-items: center;
-  }
-
-  .scene-container {
-    width: 100%;
-  }
-
-  /* Styles for results, if used later
-  .results {
-    padding: var(--space-s);
-    background-color: var(--success-container);
-    color: var(--on-success-container);
-    border: 1px solid var(--success);
-    border-radius: var(--radius-base);
-    text-align: center;
-  }
-  */
+  // Renamed classes to avoid potential conflicts or for better scoping
 </style>
