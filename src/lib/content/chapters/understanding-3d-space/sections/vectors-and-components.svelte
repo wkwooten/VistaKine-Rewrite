@@ -377,7 +377,11 @@
     showBookmarkFeature={true}
     contentId="understanding-3d-space_vectors-and-components_unit-vector-notation"
   >
-    <h2 id="unit-vector-notation" data-nav-target="true">
+    <h2
+      id="unit-vector-notation"
+      data-nav-target="true"
+      class="content-card-title"
+    >
       An Alternative Language: Unit Vector Notation
     </h2>
     <p>
@@ -443,7 +447,11 @@
     showBookmarkFeature={true}
     contentId="understanding-3d-space_vectors-and-components_comparing-vector-notations"
   >
-    <h2 id="comparing-vector-notations" data-nav-target="true">
+    <h2
+      id="comparing-vector-notations"
+      data-nav-target="true"
+      class="content-card-title"
+    >
       Comparing Vector Notations
     </h2>
     <h4>Notation in Different Fields</h4>

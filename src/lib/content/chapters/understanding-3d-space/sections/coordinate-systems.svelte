@@ -12,6 +12,7 @@
   import { onMount } from "svelte"; // Import onMount if needed for intersection observer
   import ContentCard from "$lib/components/ContentCard.svelte"; // Import the new component
   import FullCoordinateExplorerExercise from "$lib/components/visualization/interactions/full-coordinate-explorer/FullCoordinateExplorerExercise.svelte"; // Added import
+  import { math } from "mathlifier"; // Added import for KaTeX rendering
 
   // State for completion
   let isCalibrationComplete = false;
@@ -166,14 +167,29 @@
     <figure>
       <FullCoordinateExplorerExercise />
       <figcaption>
-        Use the input fields to change the X, Y, and Z coordinates and see the
-        point move in the 3D space.
+        Use the <strong>(T)</strong>ranslate and <strong>(R)</strong>otate
+        buttons (or T/R keys) to switch modes. Click and drag the axes or the
+        control gizmo to move or rotate the coordinate system. The reset button
+        restores the axes to their initial position. Use your mouse to orbit
+        (left-click drag), pan (right-click drag), and zoom (scroll wheel) the
+        view.
       </figcaption>
     </figure>
     <p>
-      This interactive exercise allows you to explore the full Cartesian
-      coordinate system, including negative values. Input different values for
-      X, Y, and Z to understand how they define a point's position.
+      By manipulating the coordinate system in the explorer, you may have
+      observed how the (X, Y, Z) coordinates of the fixed spheres changed. This
+      directly illustrates that a point's coordinates are <em>relative</em> to the
+      chosen frame of reference. This isn't just an abstract idea; it has practical
+      benefits!
+    </p>
+    <p>
+      This principle has real advantages. For example, if you needed to
+      determine the distance between two of those spheres, strategically placing
+      your coordinate system's origin at one of them can make the problem much
+      simpler. The coordinates of the second sphere, relative to this new
+      origin, directly provide the values needed for calculation, often reducing
+      the complexity. Choosing an appropriate frame of reference is a key skill
+      that makes spatial problems more manageable.
     </p>
   </ContentCard>
 
