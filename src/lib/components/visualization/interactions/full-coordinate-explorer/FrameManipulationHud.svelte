@@ -72,7 +72,6 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    pointer-events: auto;
   }
 
   .mode-toggle-buttons-group {
@@ -86,6 +85,7 @@
     .mode-button {
       padding: var(--space-xs) var(--space-s);
       border: none;
+      pointer-events: auto;
       background-color: var(
         --color-surface,
         white

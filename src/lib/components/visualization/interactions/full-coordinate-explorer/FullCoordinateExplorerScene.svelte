@@ -70,7 +70,7 @@
       localCoords: { x: 0, y: 0, z: 0 },
     },
   ]);
-  const referencePointGeometry = new BoxGeometry(0.5, 0.5, 0.5);
+  const referencePointGeometry = new SphereGeometry(0.1);
 
   // Helper function to create an axis line
   function createAxisLine(direction: "x" | "y" | "z", color: string) {
