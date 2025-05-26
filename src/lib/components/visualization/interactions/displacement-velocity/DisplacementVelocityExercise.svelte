@@ -1,70 +1,59 @@
 <script lang="ts">
-  import { T, Canvas } from "@threlte/core";
+  import InteractiveExercise from "$lib/components/visualization/InteractiveExercise.svelte";
   import DisplacementVelocityScene from "./DisplacementVelocityScene.svelte";
   import DisplacementVelocityHud from "./DisplacementVelocityHud.svelte";
-  import VisContainer from "$lib/components/visualization/VisContainer.svelte";
-  import ContentCard from "$lib/components/ContentCard.svelte";
-  import { onMount } from "svelte";
-  // Later: Import state management functions/stores
+  import type { Component } from "svelte"; // Import Component for correct typing
 
-  let isMounted = false;
-  onMount(() => {
-    isMounted = true;
-    // Initialize state, start intro dialogue etc.
-  });
+  // Props for the DisplacementVelocityExercise shell itself, if any are needed in the future
+  // let { /* exampleProp */ } = $props<{ /* exampleProp?: boolean */ }>();
 
-  // Props for title/description if needed
-  export let title: string = "Exercise 2.1: Distance vs. Displacement";
-  export let description: string =
-    "Watch the drone move and observe the difference between the path it takes (distance) and its overall change in position (displacement).";
-</script>
+  // Props to pass down to InteractiveExercise and its children
+  const sceneProps = {}; // Empty for now, can be expanded
+  const hudProps = {};
 
-<ContentCard blockType="exercise-block" layoutWidth="full">
-  {#if title || description}
-    <div class="exercise-header">
-      {#if title}<h3>{title}</h3>{/if}
-      {#if description}<p>{description}</p>{/if}
-    </div>
-  {/if}
+  // ControlPanelComponent is optional and defaults in InteractiveExercise.
+  // We can omit it or pass undefined.
+  const controlPanelProps = {};
 
-  <VisContainer>
-    {#if isMounted}
-      <!-- Render HUD Overlay -->
-      <DisplacementVelocityHud />
-
-      <!-- Threlte Canvas -->
-      <Canvas>
-        <DisplacementVelocityScene />
-      </Canvas>
-
-      <!-- Other overlay elements like DialogBox could go here -->
-    {:else}
-      <div class="loading-placeholder">Loading Visualization...</div>
-    {/if}
-  </VisContainer>
-</ContentCard>
-
-<style lang="scss">
-  .exercise-header {
-    margin-bottom: var(--space-s);
-    padding: 0 var(--space-s); // Add padding if needed
-    @media (max-width: 600px) {
-      padding: 0;
-    }
-    h3 {
-      margin-bottom: var(--space-3xs);
-    }
-    p {
-      color: var(--color-text-secondary);
-      font-size: var(--step--1);
-    }
+  function handleReset() {
+    console.log(
+      "[DisplacementVelocityExercise] Reset requested. Implement reset via store."
+    );
+    // Example: import { resetState } from './displacementVelocityState'; resetState();
   }
 
-  .loading-placeholder {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 300px; // Ensure placeholder has some height
-    color: var(--color-text-secondary);
+  function handleFullscreenChange(isFullscreen: boolean) {
+    console.log(
+      `[DisplacementVelocityExercise] Fullscreen status changed to: ${isFullscreen}`
+    );
+  }
+</script>
+
+<div class="displacement-velocity-exercise-shell">
+  <InteractiveExercise
+    exerciseTitle="Displacement, Velocity, & Speed"
+    SceneComponent={DisplacementVelocityScene as unknown as Component<any>}
+    HudComponent={DisplacementVelocityHud as unknown as Component<any>}
+    ControlPanelComponent={undefined}
+    {sceneProps}
+    {hudProps}
+    {controlPanelProps}
+    onResetRequestedByHudCallback={handleReset}
+    onFullscreenStatusChangeCallback={handleFullscreenChange}
+  />
+</div>
+
+<style lang="scss">
+  .displacement-velocity-exercise-shell {
+    width: 100%;
+    height: 100%;
+    display: flex; /* Use flex to make InteractiveExercise fill space */
+    flex-direction: column;
+    overflow: hidden; /* Prevent scrollbars on the shell itself */
+
+    & > :global(.interactive-exercise-component) {
+      flex-grow: 1; /* Allows InteractiveExercise to take remaining space */
+      min-height: 300px; /* Or some other sensible minimum height for the visualization */
+    }
   }
 </style>

@@ -4,12 +4,13 @@
   import PlaceholderScene from "./generic-exercise-parts/PlaceholderScene.svelte";
   import PlaceholderHud from "./generic-exercise-parts/PlaceholderHud.svelte";
   import PlaceholderControls from "./generic-exercise-parts/PlaceholderControls.svelte";
-  import type { SvelteComponent, ComponentType, Snippet } from "svelte";
+  import type { Component, ComponentType, Snippet } from "svelte";
+  import FullscreenManager from "./FullscreenManager.svelte";
 
   interface ExerciseProps {
-    SceneComponent?: ComponentType<SvelteComponent>;
-    HudComponent?: ComponentType<SvelteComponent>;
-    ControlPanelComponent?: ComponentType<SvelteComponent>;
+    SceneComponent?: Component<any>;
+    HudComponent?: Component<any>;
+    ControlPanelComponent?: Component<any>;
     sceneProps?: Record<string, any>;
     hudProps?: Record<string, any>;
     controlPanelProps?: Record<string, any>;
@@ -43,6 +44,9 @@
   let resetKey = $state(0);
   let isFullscreen = $state(false);
   let exerciseWrapperElement: HTMLDivElement;
+  let controlsVisible = $state(true);
+  let isActuallyFullscreen = $state(false);
+  let fullscreenManagerInstance: FullscreenManager | undefined = $state();
 
   // Effect to call the fullscreen status change callback and log local fullscreen state
   $effect(() => {
@@ -54,16 +58,16 @@
   });
 
   function handleRequestToggleFullscreen(): void {
-    console.log(
-      "[InteractiveExercise] handleRequestToggleFullscreen called. Current isFullscreen:",
-      isFullscreen,
-      "Dispatching event with detail:",
-      !isFullscreen
-    );
-    if (exerciseWrapperElement) {
-      exerciseWrapperElement.dispatchEvent(
-        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
+    console.log("[InteractiveExercise] Fullscreen toggle requested.");
+    if (fullscreenManagerInstance) {
+      fullscreenManagerInstance.toggle();
+    } else {
+      console.warn(
+        "[InteractiveExercise] FullscreenManager instance not available."
       );
+    }
+    if (passedProps.onFullscreenStatusChangeCallback) {
+      passedProps.onFullscreenStatusChangeCallback(isActuallyFullscreen);
     }
   }
 
@@ -74,35 +78,42 @@
 
   const combinedHudProps = $derived({
     ...hudProps,
-    isFullscreen,
+    isFullscreen: isActuallyFullscreen,
     title: hudProps.title ?? exerciseTitle,
   });
 </script>
 
 <div
   class="interactive-exercise-wrapper {extraClass}"
-  use:fullscreenAction={{
-    isFullscreenStore: { set: (v) => (isFullscreen = v) },
-  }}
+  class:is-actually-fullscreen={isActuallyFullscreen}
   bind:this={exerciseWrapperElement}
 >
   {#snippet controlsPanelContent()}
     <ControlPanelComponentToRender {...controlPanelProps} />
   {/snippet}
 
-  <div class="hud-layer">
-    <HudComponent
-      {...combinedHudProps}
-      onrequestToggleFullscreen={handleRequestToggleFullscreen}
-      onrequestReset={handleRequestReset}
-      controlsSnippet={controlsPanelContent}
-    ></HudComponent>
-  </div>
+  <div class="exercise-content">
+    <FullscreenManager
+      bind:active={isActuallyFullscreen}
+      bind:this={fullscreenManagerInstance}
+    >
+      <div class="visualization-area">
+        <VisContainer {resetKey} isFullscreen={isActuallyFullscreen}>
+          <SceneComponent {...sceneProps} />
+        </VisContainer>
+      </div>
+    </FullscreenManager>
 
-  <div class="vis-layer">
-    <VisContainer {resetKey} {isFullscreen}>
-      <SceneComponent {...sceneProps} />
-    </VisContainer>
+    {#if HudComponent}
+      <div class="hud-area">
+        <svelte:component
+          this={HudComponent}
+          onrequestToggleFullscreen={handleRequestToggleFullscreen}
+          onrequestReset={handleRequestReset}
+          {...combinedHudProps}
+        />
+      </div>
+    {/if}
   </div>
 </div>
 
@@ -116,6 +127,47 @@
     grid-template-columns: 1fr;
     overflow: hidden;
     background-color: var(--color-background);
+
+    // Styles for when FullscreenManager makes the content fullscreen
+    &.is-actually-fullscreen {
+      .visualization-area {
+        // The FullscreenManager's child (which is .visualization-area's parent in this structure)
+        // will be the actual fullscreen element.
+        // So .visualization-area itself doesn't need position:fixed if its parent is fullscreen.
+        // It just needs to fill its parent (the FullscreenManager's div).
+        width: 100%;
+        height: 100%;
+
+        :global(.visualization-container) {
+          // Target VisContainer
+          width: 100% !important;
+          height: 100% !important;
+          max-width: 100% !important;
+          max-height: 100% !important;
+          aspect-ratio: auto !important;
+          border-radius: 0 !important;
+          border: none !important;
+        }
+      }
+
+      .hud-area {
+        position: absolute; // Position relative to .interactive-exercise-wrapper or .exercise-content
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1001; // Ensure it's above the visualization area
+        pointer-events: none;
+
+        :global(> *) {
+          pointer-events: auto;
+        }
+      }
+
+      .controls-area {
+        display: none;
+      }
+    }
   }
 
   .hud-layer {

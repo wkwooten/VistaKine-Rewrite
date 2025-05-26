@@ -4,11 +4,28 @@
   import DialogBox from "../../elements/ui/DialogBox.svelte";
   import PlayPauseButton from "$lib/components/visualization/elements/ui/PlayPauseButton.svelte";
   import { slide } from "svelte/transition";
+  import type { Snippet } from "svelte";
   // Later: Import state like isPlaying, distance, displacement, velocity etc.
 
   let isPlaying = false; // Placeholder state
   let distance = 0; // Placeholder state
   let displacement = 0; // Placeholder state
+
+  interface HudProps {
+    onrequestToggleFullscreen?: () => void;
+    onrequestReset?: () => void;
+    controlsSnippet?: Snippet;
+    title?: string;
+    isFullscreen?: boolean;
+  }
+
+  let {
+    onrequestToggleFullscreen,
+    onrequestReset,
+    controlsSnippet,
+    title,
+    isFullscreen,
+  }: HudProps = $props();
 
   function handleReset() {
     // TODO: Call reset function from state store
@@ -16,6 +33,7 @@
     isPlaying = false;
     distance = 0;
     displacement = 0;
+    onrequestReset?.(); // Call the prop function
   }
 
   function togglePlayPause() {
@@ -27,7 +45,7 @@
 
 <div class="hud-overlay" transition:slide={{ duration: 200, axis: "y" }}>
   <div class="controls-top-right">
-    <FullscreenButton />
+    <FullscreenButton onRequestToggleCallback={onrequestToggleFullscreen} />
   </div>
 
   <div class="controls-bottom-left">
@@ -35,12 +53,21 @@
       <span>Distance: {distance.toFixed(1)} m</span>
       <span>Displacement: {displacement.toFixed(1)} m</span>
     </div>
+    <div class="graph-area-placeholder">
+      <p>Graph Placeholder Area</p>
+    </div>
   </div>
 
   <div class="controls-bottom-center">
     <PlayPauseButton bind:playing={isPlaying} on:click={togglePlayPause} />
-    <ResetButton on:click={handleReset} />
+    <ResetButton onclick={handleReset} />
   </div>
+
+  {#if controlsSnippet}
+    <div class="controls-bottom-right">
+      {@render controlsSnippet()}
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -76,6 +103,9 @@
   .controls-bottom-left {
     grid-area: bottom-left;
     align-self: end; // Align to bottom
+    display: flex; // Use flex to arrange readout and graphs
+    flex-direction: column; // Stack readout and graphs vertically
+    gap: var(--space-xs); // Space between readout and graphs
   }
 
   .controls-bottom-center {
@@ -84,6 +114,13 @@
     justify-content: center;
     align-items: flex-end; // Align buttons to bottom
     gap: var(--space-xs);
+  }
+
+  .controls-bottom-right {
+    grid-area: bottom-right;
+    align-self: end; // Align to bottom
+    display: flex;
+    justify-content: flex-end;
   }
 
   .readout {
@@ -98,6 +135,20 @@
     flex-direction: column;
     gap: var(--space-3xs);
     min-width: 15ch; // Ensure some minimum width
+  }
+
+  .graph-area-placeholder {
+    background-color: var(--color-surface-transparent);
+    border: 1px solid var(--color-border-light);
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(5px);
+    color: var(--color-text-primary);
+    font-size: var(--step--1);
+    min-height: 100px; /* Placeholder height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   /* Ensure buttons are clickable */
