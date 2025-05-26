@@ -1,4 +1,4 @@
-﻿# VistaKine Style Guide
+# VistaKine Style Guide
 
 This document outlines the CSS architecture, conventions, and best practices for the VistaKine project, built with Svelte 5 and Threlte.
 

@@ -1,0 +1,290 @@
+{
+  "edges": [
+    {
+      "fromNode": "22ec52173006c4f1",
+      "fromSide": "right",
+      "id": "488552f0ce9d1fcc",
+      "styleAttributes": {
+      },
+      "toNode": "c58e97910139f9f0",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "c7e7bd0ee90e4e98",
+      "fromSide": "right",
+      "id": "3adbc6ff57f38a8e",
+      "styleAttributes": {
+      },
+      "toNode": "1b0cbd37c34e0a70",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "1b0cbd37c34e0a70",
+      "fromSide": "bottom",
+      "id": "b21d7488cd2c31a4",
+      "styleAttributes": {
+      },
+      "toNode": "9695dc29df550795",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "9695dc29df550795",
+      "fromSide": "right",
+      "id": "cb46c164bd7e7e8a",
+      "styleAttributes": {
+      },
+      "toNode": "a8ab587038833200",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "500a6de14daeede6",
+      "fromSide": "right",
+      "id": "b3cd5185f9ebda0b",
+      "styleAttributes": {
+      },
+      "toNode": "3cb04e620da5e1de",
+      "toSide": "left"
+    },
+    {
+      "fromNode": "3cb04e620da5e1de",
+      "fromSide": "bottom",
+      "id": "5127e8012134fafb",
+      "styleAttributes": {
+      },
+      "toNode": "958ee56c544f8fd9",
+      "toSide": "right"
+    },
+    {
+      "fromNode": "a8ab587038833200",
+      "fromSide": "bottom",
+      "id": "091d1e5560b0377e",
+      "styleAttributes": {
+        "pathfindingMethod": null
+      },
+      "toNode": "6b5ded23892d61f4",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "6b5ded23892d61f4",
+      "fromSide": "bottom",
+      "id": "cb334947fd2af2bf",
+      "styleAttributes": {
+      },
+      "toNode": "e4bcdb8a08fc5240",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "3cb04e620da5e1de",
+      "fromSide": "right",
+      "id": "7b5f6ab4f1ab926c",
+      "styleAttributes": {
+      },
+      "toNode": "db4cee3573901d76",
+      "toSide": "left"
+    }
+  ],
+  "nodes": [
+    {
+      "color": "1",
+      "height": 1020,
+      "id": "e4bcdb8a08fc5240",
+      "label": "Section Review",
+      "styleAttributes": {
+      },
+      "type": "group",
+      "width": 1780,
+      "x": 20,
+      "y": 960
+    },
+    {
+      "color": "2",
+      "height": 930,
+      "id": "6b5ded23892d61f4",
+      "label": "Section Core",
+      "styleAttributes": {
+      },
+      "type": "group",
+      "width": 1400,
+      "x": 1000,
+      "y": -100
+    },
+    {
+      "color": "4",
+      "height": 700,
+      "id": "c58e97910139f9f0",
+      "label": "Section Intro",
+      "styleAttributes": {
+      },
+      "type": "group",
+      "width": 1400,
+      "x": 160,
+      "y": -940
+    },
+    {
+      "height": 280,
+      "id": "9695dc29df550795",
+      "styleAttributes": {
+      },
+      "text": "Section scenario\n\t\t- Introduces a problem that a character is having that relates to the topic",
+      "type": "text",
+      "width": 500,
+      "x": 180,
+      "y": -540
+    },
+    {
+      "height": 500,
+      "id": "a8ab587038833200",
+      "styleAttributes": {
+      },
+      "text": " Topic introduction paragraphs\n\t\t- A few focused paragraphs which provide readers with the necessary information to understand the topic\n\t\t- Li- A few focused paragraphs which provide readers with the necessary information to understand the topic\n\t\t- Limit to 3 paragraphs at most\n\t\t- key terms are highlighted",
+      "type": "text",
+      "width": 700,
+      "x": 800,
+      "y": -900
+    },
+    {
+      "color": "5",
+      "height": 120,
+      "id": "22ec52173006c4f1",
+      "styleAttributes": {
+      },
+      "text": "User enters page",
+      "type": "text",
+      "width": 260,
+      "x": 280,
+      "y": -1200
+    },
+    {
+      "height": 240,
+      "id": "1b0cbd37c34e0a70",
+      "styleAttributes": {
+      },
+      "text": "Section Description\n\tInformation about section \n\t\t- Prerequisite knowledge?\n\t\t- Content details\n\t\t- Length",
+      "type": "text",
+      "width": 460,
+      "x": 181,
+      "y": -820
+    },
+    {
+      "height": 60,
+      "id": "c7e7bd0ee90e4e98",
+      "styleAttributes": {
+      },
+      "text": "Section Header",
+      "type": "text",
+      "width": 260,
+      "x": 181,
+      "y": -930
+    },
+    {
+      "file": "Work/3d Engineering Textbook/Archive/Visualization.md",
+      "height": 1020,
+      "id": "db4cee3573901d76",
+      "styleAttributes": {
+      },
+      "type": "file",
+      "width": 740,
+      "x": 2600,
+      "y": -910
+    },
+    {
+      "height": 820,
+      "id": "4823b48892ead0ce",
+      "styleAttributes": {
+      },
+      "text": "Okay, here's a plan for the first visualization broken down into bullet points:\n\nI. Visual Elements:\n\n    3D Printer Model:\n        Simple frame for clarity.\n        Clearly defined movable print head (nozzle).\n    Coordinate Axes:\n        Visually distinct X, Y, and Z axes.\n        Labels for each axis (X, Y, Z).\n        Clear indication of the origin (0, 0, 0).\n    Calibration Points (Targets):\n        Small, distinct markers in 3D space.\n        Consider initial color-coding (e.g., blue for X/Z plane, red for Y-axis points later).\n    Optional Visual Aids:\n        Toggleable semi-transparent 3D grid for spatial reference.\n        Real-time display of the nozzle's current coordinates.\n\nII. Interactive Elements:\n\n    Coordinate Input Fields:\n        Three numerical input fields (one for X, one for Y, one for Z).\n        Clear labels for each field.\n    \"Move Nozzle\" Button:\n        Triggers the animation of the nozzle moving to the entered coordinates.\n    View Controls:\n        Initial 2D view (likely looking at the X-Z plane).\n        Button or drag functionality to switch to a 3D view.\n        Potential for user-controlled rotation of the 3D view.\n\nIII. Calibration Process (Progression):\n\n    Stage 1 (Introduction to X and Z):\n        Instructions to move the nozzle to target points located on the X-Z plane (Y=0).\n        Focus on understanding movement along the X and Z axes.\n    Stage 2 (Introducing Y-axis):\n        Instructions to move the nozzle to target points that require adjustment of the Y-coordinate (introducing height).\n        Visual animation of the nozzle moving vertically.\n    Feedback:\n        Visual indication when the nozzle reaches a calibration point (e.g., color change, highlight).\n        Potential for textual feedback (\"Correct!\", \"Try again\").\n\nIV. Underlying Logic:\n\n    Coordinate System Mapping:\n        Accurate mapping of entered coordinates to the nozzle's position in the 3D scene.\n    Smooth Animation:\n        Use smooth transitions for nozzle movement based on entered coordinates.\n\nV. Development Considerations:\n\n    Start Simple: Focus on core functionality first (coordinate input and nozzle movement).\n    Visual Clarity: Prioritize clear visual representation of axes, origin, and target points.\n    User Guidance: Provide clear instructions and feedback throughout the calibration process",
+      "type": "text",
+      "width": 260,
+      "x": 3520,
+      "y": -220
+    },
+    {
+      "height": 60,
+      "id": "e1fb4c7e3743afea",
+      "styleAttributes": {
+      },
+      "text": "",
+      "type": "text",
+      "width": 260,
+      "x": 3540,
+      "y": 380
+    },
+    {
+      "height": 440,
+      "id": "958ee56c544f8fd9",
+      "styleAttributes": {
+      },
+      "text": "In depth overview\n\n- A more text heavy explanation to reinforce lessons in the visualization. \n- More theoretical and 'textbook-like' but still digestible\n- Up to 5 paragraphs",
+      "type": "text",
+      "width": 460,
+      "x": 1021,
+      "y": 360
+    },
+    {
+      "height": 320,
+      "id": "500a6de14daeede6",
+      "styleAttributes": {
+      },
+      "text": "Key equation components\n- Contains equation necessary to help reader solve problem introduced in visualization\n- Accordions toggle",
+      "type": "text",
+      "width": 420,
+      "x": 1020,
+      "y": -90
+    },
+    {
+      "height": 550,
+      "id": "3cb04e620da5e1de",
+      "styleAttributes": {
+      },
+      "text": "Visualization\n- provide the reader with an 3d interactive visualization in which users can manipulate objects and see calculations and vectors in real time.\n- Contextualizes the concept\n- The visualization will tie in with the section scenario",
+      "type": "text",
+      "width": 620,
+      "x": 1600,
+      "y": 30
+    },
+    {
+      "height": 402,
+      "id": "95ca11842084c556",
+      "styleAttributes": {
+      },
+      "text": "Conceptual Questions: Questions that require students to explain the importance of coordinate systems in their own words.\n",
+      "type": "text",
+      "width": 520,
+      "x": 80,
+      "y": 1463
+    },
+    {
+      "height": 402,
+      "id": "f4e2527617dee9d4",
+      "styleAttributes": {
+      },
+      "text": "Application-Based Questions: Scenarios where students need to determine the coordinates of a point or explain how a coordinate system is being used.",
+      "type": "text",
+      "width": 400,
+      "x": 720,
+      "y": 1463
+    },
+    {
+      "height": 402,
+      "id": "0f5ff410d99d0299",
+      "styleAttributes": {
+      },
+      "text": "\nOpen-Ended Reflection: Questions that encourage deeper thinking, such as \"Can you think of other real-world examples where 3D coordinate systems are used?\"",
+      "type": "text",
+      "width": 469,
+      "x": 1240,
+      "y": 1463
+    },
+    {
+      "height": 320,
+      "id": "f011590fdcb69adb",
+      "styleAttributes": {
+      },
+      "text": "Quizzes\n\nMultiple choice\n\nTrue/false\n\n",
+      "type": "text",
+      "width": 420,
+      "x": 130,
+      "y": 1040
+    }
+  ]
+}
