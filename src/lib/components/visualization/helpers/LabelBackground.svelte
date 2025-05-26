@@ -105,7 +105,10 @@
       {opacity}
       transparent={true}
       {depthTest}
-      depthWrite={false}
+      depthWrite={depthTest}
+      polygonOffset={!depthTest}
+      polygonOffsetFactor={-1}
+      polygonOffsetUnits={-1}
     />
   </T.Mesh>
 {/if}

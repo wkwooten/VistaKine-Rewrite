@@ -175,7 +175,7 @@
       // Minimal change: ensure the gizmo updates to the new position/rotation
       if (tcInstance.object) {
         // Check if object is still attached
-        tcInstance.updateMatrixWorld(); // This should update the gizmo's transform based on its object
+        tcInstance.object.updateMatrixWorld(); // Correct: call on the attached object (movableAxesGroup)
       }
     }
   });
@@ -238,54 +238,64 @@
 <!-- Static Reference Points -->
 {#each referencePointsData as point (point.id)}
   {@const coordLabelFontSize = 0.28}
-  {@const coordLabelBaseOffsetY = 0.6}
-  {@const coordLabelLineHeight = 0.33}
+  {@const coordLabelAboveBoxBaseY = point.worldPosition.y + 0.25} // Top surface
+  of the box
+  {@const coordLabelInitialOffsetAboveBox = 0.15} // Initial gap above the box for
+  the first label's center
+  {@const coordLabelLineSpacing = 0.35} // Vertical spacing between the centers of
+  stacked labels
+
   {@const commonLabelProps = {
     fontSize: coordLabelFontSize,
     backgroundColor: $sfcColorStore,
     padding: 0.05,
     borderRadius: 0.03,
-    depthTest: false, // Make labels always visible for readability
+    depthTest: true, // Revert to true to see effect on rendering
   }}
 
   <T.Mesh
     geometry={referencePointGeometry}
     position={point.worldPosition.toArray()}
+    renderOrder={12}
   >
     <T.MeshBasicMaterial color={point.color} />
   </T.Mesh>
 
-  <!-- X Coordinate Label -->
+  <!-- Z Coordinate Label (Bottom of the stack) -->
   <SceneLabel
-    text={`X: ${point.localCoords.x.toFixed(1)}`}
+    text={`Z: ${point.localCoords.z >= 0 ? "+" : ""}${point.localCoords.z.toFixed(1)}`}
     position={[
-      point.worldPosition.x + 0.3, // Slight offset from point center
-      point.worldPosition.y + coordLabelBaseOffsetY,
+      point.worldPosition.x,
+      coordLabelAboveBoxBaseY + coordLabelInitialOffsetAboveBox,
       point.worldPosition.z,
     ]}
-    color={$xAxisColorStore}
+    color={$zAxisColorStore}
     {...commonLabelProps}
   />
-  <!-- Y Coordinate Label -->
+  <!-- Y Coordinate Label (Middle of the stack) -->
   <SceneLabel
-    text={`Y: ${point.localCoords.y.toFixed(1)}`}
+    text={`Y: ${point.localCoords.y >= 0 ? "+" : ""}${point.localCoords.y.toFixed(1)}`}
     position={[
-      point.worldPosition.x + 0.3,
-      point.worldPosition.y + coordLabelBaseOffsetY - coordLabelLineHeight,
+      point.worldPosition.x,
+      coordLabelAboveBoxBaseY +
+        coordLabelInitialOffsetAboveBox +
+        coordLabelLineSpacing,
       point.worldPosition.z,
     ]}
     color={$yAxisColorStore}
     {...commonLabelProps}
   />
-  <!-- Z Coordinate Label -->
+  <!-- X Coordinate Label (Top of the stack) -->
   <SceneLabel
-    text={`Z: ${point.localCoords.z.toFixed(1)}`}
+    text={`X: ${point.localCoords.x >= 0 ? "+" : ""}${point.localCoords.x.toFixed(1)}`}
     position={[
-      point.worldPosition.x + 0.3,
-      point.worldPosition.y + coordLabelBaseOffsetY - 2 * coordLabelLineHeight,
+      point.worldPosition.x,
+      coordLabelAboveBoxBaseY +
+        coordLabelInitialOffsetAboveBox +
+        2 * coordLabelLineSpacing,
       point.worldPosition.z,
     ]}
-    color={$zAxisColorStore}
+    color={$xAxisColorStore}
     {...commonLabelProps}
   />
 {/each}

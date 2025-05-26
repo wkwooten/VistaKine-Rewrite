@@ -52,29 +52,7 @@
   let dialogKey = $state(0);
 
   const initialRelativePosition = { x: 0, y: 5, z: 0 };
-  let relativeNozzleXLocal = $state(initialRelativePosition.x);
-  let relativeNozzleYLocal = $state(initialRelativePosition.y);
-  let relativeNozzleZLocal = $state(initialRelativePosition.z);
 
-  // Effects to update stores when local state changes
-  $effect(() => {
-    console.log(
-      `[PCE $effect] Updating relativeNozzleXStore to: ${relativeNozzleXLocal}`
-    );
-    relativeNozzleXStore.set(relativeNozzleXLocal);
-  });
-  $effect(() => {
-    console.log(
-      `[PCE $effect] Updating relativeNozzleYStore to: ${relativeNozzleYLocal}`
-    );
-    relativeNozzleYStore.set(relativeNozzleYLocal);
-  });
-  $effect(() => {
-    console.log(
-      `[PCE $effect] Updating relativeNozzleZStore to: ${relativeNozzleZLocal}`
-    );
-    relativeNozzleZStore.set(relativeNozzleZLocal);
-  });
   $effect(() => {
     console.log(
       `[PCE $effect] Updating currentStageStore to: ${currentStageLocal}`
@@ -117,11 +95,10 @@
     currentStageLocal = 1;
     isCalibrationComplete = false;
     dialogKey += 1;
-    relativeNozzleXLocal = initialRelativePosition.x;
-    relativeNozzleYLocal = initialRelativePosition.y;
-    relativeNozzleZLocal = initialRelativePosition.z;
-    // The store flag $resetSceneRequested is set by PrinterCalibrationHud
-    // and reset by PrinterCalibrationScene. This function handles the state reset for PCE.
+    // Directly set stores to initial positions
+    relativeNozzleXStore.set(initialRelativePosition.x);
+    relativeNozzleYStore.set(initialRelativePosition.y);
+    relativeNozzleZStore.set(initialRelativePosition.z);
   }
 
   // Effect for store-initiated reset
@@ -136,10 +113,12 @@
 
   onMount(() => {
     dialogKey += 1;
-    // Initialize stores on mount as well, in case initial values are different or not set by $effect run order
-    relativeNozzleXStore.set(relativeNozzleXLocal);
-    relativeNozzleYStore.set(relativeNozzleYLocal);
-    relativeNozzleZStore.set(relativeNozzleZLocal);
+    // Initialize stores on mount. NozzleControlPanel will initialize its local state from these.
+    // Set the stores to the specific initial positions for this exercise instance.
+    relativeNozzleXStore.set(initialRelativePosition.x);
+    relativeNozzleYStore.set(initialRelativePosition.y);
+    relativeNozzleZStore.set(initialRelativePosition.z);
+
     currentStageStore.set(currentStageLocal);
     activeTargetsStore.set(activeTargetsLocal);
   });
@@ -185,6 +164,7 @@
   {/if}
 
   <InteractiveExercise
+    class="interactive-exercise-component"
     exerciseTitle="Printer Calibration"
     SceneComponent={PrinterCalibrationScene as unknown as ComponentType<SvelteComponent>}
     HudComponent={PrinterCalibrationHud as unknown as ComponentType<SvelteComponent>}
@@ -200,13 +180,25 @@
 
 <style lang="scss">
   .printer-calibration-exercise-shell {
-    /* Styles for the overall container of this specific exercise page/component */
-    /* If not fullscreen, it might arrange elements vertically */
-  }
-  .printer-calibration-exercise-shell:not(.fullscreen-layout-active) {
-    // Example class if isFullscreenForPCELayout is true
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden; // Prevent scrollbars on the shell itself if content overflows before handled by children
+
+    & > :global(.interactive-exercise-component) {
+      flex-grow: 1;
+      flex-shrink: 1; // Allow shrinking if necessary
+      min-height: 300px; // Minimum height for the visualization area
+      height: 100%; // Attempt to take full height of the flex container portion
+    }
+  }
+
+  .printer-calibration-exercise-shell:not(.fullscreen-layout-active) {
+    // This class seems to be based on isFullscreenForPCELayout, which might not be needed
+    // if the main shell is always flex column. Original styles had this.
+    // If specific non-fullscreen layout is needed, it can be refined here.
+    // For now, the base .printer-calibration-exercise-shell handles the flex layout.
   }
 
   .control-panel-outside-vis {

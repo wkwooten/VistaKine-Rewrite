@@ -139,11 +139,11 @@
       color={new Color(resolvedTextColor)}
       {anchorX}
       {anchorY}
-      renderOrder={componentRenderOrder}
-      depthOffset={-10}
+      renderOrder={componentRenderOrder + 1}
+      depthOffset={depthTest ? 0 : 0.1}
       materialParameters={{
         depthTest: depthTest,
-        depthWrite: true,
+        depthWrite: depthTest,
         transparent: true,
       }}
       {...rest}
