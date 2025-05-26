@@ -98,11 +98,9 @@
     overflow: hidden;
     /* Optional: Add default padding/margin/background/border for content */
     padding: var(--space-m);
-    margin-inline: var(--space-m);
     margin-top: var(--space-xs);
     border-radius: var(--radius-md);
     background-color: var(--bg-secondary);
-    border: 1px solid var(--color-border);
 
     @media (max-width: 768px) {
       margin-inline: var(--space-xs);

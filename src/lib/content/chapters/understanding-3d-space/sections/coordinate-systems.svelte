@@ -96,8 +96,8 @@
       line points in a different direction, and all axes meet at a single point
       called the <strong>origin</strong>. This <Keyword
         term="Cartesian coordinate system"
-      /> is the standard map for <Keyword term="3D space" />. Take a look at the
-      visualization below to see how these three axes meet at the origin.
+      /> is the standard map for <Keyword term="3D space" />. Let's take a look
+      at the visualization below to see how these three axes meet at the origin.
     </p>
     <figure>
       <AxisExplorer />
@@ -140,7 +140,9 @@
       Crucially, this system is your frame of reference. You get to choose where
       the <strong>origin</strong> (the zero point) is and which way your
       <strong>axes</strong>
-      point. While conventions like the <strong>right-handed system</strong>
+      point. While conventions like the <Keyword
+        term="right-handed coordinate system"
+      />
       exist, <strong> the fundamental frame is yours to define!</strong> Picking
       the right frame can make complex problems much simpler – like choosing
       Earth's center as the origin for tracking satellites. Remember, the
@@ -191,6 +193,7 @@
       the complexity. Choosing an appropriate frame of reference is a key skill
       that makes spatial problems more manageable.
     </p>
+    <!-- TODO: Add a link to the relevant section in the chapter 2 -->
   </ContentCard>
 
   <!-- Block 5: Concept - Application to 3D Printing -->
