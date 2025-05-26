@@ -2,8 +2,8 @@ This document provides a focused overview of the next major development prioriti
 
 1.  **Streamline Interactive Exercise Architecture:**
 
-    - [ ] Audit and refactor `InteractiveExercise.svelte` and existing interactions (`PrinterCalibration`, `VectorBuilder`, `FullCoordinateExplorer`, `DisplacementVelocity`).
-    - [ ] Improve prop passing and state management (Svelte stores, context API).
+    - [x] Audit and refactor `InteractiveExercise.svelte` and existing interactions (`PrinterCalibration`, `VectorBuilder`, `FullCoordinateExplorer`, `DisplacementVelocity`).  [completion:: 2025-05-26]
+    - [x] Improve prop passing and state management (Svelte stores, context API).  [completion:: 2025-05-26]
     - [ ] Resolve iOS fullscreen issues for visualizations.
     - [ ] Document new architecture guidelines.
 

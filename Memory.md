@@ -1,1 +1,0 @@
-C:/Users/Ki/Documents/Notes/Work/3d Engineering Textbook/Memory.md

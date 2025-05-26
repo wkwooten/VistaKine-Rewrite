@@ -47,13 +47,13 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
   - Provides a 2D Heads-Up Display (HUD) that overlays the 3D scene.
   - Typically contains common UI controls like reset and fullscreen buttons.
   - **Crucially, it must accept `onrequestToggleFullscreen: () => void` and `onrequestReset: () => void` as props** from `InteractiveExercise.svelte` and call these functions when its respective buttons are clicked to trigger the desired actions in the parent.
-  - Often provides a `<slot name="controls">` where `InteractiveExercise` will place the `ControlPanelComponent`.
-  - An example implementation is `PlaceholderHud.svelte`.
+  - **Must accept an optional `controlsSnippet?: Snippet` prop and render it using `{@render controlsSnippet()}`.** This is the new standard way for `InteractiveExercise` to pass the control panel UI to the HUD, replacing the old slot-based method.
+  - An example implementation is `PlaceholderHud.svelte`, which has been updated to accept the `controlsSnippet` prop.
   - The root element of the `HudComponent` (or any specific interactive areas within it) should have `pointer-events: auto;` applied (often via a class or inline style if not default for the element). This works in conjunction with `InteractiveExercise.svelte`'s `.hud-layer { pointer-events: none; }` styling, which allows click-through to the 3D scene by default, while `pointer-events: auto;` on HUD elements re-enables interaction for them.
 
 ### 4. Custom Control/Input Panel(s) (e.g., `MyExercisePanel.svelte`)
 
-- **Passed to:** `InteractiveExercise.svelte` via the `ControlPanelComponent` prop, usually rendered into the HUD's "controls" slot.
+- **Passed to:** `InteractiveExercise.svelte` via the `ControlPanelComponent` prop. The `InteractiveExercise` component then makes an instance of this component available to the `HudComponent` via the `controlsSnippet` prop.
 - **Responsibilities:**
   - Provide the primary user interface for inputting data or controlling visualization parameters.
   - **Recommended Component:** Utilize `src/lib/components/visualization/elements/ui/AxisInput.svelte` for numerical X, Y, Z style inputs, as it provides consistent styling, value stepping, and long-press functionality.
@@ -61,6 +61,9 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
     - **Prop-based:** Receiving data via props (from `controlPanelProps`) and emitting changes.
     - **Store-based:** Directly reading from and writing to Svelte stores.
   - Should include input validation and clamping logic as needed.
+  - For state passed to `InteractiveExercise` (e.g., `hudProps`, `controlPanelProps`), these props are the primary mechanism for data flow _into_ the constituent parts, especially for initial configuration or less frequently changing data. Note that dynamic state for Control Panels should now primarily be managed via Svelte stores.
+  - **Importance of Stores for Complex Reactivity:** For intricate visualizations where multiple components (Scene, HUD, Controls) need to react to shared, dynamic state (like lists of rendered objects, calculated results, etc.), relying solely on prop drilling can lead to reactivity issues or overly complex prop chains. Employing Svelte stores for such shared state (e.g., a store for `definedVectors`, `resultantVector`, or control panel inputs like nozzle position) ensures that all subscribed components update reliably when the store changes, significantly simplifying state management and preventing common pitfalls associated with deep prop drilling. The `PrinterCalibration`, `VectorBuilder`, and `VectorPrinter` exercises, for instance, transitioned to stores for managing their primary control panel states and other dynamic data to resolve such reactivity challenges and streamline the architecture.
+  - **Exercise-Specific Store Location:** For better encapsulation, place stores specific to a single exercise within that exercise's interaction folder (e.g., `src/lib/components/visualization/interactions/my-new-exercise/myNewExerciseStore.ts`).
 
 ### 5. `VisContainer.svelte`
 
@@ -108,7 +111,7 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 - **Cross-component Communication / Exercise-Specific Data:**
   - For state passed to `InteractiveExercise` (e.g., `hudProps`, `controlPanelProps`), these props are the primary mechanism for data flow _into_ the constituent parts, especially for initial configuration or less frequently changing data.
   - For `sceneProps`, while it can be used for initial setup or configuration, **dynamic and frequently updated data for the `SceneComponent` (e.g., object positions, animation states, current stage of an exercise) is often best managed using dedicated Svelte stores.** The `SceneComponent` would then subscribe to these stores directly. The `sceneProps` can then focus on passing down callbacks (e.g., `onStageComplete`, `onAllStagesComplete`) or relatively static configuration. This pattern was successfully used in the `PrinterCalibration` exercise.
-  - **Importance of Stores for Complex Reactivity:** For intricate visualizations where multiple components (Scene, HUD, Controls) need to react to shared, dynamic state (like lists of rendered objects, calculated results, etc.), relying solely on prop drilling can lead to reactivity issues or overly complex prop chains. Employing Svelte stores for such shared state (e.g., a store for `definedVectors`, `resultantVector`) ensures that all subscribed components update reliably when the store changes, significantly simplifying state management and preventing common pitfalls associated with deep prop drilling. The `VectorPrinter` exercise, for instance, transitioned to stores for `definedVectors` and `resultantVector` to resolve such reactivity challenges.
+  - **Importance of Stores for Complex Reactivity:** For intricate visualizations where multiple components (Scene, HUD, Controls) need to react to shared, dynamic state (like lists of rendered objects, calculated results, etc.), relying solely on prop drilling can lead to reactivity issues or overly complex prop chains. Employing Svelte stores for such shared state (e.g., a store for `definedVectors`, `resultantVector`, or control panel inputs like nozzle position) ensures that all subscribed components update reliably when the store changes, significantly simplifying state management and preventing common pitfalls associated with deep prop drilling. The `PrinterCalibration`, `VectorBuilder`, and `VectorPrinter` exercises, for instance, transitioned to stores for managing their primary control panel states and other dynamic data to resolve such reactivity challenges and streamline the architecture.
   - **Exercise-Specific Store Location:** For better encapsulation, place stores specific to a single exercise within that exercise's interaction folder (e.g., `src/lib/components/visualization/interactions/my-new-exercise/myNewExerciseStore.ts`).
 
 ## V. Creating New Visualizations
@@ -116,7 +119,7 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 1.  **Directory Structure:** Create a new folder under `src/lib/components/visualization/interactions/` (e.g., `my-new-exercise/`).
 2.  **Core Custom Components:** Inside this folder, create:
     - `MyNewExerciseScene.svelte`
-    - `MyNewExerciseHud.svelte` (ensure it accepts and uses `onrequestToggleFullscreen` and `onrequestReset` props, and provides a `<slot name="controls">` if applicable).
+    - `MyNewExerciseHud.svelte` (ensure it accepts and uses `onrequestToggleFullscreen` and `onrequestReset` props, and **accepts and renders the `controlsSnippet?: Snippet` prop**).
     - One or more `MyNewExercisePanel.svelte` files (consider using `AxisInput.svelte` internally).
 3.  **State Store (if needed):** Create `myNewExerciseStore.ts` within the exercise's folder if complex state management is required.
 4.  **Integration:**
@@ -154,7 +157,7 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
         sceneProps={mySceneCallbacks} // Pass callbacks or static config
         HudComponent={MyCustomHud}
         hudProps={myHudData}
-        ControlPanelComponent={MyCustomControls}
+        ControlPanelComponent={MyCustomControls} // Pass the Component itself here
         controlPanelProps={myControlsData}
         onResetRequestedByHudCallback={() => console.log('Exercise reset requested via HUD')}
         onFullscreenStatusChangeCallback={(isFs) => console.log('Fullscreen status:', isFs)}
@@ -165,7 +168,7 @@ Alternatively, for highly custom needs, an exercise-specific main component (e.g
 
 ## VI. Key Reusable Components & Abstractions
 
-- **`InteractiveExercise.svelte`**: Generic wrapper for exercises.
+- **`InteractiveExercise.svelte`**: Generic wrapper for exercises. It now uses snippet props to pass the control panel component to the HUD.
 - **`useFullscreen.ts`**: Svelte action for managing browser fullscreen state. (Used by `InteractiveExercise`)
 - **`AxisInput.svelte`**: Standardized UI component for numerical axis inputs.
 - **`VisContainer.svelte`**: Standardized wrapper for Threlte Canvas and Rapier World. (Used by `InteractiveExercise`)
