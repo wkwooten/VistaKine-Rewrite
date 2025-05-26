@@ -60,7 +60,7 @@
     backgroundSmoothness = 4,
     anchorX = "center" as AnchorX,
     anchorY = "middle" as AnchorY,
-    depthTest = false,
+    depthTest = true,
     renderOrder: componentRenderOrder = 5,
     visible = true,
     // Capture any other props passed in
@@ -143,7 +143,7 @@
       depthOffset={-10}
       materialParameters={{
         depthTest: depthTest,
-        depthWrite: false,
+        depthWrite: true,
         transparent: true,
       }}
       {...rest}

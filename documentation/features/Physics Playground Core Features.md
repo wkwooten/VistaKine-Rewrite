@@ -1,0 +1,6 @@
+- Implement a dedicated section or mode where users can freely experiment with physics objects and parameters (gravity, forces, collisions) without specific chapter constraints, fostering exploration and intuition.
+- By completing questions, visualzations and quizes, they can unlock features and items in the sandbox related to that chapter.
+	- Student completes chapter 1 visualization -> gets access to the ability to track objects to get object's coordinates and access to the 3d printer model to play with within the playgrounds
+- A place for students to relax maybe?
+	- add calming music and allow for some customization
+- 

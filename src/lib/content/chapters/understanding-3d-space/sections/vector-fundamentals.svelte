@@ -299,7 +299,11 @@
     showBookmarkFeature={true}
     contentId="understanding-3d-space_vectors-and-components_vector-magnitude-3d"
   >
-    <h2 id="vector-magnitude-3d" data-nav-target="true">
+    <h2
+      id="vector-magnitude-3d"
+      data-nav-target="true"
+      class="content-card-title"
+    >
       Vector Magnitude in 3D: Measuring Length
     </h2>
     <p>

@@ -1,0 +1,92 @@
+{
+  "edges": [
+    {
+      "fromNode": "e425ef7211fe12f1",
+      "fromSide": "bottom",
+      "id": "1c593385ce9bde5f",
+      "styleAttributes": {
+      },
+      "toNode": "9aaaefd0a3522f50",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "e425ef7211fe12f1",
+      "fromSide": "bottom",
+      "id": "41c6190e339608c7",
+      "styleAttributes": {
+      },
+      "toNode": "2e47d5f0dc7ab013",
+      "toSide": "top"
+    },
+    {
+      "fromNode": "e425ef7211fe12f1",
+      "fromSide": "top",
+      "id": "e35a46f2eab62305",
+      "styleAttributes": {
+      },
+      "toNode": "2d35b31d6cbe7657",
+      "toSide": "left"
+    }
+  ],
+  "nodes": [
+    {
+      "color": "6",
+      "file": "Work/3d Engineering Textbook/Memory.md",
+      "height": 2080,
+      "id": "9aaaefd0a3522f50",
+      "styleAttributes": {
+      },
+      "type": "file",
+      "width": 1720,
+      "x": -3040,
+      "y": -3760
+    },
+    {
+      "file": "Work/3d Engineering Textbook/Documentation/Characters/Cast.md",
+      "height": 955,
+      "id": "2d35b31d6cbe7657",
+      "styleAttributes": {
+      },
+      "type": "file",
+      "width": 1560,
+      "x": -2960,
+      "y": -5480
+    },
+    {
+      "color": "5",
+      "height": 60,
+      "id": "e425ef7211fe12f1",
+      "styleAttributes": {
+        "border": null
+      },
+      "text": "VISTAKINE",
+      "type": "text",
+      "width": 260,
+      "x": -2960,
+      "y": -4200
+    },
+    {
+      "height": 360,
+      "id": "920332b425dacd3d",
+      "styleAttributes": {
+        "border": "dashed"
+      },
+      "text": "Potential Features\n\npoints system similar to khan academy",
+      "type": "text",
+      "width": 340,
+      "x": -2240,
+      "y": -4350
+    },
+    {
+      "file": "Work/3d Engineering Textbook/Variables Overview.md",
+      "height": 2080,
+      "id": "2e47d5f0dc7ab013",
+      "styleAttributes": {
+      },
+      "type": "file",
+      "width": 280,
+      "x": -3600,
+      "y": -3760
+    }
+  ]
+}
