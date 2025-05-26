@@ -13,16 +13,19 @@
     vectorBuilderDialogTurns,
     // MIN_X, MAX_X, MIN_Y, MAX_Y, MIN_Z, MAX_Z, // Not directly used
   } from "$lib/components/visualization/interactions/vector-builder/vectorBuilderState";
+  import type { Snippet } from "svelte"; // Import Snippet
 
   // --- Props ---
   let {
     isFullscreen = false, // Changed from $bindable(false) as it's driven by InteractiveExercise
     onrequestToggleFullscreen,
     onrequestReset,
+    controlsSnippet, // Add controlsSnippet prop
   } = $props<{
     isFullscreen?: boolean;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
+    controlsSnippet?: Snippet; // Define type for controlsSnippet
   }>();
 
   // const dispatch = createEventDispatcher(); // Removed
@@ -65,10 +68,11 @@
     />
   {/if}
 
-  <!-- Control Panel Slot - Bottom Right - ONLY IN FULLSCREEN -->
-  {#if isFullscreen}
+  <!-- Control Panel Snippet - Bottom Right - ONLY IN FULLSCREEN -->
+  {#if isFullscreen && controlsSnippet}
     <div class="vector-input-panel-container">
-      <slot name="controls"></slot>
+      {@render controlsSnippet()}
+      <!-- Use @render with snippet -->
     </div>
   {/if}
 

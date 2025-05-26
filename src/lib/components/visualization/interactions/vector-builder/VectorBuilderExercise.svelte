@@ -47,7 +47,7 @@
 
   // ControlPanelComponent (VectorInputPanel) is passed to InteractiveExercise,
   // which will then slot it into the HUD when the HUD is fullscreen.
-  const controlPanelProps = $derived({}); // VectorInputPanel takes no props
+  const controlPanelProps = $derived({}); // VectorInputPanel takes no props, it uses stores
 </script>
 
 <div class="vector-builder-exercise-shell">

@@ -152,14 +152,9 @@
 
   const hudProps = $derived({
     // isFullscreen is managed and passed by InteractiveExercise to the HUD.
-    // We pass the nozzle positions which are bindable in the HUD.
-    relativeNozzleX: relativeNozzleXLocal,
-    relativeNozzleY: relativeNozzleYLocal,
-    relativeNozzleZ: relativeNozzleZLocal,
-    // InteractiveExercise will connect its internal reset/fullscreen handlers to the HUD's requests.
-    // If PrinterCalibrationExercise needs to *trigger* a reset of InteractiveExercise, it can change a 'resetKey' prop for InteractiveExercise.
-    // If PCE needs to *react* to a reset *initiated by the HUD via InteractiveExercise*, then InteractiveExercise needs an onResetRequest prop.
-    // For now, reset is handled by the store signal and the effect above.
+    // Nozzle positions are no longer needed here for the HUD to pass to a control panel,
+    // as the HUD and ControlPanel (slotted) now use stores.
+    // PrinterCalibrationHud will subscribe to relativeNozzleXStore etc. for its own display if needed.
   });
 </script>
 
@@ -185,11 +180,7 @@
   <!-- Render NozzleControlPanel OUTSIDE InteractiveExercise when NOT fullscreen (PCE's concept of fullscreen) -->
   {#if !isFullscreenForPCELayout}
     <div class="control-panel-outside-vis">
-      <NozzleControlPanel
-        bind:x={relativeNozzleXLocal}
-        bind:y={relativeNozzleYLocal}
-        bind:z={relativeNozzleZLocal}
-      />
+      <NozzleControlPanel />
     </div>
   {/if}
 
@@ -197,9 +188,9 @@
     exerciseTitle="Printer Calibration"
     SceneComponent={PrinterCalibrationScene as unknown as ComponentType<SvelteComponent>}
     HudComponent={PrinterCalibrationHud as unknown as ComponentType<SvelteComponent>}
+    ControlPanelComponent={NozzleControlPanel as unknown as ComponentType<SvelteComponent>}
     {sceneProps}
     {hudProps}
-    ControlPanelComponent={null}
     controlPanelProps={{}}
     onResetRequestedByHudCallback={handleActualReset}
     onFullscreenStatusChangeCallback={(isFs: boolean) =>

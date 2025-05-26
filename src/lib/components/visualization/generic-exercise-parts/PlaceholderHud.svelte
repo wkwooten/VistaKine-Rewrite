@@ -1,15 +1,19 @@
 <script lang="ts">
+  import type { Snippet } from "svelte"; // Import Snippet
+
   // Placeholder HUD
   let {
     title = "Placeholder HUD Title",
     isFullscreen = false,
     onrequestToggleFullscreen,
     onrequestReset,
+    controlsSnippet, // Add controlsSnippet prop
   } = $props<{
     title?: string;
     isFullscreen?: boolean;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
+    controlsSnippet?: Snippet; // Define type for controlsSnippet
   }>();
 
   // In a real HUD, buttons would dispatch 'requestToggleFullscreen' and 'requestReset' events.
@@ -26,8 +30,13 @@
     <button onclick={() => onrequestReset?.()}>Reset Button</button>
   </div>
   <div class="controls-slot-content">
-    <slot name="controls"></slot>
-    <!-- Slot for control panel -->
+    {#if controlsSnippet}
+      <!-- Render snippet if provided -->
+      {@render controlsSnippet()}
+    {:else}
+      <!-- Optional: Keep a message if no snippet is provided, or remove if not needed -->
+      <p>(No controls provided to placeholder HUD)</p>
+    {/if}
   </div>
 </div>
 

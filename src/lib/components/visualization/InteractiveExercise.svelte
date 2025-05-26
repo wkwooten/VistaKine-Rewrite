@@ -4,12 +4,12 @@
   import PlaceholderScene from "./generic-exercise-parts/PlaceholderScene.svelte";
   import PlaceholderHud from "./generic-exercise-parts/PlaceholderHud.svelte";
   import PlaceholderControls from "./generic-exercise-parts/PlaceholderControls.svelte";
-  import type { SvelteComponent } from "svelte";
+  import type { SvelteComponent, ComponentType, Snippet } from "svelte";
 
   interface ExerciseProps {
-    SceneComponent?: any;
-    HudComponent?: any;
-    ControlPanelComponent?: any;
+    SceneComponent?: ComponentType<SvelteComponent>;
+    HudComponent?: ComponentType<SvelteComponent>;
+    ControlPanelComponent?: ComponentType<SvelteComponent>;
     sceneProps?: Record<string, any>;
     hudProps?: Record<string, any>;
     controlPanelProps?: Record<string, any>;
@@ -33,8 +33,6 @@
   const HudComponent = passedProps.HudComponent ?? PlaceholderHud;
   const ControlPanelComponentToRender =
     passedProps.ControlPanelComponent ?? PlaceholderControls;
-  const showCustomControlPanel =
-    passedProps.ControlPanelComponent !== undefined;
 
   const sceneProps = passedProps.sceneProps ?? {};
   const hudProps = passedProps.hudProps ?? {};
@@ -88,16 +86,17 @@
   }}
   bind:this={exerciseWrapperElement}
 >
+  {#snippet controlsPanelContent()}
+    <ControlPanelComponentToRender {...controlPanelProps} />
+  {/snippet}
+
   <div class="hud-layer">
     <HudComponent
       {...combinedHudProps}
       onrequestToggleFullscreen={handleRequestToggleFullscreen}
       onrequestReset={handleRequestReset}
-    >
-      <svelte:fragment slot="controls">
-        <ControlPanelComponentToRender {...controlPanelProps} />
-      </svelte:fragment>
-    </HudComponent>
+      controlsSnippet={controlsPanelContent}
+    ></HudComponent>
   </div>
 
   <div class="vis-layer">

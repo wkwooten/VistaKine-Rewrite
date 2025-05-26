@@ -8,52 +8,124 @@
     MAX_Y,
     MIN_Z,
     MAX_Z,
+    // Import the stores for nozzle coordinates
+    relativeNozzleXStore,
+    relativeNozzleYStore,
+    relativeNozzleZStore,
   } from "./calibrationState"; // Updated import path
+  import { get } from "svelte/store"; // Import get for initial store value reading
   // import { onDestroy } from "svelte"; // Removed unused import
   import AxisInput from "../../elements/ui/AxisInput.svelte";
 
-  // --- Props ---
-  let {
-    x = $bindable<number>(MIN_X),
-    y = $bindable<number>(5),
-    z = $bindable<number>(MIN_Z),
-  } = $props<{ x?: number; y?: number; z?: number }>();
+  // --- No longer using $bindable props for x, y, z ---
+  // let {
+  //   x = $bindable<number>(MIN_X),
+  //   y = $bindable<number>(5),
+  //   z = $bindable<number>(MIN_Z),
+  // } = $props<{ x?: number; y?: number; z?: number }>();
 
-  // --- Validation Effect ---
+  // --- Local state, initialized from stores ---
+  let localX = $state(get(relativeNozzleXStore));
+  let localY = $state(get(relativeNozzleYStore));
+  let localZ = $state(get(relativeNozzleZStore));
+
+  // --- Effects to sync local state with stores (two-way) ---
+
+  // Local -> Store
   $effect(() => {
-    x = Number(x);
-    y = Number(y);
-    z = Number(z);
+    console.log(
+      `[NozzleControlPanel] Updating relativeNozzleXStore to: ${localX}`
+    );
+    relativeNozzleXStore.set(localX);
+  });
+  $effect(() => {
+    console.log(
+      `[NozzleControlPanel] Updating relativeNozzleYStore to: ${localY}`
+    );
+    relativeNozzleYStore.set(localY);
+  });
+  $effect(() => {
+    console.log(
+      `[NozzleControlPanel] Updating relativeNozzleZStore to: ${localZ}`
+    );
+    relativeNozzleZStore.set(localZ);
+  });
 
-    if (x < MIN_X || x > MAX_X) {
+  // Store -> Local
+  $effect(() => {
+    const storeX = $relativeNozzleXStore;
+    if (storeX !== localX) {
+      console.log(
+        `[NozzleControlPanel] Store changed relativeNozzleXStore to: ${storeX}, updating localX.`
+      );
+      localX = storeX;
+    }
+  });
+  $effect(() => {
+    const storeY = $relativeNozzleYStore;
+    if (storeY !== localY) {
+      console.log(
+        `[NozzleControlPanel] Store changed relativeNozzleYStore to: ${storeY}, updating localY.`
+      );
+      localY = storeY;
+    }
+  });
+  $effect(() => {
+    const storeZ = $relativeNozzleZStore;
+    if (storeZ !== localZ) {
+      console.log(
+        `[NozzleControlPanel] Store changed relativeNozzleZStore to: ${storeZ}, updating localZ.`
+      );
+      localZ = storeZ;
+    }
+  });
+
+  // --- Validation Effect (operates on localX, localY, localZ) ---
+  $effect(() => {
+    // Ensure local values are numbers before validation, though AxisInput should maintain numbers.
+    let numX = Number(localX);
+    let numY = Number(localY);
+    let numZ = Number(localZ);
+
+    let clamped = false;
+
+    if (numX < MIN_X || numX > MAX_X) {
       showCalibrationDialog([
         {
           speaker: "Leo",
           message: `Careful, Surya! My calculations show that X value is outside the physical print area. It needs to be between ${MIN_X} and ${MAX_X}.`,
         },
       ]);
-      x = Math.max(MIN_X, Math.min(MAX_X, x));
-      return;
+      numX = Math.max(MIN_X, Math.min(MAX_X, numX));
+      clamped = true;
     }
-    if (y < MIN_Y || y > MAX_Y) {
+    if (numY < MIN_Y || numY > MAX_Y) {
       showCalibrationDialog([
         {
           speaker: "Surya",
           message: `Whoa, whoa! The Y-axis limit is ${MAX_Y}. We need to stay between ${MIN_Y} and ${MAX_Y}. We don\'t want to break my printer, its fragile!`,
         },
       ]);
-      y = Math.max(MIN_Y, Math.min(MAX_Y, y));
-      return;
+      numY = Math.max(MIN_Y, Math.min(MAX_Y, numY));
+      clamped = true;
     }
-    if (z < MIN_Z || z > MAX_Z) {
+    if (numZ < MIN_Z || numZ > MAX_Z) {
       showCalibrationDialog([
         {
           speaker: "Leo",
           message: `That Z coordinate is problematic. We must remain within the ${MIN_Z} to ${MAX_Z} range for proper bed adhesion.`,
         },
       ]);
-      z = Math.max(MIN_Z, Math.min(MAX_Z, z));
-      return;
+      numZ = Math.max(MIN_Z, Math.min(MAX_Z, numZ));
+      clamped = true;
+    }
+
+    // If any value was clamped, update the local state.
+    // The effects syncing local to store will then propagate the clamped values.
+    if (clamped) {
+      if (localX !== numX) localX = numX;
+      if (localY !== numY) localY = numY;
+      if (localZ !== numZ) localZ = numZ;
     }
   });
 </script>
@@ -63,7 +135,7 @@
   <div class="coord-inputs">
     <AxisInput
       label="X"
-      bind:value={x}
+      bind:value={localX}
       min={MIN_X}
       max={MAX_X}
       step={1}
@@ -71,7 +143,7 @@
     />
     <AxisInput
       label="Y"
-      bind:value={y}
+      bind:value={localY}
       min={MIN_Y}
       max={MAX_Y}
       step={1}
@@ -79,7 +151,7 @@
     />
     <AxisInput
       label="Z"
-      bind:value={z}
+      bind:value={localZ}
       min={MIN_Z}
       max={MAX_Z}
       step={1}

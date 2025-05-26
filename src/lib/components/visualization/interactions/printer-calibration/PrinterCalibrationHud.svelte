@@ -6,48 +6,41 @@
     resetSceneRequested,
     showDialog,
     dialogTurns,
+    relativeNozzleXStore,
+    relativeNozzleYStore,
+    relativeNozzleZStore,
   } from "$lib/components/visualization/interactions/printer-calibration/calibrationState";
-  import NozzleControlPanel from "./NozzleControlPanel.svelte";
+  import type { Snippet } from "svelte";
 
   // --- Props ---
   let {
     isFullscreen = $bindable(false),
-    relativeNozzleX = $bindable(0),
-    relativeNozzleY = $bindable(0),
-    relativeNozzleZ = $bindable(0),
-    // Add callback props expected by InteractiveExercise
     onrequestToggleFullscreen,
     onrequestReset,
+    controlsSnippet,
   } = $props<{
     isFullscreen?: boolean;
-    relativeNozzleX?: number;
-    relativeNozzleY?: number;
-    relativeNozzleZ?: number;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
+    controlsSnippet?: Snippet;
   }>();
 
-  // --- Derived State for Display ---
+  // --- Derived State for Display (subscribing to stores directly) ---
   let formattedPosition = $derived(
-    `X: ${relativeNozzleX.toFixed(1)}, Y: ${relativeNozzleY.toFixed(
+    `X: ${$relativeNozzleXStore.toFixed(1)}, Y: ${$relativeNozzleYStore.toFixed(
       1
-    )}, Z: ${relativeNozzleZ.toFixed(1)}`
+    )}, Z: ${$relativeNozzleZStore.toFixed(1)}`
   );
 
   // --- Event Handlers ---
   function handleResetScene() {
     console.log(`[CalibrationHud] Requesting reset via store and prop`);
     resetSceneRequested.set(true);
-    // Call the prop if it exists
     onrequestReset?.();
   }
 
-  // Remove createEventDispatcher
-  // const dispatch = createEventDispatcher();
-
   function handleRequestToggle() {
     console.log("[CalibrationHud] Forwarding requestToggleFullscreen via prop");
-    // Call the prop if it exists
     onrequestToggleFullscreen?.();
   }
 </script>
@@ -67,7 +60,7 @@
     />
   </div>
 
-  <!-- NEW: Top Right Position Display -->
+  <!-- NEW: Top Right Position Display (now uses derived state from stores) -->
   <div class="hud-position-display">
     <span>{formattedPosition}</span>
   </div>
@@ -77,14 +70,10 @@
     <DialogBox turns={$dialogTurns} bind:show={$showDialog} {isFullscreen} />
   {/if}
 
-  <!-- Bottom Right Input Controls Container -->
-  {#if isFullscreen}
+  <!-- Bottom Right Input Controls Container - uses snippet -->
+  {#if isFullscreen && controlsSnippet}
     <div class="nozzle-control-panel-container">
-      <NozzleControlPanel
-        bind:x={relativeNozzleX}
-        bind:y={relativeNozzleY}
-        bind:z={relativeNozzleZ}
-      />
+      {@render controlsSnippet()}
     </div>
   {/if}
 </div>

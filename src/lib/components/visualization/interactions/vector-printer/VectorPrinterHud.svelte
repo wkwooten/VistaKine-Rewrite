@@ -3,12 +3,14 @@
   // import VectorPrinterOutputPanel from "./VectorPrinterOutputPanel.svelte";
   import FullscreenButton from "../../elements/ui/FullscreenButton.svelte";
   import ResetButton from "../../elements/ui/ResetButton.svelte";
+  import type { Snippet } from "svelte";
 
   let {
     // nozzlePosition,
     isFullscreen = false,
     onrequestToggleFullscreen,
     onrequestReset,
+    controlsSnippet,
     // Assuming an onrequestAdd might be needed for AddButton if it has specific logic
     // onrequestAdd,
   } = $props<{
@@ -16,6 +18,7 @@
     isFullscreen?: boolean;
     onrequestToggleFullscreen?: () => void;
     onrequestReset?: () => void;
+    controlsSnippet?: Snippet;
     // onrequestAdd?: () => void;
   }>();
 
@@ -41,9 +44,9 @@
     />
   </div>
 
-  {#if isFullscreen}
+  {#if isFullscreen && controlsSnippet}
     <div class="controls-panel-slot-container">
-      <slot name="controls"></slot>
+      {@render controlsSnippet()}
     </div>
   {/if}
 </div>
