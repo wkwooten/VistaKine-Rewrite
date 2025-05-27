@@ -168,7 +168,7 @@
     padding: var(--space-xs);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    background-color: var(--color-surface-overlay);
+    background-color: var(--color-surface);
     pointer-events: auto;
     user-select: none;
     -webkit-user-select: none;

@@ -17,7 +17,6 @@
   // let { someProp } = $props<{ someProp?: type }>();
 
   // --- State for VectorBuilderExercise Layout & Dialog ---
-  let isFullscreenForVBELayout = $state(false);
   let dialogKey = $state(0);
 
   onMount(() => {
@@ -50,74 +49,43 @@
   const controlPanelProps = $derived({}); // VectorInputPanel takes no props, it uses stores
 </script>
 
-<div class="vector-builder-exercise-shell">
-  <!-- Render DialogBox OUTSIDE InteractiveExercise when NOT in VBE's fullscreen layout -->
-  {#if $showVectorBuilderDialog && !isFullscreenForVBELayout}
-    <div class="dialog-above-vis">
-      {#key dialogKey}
-        <DialogBox
-          turns={$vectorBuilderDialogTurns}
-          bind:show={$showVectorBuilderDialog}
-        />
-      {/key}
-    </div>
-  {/if}
+{#snippet dialogArea(data: { isFullscreen: boolean })}
+  {#if $showVectorBuilderDialog}
+    {#key dialogKey}
+      <DialogBox
+        turns={$vectorBuilderDialogTurns}
+        bind:show={$showVectorBuilderDialog}
+        isFullscreen={data.isFullscreen}
+      />
+    {/key}{/if}
+{/snippet}
 
-  <!-- InteractiveExercise now manages Scene, HUD, and ControlPanel (which HUD displays in FS) -->
-  <InteractiveExercise
-    class="interactive-exercise-component"
-    exerciseTitle="Vector Builder"
-    SceneComponent={VectorBuilderScene as unknown as ComponentType<SvelteComponent>}
-    HudComponent={VectorBuilderHud as unknown as ComponentType<SvelteComponent>}
-    ControlPanelComponent={VectorInputPanel as unknown as ComponentType<SvelteComponent>}
-    {sceneProps}
-    {hudProps}
-    {controlPanelProps}
-    onResetRequestedByHudCallback={handleActualReset}
-    onFullscreenStatusChangeCallback={(isFs: boolean) =>
-      (isFullscreenForVBELayout = isFs)}
-  />
+{#snippet controlsArea(data: { isFullscreen: boolean })}
+  <VectorInputPanel />
+{/snippet}
 
-  <!-- Render VectorInputPanel directly when NOT in VBE's fullscreen layout -->
-  {#if !isFullscreenForVBELayout}
-    <div class="control-panel-outside-vis">
-      <VectorInputPanel />
-    </div>
-  {/if}
-</div>
+<InteractiveExercise
+  class="interactive-exercise-component"
+  exerciseTitle="Vector Builder"
+  SceneComponent={VectorBuilderScene as unknown as ComponentType<SvelteComponent>}
+  HudComponent={VectorBuilderHud as unknown as ComponentType<SvelteComponent>}
+  ControlPanelComponent={VectorInputPanel as unknown as ComponentType<SvelteComponent>}
+  {sceneProps}
+  {hudProps}
+  {controlPanelProps}
+  onResetRequestedByHudCallback={handleActualReset}
+  dialogAreaSnippet={dialogArea}
+  controlsAreaSnippet={controlsArea}
+  onFullscreenStatusChangeCallback={(isFs: boolean) => {
+    // isFullscreenForVBELayout = isFs; // No longer needed
+  }}
+/>
 
 <style lang="scss">
-  .vector-builder-exercise-shell {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  /* Removed .vector-builder-exercise-shell styles */
+  /* Removed .dialog-above-vis styles */
+  /* Removed .control-panel-outside-vis styles */
 
-    // Ensure InteractiveExercise takes available space when other elements are present
-    // This might need adjustment based on how height: 100% behaves on children
-    // when the parent (shell) is also height: 100% and a flex container.
-    & > :global(.interactive-exercise-component) {
-      flex-grow: 1; // Allows InteractiveExercise to take remaining space
-      min-height: 300px; // Or some other sensible minimum height for the visualization
-    }
-  }
-
-  .dialog-above-vis {
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 110px;
-    margin-bottom: var(--space-s);
-    position: relative;
-    order: 1; // Dialog first
-  }
-
-  // The InteractiveExercise component will be order 2 implicitly or explicitly if needed.
-  // For example, if .interactive-exercise-component is given order: 2;
-
-  .control-panel-outside-vis {
-    width: 100%;
-    box-sizing: border-box;
-    margin-block-start: var(--space-s); // Space above the panel
-    order: 3; // Control panel last
-  }
+  /* Optional: global style if InteractiveExercise itself needs to fill a parent in some specific context */
+  /* :global(.interactive-exercise-component) {} */
 </style>

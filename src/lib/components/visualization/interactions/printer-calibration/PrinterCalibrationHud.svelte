@@ -3,7 +3,6 @@
   import ResetButton from "../../elements/ui/ResetButton.svelte";
   import DialogBox from "../../elements/ui/DialogBox.svelte";
   import {
-    resetSceneRequested,
     showDialog,
     dialogTurns,
     relativeNozzleXStore,
@@ -34,8 +33,7 @@
 
   // --- Event Handlers ---
   function handleResetScene() {
-    console.log(`[CalibrationHud] Requesting reset via store and prop`);
-    resetSceneRequested.set(true);
+    console.log(`[CalibrationHud] Requesting reset via prop`);
     onrequestReset?.();
   }
 

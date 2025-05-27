@@ -1,53 +1,63 @@
 <script lang="ts">
-  import { T, Canvas } from "@threlte/core";
+  import type { SvelteComponent, ComponentType } from "svelte"; // Ensure SvelteComponent is imported
+  import InteractiveExercise from "../../InteractiveExercise.svelte"; // Added
   import DisplacementVelocityScene from "./DisplacementVelocityScene.svelte";
   import DisplacementVelocityHud from "./DisplacementVelocityHud.svelte";
-  import VisContainer from "$lib/components/visualization/VisContainer.svelte";
-  import ContentCard from "$lib/components/ContentCard.svelte";
+  // import VisContainer from "$lib/components/visualization/VisContainer.svelte"; // Removed
+  // import ContentCard from "$lib/components/ContentCard.svelte"; // Removed
   import { onMount } from "svelte";
   // Later: Import state management functions/stores
 
-  let isMounted = false;
-  onMount(() => {
-    isMounted = true;
-    // Initialize state, start intro dialogue etc.
-  });
+  // Props for title/description if needed, these will be used in the snippet
+  let {
+    title = "Exercise 2.1: Distance vs. Displacement",
+    description = "Watch the drone move and observe the difference between the path it takes (distance) and its overall change in position (displacement).",
+  } = $props<{
+    title?: string;
+    description?: string;
+  }>();
 
-  // Props for title/description if needed
-  export let title: string = "Exercise 2.1: Distance vs. Displacement";
-  export let description: string =
-    "Watch the drone move and observe the difference between the path it takes (distance) and its overall change in position (displacement).";
+  // Removed isMounted logic, assuming InteractiveExercise handles child rendering
+
+  // Placeholder for actual reset logic if DisplacementVelocityHud requests it
+  function handleActualReset() {
+    console.log("[DisplacementVelocityExercise] Reset requested.");
+    // TODO: Implement actual reset logic for this exercise (e.g., call state store reset)
+  }
+
+  const sceneProps = $derived({}); // DVScene doesn't seem to take props currently
+  const hudProps = $derived({}); // DVHud doesn't seem to take props currently (besides those from IE)
+  const controlPanelProps = $derived({}); // Added for completeness
 </script>
 
-<ContentCard blockType="exercise-block" layoutWidth="full">
+{#snippet dialogArea(data: { isFullscreen: boolean })}
   {#if title || description}
-    <div class="exercise-header">
+    <div class="exercise-header-dve">
       {#if title}<h3>{title}</h3>{/if}
       {#if description}<p>{description}</p>{/if}
     </div>
   {/if}
+{/snippet}
 
-  <VisContainer>
-    {#if isMounted}
-      <!-- Render HUD Overlay -->
-      <DisplacementVelocityHud />
-
-      <!-- Threlte Canvas -->
-      <Canvas>
-        <DisplacementVelocityScene />
-      </Canvas>
-
-      <!-- Other overlay elements like DialogBox could go here -->
-    {:else}
-      <div class="loading-placeholder">Loading Visualization...</div>
-    {/if}
-  </VisContainer>
-</ContentCard>
+<InteractiveExercise
+  SceneComponent={DisplacementVelocityScene as unknown as ComponentType<SvelteComponent>}
+  HudComponent={DisplacementVelocityHud as unknown as ComponentType<SvelteComponent>}
+  ControlPanelComponent={undefined}
+  {sceneProps}
+  {hudProps}
+  {controlPanelProps}
+  onResetRequestedByHudCallback={handleActualReset}
+  exerciseTitle={title}
+  dialogAreaSnippet={dialogArea}
+  controlsAreaSnippet={undefined}
+></InteractiveExercise>
 
 <style lang="scss">
-  .exercise-header {
+  .exercise-header-dve {
+    /* Renamed to avoid conflict if original class was global */
     margin-bottom: var(--space-s);
-    padding: 0 var(--space-s); // Add padding if needed
+    /* Original padding was conditional, apply consistently or remove if IE handles spacing */
+    padding: 0 var(--space-s);
     @media (max-width: 600px) {
       padding: 0;
     }
@@ -60,11 +70,5 @@
     }
   }
 
-  .loading-placeholder {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 300px; // Ensure placeholder has some height
-    color: var(--color-text-secondary);
-  }
+  /* Removed .loading-placeholder style as isMounted logic is removed */
 </style>

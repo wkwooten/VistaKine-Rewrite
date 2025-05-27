@@ -35,7 +35,6 @@ export const activeTargetsStore = writable<TargetPoint[]>([]); // For the curren
 
 // UI -> Scene Communication
 export const requestedNozzlePosition = writable<{ x: number; y: number; z: number } | null>(null);
-export const resetSceneRequested = writable<boolean>(false); // Use a simple boolean flag
 
 // Scene -> UI Communication (Directly use the state writables above)
 

@@ -4,7 +4,6 @@
   import PrinterCalibrationHud from "./PrinterCalibrationHud.svelte";
   import NozzleControlPanel from "./NozzleControlPanel.svelte";
   import {
-    resetSceneRequested, // Store flag can still be used by other parts
     dialogTurns,
     showDialog,
     // Import new stores
@@ -46,9 +45,6 @@
   // InteractiveExercise will manage its own internal fullscreen state for the viz area.
   // We might need a way to sync them or get notified by InteractiveExercise if PCE's layout needs to change *based on* IE's fullscreen state.
   // For now, this state controls the visibility of DialogBox/NozzleControlPanel outside InteractiveExercise.
-  let isFullscreenForPCELayout = $state(false);
-  // let exerciseWrapperElement: HTMLDivElement; // No longer directly managed here for fullscreen
-
   let dialogKey = $state(0);
 
   const initialRelativePosition = { x: 0, y: 5, z: 0 };
@@ -101,16 +97,6 @@
     relativeNozzleZStore.set(initialRelativePosition.z);
   }
 
-  // Effect for store-initiated reset
-  $effect(() => {
-    if (resetSceneRequested && $resetSceneRequested) {
-      console.log(
-        "[Exercise] Resetting state due to store request ($resetSceneRequested)."
-      );
-      handleActualReset();
-    }
-  });
-
   onMount(() => {
     dialogKey += 1;
     // Initialize stores on mount. NozzleControlPanel will initialize its local state from these.
@@ -129,91 +115,57 @@
     onAllStagesComplete: handleAllStagesComplete, // This is a function defined in PCE
   });
 
-  const hudProps = $derived({
-    // isFullscreen is managed and passed by InteractiveExercise to the HUD.
-    // Nozzle positions are no longer needed here for the HUD to pass to a control panel,
-    // as the HUD and ControlPanel (slotted) now use stores.
-    // PrinterCalibrationHud will subscribe to relativeNozzleXStore etc. for its own display if needed.
-  });
+  const hudProps = $derived({});
 </script>
 
-<!--
-  The main div no longer needs fullscreenAction or class:fullscreen directly related to the viz.
-  The isFullscreenForPCELayout state is for this component's own layout decisions if any part of *this* component
-  (outside of InteractiveExercise) needs to change when the viz part goes fullscreen.
-  This might require a callback from InteractiveExercise if its fullscreen state needs to drive isFullscreenForPCELayout.
--->
-<div class="printer-calibration-exercise-shell">
-  <!-- Render DialogBox OUTSIDE InteractiveExercise when NOT fullscreen (PCE's concept of fullscreen) -->
-  {#if showDialog && $showDialog && !isFullscreenForPCELayout}
-    <div class="dialog-above-vis">
-      {#key dialogKey}
-        <DialogBox
-          turns={dialogTurns && $dialogTurns}
-          show={showDialog && $showDialog}
-        />
-      {/key}
-    </div>
-  {/if}
+{#snippet dialogArea(data: { isFullscreen: boolean })}
+  {#if $showDialog}
+    {#key dialogKey}
+      <DialogBox
+        turns={$dialogTurns}
+        bind:show={$showDialog}
+        isFullscreen={data.isFullscreen}
+      />
+    {/key}{/if}
+{/snippet}
 
-  <!-- Render NozzleControlPanel OUTSIDE InteractiveExercise when NOT fullscreen (PCE's concept of fullscreen) -->
-  {#if !isFullscreenForPCELayout}
-    <div class="control-panel-outside-vis">
-      <NozzleControlPanel />
-    </div>
-  {/if}
+{#snippet controlsArea(data: { isFullscreen: boolean })}
+  <NozzleControlPanel />
+{/snippet}
 
-  <InteractiveExercise
-    class="interactive-exercise-component"
-    exerciseTitle="Printer Calibration"
-    SceneComponent={PrinterCalibrationScene as unknown as ComponentType<SvelteComponent>}
-    HudComponent={PrinterCalibrationHud as unknown as ComponentType<SvelteComponent>}
-    ControlPanelComponent={NozzleControlPanel as unknown as ComponentType<SvelteComponent>}
-    {sceneProps}
-    {hudProps}
-    controlPanelProps={{}}
-    onResetRequestedByHudCallback={handleActualReset}
-    onFullscreenStatusChangeCallback={(isFs: boolean) =>
-      (isFullscreenForPCELayout = isFs)}
-  />
-</div>
+<InteractiveExercise
+  class="interactive-exercise-component"
+  exerciseTitle="Printer Calibration"
+  SceneComponent={PrinterCalibrationScene as unknown as ComponentType<SvelteComponent>}
+  HudComponent={PrinterCalibrationHud as unknown as ComponentType<SvelteComponent>}
+  ControlPanelComponent={NozzleControlPanel as unknown as ComponentType<SvelteComponent>}
+  {sceneProps}
+  {hudProps}
+  controlPanelProps={{}}
+  onResetRequestedByHudCallback={handleActualReset}
+  dialogAreaSnippet={dialogArea}
+  controlsAreaSnippet={controlsArea}
+  onFullscreenStatusChangeCallback={(isFs: boolean) => {
+    // Optional: if PCE needs to react to IE's fullscreen state for other reasons
+    // console.log("[PCE] IE Fullscreen: ", isFs);
+  }}
+/>
 
 <style lang="scss">
-  .printer-calibration-exercise-shell {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; // Prevent scrollbars on the shell itself if content overflows before handled by children
+  /* Remove all styles related to .printer-calibration-exercise-shell */
+  /* Styles for .control-panel-outside-vis and .dialog-above-vis are removed */
+  /* Any styles specific to the content of the snippets (DialogBox, NozzleControlPanel) */
+  /* should ideally be within those components or globally if applicable. */
 
-    & > :global(.interactive-exercise-component) {
-      flex-grow: 1;
-      flex-shrink: 1; // Allow shrinking if necessary
-      min-height: 300px; // Minimum height for the visualization area
-      height: 100%; // Attempt to take full height of the flex container portion
-    }
-  }
+  /* If DialogBox or NozzleControlPanel need specific wrapper styles when passed as snippets, */
+  /* they could be applied here by targeting them within the snippet context if Svelte allows, */
+  /* or by ensuring their own internal styling is sufficient. */
+  /* For now, assume their internal styles are fine or handled globally. */
 
-  .printer-calibration-exercise-shell:not(.fullscreen-layout-active) {
-    // This class seems to be based on isFullscreenForPCELayout, which might not be needed
-    // if the main shell is always flex column. Original styles had this.
-    // If specific non-fullscreen layout is needed, it can be refined here.
-    // For now, the base .printer-calibration-exercise-shell handles the flex layout.
+  /* Example: Ensure the component passed to InteractiveExercise fills its parent if PCE itself is in a flex layout */
+  :global(.interactive-exercise-component) {
+    /* This might not be needed if PCE is no longer a flex container itself */
+    /* width: 100%; */
+    /* height: 100%; */
   }
-
-  .control-panel-outside-vis {
-    width: 100%;
-    box-sizing: border-box;
-    margin-block: var(--space-s);
-    order: 4; /* Example order */
-  }
-  .dialog-above-vis {
-    box-sizing: border-box;
-    margin-bottom: var(--space-s);
-    position: relative;
-    order: 0; /* Example order */
-  }
-
-  /* Styles from the old .exercise-wrapper.fullscreen can be adapted if needed
-     for .printer-calibration-exercise-shell.fullscreen-layout-active */
 </style>

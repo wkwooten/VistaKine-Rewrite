@@ -24,13 +24,8 @@
 
   // --- State for VectorPrinterExercise ---
   let nozzlePosition = $state(initialNozzlePosition.clone());
-
-  // Dialog state
-  let showDialog = $state(false);
-  let dialogTurns = $state<DialogTurn[]>([]);
-
-  // Layout state controlled by InteractiveExercise
-  let isFullscreenForVPLayout = $state(false);
+  let showDialogState = $state(false);
+  let dialogTurnsState = $state<DialogTurn[]>([]);
 
   const LINTER_FIX_DUMMY_VALUE = ""; // TODO: Replace with actual value
 
@@ -115,8 +110,8 @@
     definedVectorsStore.set([]);
     resultantVectorStore.set(null);
     currentDefiningVectorStore.set(new Vector3(0, 0, 0));
-    showDialog = false;
-    dialogTurns = [];
+    showDialogState = false;
+    dialogTurnsState = [];
   }
 
   // This function is passed to VectorOperationControls when rendered directly by VPE
@@ -155,84 +150,55 @@
   });
 </script>
 
-<div class="vector-printer-exercise-shell">
-  <!-- Dialog Box (rendered by VPE when not in its fullscreen layout) -->
-  {#if showDialog && !isFullscreenForVPLayout}
-    <div class="dialog-above-vis">
-      <DialogBox bind:show={showDialog} bind:turns={dialogTurns} />
-    </div>
+{#snippet dialogArea(data: { isFullscreen: boolean })}
+  {#if showDialogState}
+    <DialogBox
+      bind:show={showDialogState}
+      bind:turns={dialogTurnsState}
+      isFullscreen={data.isFullscreen}
+    />
   {/if}
+{/snippet}
 
-  <!-- ADDED VectorPrinterOutputPanel here (conditionally) -->
-  {#if !isFullscreenForVPLayout}
-    <div class="output-panel-area-outside-vis">
-      <VectorPrinterOutputPanel
-        {nozzlePosition}
-        extraClass="vpe-output-panel-outside"
-      />
-    </div>
-  {/if}
+{#snippet controlsArea(data: { isFullscreen: boolean })}
+  <div class="vpe-controls-wrapper-normal-view">
+    <VectorPrinterOutputPanel
+      {nozzlePosition}
+      extraClass="vpe-output-panel-normal"
+    />
+    <VectorOperationControls
+      onPrintVector={handlePrintCurrentVector}
+      onReset={handleActualReset}
+    />
+  </div>
+{/snippet}
 
-  <InteractiveExercise
-    class="interactive-exercise-component"
-    exerciseTitle="Vector Printer"
-    SceneComponent={VectorPrinterScene as unknown as ComponentType<SvelteComponent>}
-    HudComponent={VectorPrinterHud as unknown as ComponentType<SvelteComponent>}
-    ControlPanelComponent={VectorOperationControls as unknown as ComponentType<SvelteComponent>}
-    {sceneProps}
-    {hudProps}
-    controlPanelProps={controlPanelPropsForInteractiveExercise}
-    onResetRequestedByHudCallback={handleActualReset}
-    onFullscreenStatusChangeCallback={(isFs: boolean) =>
-      (isFullscreenForVPLayout = isFs)}
-  />
-
-  <!-- VectorOperationControls (rendered by VPE when not in its fullscreen layout) -->
-  {#if !isFullscreenForVPLayout}
-    <div class="controls-area-outside-vis">
-      <VectorOperationControls
-        onPrintVector={handlePrintCurrentVector}
-        onReset={resetExerciseFromDirectControls}
-      />
-    </div>
-  {/if}
-</div>
+<InteractiveExercise
+  class="interactive-exercise-component"
+  exerciseTitle="Vector Printer"
+  SceneComponent={VectorPrinterScene as unknown as ComponentType<SvelteComponent>}
+  HudComponent={VectorPrinterHud as unknown as ComponentType<SvelteComponent>}
+  ControlPanelComponent={VectorOperationControls as unknown as ComponentType<SvelteComponent>}
+  {sceneProps}
+  {hudProps}
+  controlPanelProps={controlPanelPropsForInteractiveExercise}
+  onResetRequestedByHudCallback={handleActualReset}
+  dialogAreaSnippet={dialogArea}
+  controlsAreaSnippet={controlsArea}
+  onFullscreenStatusChangeCallback={(isFs: boolean) => {
+    // isFullscreenForVPLayout = isFs; // No longer needed
+  }}
+/>
 
 <style lang="scss">
-  .vector-printer-exercise-shell {
+  .vpe-controls-wrapper-normal-view {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
-
-    & > :global(.interactive-exercise-component) {
-      flex-grow: 1;
-      min-height: 300px;
-      order: 2;
-    }
-  }
-
-  .dialog-above-vis {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: var(--space-s);
-    order: 0;
-  }
-
-  .controls-area-outside-vis {
-    padding-block: var(--space-s);
+    gap: var(--space-s);
+    padding: var(--space-s); // Add some padding around the combined controls
     background-color: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    overflow-y: auto;
-    order: 3;
+    border-top: 1px solid var(--color-border); // Mimic previous style for controls area
   }
 
-  .output-panel-area-outside-vis {
-    padding-block: var(--space-s);
-    background-color: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    display: flex;
-    justify-content: center;
-    order: 1;
-  }
+  /* :global(.vpe-output-panel-normal) {} */ /* Optional: if specific styling needed for output panel in normal view */
 </style>

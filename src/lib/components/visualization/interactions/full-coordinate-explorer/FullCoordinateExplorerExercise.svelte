@@ -68,9 +68,8 @@
   });
 </script>
 
-<div class="exercise-wrapper-fcee" role="application">
-  <!-- Changed class -->
-  <div class="description">
+{#snippet dialogArea(data: { isFullscreen: boolean })}
+  <div class="description-fcee">
     <p>
       Use the controls above the 3D view to switch between
       <strong>Translate (Move)</strong> and <strong>Rotate</strong> modes for the
@@ -82,28 +81,35 @@
       the coordinates!
     </p>
   </div>
+{/snippet}
 
-  <div class="interaction-area-fcee">
-    <!-- Changed class -->
-    <InteractiveExercise
-      SceneComponent={FullCoordinateExplorerScene as unknown as ComponentType<any>}
-      HudComponent={FrameManipulationHud as unknown as ComponentType<any>}
-      {sceneProps}
-      hudProps={completeHudProps}
-      ControlPanelComponent={null}
-      onResetRequestedByHudCallback={handleResetRequestedByHud}
-      exerciseTitle="Coordinate System Explorer"
-    />
-  </div>
-
-  <!-- Placeholder for any results or feedback area -->
-  <!-- {#if isExerciseComplete}
-    <div class="results">
-      <p>Congratulations! You've explored the coordinate system.</p>
-    </div>
-  {/if} -->
-</div>
+<InteractiveExercise
+  SceneComponent={FullCoordinateExplorerScene as unknown as ComponentType<any>}
+  HudComponent={FrameManipulationHud as unknown as ComponentType<any>}
+  {sceneProps}
+  hudProps={completeHudProps}
+  ControlPanelComponent={undefined}
+  onResetRequestedByHudCallback={handleResetRequestedByHud}
+  exerciseTitle="Coordinate System Explorer"
+  dialogAreaSnippet={dialogArea}
+  controlsAreaSnippet={undefined}
+/>
 
 <style lang="scss">
-  // Renamed classes to avoid potential conflicts or for better scoping
+  /* Removed .exercise-wrapper-fcee and .interaction-area-fcee styles */
+
+  .description-fcee {
+    padding: var(
+      --space-s
+    ); // Add some padding if it's now directly in the snippet
+    background-color: var(
+      --color-surface-alt
+    ); // Optional: distinguish background
+    border-bottom: 1px solid var(--color-border-light); // Optional: separator
+    p {
+      margin: 0;
+      font-size: var(--step-0);
+      color: var(--color-text-secondary);
+    }
+  }
 </style>

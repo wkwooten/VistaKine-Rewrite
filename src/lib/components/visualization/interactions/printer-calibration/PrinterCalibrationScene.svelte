@@ -15,7 +15,6 @@
   import { onMount } from "svelte";
   import {
     showCalibrationDialog,
-    resetSceneRequested,
     showDialog,
     relativeNozzleXStore,
     relativeNozzleYStore,
@@ -250,66 +249,29 @@
     }
   });
 
-  // React to reset requests from the store
-  $effect(() => {
-    if ($resetSceneRequested) {
-      console.log("[PrinterCalibration] Store requested scene reset.");
-      resetSceneInternal();
-      resetSceneRequested.set(false);
-    }
-  });
-
-  // Internal reset logic
-  function resetSceneInternal() {
-    console.log("[PrinterCalibration] Resetting scene...");
-    const resetWorldPosition = cornerOriginOffset
-      .clone()
-      .add(new Vector3(0, 5, 0));
-    animatedPosition.set(resetWorldPosition, { duration: 0 });
-    hitTargets = new Set();
+  // Show initial dialog
+  onMount(() => {
     showCalibrationDialog([
       {
         speaker: "Leo",
         message:
-          "Okay, let's try this calibration again. Precision requires patience.",
+          "Surya, I need your help. I've read all the manuals, double-checked the kinematics equations, but I *cannot* get this printer dialed in precisely enough for my experiment!",
       },
       {
         speaker: "Surya",
         message:
-          "Alright, alright, I'm ready. Point me to the first target, Leo.",
+          "Whoa, deep breaths, Leo! You're probably getting lost in the nanometers again. Calibration's important, but it's also about getting a feel for it.",
       },
       {
         speaker: "Leo",
-        message: "Just guide the nozzle to T0 in the corner. Smoothly, please.",
+        message: "My first layer is practically floating! It's unacceptable.",
+      },
+      {
+        speaker: "Surya",
+        message:
+          "Okay, let's walk through it together. First things first, let's just get the basics right on the print bed (X and Z axes). Try using the controls to get the nozzle over the points.",
       },
     ]);
-  }
-
-  // Show initial dialog
-  onMount(() => {
-    if (!get(showDialog)) {
-      showCalibrationDialog([
-        {
-          speaker: "Leo",
-          message:
-            "Surya, I need your help. I've read all the manuals, double-checked the kinematics equations, but I *cannot* get this printer dialed in precisely enough for my experiment!",
-        },
-        {
-          speaker: "Surya",
-          message:
-            "Whoa, deep breaths, Leo! You're probably getting lost in the nanometers again. Calibration's important, but it's also about getting a feel for it.",
-        },
-        {
-          speaker: "Leo",
-          message: "My first layer is practically floating! It's unacceptable.",
-        },
-        {
-          speaker: "Surya",
-          message:
-            "Okay, let's walk through it together. First things first, let's just get the basics right on the print bed (X and Z axes). Try using the controls to get the nozzle over the points.",
-        },
-      ]);
-    }
   });
 
   const cameraTarget = new Vector3(0, 7.5, 0);
