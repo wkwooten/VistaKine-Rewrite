@@ -120,3 +120,8 @@ li {
   // Add any other h2-like styles you want to ensure consistency
 }
 */
+
+// Style for pseudo-fullscreen to prevent body scroll
+body.pseudo-fullscreen-active-body {
+  overflow: hidden !important;
+}
