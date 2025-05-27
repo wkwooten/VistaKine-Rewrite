@@ -223,9 +223,10 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh; /* Fallback for other browsers */
+    height: -webkit-fill-available; /* More robust for iOS Safari */
     background-color: var(--color-background, #fff); /* Or a theme variable */
     z-index: 2147483647; /* Max z-index */
-    overflow: auto;
+    overflow: auto; /* Ensure content scrolls if it overflows */
   }
 </style>

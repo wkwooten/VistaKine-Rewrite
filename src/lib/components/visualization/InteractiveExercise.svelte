@@ -130,7 +130,9 @@
     flex-direction: column;
     overflow: hidden;
     gap: var(--space-s);
-    /* margin-bottom: var(--space-s); // This might be unwanted if FSWrapper provides own bg/layout */
+    margin-bottom: var(
+      --space-s
+    ); // This might be unwanted if FSWrapper provides own bg/layout
     /* background-color: var(--color-background); // REMOVED to allow parent background for gaps */
   }
 
