@@ -4,7 +4,20 @@
   import DialogBox from "../../elements/ui/DialogBox.svelte";
   import PlayPauseButton from "$lib/components/visualization/elements/ui/PlayPauseButton.svelte";
   import { slide } from "svelte/transition";
+  import type { Snippet } from "svelte"; // Added for consistency, though not used yet
   // Later: Import state like isPlaying, distance, displacement, velocity etc.
+
+  let {
+    isFullscreen = false,
+    onrequestToggleFullscreen,
+    onrequestReset, // Assuming this might be added later, like in other HUDs
+    // controlsSnippet, // Assuming this might be added later
+  } = $props<{
+    isFullscreen?: boolean;
+    onrequestToggleFullscreen?: () => void;
+    onrequestReset?: () => void;
+    // controlsSnippet?: Snippet;
+  }>();
 
   let isPlaying = false; // Placeholder state
   let distance = 0; // Placeholder state
@@ -16,6 +29,7 @@
     isPlaying = false;
     distance = 0;
     displacement = 0;
+    onrequestReset?.(); // Call if prop is provided
   }
 
   function togglePlayPause() {
@@ -23,11 +37,19 @@
     isPlaying = !isPlaying;
     console.log("Play/Pause toggled:", isPlaying);
   }
+
+  // Renamed to avoid conflict if this HUD were to have its own internal toggle logic
+  function handleRequestToggleFullscreenPassthrough() {
+    onrequestToggleFullscreen?.();
+  }
 </script>
 
 <div class="hud-overlay" transition:slide={{ duration: 200, axis: "y" }}>
   <div class="controls-top-right">
-    <FullscreenButton />
+    <FullscreenButton
+      {isFullscreen}
+      onRequestToggleCallback={handleRequestToggleFullscreenPassthrough}
+    />
   </div>
 
   <div class="controls-bottom-left">
@@ -38,8 +60,8 @@
   </div>
 
   <div class="controls-bottom-center">
-    <PlayPauseButton bind:playing={isPlaying} on:click={togglePlayPause} />
-    <ResetButton on:click={handleReset} />
+    <PlayPauseButton bind:playing={isPlaying} onclick={togglePlayPause} />
+    <ResetButton onclick={handleReset} />
   </div>
 </div>
 

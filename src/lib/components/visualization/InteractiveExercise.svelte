@@ -1,6 +1,7 @@
 <script lang="ts">
   import VisContainer from "$lib/components/visualization/VisContainer.svelte";
-  import { fullscreenAction } from "$lib/actions/useFullscreen";
+  // import { fullscreenAction } from "$lib/actions/useFullscreen"; // Removed
+  import FullscreenWrapper from "$lib/components/ui/FullscreenWrapper.svelte"; // Added
   import PlaceholderScene from "./generic-exercise-parts/PlaceholderScene.svelte";
   import PlaceholderHud from "./generic-exercise-parts/PlaceholderHud.svelte";
   import PlaceholderControls from "./generic-exercise-parts/PlaceholderControls.svelte";
@@ -46,30 +47,27 @@
   const controlsAreaSnippet = passedProps.controlsAreaSnippet;
 
   let resetKey = $state(0);
-  let isFullscreen = $state(false);
-  let exerciseWrapperElement: HTMLDivElement;
+  let isFullscreenActive = $state(false); // Renamed for clarity, will be bound to FullscreenWrapper
+  // let exerciseWrapperElement: HTMLDivElement; // No longer needed for dispatching event
 
   // Effect to call the fullscreen status change callback and log local fullscreen state
   $effect(() => {
     console.log(
-      "[InteractiveExercise] isFullscreen state changed to:",
-      isFullscreen
+      "[InteractiveExercise] isFullscreenActive state changed to:",
+      isFullscreenActive
     );
-    passedProps.onFullscreenStatusChangeCallback?.(isFullscreen);
+    passedProps.onFullscreenStatusChangeCallback?.(isFullscreenActive);
   });
 
   function handleRequestToggleFullscreen(): void {
     console.log(
-      "[InteractiveExercise] handleRequestToggleFullscreen called. Current isFullscreen:",
-      isFullscreen,
-      "Dispatching event with detail:",
-      !isFullscreen
+      "[InteractiveExercise] handleRequestToggleFullscreen called. Current isFullscreenActive:",
+      isFullscreenActive,
+      "Setting to:",
+      !isFullscreenActive
     );
-    if (exerciseWrapperElement) {
-      exerciseWrapperElement.dispatchEvent(
-        new CustomEvent("toggleFullscreenRequest", { detail: !isFullscreen })
-      );
-    }
+    // This will now toggle the FullscreenWrapper's active state via binding
+    isFullscreenActive = !isFullscreenActive;
   }
 
   function handleRequestReset(): void {
@@ -79,80 +77,74 @@
 
   const combinedHudProps = $derived({
     ...hudProps,
-    isFullscreen,
+    isFullscreen: isFullscreenActive, // Pass the current fullscreen state to HUD
     title: hudProps.title ?? exerciseTitle,
   });
 </script>
 
-<div
-  class="interactive-exercise-wrapper {extraClass}"
-  use:fullscreenAction={{
-    isFullscreenStore: { set: (v) => (isFullscreen = v) },
-  }}
-  bind:this={exerciseWrapperElement}
->
-  {#if dialogAreaSnippet && !isFullscreen}
-    <div class="dialog-area-wrapper">
-      {@render dialogAreaSnippet({ isFullscreen })}
-    </div>
-  {/if}
+<FullscreenWrapper bind:active={isFullscreenActive}>
+  <div class="interactive-exercise-content-wrapper {extraClass}">
+    {#if dialogAreaSnippet && !isFullscreenActive}
+      <div class="dialog-area-wrapper">
+        {@render dialogAreaSnippet({ isFullscreen: isFullscreenActive })}
+      </div>
+    {/if}
 
-  {#snippet controlsPanelContentInternal()}
-    <ControlPanelComponentToRender {...controlPanelProps} />
-  {/snippet}
+    {#snippet controlsPanelContentInternal()}
+      <ControlPanelComponentToRender {...controlPanelProps} />
+    {/snippet}
 
-  <div class="visualization-area-wrapper">
-    <div class="hud-layer">
-      <HudComponent
-        {...combinedHudProps}
-        onrequestToggleFullscreen={handleRequestToggleFullscreen}
-        onrequestReset={handleRequestReset}
-        controlsSnippet={controlsPanelContentInternal}
-      ></HudComponent>
+    <div class="visualization-area-wrapper">
+      <div class="hud-layer">
+        <HudComponent
+          {...combinedHudProps}
+          onrequestToggleFullscreen={handleRequestToggleFullscreen}
+          onrequestReset={handleRequestReset}
+          controlsSnippet={controlsPanelContentInternal}
+        ></HudComponent>
+      </div>
+
+      <div class="vis-layer">
+        <VisContainer {resetKey} isFullscreen={isFullscreenActive}>
+          <SceneComponent {...sceneProps} />
+        </VisContainer>
+      </div>
     </div>
 
-    <div class="vis-layer">
-      <VisContainer {resetKey} {isFullscreen}>
-        <SceneComponent {...sceneProps} />
-      </VisContainer>
-    </div>
+    {#if controlsAreaSnippet && !isFullscreenActive}
+      <div class="controls-area-wrapper">
+        {@render controlsAreaSnippet({ isFullscreen: isFullscreenActive })}
+      </div>
+    {/if}
   </div>
-
-  {#if controlsAreaSnippet && !isFullscreen}
-    <div class="controls-area-wrapper">
-      {@render controlsAreaSnippet({ isFullscreen })}
-    </div>
-  {/if}
-</div>
+</FullscreenWrapper>
 
 <style lang="scss">
-  .interactive-exercise-wrapper {
-    position: relative; // Keep relative for absolute children if any, but manage layout with flex
+  /* Renamed .interactive-exercise-wrapper to .interactive-exercise-content-wrapper */
+  /* This wrapper is now INSIDE FullscreenWrapper */
+  .interactive-exercise-content-wrapper :global {
+    position: relative;
     width: 100%;
     height: 100%;
-    display: flex; // Changed to flex
-    flex-direction: column; // Main layout is columnar
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     gap: var(--space-s);
-    margin-bottom: var(--space-s);
+    /* margin-bottom: var(--space-s); // This might be unwanted if FSWrapper provides own bg/layout */
+    /* background-color: var(--color-background); // REMOVED to allow parent background for gaps */
   }
 
   .dialog-area-wrapper {
-    // Styles for the dialog area, e.g., prevent shrinking
     flex-shrink: 0;
-    // order: 1; // If explicit ordering is needed
-    // Add any other necessary styling, like padding or margins if not handled by the snippet content
   }
 
   .visualization-area-wrapper {
-    // Wrapper for vis + hud layers
-    position: relative; // For layering hud-layer and vis-layer
-    display: grid; // Using grid for easy layering of hud and vis
+    position: relative;
+    display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr;
-    flex-grow: 1; // This area should take up remaining space
-    min-height: 0; // Important for flex children to shrink properly
-    // order: 2;
+    flex-grow: 1;
+    min-height: 0;
   }
 
   .hud-layer {
@@ -168,25 +160,11 @@
     grid-column: 1 / -1;
     position: relative;
     z-index: 10;
-    display: flex; // Ensure VisContainer can flex if its content needs to
-    min-height: 0; // Allow shrinking
+    display: flex;
+    min-height: 0;
   }
 
   .controls-area-wrapper {
-    // Styles for the controls area, e.g., prevent shrinking
     flex-shrink: 0;
-    // order: 3;
-    // Add any other necessary styling
   }
-
-  // When the wrapper element itself enters fullscreen via the action
-  // these styles apply. This is usually handled by the browser, but good for overrides.
-  // &.fullscreen-active { // Example class if action adds one, or use pseudo-selectors
-  //   // Potentially override child z-indexes or positions if necessary
-  // }
-  // The above style for .fullscreen-active seems to be an example/placeholder and might not be needed
-  // if the fullscreen action doesn't add such a class. If specific styling for fullscreen is needed,
-  // it's often managed by the :fullscreen pseudo-class on the element itself.
-  // For now, I will comment it out to resolve the SCSS error, it can be revisited if specific
-  // fullscreen styling needs are identified for the wrapper.
 </style>

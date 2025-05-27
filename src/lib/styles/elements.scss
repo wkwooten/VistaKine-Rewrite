@@ -25,3 +25,8 @@ figure {
 figure :global(.axis-explorer-wrapper) + figcaption {
    // Styles here - but try the simpler `figure figcaption` first.
 }
+
+strong {
+  font-weight: 600;
+  color: var(--color-accent);
+}

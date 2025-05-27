@@ -13,7 +13,7 @@
 
   // --- Props ---
   let {
-    isFullscreen = $bindable(false),
+    isFullscreen = false,
     onrequestToggleFullscreen,
     onrequestReset,
     controlsSnippet,
