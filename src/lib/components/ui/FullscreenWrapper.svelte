@@ -18,10 +18,29 @@
   let elementRef: HTMLElement | undefined = $state();
   let isPseudoFullscreen = $state(false);
   let nativeFullscreenPossible = $state(true); // Assume possible until first attempt
+  let isIOS = $state(false);
+
+  onMount(() => {
+    if (browser) {
+      isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+        !(window as any).MSStream;
+      if (isIOS) {
+        console.log(
+          "[FullscreenWrapper] iOS detected, native fullscreen will be bypassed."
+        );
+        nativeFullscreenPossible = false; // Effectively bypass native for iOS
+      }
+    }
+  });
 
   // --- Native Fullscreen Logic (adapted from useFullscreen.ts) ---
   const enterNativeFullscreen = async () => {
-    if (!elementRef || !nativeFullscreenPossible) return;
+    if (!elementRef || !nativeFullscreenPossible || isIOS) {
+      // Added isIOS check
+      if (isIOS && active) enterPseudoFullscreen(); // Directly go to pseudo if iOS and trying to activate
+      return;
+    }
     console.log("[FullscreenWrapper] Requesting native fullscreen.");
     try {
       if (elementRef.requestFullscreen) await elementRef.requestFullscreen();
@@ -67,6 +86,7 @@
   };
 
   const handleNativeFullscreenChange = () => {
+    if (isIOS) return; // Ignore native changes if we are on iOS and forcing pseudo
     const isNativeActive = !!(
       document.fullscreenElement ||
       (document as any).webkitFullscreenElement ||
@@ -106,19 +126,23 @@
       `[FullscreenWrapper] toggleFullscreen called. Target active state: ${shouldBeActive}`
     );
     if (shouldBeActive) {
-      if (forcePseudo || !nativeFullscreenPossible) {
+      if (forcePseudo || isIOS || !nativeFullscreenPossible) {
+        // Added isIOS check
         enterPseudoFullscreen();
       } else {
         enterNativeFullscreen(); // Will fallback to pseudo if it fails and active is still true
       }
     } else {
+      // Check native first only if not on iOS where we might be in pseudo-fullscreen
       if (
-        document.fullscreenElement ||
-        (document as any).webkitFullscreenElement ||
-        (document as any).msFullscreenElement
+        !isIOS &&
+        (document.fullscreenElement ||
+          (document as any).webkitFullscreenElement ||
+          (document as any).msFullscreenElement)
       ) {
         exitNativeFullscreen();
       }
+      // Always check pseudo because native exit might not have triggered if iOS detection is imperfect or user hit Esc from native
       if (isPseudoFullscreen) {
         exitPseudoFullscreen();
       }
@@ -129,13 +153,15 @@
   $effect(() => {
     // Sync with external 'active' prop changes
     console.log(
-      `[FullscreenWrapper] Effect: 'active' prop changed to ${active}. Current pseudo: ${isPseudoFullscreen}, Native possible: ${nativeFullscreenPossible}`
+      `[FullscreenWrapper] Effect: 'active' prop changed to ${active}. Current pseudo: ${isPseudoFullscreen}, Native possible: ${nativeFullscreenPossible}, iOS: ${isIOS}`
     );
-    const isNativeActive = !!(
-      document.fullscreenElement ||
-      (document as any).webkitFullscreenElement ||
-      (document as any).msFullscreenElement
-    );
+    const isNativeActive =
+      !isIOS &&
+      !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).msFullscreenElement
+      );
 
     if (active) {
       // Try to activate if not already in the desired state
@@ -160,15 +186,23 @@
 
   onMount(() => {
     if (!browser) return;
-    document.addEventListener("fullscreenchange", handleNativeFullscreenChange);
-    document.addEventListener(
-      "webkitfullscreenchange",
-      handleNativeFullscreenChange
-    ); // Safari
-    document.addEventListener(
-      "msfullscreenchange",
-      handleNativeFullscreenChange
-    ); // IE11
+    // iOS detection is already done in the earlier onMount
+
+    // Only add native listeners if not on iOS (or if we decide to still listen for other reasons)
+    if (!isIOS) {
+      document.addEventListener(
+        "fullscreenchange",
+        handleNativeFullscreenChange
+      );
+      document.addEventListener(
+        "webkitfullscreenchange",
+        handleNativeFullscreenChange
+      ); // Safari (desktop)
+      document.addEventListener(
+        "msfullscreenchange",
+        handleNativeFullscreenChange
+      ); // IE11
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isPseudoFullscreen) {
@@ -177,23 +211,26 @@
     };
     window.addEventListener("keydown", handleKeyDown);
 
-    // Initial check in case browser is already in fullscreen (e.g. F11)
-    // and this component is mounted into an already fullscreen element.
-    handleNativeFullscreenChange();
+    // Initial check for native fullscreen state (only if not iOS)
+    if (!isIOS) {
+      handleNativeFullscreenChange();
+    }
 
     return () => {
-      document.removeEventListener(
-        "fullscreenchange",
-        handleNativeFullscreenChange
-      );
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleNativeFullscreenChange
-      );
-      document.removeEventListener(
-        "msfullscreenchange",
-        handleNativeFullscreenChange
-      );
+      if (!isIOS) {
+        document.removeEventListener(
+          "fullscreenchange",
+          handleNativeFullscreenChange
+        );
+        document.removeEventListener(
+          "webkitfullscreenchange",
+          handleNativeFullscreenChange
+        );
+        document.removeEventListener(
+          "msfullscreenchange",
+          handleNativeFullscreenChange
+        );
+      }
       window.removeEventListener("keydown", handleKeyDown);
       // Ensure exiting fullscreen if component is destroyed while active
       if (active) {
