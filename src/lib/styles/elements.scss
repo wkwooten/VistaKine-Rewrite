@@ -19,13 +19,6 @@ figure {
   }
 }
 
-// You might need to adjust the :global wrapper style if AxisExplorer's
-// internal wrapper interferes with figcaption centering.
-// Check if the above works first. If not, you might need something like:
-figure :global(.axis-explorer-wrapper) + figcaption {
-   // Styles here - but try the simpler `figure figcaption` first.
-}
-
 strong {
   font-weight: 600;
   color: var(--color-accent);

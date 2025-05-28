@@ -1,7 +1,7 @@
 <script lang="ts">
   // No props needed for this version
 
-  import AuthWidget from "../AuthWidget.svelte";
+  import AuthWidget from "../auth/AuthWidget.svelte";
 </script>
 
 <header class="minimal-header-container">

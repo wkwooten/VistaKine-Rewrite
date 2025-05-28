@@ -286,7 +286,7 @@
 
   .section-map-container {
     // Default Desktop Styles (Fixed Sidebar)
-    background-color: var(--color-background);
+    background-color: var(--color-surface);
     width: var(--section-map-width, 220px);
     border: 1px solid var(--color-border);
     padding: var(--space-s) 0 var(--space-s) var(--space-s);

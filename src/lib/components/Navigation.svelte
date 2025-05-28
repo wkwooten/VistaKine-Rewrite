@@ -450,7 +450,7 @@
 
   nav {
     height: 100vh;
-    background-color: var(--color-background);
+    background-color: var(--color-surface);
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -460,8 +460,8 @@
     z-index: 1001;
     overflow: hidden;
     /* width: var(--sidebar-width); */
-    transition: width var(--sidebar-transition-duration)
-      var(--sidebar-transition-timing);
+    /* transition: width var(--sidebar-transition-duration)
+      var(--sidebar-transition-timing); */
     box-sizing: border-box;
 
     /* ADD Media query to disable width/transition on mobile */
@@ -471,6 +471,8 @@
 
     &.collapsed {
       width: var(--sidebar-collapsed-width);
+      background-color: var(--color-background);
+      box-shadow: none;
 
       .nav-item {
         justify-content: center;

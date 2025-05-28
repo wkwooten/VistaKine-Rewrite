@@ -22,7 +22,7 @@
   // Import the new AboutSection component
   import AboutSection from "$lib/components/layout/AboutSection.svelte";
   // Import the new Footer component
-  import AuthWidget from "$lib/components/AuthWidget.svelte";
+  import AuthWidget from "$lib/components/auth/AuthWidget.svelte";
 </script>
 
 <div class="hero-container">

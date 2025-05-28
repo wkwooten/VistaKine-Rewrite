@@ -193,7 +193,7 @@
   .page-nav {
     text-align: center;
     width: 100%;
-    background-color: var(--color-background);
+    background-color: var(--color-surface);
     position: sticky;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
