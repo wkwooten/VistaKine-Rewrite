@@ -20,11 +20,10 @@
     background-color: var(--color-background); // Standard background
     border-bottom: 1px solid var(--color-border); // Standard border
     box-sizing: border-box;
-    /* width: 100%; */
-    margin-left: var(--sidebar-collapsed-width);
+    width: 100%;
+    /* margin-left: var(--sidebar-collapsed-width); */
+    padding-left: var(--sidebar-collapsed-width);
     height: vars.$navbar-height;
-    // Height will be determined by padding and content.
-    // This header is static by default (not sticky).
 
     @media (max-width: vars.$breakpoint-lg) {
       margin-left: 0;

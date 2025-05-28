@@ -46,6 +46,8 @@
   // --- Derived State (Svelte 5 Runes) ---
   // Determines if the navigation should be visually collapsed.
   const navCollapsed = $derived(isMobile ? false : !$sidebarExpanded);
+  // Determine if desktop-specific width styling should apply
+  const applyDesktopWidth = $derived(!isMobile);
 
   // --- State variables for widths, to be populated from CSS custom properties ---
   let sidebarWidth = $state(400); // Default fallback, will be updated from CSS
@@ -181,7 +183,10 @@
 </script>
 
 <!-- Navigation -->
-<nav class:collapsed={navCollapsed} style="width: {$navWidth}px;">
+<nav
+  class:collapsed={navCollapsed}
+  style={applyDesktopWidth ? `width: ${$navWidth}px` : ""}
+>
   <div
     class="nav-header-container"
     class:is-active={$page.url.pathname === "/"}
@@ -488,10 +493,9 @@
     box-sizing: border-box;
     box-shadow: var(--shadow-md);
 
-    /* ADD Media query to disable width/transition on mobile */
-    @media (max-width: var(--breakpoint-l)) {
-      display: none;
-    }
+    /* @media (max-width: variables.$breakpoint-lg) {
+      width: 0 !important;
+    } */
 
     &.collapsed {
       /* width: var(--sidebar-collapsed-width); */ /* Handled by tweened store */
@@ -716,6 +720,7 @@
     position: relative;
     box-sizing: border-box;
     min-width: 0;
+    width: 100%;
     overflow: hidden;
 
     &:hover {
