@@ -14,10 +14,13 @@
   import { onMount, onDestroy } from "svelte";
   import { slide } from "svelte/transition";
   import { quintOut } from "svelte/easing";
+  import { tweened } from "svelte/motion"; // Import tweened
   import { browser } from "$app/environment";
   import { getChapterList, chapters as allChapters } from "$lib/data/chapters";
   import NavSearch from "$lib/components/NavSearch.svelte";
   import AccountModal from "$lib/components/auth/AccountModal.svelte";
+
+  const iconSize = 18; // Re-add the iconSize constant
 
   // --- Props (Svelte 5 Runes) ---
   let {
@@ -44,10 +47,24 @@
   // Determines if the navigation should be visually collapsed.
   const navCollapsed = $derived(isMobile ? false : !$sidebarExpanded);
 
-  // --- Constants ---
-  const iconSize = 18;
+  // --- State variables for widths, to be populated from CSS custom properties ---
+  let sidebarWidth = $state(400); // Default fallback, will be updated from CSS
+  let sidebarCollapsedWidth = $state(80); // Default fallback, will be updated from CSS
+
+  // Tweened store for sidebar width
+  let navWidth = tweened(navCollapsed ? sidebarCollapsedWidth : sidebarWidth, {
+    duration: 300, // Match your desired transition duration
+    easing: quintOut,
+  });
 
   // --- Effects (Svelte 5 Runes) ---
+
+  // Effect to update tweened width when navCollapsed or base widths change
+  $effect(() => {
+    // Ensure $navWidth reacts to changes in sidebarWidth and sidebarCollapsedWidth
+    const targetWidth = navCollapsed ? sidebarCollapsedWidth : sidebarWidth;
+    navWidth.set(targetWidth);
+  });
 
   // Effect to manage body scrolling based on sidebar state and mobile view
   $effect(() => {
@@ -94,11 +111,25 @@
     let mediaQuery: MediaQueryList | null = null;
 
     if (browser) {
-      // Read the CSS custom property for the breakpoint
       const styles = getComputedStyle(document.documentElement);
+
+      // Read the CSS custom property for the breakpoint
       const bpValue = styles.getPropertyValue("--breakpoint-lg").trim();
       if (bpValue) {
         lgBreakpointValue = bpValue;
+      }
+
+      // Read sidebar width CSS custom properties
+      const cssSidebarWidth = styles.getPropertyValue("--sidebar-width").trim();
+      const cssSidebarCollapsedWidth = styles
+        .getPropertyValue("--sidebar-collapsed-width")
+        .trim();
+
+      if (cssSidebarWidth) {
+        sidebarWidth = parseInt(cssSidebarWidth, 10);
+      }
+      if (cssSidebarCollapsedWidth) {
+        sidebarCollapsedWidth = parseInt(cssSidebarCollapsedWidth, 10);
       }
 
       mediaQuery = window.matchMedia(`(max-width: ${lgBreakpointValue})`);
@@ -150,7 +181,7 @@
 </script>
 
 <!-- Navigation -->
-<nav class:collapsed={navCollapsed}>
+<nav class:collapsed={navCollapsed} style="width: {$navWidth}px;">
   <div
     class="nav-header-container"
     class:is-active={$page.url.pathname === "/"}
@@ -442,12 +473,6 @@
     }
   }
 
-  // Specific hover rule for top-level generic items
-  .nav-items > li:not(.nav-chapter-group):not(.is-active):hover,
-  .bottom-item > li:not(.is-active):hover {
-    background-color: color-mix(in srgb, var(--color-surface) 90%, black);
-  }
-
   nav {
     height: 100vh;
     background-color: var(--color-surface);
@@ -459,10 +484,9 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    /* width: var(--sidebar-width); */
-    /* transition: width var(--sidebar-transition-duration)
-      var(--sidebar-transition-timing); */
+
     box-sizing: border-box;
+    box-shadow: var(--shadow-md);
 
     /* ADD Media query to disable width/transition on mobile */
     @media (max-width: var(--breakpoint-l)) {
@@ -470,7 +494,7 @@
     }
 
     &.collapsed {
-      width: var(--sidebar-collapsed-width);
+      /* width: var(--sidebar-collapsed-width); */ /* Handled by tweened store */
       background-color: var(--color-background);
       box-shadow: none;
 
@@ -502,7 +526,7 @@
 
     span {
       opacity: 1;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(--transition-normal) ease;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -512,6 +536,13 @@
 
   .icon {
     background-color: var(--color-surface);
+    span {
+      opacity: 1;
+      transition: opacity var(--transition-opacity-fast) ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .nav-header-container {
@@ -549,7 +580,7 @@
 
     span {
       opacity: 1;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(--transition-opacity-fast) ease-in-out;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -562,7 +593,7 @@
     align-items: center;
     gap: var(--space-2xs);
     opacity: 1;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(--transition-opacity-fast) ease-in-out;
     overflow: hidden;
   }
 
@@ -614,12 +645,20 @@
     display: flex;
     align-items: center;
     opacity: 1;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(--transition-opacity-fast) ease-in-out;
     overflow: hidden;
 
     :global(svg) {
       position: absolute;
       left: 8px;
+    }
+
+    span {
+      opacity: 1;
+      transition: opacity var(--transition-opacity-fast) ease-in-out;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 
@@ -681,6 +720,7 @@
 
     &:hover {
       color: var(--color-accent);
+      background-color: var(--color-accent-hover-bg);
 
       .icon {
         border-color: var(--color-accent);
@@ -689,7 +729,7 @@
 
     span {
       opacity: 1;
-      transition: opacity 0.1s ease-in-out;
+      transition: opacity var(--transition-opacity-fast) ease-in-out;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -712,7 +752,7 @@
     flex-grow: 1;
     min-width: 0;
     opacity: 1;
-    transition: opacity 0.1s ease-in-out;
+    transition: opacity var(--transition-opacity-fast) ease-in-out;
 
     &:hover {
       text-decoration: underline;
@@ -792,7 +832,7 @@
   }
 
   nav.collapsed {
-    width: var(--sidebar-collapsed-width);
+    /* width: var(--sidebar-collapsed-width); */ /* Handled by tweened store */
 
     .nav-item {
       justify-content: center;
@@ -826,13 +866,23 @@
     padding-left: var(--space-s);
     margin: 0;
     transition:
-      opacity 0.1s ease-in-out,
+      opacity var(--transition-opacity-fast) ease-in-out,
       height var(--sidebar-transition-duration) var(--sidebar-transition-timing);
   }
 
   nav.collapsed .chapter-sections {
     opacity: 0;
     pointer-events: none;
+    justify-content: center;
+    opacity: 1;
+    transition:
+      opacity var(--transition-opacity-fast) ease-in-out,
+      transform 0.3s ease;
+
+    :global(svg) {
+      max-width: none;
+      transition: transform 0.3s ease;
+    }
   }
 
   .section-item {
@@ -905,12 +955,7 @@
     }
 
     &:hover {
-      background-color: color-mix(
-        in srgb,
-        var(--chapter-sidebar-bg, var(--color-surface-hover)),
-        /* Use chapter theme or fallback */ 90%,
-        transparent
-      );
+      color: var(--chapter-color-dark, var(--color-surface));
     }
   }
 
