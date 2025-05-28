@@ -122,7 +122,7 @@
 <style lang="scss">
   /* Renamed .interactive-exercise-wrapper to .interactive-exercise-content-wrapper */
   /* This wrapper is now INSIDE FullscreenWrapper */
-  .interactive-exercise-content-wrapper :global {
+  :global(.interactive-exercise-content-wrapper) {
     position: relative;
     width: 100%;
     height: 100%;

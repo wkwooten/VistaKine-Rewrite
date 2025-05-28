@@ -135,11 +135,10 @@
 
   .main-content-area {
     display: flex;
-    /* flex-direction: column; */
     width: 100%;
     min-width: 0;
     flex-grow: 1;
-    padding: var(--space-s) 0;
+    padding-bottom: var(--space-s);
     gap: var(--space-l);
 
     @media (max-width: var(--breakpoint-lg)) {
@@ -274,11 +273,10 @@
   .section-layout-wrapper {
     display: flex;
     flex-direction: row;
-    /* margin-left: var(--sidebar-width); */
     justify-content: center;
     width: 100%;
     box-sizing: border-box;
-    position: relative; /* Add position relative for absolutely positioned SectionMap */
+    position: relative;
 
     @media (max-width: vars.$breakpoint-xl) {
       flex-direction: column;
@@ -312,7 +310,7 @@
         ),
         var(--space-m)
       );
-      top: calc(var(--navbar-height, 80px) + var(--space-m));
+      top: calc(vars.$navbar-height + var(--space-m));
     }
   }
 

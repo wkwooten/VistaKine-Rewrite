@@ -1,6 +1,6 @@
 /* Global styles for chapter layout, structure, and theme variables */
 @use 'sass:color';
-@use 'variables';
+@use 'variables' as vars;
 
 // --- Define Chapter Theme Mixin (Simplified Usage) ---
 // Assigns the pre-defined CSS variables for the given chapter number
@@ -72,7 +72,7 @@
   max-width: var(--max-content-width);
   margin: 0 auto;
 
-  @media (max-width: variables.$breakpoint-lg) {
+  @media (max-width: vars.$breakpoint-lg) {
     padding-top: var(--space-xs);
   }
 }
@@ -100,11 +100,11 @@
   width: 100%;
   box-sizing: border-box;
 
-  @media (max-width: variables.$breakpoint-lg) {
+  @media (max-width: vars.$breakpoint-lg) {
     padding-inline: var(--space-s);
   }
 
-  @media (max-width: variables.$breakpoint-sm) {
+  @media (max-width: vars.$breakpoint-sm) {
     padding-inline: 0;
   }
 

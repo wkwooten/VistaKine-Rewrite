@@ -26,9 +26,6 @@
   let isMobile = $state(false);
   let lgBreakpointValue = 1024; // Default fallback (numeric)
 
-  let mainContentElement: HTMLElement | null = null;
-  let navBarHeight = 80; // Default height, will try to read from CSS
-
   function checkMobile() {
     if (browser) {
       isMobile = window.innerWidth <= lgBreakpointValue;

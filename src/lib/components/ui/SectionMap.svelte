@@ -291,7 +291,7 @@
     border: 1px solid var(--color-border);
     padding: var(--space-s) 0 var(--space-s) var(--space-s);
     overflow-y: auto;
-    max-height: calc(100vh - var(--navbar-height, 80px) - var(--space-xl));
+    max-height: calc(100vh - vars.$navbar-height - var(--space-xl));
     z-index: 50; // Above overlay
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
@@ -304,7 +304,7 @@
       opacity: 0;
       pointer-events: none;
       position: fixed;
-      top: var(--navbar-height, 80px);
+      top: vars.$navbar-height;
       right: var(--space-m);
       transform: translateX(20px);
 

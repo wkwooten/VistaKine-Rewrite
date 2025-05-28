@@ -73,16 +73,13 @@
   .auth-widget-component {
     display: flex;
     align-items: center;
-    background-color: var(--color-background);
   }
 
   .auth-buttons {
     display: flex;
     padding: var(--space-2xs) var(--space-xs);
-    background-color: var(--color-background);
     gap: var(--space-xs, 8px);
     border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
   }
 

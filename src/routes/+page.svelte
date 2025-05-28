@@ -29,7 +29,7 @@
   <div
     style="position: absolute; top: var(--space-m); right: var(--space-m); z-index: 10;"
   >
-    <AuthWidget />
+    <!-- <AuthWidget /> -->
   </div>
   <section class="hero">
     <!-- Wrap hero content in a ContentCard -->
@@ -86,7 +86,6 @@
   }
 
   .hero {
-    min-height: 100vh; // Use min-height instead of height for flexibility
     display: flex;
     flex-direction: column;
     align-items: center;

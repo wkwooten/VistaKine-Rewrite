@@ -82,6 +82,7 @@ $font-family-monospace: 'IBM Plex Mono', monospace;
 // Breakpoints (matching Utopia setup)
 $min-viewport: 300px;
 $max-viewport: 1240px;
+$breakpoint-xs: $min-viewport;
 $breakpoint-sm: 640px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
@@ -104,8 +105,9 @@ $sidebar-width: 400px;
 $sidebar-collapsed-width:80px;
 $sidebar-width-full: 300px; // Consider consolidating with $sidebar-width
 $sidebar-width-mini: 100px;
-$sidebar-transition-duration: $transition-normal;
+$sidebar-transition-duration: $transition-slow;
 $sidebar-transition-timing: $transition-bezier;
+$navbar-height: 80px;
 
 // Shadows
 $shadow-color: rgb(9, 4, 48); // Define the natural shadow base color
@@ -341,6 +343,13 @@ $leo-color-light: #1E40AF;  // Blue 800
   --font-family-base: #{$font-family-base};
   --font-family-heading: #{$font-family-heading};
 
+  // Breakpoints (Keep As Is)
+  --breakpoint-xs: #{$breakpoint-xs};
+  --breakpoint-sm: #{$breakpoint-sm};
+  --breakpoint-md: #{$breakpoint-md};
+  --breakpoint-lg: #{$breakpoint-lg};
+  --breakpoint-xl: #{$breakpoint-xl};
+
   // Transitions (Keep As Is)
   --transition-fast: #{$transition-fast};
   --transition-normal: #{$transition-normal};
@@ -488,10 +497,6 @@ $vector-builder-end-color-dark: $color-dark-accent-hover;
 // ----------------------------------
 $surya-color-dark: #5EEAD4; // Teal 300
 $leo-color-dark: #93C5FD;  // Blue 300
-
-// ==================================
-// Export as CSS variables
-// ==================================
 
 // ==================================
 // Dark Mode Overrides

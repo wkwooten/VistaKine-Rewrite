@@ -11,7 +11,7 @@
   import { updateThemeColors } from "$lib/stores/themeColors";
   import Footer from "$lib/components/Footer.svelte";
   import { inject } from "@vercel/analytics";
-
+  import MinimalHeader from "$lib/components/layout/MinimalHeader.svelte";
   // Auth Modal related imports
   import AuthModal from "$lib/components/auth/AuthModal.svelte";
   import {
@@ -205,6 +205,8 @@
   {/if}
 
   <main class="content" bind:this={mainContentElement}>
+    <MinimalHeader />
+
     <div class="u-container">
       {@render children()}
       <Footer />
@@ -261,6 +263,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 1001;
 
     & > :first-child {
       flex-grow: 1;
@@ -348,6 +351,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1040;
     display: none;
+    overflow: hidden;
 
     &.active {
       display: block;

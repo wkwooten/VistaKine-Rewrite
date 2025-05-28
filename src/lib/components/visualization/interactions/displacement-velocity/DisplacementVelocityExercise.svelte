@@ -3,8 +3,6 @@
   import InteractiveExercise from "../../InteractiveExercise.svelte"; // Added
   import DisplacementVelocityScene from "./DisplacementVelocityScene.svelte";
   import DisplacementVelocityHud from "./DisplacementVelocityHud.svelte";
-  // import VisContainer from "$lib/components/visualization/VisContainer.svelte"; // Removed
-  // import ContentCard from "$lib/components/ContentCard.svelte"; // Removed
   import { onMount } from "svelte";
   // Later: Import state management functions/stores
 

@@ -4,8 +4,9 @@ This document provides a focused overview of the next major development prioriti
 
     - [x] Audit and refactor `InteractiveExercise.svelte` and existing interactions (`PrinterCalibration`, `VectorBuilder`, `FullCoordinateExplorer`, `DisplacementVelocity`).  [completion:: 2025-05-26]
     - [x] Improve prop passing and state management (Svelte stores, context API).  [completion:: 2025-05-26]
-    - [ ] Resolve iOS fullscreen issues for visualizations.
-    - [ ] Document new architecture guidelines.
+    - [x] Resolve iOS fullscreen issues for visualizations.  [completion:: 2025-05-28]
+        - Mostly done just need to resolve a few issues
+    - [x] Document new architecture guidelines.  [completion:: 2025-05-28]
 
 2.  **Finalize Authentication Flow:**
 
