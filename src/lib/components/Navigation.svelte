@@ -446,6 +446,45 @@
   /* ADD import for variables */
   @use "$lib/styles/variables" as variables;
 
+  @mixin set-collapsed-visibility(
+    $set_width_zero: false,
+    $set_position_absolute: false,
+    $set_visibility_hidden: false
+  ) {
+    opacity: 0;
+    pointer-events: none;
+    @if $set_width_zero {
+      width: 0;
+    }
+    @if $set_position_absolute {
+      position: absolute;
+    }
+    @if $set_visibility_hidden {
+      visibility: hidden;
+    }
+  }
+
+  @mixin apply-chapter-item-theme {
+    color: var(--chapter-color-dark); // For .chapter-item text & .chevron SVG
+
+    .chapter-title span,
+    .chapter-number {
+      color: var(--chapter-color-dark);
+    }
+    .chapter-number {
+      border-color: var(--chapter-color-dark);
+    }
+  }
+
+  @mixin ellipsis-text-fade {
+    opacity: 1;
+    transition: opacity var(--transition-opacity-fast) ease-in-out;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block; // Important for ellipsis on inline-like elements
+  }
+
   li {
     list-style: none;
     margin: 0;
@@ -457,10 +496,6 @@
         // Target the direct child a.nav-item
         color: var(--color-accent);
         font-weight: bold;
-
-        .icon {
-          border-color: var(--color-accent-dark);
-        }
 
         // When an ACTIVE item is hovered:
         &:hover {
@@ -489,7 +524,6 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-
     box-sizing: border-box;
     box-shadow: var(--shadow-md);
 
@@ -527,26 +561,10 @@
 
     min-width: 0;
     overflow: hidden;
-
-    span {
-      opacity: 1;
-      transition: opacity var(--transition-normal) ease;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
-    }
   }
 
   .icon {
     background-color: var(--color-surface);
-    span {
-      opacity: 1;
-      transition: opacity var(--transition-opacity-fast) ease-in-out;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 
   .nav-header-container {
@@ -583,12 +601,7 @@
     overflow: hidden;
 
     span {
-      opacity: 1;
-      transition: opacity var(--transition-opacity-fast) ease-in-out;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
+      @include ellipsis-text-fade;
     }
   }
 
@@ -602,10 +615,10 @@
   }
 
   nav.collapsed .logo-with-text {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    position: absolute;
+    @include set-collapsed-visibility(
+      $set_width_zero: true,
+      $set_position_absolute: true
+    );
   }
 
   nav.collapsed .icon-logo {
@@ -658,20 +671,16 @@
     }
 
     span {
-      opacity: 1;
-      transition: opacity var(--transition-opacity-fast) ease-in-out;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      @include ellipsis-text-fade;
     }
   }
 
   nav.collapsed .search-input-container {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    position: absolute;
-    visibility: hidden;
+    @include set-collapsed-visibility(
+      $set_width_zero: true,
+      $set_position_absolute: true,
+      $set_visibility_hidden: true
+    );
   }
 
   nav.collapsed .icon-search {
@@ -733,19 +742,12 @@
     }
 
     span {
-      opacity: 1;
-      transition: opacity var(--transition-opacity-fast) ease-in-out;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: inline-block;
+      @include ellipsis-text-fade;
     }
   }
 
   nav.collapsed .nav-item span {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
+    @include set-collapsed-visibility($set_width_zero: true);
     margin-left: 0;
     margin-right: 0;
   }
@@ -775,11 +777,11 @@
   }
 
   nav.collapsed .chapter-title {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    position: absolute;
-    visibility: hidden;
+    @include set-collapsed-visibility(
+      $set_width_zero: true,
+      $set_position_absolute: true,
+      $set_visibility_hidden: true
+    );
   }
 
   .icon,
@@ -794,21 +796,15 @@
     min-height: 32px;
     width: 32px;
     height: 32px;
-  }
-
-  nav.collapsed .chapter-item .chapter-number {
-    margin-right: 0;
-  }
-
-  .chapter-number {
-    background-color: #e6effd;
-    border-radius: 50%;
-    color: var(--color-accent);
     font-weight: bold;
     &:hover {
       text-decoration: underline;
       color: var(--chapter-color-dark);
     }
+  }
+
+  nav.collapsed .chapter-item .chapter-number {
+    margin-right: 0;
   }
 
   .bottom-item {
@@ -914,10 +910,6 @@
       background-color: var(--chapter-color-light);
       font-weight: bold;
       color: var(--chapter-color-dark);
-
-      /* &:hover {
-        background-color: var(--chapter-color-light);
-      } */
     }
 
     span {
@@ -965,38 +957,33 @@
   }
 
   nav.collapsed .chevron {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
+    @include set-collapsed-visibility(
+      $set_width_zero: true,
+      $set_visibility_hidden: true
+    );
     padding: 0;
     margin-left: 0;
-    visibility: hidden;
   }
 
   .nav-chapter-group.is-active > .chapter-item {
     background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
+    font-weight: bold;
+    @include apply-chapter-item-theme; // Apply common theme styles
 
-    .chapter-title {
-      color: var(--chapter-color-dark);
-      font-weight: bold;
+    // ---- Handle HOVER on this ACTIVE item ----
+    &:hover {
+      background-color: var(
+        --chapter-bg,
+        rgba(59, 130, 246, 0.1)
+      ); // Keep active background
+      @include apply-chapter-item-theme; // Re-apply common theme styles to override generic hover
     }
   }
 
-  // Added: Hover styles for INACTIVE chapter items
+  // Hover styles for INACTIVE chapter items
   .nav-chapter-group:not(.is-active) > .chapter-item:hover {
-    // Set text/icon color for the item, which chevron inherits
-    color: var(--chapter-color-dark);
-
-    // Explicitly set text color for children, overriding general nav-item hover
-    .chapter-title span,
-    .chapter-number {
-      color: var(--chapter-color-dark);
-    }
-
-    // Style chapter number border on hover
-    .chapter-number {
-      border-color: var(--chapter-color-dark);
-    }
+    @include apply-chapter-item-theme; // Apply common theme styles
+    // Note: background-color is intentionally not set here, allowing default hover or transparent
   }
 
   @media (prefers-color-scheme: dark) {

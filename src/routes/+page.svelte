@@ -79,6 +79,8 @@
 <AboutSection />
 
 <style lang="scss">
+  @use "$lib/styles/variables.scss" as vars;
+
   .hero-container {
     max-width: var(--max-content-width);
     margin-inline: auto;
@@ -91,9 +93,8 @@
     align-items: center;
     justify-content: center;
     position: relative;
-
-    @media (max-width: 768px) {
-    }
+    height: calc(100vh - vars.$navbar-height);
+    align-items: center;
   }
 
   .hero-content-card {

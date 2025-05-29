@@ -134,7 +134,10 @@ nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .nav-ite
 
 
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"]:not(.is-active):hover {
-  background-color: color-mix(in srgb, var(--chapter-bg) 90%, white);
+  background-color: color-mix(in srgb, var(--chapter-bg) 90%, var(--color-surface));
+  // @media (prefers-color-scheme: dark) {
+  //   background-color: color-mix(in srgb, var(--chapter-bg) 90%, black);
+  // }
 }
 // Chapter numbers in the sidebar
 nav .nav-items li.nav-chapter-group[class*="chapter-"][class*="-theme"] .chapter-number {
