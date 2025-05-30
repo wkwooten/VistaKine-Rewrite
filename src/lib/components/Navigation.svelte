@@ -2,6 +2,7 @@
   import { page } from "$app/stores";
   import { sidebarExpanded, currentChapter } from "$lib/stores/appState";
   import type { Chapter } from "$lib/data/chapters"; // Import only Chapter type
+  import { goto } from "$app/navigation"; // ADDED: For SvelteKit navigation
   import {
     Hexagon,
     BookOpen,
@@ -212,17 +213,35 @@
   }
 
   // Handles clicks on section links. Navigates to the section page.
-  function handleSectionClick(chapterSlug: string, sectionId: string): void {
+  async function handleSectionClick(
+    chapterSlug: string,
+    sectionId: string
+  ): Promise<void> {
+    // CHANGED: to async for goto
     const chapter = allChapters.find((ch) => ch.slug === chapterSlug);
     const section = chapter?.sections.find((sec) => sec.id === sectionId);
 
-    console.log("[NavDebug] Clicked section link:", chapterSlug, sectionId);
+    console.log(
+      "[NavDebug] Clicked section link (handleSectionClick):",
+      chapterSlug,
+      sectionId
+    );
 
     if (section && browser) {
-      window.location.href = `/chapter/${chapterSlug}/${section.slug}`;
+      // window.location.href = `/chapter/${chapterSlug}/${section.slug}`; // REMOVED
+      await goto(`/chapter/${chapterSlug}/${section.slug}`); // CHANGED: to use goto
+      if (isMobile) {
+        // ADDED: Close sidebar on mobile after navigation
+        $sidebarExpanded = false;
+      }
     } else if (chapter && browser) {
       // Fallback to chapter page if section not found for some reason
-      window.location.href = `/chapter/${chapterSlug}`;
+      // window.location.href = `/chapter/${chapterSlug}`; // REMOVED
+      await goto(`/chapter/${chapterSlug}`); // CHANGED: to use goto
+      if (isMobile) {
+        // ADDED: Close sidebar on mobile after navigation
+        $sidebarExpanded = false;
+      }
     }
   }
 </script>
@@ -319,9 +338,7 @@
                 expandedChapter = chapter.slug;
                 if (browser) {
                   const targetHref = `/chapter/${chapter.slug}`;
-                  setTimeout(() => {
-                    window.location.href = targetHref;
-                  }, 0);
+                  goto(targetHref);
                 }
               } else {
                 // Sidebar is expanded.
@@ -366,9 +383,7 @@
                   expandedChapter = chapter.slug;
                   if (browser) {
                     const targetHref = `/chapter/${chapter.slug}`;
-                    setTimeout(() => {
-                      window.location.href = targetHref;
-                    }, 0); // Use setTimeout
+                    goto(targetHref);
                   }
                 } else {
                   // If expanded, just toggle sections
@@ -425,7 +440,11 @@
                     href={`/chapter/${chapter.slug}/${section.slug}`}
                     class="nav-item section-link"
                     class:is-active={$page.params.section === section.slug}
-                    onclick={() => handleSectionClick(chapter.slug, section.id)}
+                    onclick={(event) => {
+                      // CHANGED: to prevent default and call new handler
+                      event.preventDefault();
+                      handleSectionClick(chapter.slug, section.id);
+                    }}
                   >
                     <span>{section.number} - {section.title}</span>
                   </a>

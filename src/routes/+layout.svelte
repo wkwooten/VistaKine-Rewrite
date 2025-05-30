@@ -352,7 +352,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--color-overlay);
+    transition: background-color var(--transition-fast) var(--transition-bezier);
     z-index: 1040;
     display: none;
     overflow: hidden;
