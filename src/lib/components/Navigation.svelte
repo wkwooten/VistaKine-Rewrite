@@ -56,7 +56,7 @@
   let expandedChapter = $state<string | null>(_initialExpandedChapterValue);
 
   // Used to track chapter changes for the effect below.
-  // let previousChapter = $state<string | null>(currentChapterSlug ?? null); // REMOVED - Replaced by new effect logic
+  let previousChapterFromRoute = $state<string | null>(null); // ADDED: To track previous route chapter
   let showAccountModal = $state(false);
 
   // --- Derived State (Svelte 5 Runes) ---
@@ -120,15 +120,21 @@
 
   // Effect to sync expandedChapter with the $currentChapter store (reflecting the route)
   $effect(() => {
-    const chapterFromRoute = $currentChapter; // Value from the appState store
-    if (chapterFromRoute) {
-      // If the route indicates a specific chapter, that chapter's accordion should be open.
-      if (expandedChapter !== chapterFromRoute) {
-        expandedChapter = chapterFromRoute;
-      }
+    const currentChapterFromRoute = $currentChapter; // Value from the appState store
+
+    // Only force expandedChapter to match the route if the route's chapter has actually changed.
+    if (
+      currentChapterFromRoute &&
+      currentChapterFromRoute !== previousChapterFromRoute
+    ) {
+      expandedChapter = currentChapterFromRoute;
     }
-    // If chapterFromRoute is null (e.g., on ToC page), this effect doesn't change expandedChapter,
-    // allowing the session-persisted or manually toggled state to remain.
+    // If currentChapterFromRoute is null and previous was not (e.g., navigated from a chapter to ToC),
+    // we don't automatically collapse. Session storage handles persistence.
+    // Manual toggles on the same page (where currentChapterFromRoute doesn't change) will not be overridden by this effect.
+
+    // Update previousChapterFromRoute for the next run of this effect.
+    previousChapterFromRoute = currentChapterFromRoute;
   });
 
   // Effect to save expandedChapter to session storage
@@ -337,9 +343,15 @@
                   // Click was on the div itself (e.g., chevron, padding), not an inner link.
                   console.log(
                     "[NavDebug] Clicked chapter header area for toggle (expanded branch):",
-                    chapter.slug,
-                    "Target:",
-                    targetElement.className
+                    {
+                      chapterSlug: chapter.slug,
+                      targetClass: targetElement.className,
+                      targetTagName: targetElement.tagName,
+                      isChevron: targetElement.closest(".chevron") !== null,
+                      currentExpandedChapter: expandedChapter,
+                      shouldToggleTo:
+                        expandedChapter === chapter.slug ? null : chapter.slug,
+                    }
                   );
                   toggleChapterSections(chapter.slug);
                 }
@@ -566,12 +578,7 @@
     box-sizing: border-box;
     box-shadow: var(--shadow-md);
 
-    /* @media (max-width: variables.$breakpoint-lg) {
-      width: 0 !important;
-    } */
-
     &.collapsed {
-      /* width: var(--sidebar-collapsed-width); */ /* Handled by tweened store */
       background-color: var(--color-background);
       box-shadow: none;
 
@@ -872,8 +879,6 @@
   }
 
   nav.collapsed {
-    /* width: var(--sidebar-collapsed-width); */ /* Handled by tweened store */
-
     .nav-item {
       justify-content: center;
       padding: var(--space-xs);
@@ -914,7 +919,6 @@
     opacity: 0;
     pointer-events: none;
     justify-content: center;
-    opacity: 1;
     transition:
       opacity var(--transition-opacity-fast) ease-in-out,
       transform 0.3s ease;
@@ -1022,7 +1026,6 @@
   // Hover styles for INACTIVE chapter items
   .nav-chapter-group:not(.is-active) > .chapter-item:hover {
     @include apply-chapter-item-theme; // Apply common theme styles
-    // Note: background-color is intentionally not set here, allowing default hover or transparent
   }
 
   @media (prefers-color-scheme: dark) {
@@ -1030,7 +1033,6 @@
       &.is-active {
         background-color: var(--chapter-color);
         color: var(--color-dark-text-on-accent);
-        // font-weight: bold; is inherited
       }
     }
   }
