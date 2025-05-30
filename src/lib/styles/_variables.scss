@@ -438,6 +438,7 @@ $leo-color-light: #1E40AF;  // Blue 800
 // --- Core Dark ---
 $color-dark-background: #1a1a2e;  // Very dark desaturated midnight blue/purple
 $color-dark-surface: #2a2844;     // Slightly lighter dark purple for cards/sidebars
+$color-dark-surface-alt: #1f1d38; // Darker purple for alternating surface
 $color-dark-text-primary: #f0f8ff; // AliceBlue (re-using light bg) - very light for high contrast
 $color-dark-text-secondary: #a0a0c0; // Desaturated light purple/grey for secondary text
 $color-dark-border: #4d4a6d;       // Muted purple/grey border
@@ -508,6 +509,7 @@ $leo-color-dark: #93C5FD;  // Blue 300
     // -- Core Palette Override --
     --color-background: #{$color-dark-background};
     --color-surface: #{$color-dark-surface};
+    --color-surface-alt: #{$color-dark-surface-alt};
     --color-text-primary: #{$color-dark-text-primary};
     --color-text-secondary: #{$color-dark-text-secondary};
     --color-border: #{$color-dark-border};

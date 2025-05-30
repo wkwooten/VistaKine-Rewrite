@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Info } from "lucide-svelte";
+  // import { Info } from "lucide-svelte"; // Remove import
   import type { Snippet } from "svelte";
 
   // Props for colors are removed, will use direct CSS variables from _variables.scss
@@ -7,7 +7,21 @@
 </script>
 
 <div class="instruction-container">
-  <Info size={24} class="icon" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="icon lucide lucide-info-icon lucide-info"
+    ><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path
+      d="M12 8h.01"
+    /></svg
+  >
   <div class="content-wrapper">
     {#if children}
       {@render children()}
@@ -39,8 +53,8 @@
     color: var(
       --brand
     ); // Directly use variable from _variables.scss (or global/chapter theme)
-    width: 1.25em; // Relative to font size
-    height: 1.25em; // Relative to font size
+    width: 1.75em; // Relative to font size
+    height: 1.75em; // Relative to font size
   }
 
   .content-wrapper {
