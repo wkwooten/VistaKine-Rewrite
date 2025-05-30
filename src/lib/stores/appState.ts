@@ -18,7 +18,19 @@ export const currentChapter: Writable<string | null> = writable(null);
 export const currentSection: Writable<string | null> = writable(null);
 
 // Sidebar state
-export const sidebarExpanded: Writable<boolean> = writable(false);
+// export const sidebarExpanded: Writable<boolean> = writable(false);
+
+// Updated sidebarExpanded store with sessionStorage persistence
+const storedSidebarExpanded = typeof window !== 'undefined' ? sessionStorage.getItem('sidebarExpanded') : null;
+export const sidebarExpanded: Writable<boolean> = writable<boolean>(
+  storedSidebarExpanded ? JSON.parse(storedSidebarExpanded) : false
+);
+
+if (typeof window !== 'undefined') {
+  sidebarExpanded.subscribe(value => {
+    sessionStorage.setItem('sidebarExpanded', JSON.stringify(value));
+  });
+}
 
 // User preferences
 export const userPreferences: Writable<UserPreferences> = writable({
