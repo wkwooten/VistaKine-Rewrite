@@ -217,7 +217,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   --color-white: #{$color-white};
   --color-text-inverted: #{$color-text-inverted-light};
   --parallax-background-color: #{$parallax-background-color};
-  --color-overlay: #{rgba($color-white, 0.75)}; // Added for light mode
+  --color-overlay: #{rgba($color-white, 0.5)}; // Added for light mode
 
   // Accent Palette
   --color-accent: #{$color-accent};

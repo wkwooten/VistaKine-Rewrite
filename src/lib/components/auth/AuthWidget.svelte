@@ -88,6 +88,7 @@
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
     text-decoration: none;
+    background-color: var(--color-surface);
     border-radius: var(--radius-sm);
     font-size: var(--step--1);
     transition:
@@ -104,7 +105,7 @@
     display: flex;
     align-items: center;
     gap: var(--space-s);
-    background-color: var(--color-surface-raised);
+    background-color: var(--color-surface);
     padding: var(--space-xs) var(--space-s);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
@@ -114,7 +115,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: var(--color-surface-strong);
+    background-color: var(--color-surface);
     display: flex;
     align-items: center;
     justify-content: center;

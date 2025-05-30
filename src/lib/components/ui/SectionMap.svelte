@@ -272,7 +272,8 @@
   .mobile-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5); // Semi-transparent black
+    background-color: var(--color-overlay);
+    backdrop-filter: blur(2px);
     z-index: 40; // Below map container, above content
     opacity: 0;
     pointer-events: none;

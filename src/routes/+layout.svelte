@@ -353,10 +353,12 @@
     width: 100vw;
     height: 100vh;
     background-color: var(--color-overlay);
-    transition: background-color var(--transition-fast) var(--transition-bezier);
+    transition: background-color var(--transition-normal)
+      var(--transition-bezier);
     z-index: 1040;
     display: none;
     overflow: hidden;
+    backdrop-filter: blur(2px);
 
     &.active {
       display: block;

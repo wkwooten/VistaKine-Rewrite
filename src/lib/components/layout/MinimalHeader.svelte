@@ -16,7 +16,6 @@
     display: flex;
     align-items: center;
     justify-content: end;
-    padding: var(--space-s) var(--space-m); // Utopia spacing
     background-color: var(--color-background); // Standard background
     border-bottom: 1px solid var(--color-border); // Standard border
     box-sizing: border-box;
