@@ -12,6 +12,7 @@
 //#F8F9FA
 $color-background: #f0f8ff;          // Main page background
 $color-surface: #fefeff;             // Card/Sidebar/distinct element backgrounds
+$color-surface-alt: #ebebef;
 $color-text-primary: #1f2937;        // Primary text color
 $color-text-secondary: #37474F; // Lighter text for secondary info (kept from brand)
 $color-white: #ffffff;
@@ -208,6 +209,7 @@ $leo-color-light: #1E40AF;  // Blue 800
   // Core Palette
   --color-background: #{$color-background};
   --color-surface: #{$color-surface};
+  --color-surface-alt: #{$color-surface-alt};
   --color-text-primary: #{$color-text-primary};
   --color-text-secondary: #{$color-text-secondary};
   --color-border: #{$color-border};

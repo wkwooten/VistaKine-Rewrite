@@ -61,7 +61,7 @@
     width: 100%;
     justify-content: space-between;
     gap: var(--space-s);
-    padding: var(--space-xs);
+    padding-inline: var(--space-xs);
     // background-color: var(--color-surface-overlay, hsl(0 0% 100% / 0.8)); // Can be transparent if page bg is light
     border-radius: var(
       --radius-md

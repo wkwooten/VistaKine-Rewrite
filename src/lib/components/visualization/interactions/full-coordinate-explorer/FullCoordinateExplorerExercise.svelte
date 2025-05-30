@@ -3,7 +3,7 @@
   import FullCoordinateExplorerScene from "./FullCoordinateExplorerScene.svelte";
   import FrameManipulationHud from "./FrameManipulationHud.svelte";
   import InteractiveExercise from "../../InteractiveExercise.svelte"; // Added
-  import type { ComponentType } from "svelte"; // Added for casting
+  import type { ComponentType, Snippet } from "svelte"; // Added Snippet for prop typing
   import { onMount, onDestroy } from "svelte"; // Added for keydown listener
   import { browser } from "$app/environment"; // Added for browser check
   import {
@@ -14,6 +14,11 @@
   // type TransformMode = "translate" | "rotate"; // Type now comes from store
   // let currentMode = $state<TransformMode>("translate"); // Replaced by store
   let sceneResetKey = $state(0);
+
+  // Define props for FullCoordinateExplorerExercise
+  let {
+    instructionSnippet,
+  }: { instructionSnippet?: Snippet<[{ isFullscreen: boolean }]> } = $props();
 
   function setMode(mode: ExplorerTransformMode) {
     console.log(`[FCEE] Setting mode store to: ${mode}`);
@@ -68,7 +73,7 @@
   });
 </script>
 
-{#snippet dialogArea(data: { isFullscreen: boolean })}
+<!-- {#snippet dialogArea(data: { isFullscreen: boolean })}
   <div class="description-fcee">
     <p>
       Use the controls above the 3D view to switch between
@@ -81,7 +86,7 @@
       the coordinates!
     </p>
   </div>
-{/snippet}
+{/snippet} -->
 
 <InteractiveExercise
   SceneComponent={FullCoordinateExplorerScene as unknown as ComponentType<any>}
@@ -91,8 +96,8 @@
   ControlPanelComponent={undefined}
   onResetRequestedByHudCallback={handleResetRequestedByHud}
   exerciseTitle="Coordinate System Explorer"
-  dialogAreaSnippet={dialogArea}
   controlsAreaSnippet={undefined}
+  {instructionSnippet}
 />
 
 <style lang="scss">

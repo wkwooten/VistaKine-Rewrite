@@ -20,6 +20,7 @@
     class?: string;
     dialogAreaSnippet?: Snippet<[{ isFullscreen: boolean }]>;
     controlsAreaSnippet?: Snippet<[{ isFullscreen: boolean }]>;
+    instructionSnippet?: Snippet<[{ isFullscreen: boolean }]>;
   }
 
   const passedProps: ExerciseProps = $props();
@@ -45,6 +46,7 @@
 
   const dialogAreaSnippet = passedProps.dialogAreaSnippet;
   const controlsAreaSnippet = passedProps.controlsAreaSnippet;
+  const instructionSnippet = passedProps.instructionSnippet;
 
   let resetKey = $state(0);
   let isFullscreenActive = $state(false); // Renamed for clarity, will be bound to FullscreenWrapper
@@ -83,6 +85,12 @@
 </script>
 
 <FullscreenWrapper bind:active={isFullscreenActive}>
+  {#if instructionSnippet && !isFullscreenActive}
+    <div class="instruction-area-wrapper">
+      {@render instructionSnippet({ isFullscreen: isFullscreenActive })}
+    </div>
+  {/if}
+
   <div class="interactive-exercise-content-wrapper {extraClass}">
     {#if dialogAreaSnippet && !isFullscreenActive}
       <div class="dialog-area-wrapper">
@@ -130,9 +138,7 @@
     flex-direction: column;
     overflow: hidden;
     gap: var(--space-s);
-    margin-bottom: var(
-      --space-s
-    ); // This might be unwanted if FSWrapper provides own bg/layout
+    margin-bottom: var(--space-s);
     /* background-color: var(--color-background); // REMOVED to allow parent background for gaps */
   }
 
@@ -164,6 +170,11 @@
     z-index: 10;
     display: flex;
     min-height: 0;
+  }
+
+  .instruction-area-wrapper {
+    flex-shrink: 0;
+    // Potentially add padding/margin here if needed, or let the Instruction component handle it
   }
 
   .controls-area-wrapper {

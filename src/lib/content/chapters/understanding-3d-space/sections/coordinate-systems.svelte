@@ -13,6 +13,8 @@
   import ContentCard from "$lib/components/ContentCard.svelte"; // Import the new component
   import FullCoordinateExplorerExercise from "$lib/components/visualization/interactions/full-coordinate-explorer/FullCoordinateExplorerExercise.svelte"; // Added import
   import { math } from "mathlifier"; // Added import for KaTeX rendering
+  import Instruction from "$lib/components/ui/Instruction.svelte"; // Added import for Instruction component
+  import type { Snippet } from "svelte"; // Import Snippet type
 
   // State for completion
   let isCalibrationComplete = false;
@@ -167,15 +169,23 @@
       Interactive: Full Coordinate Explorer
     </h2>
     <figure>
-      <FullCoordinateExplorerExercise />
-      <figcaption>
-        Use the <strong>(T)</strong>ranslate and <strong>(R)</strong>otate
-        buttons (or T/R keys) to switch modes. Click and drag the axes or the
-        control gizmo to move or rotate the coordinate system. The reset button
-        restores the axes to their initial position. Use your mouse to orbit
-        (left-click drag), pan (right-click drag), and zoom (scroll wheel) the
-        view.
-      </figcaption>
+      {#snippet instructionAreaFC({ isFullscreen }: { isFullscreen: boolean })}
+        {#if !isFullscreen}
+          <Instruction>
+            Use the <strong>(T)</strong>ranslate and <strong>(R)</strong>otate
+            buttons (or T/R keys) to switch modes. Click and drag the axes or
+            the control gizmo to move or rotate the coordinate system. The reset
+            button restores the axes to their initial position. Use your mouse
+            to orbit (left-click drag), pan (right-click drag), and zoom (scroll
+            wheel) the view.
+          </Instruction>
+        {/if}
+      {/snippet}
+      <FullCoordinateExplorerExercise
+        instructionSnippet={instructionAreaFC as Snippet<
+          [{ isFullscreen: boolean }]
+        >}
+      />
     </figure>
     <p>
       By manipulating the coordinate system in the explorer, you may have
