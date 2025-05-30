@@ -37,10 +37,26 @@
   // --- State (Svelte 5 Runes) ---
   // Indicates if the component is in mobile view (detected via media query).
   let isMobile = $state(initialIsMobile);
-  // Tracks the currently expanded chapter accordion. Initialized from prop.
-  let expandedChapter = $state<string | null>(currentChapterSlug ?? null);
+
+  // Initialize expandedChapter:
+  // 1. Try sessionStorage.
+  // 2. Else, if currentChapterSlug prop is available (on a chapter page), use that.
+  // 3. Else, null.
+  let _initialExpandedChapterValue: string | null = null;
+  if (browser) {
+    _initialExpandedChapterValue = sessionStorage.getItem(
+      "expandedChapterSvelte"
+    );
+  }
+  // If session storage was empty AND currentChapterSlug is provided, use currentChapterSlug.
+  if (!_initialExpandedChapterValue && currentChapterSlug) {
+    _initialExpandedChapterValue = currentChapterSlug;
+  }
+  // Tracks the currently expanded chapter accordion.
+  let expandedChapter = $state<string | null>(_initialExpandedChapterValue);
+
   // Used to track chapter changes for the effect below.
-  let previousChapter = $state<string | null>(currentChapterSlug ?? null);
+  // let previousChapter = $state<string | null>(currentChapterSlug ?? null); // REMOVED - Replaced by new effect logic
   let showAccountModal = $state(false);
 
   // --- Derived State (Svelte 5 Runes) ---
@@ -90,17 +106,41 @@
   });
 
   // Effect to automatically expand the accordion when the currentChapter store changes
+  // $effect(() => { // REMOVED - This logic is replaced by the new effect below
+  // Read currentChapter store to establish dependency
+  // const current = $currentChapter;
+
+  // Check against previous state value
+  // if (current && current !== previousChapter) {
+  // expandedChapter = current;
+  // }
+
+  // Update the previousChapter state *after* the check
+  // previousChapter = current;
+  // });
+
+  // Effect to sync expandedChapter with the $currentChapter store (reflecting the route)
   $effect(() => {
-    // Read currentChapter store to establish dependency
-    const current = $currentChapter;
-
-    // Check against previous state value
-    if (current && current !== previousChapter) {
-      expandedChapter = current;
+    const chapterFromRoute = $currentChapter; // Value from the appState store
+    if (chapterFromRoute) {
+      // If the route indicates a specific chapter, that chapter's accordion should be open.
+      if (expandedChapter !== chapterFromRoute) {
+        expandedChapter = chapterFromRoute;
+      }
     }
+    // If chapterFromRoute is null (e.g., on ToC page), this effect doesn't change expandedChapter,
+    // allowing the session-persisted or manually toggled state to remain.
+  });
 
-    // Update the previousChapter state *after* the check
-    previousChapter = current;
+  // Effect to save expandedChapter to session storage
+  $effect(() => {
+    if (browser) {
+      if (expandedChapter) {
+        sessionStorage.setItem("expandedChapterSvelte", expandedChapter);
+      } else {
+        sessionStorage.removeItem("expandedChapterSvelte");
+      }
+    }
   });
 
   // --- Lifecycle ---
