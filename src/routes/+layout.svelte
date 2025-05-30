@@ -311,7 +311,7 @@
     justify-content: center;
     height: 50px;
     padding: 0;
-    background-color: var(--color-background);
+    background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     border-left: none;
@@ -329,6 +329,10 @@
       box-shadow: var(--shadow-md);
       color: var(--color-accent);
     }
+
+    /* &:has(+ .navigation.collapsed) {
+      background-color: var(--color-background);
+    } */
   }
 
   .content {

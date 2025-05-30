@@ -542,11 +542,22 @@
     // New active styles for LI elements containing nav items
     &.is-active {
       background-color: var(--chapter-bg, rgba(59, 130, 246, 0.1));
+      border-right: 3px solid var(--color-accent);
+      // ADDED Transition for active state
+      transition:
+        background-color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1),
+        border-right-color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
 
       > .nav-item {
         // Target the direct child a.nav-item
         color: var(--color-accent);
         font-weight: bold;
+        // ADDED Transition for properties changing in active state
+        // font-weight transition can sometimes be jumpy, but let's try
+        transition:
+          color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1),
+          font-weight var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1),
+          background-color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
 
         // When an ACTIVE item is hovered:
         &:hover {
@@ -777,6 +788,10 @@
     min-width: 0;
     width: 100%;
     overflow: hidden;
+    // ADDED Transition for hover states
+    transition:
+      background-color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1),
+      color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
       color: var(--color-accent);
@@ -843,6 +858,8 @@
     width: 32px;
     height: 32px;
     font-weight: bold;
+    // ADDED Transition for border-color
+    transition: border-color var(--transition-fast) cubic-bezier(0.4, 0, 0.2, 1);
     &:hover {
       text-decoration: underline;
       color: var(--chapter-color-dark);
