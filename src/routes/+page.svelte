@@ -3,6 +3,7 @@
   // Removed animejs imports
   // Import the openModal function from the auth store
   import { openModal } from "$lib/stores/authModalStore.svelte.ts";
+  import { sidebarExpanded } from "$lib/stores/appState"; // Import sidebarExpanded store
 
   // Scroll function for the About section
   function scrollToAbout() {
@@ -23,6 +24,11 @@
   import AboutSection from "$lib/components/layout/AboutSection.svelte";
   // Import the new Footer component
   import AuthWidget from "$lib/components/auth/AuthWidget.svelte";
+
+  onMount(() => {
+    // Collapse the sidebar when the homepage is mounted
+    $sidebarExpanded = false;
+  });
 </script>
 
 <div class="hero-container">

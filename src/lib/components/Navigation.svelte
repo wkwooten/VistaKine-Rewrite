@@ -79,7 +79,6 @@
 
   // Effect to update tweened width when navCollapsed or base widths change
   $effect(() => {
-    // Ensure $navWidth reacts to changes in sidebarWidth and sidebarCollapsedWidth
     const targetWidth = navCollapsed ? sidebarCollapsedWidth : sidebarWidth;
     navWidth.set(targetWidth);
   });

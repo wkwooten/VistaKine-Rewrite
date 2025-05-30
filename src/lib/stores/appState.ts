@@ -23,7 +23,7 @@ export const currentSection: Writable<string | null> = writable(null);
 // Updated sidebarExpanded store with sessionStorage persistence
 const storedSidebarExpanded = typeof window !== 'undefined' ? sessionStorage.getItem('sidebarExpanded') : null;
 export const sidebarExpanded: Writable<boolean> = writable<boolean>(
-  storedSidebarExpanded ? JSON.parse(storedSidebarExpanded) : false
+  storedSidebarExpanded ? JSON.parse(storedSidebarExpanded) : true
 );
 
 if (typeof window !== 'undefined') {
