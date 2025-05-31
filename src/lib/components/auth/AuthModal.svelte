@@ -4,8 +4,12 @@
   import SocialSignInButtons from "$lib/components/auth/SocialSignInButtons.svelte";
   import { supabase } from "$lib/supabaseClient";
   import { X } from "lucide-svelte";
-  import { closeModalStore } from "$lib/stores/authModalStore.svelte.ts";
+  import {
+    closeModalStore,
+    getRedirectTo,
+  } from "$lib/stores/authModalStore.svelte.ts";
   import { fade, fly } from "svelte/transition";
+  import { goto } from "$app/navigation";
 
   type ModalView = "login" | "signup";
 
@@ -123,6 +127,8 @@
     if (error) {
       passwordError = error.message;
     } else {
+      const redirectToPath = getRedirectTo();
+      goto(redirectToPath || "/");
       handleCloseTrigger();
     }
   }
@@ -143,6 +149,8 @@
     if (error) {
       passwordError = error.message;
     } else if (data.user || data.session) {
+      const redirectToPath = getRedirectTo();
+      goto(redirectToPath || "/");
       handleCloseTrigger();
     }
   }
