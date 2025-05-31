@@ -8,7 +8,7 @@
 <section id="about" class="about">
   <!-- Use ContentCard for the intro block -->
   <!-- <ContentCard blockType="about-intro-block" layoutWidth="full"> -->
-  <ContentCard>
+  <ContentCard showBookmarkFeature={false}>
     <div class="about-content">
       <h2>About VistaKine</h2>
       <p>

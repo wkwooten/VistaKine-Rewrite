@@ -17,7 +17,7 @@
 
   <div class="chapters">
     {#each chapters as chapter}
-      <ContentCard class="chapter-card">
+      <ContentCard class="chapter-card" showBookmarkFeature={false}>
         {#snippet children()}
           <h2
             style={`color: var(--chapter-color-${chapter.number}, var(--chapter-color-default));`}
