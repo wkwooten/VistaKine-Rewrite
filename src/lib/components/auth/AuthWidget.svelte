@@ -2,6 +2,7 @@
   import { authState } from "$lib/stores/auth";
   import { supabase } from "$lib/supabaseClient";
   import { User as UserIcon } from "lucide-svelte";
+  import { openModal } from "$lib/stores/authModalStore.svelte.ts";
   // import { goto } from '$app/navigation'; // Uncomment if you want to redirect after logout
 
   async function handleLogout() {
@@ -15,6 +16,20 @@
       // authState store updates automatically via onAuthStateChange listener in auth.ts
       // goto('/'); // Optional: redirect to home or login page
     }
+  }
+
+  function showLoginModal() {
+    openModal({
+      defaultView: "login",
+      reasonMessage: "Sign in to access your account.",
+    });
+  }
+
+  function showSignupModal() {
+    openModal({
+      defaultView: "signup",
+      reasonMessage: "Create an account to continue.",
+    });
   }
 </script>
 
@@ -54,8 +69,16 @@
   {:else if !$authState.loading}
     <!-- Not authenticated and not loading -->
     <div class="auth-buttons">
-      <a href="/signup" class="auth-button sign-up-button">Sign Up</a>
-      <a href="/login" class="auth-button sign-in-button">Sign In</a>
+      <button
+        type="button"
+        onclick={showSignupModal}
+        class="auth-button sign-up-button">Sign Up</button
+      >
+      <button
+        type="button"
+        onclick={showLoginModal}
+        class="auth-button sign-in-button">Sign In</button
+      >
     </div>
   {:else}
     <!-- Still loading initial auth state -->
