@@ -7,27 +7,20 @@
 
   onMount(() => {
     if (!container) {
-      console.error("AnimatedLogo: Container not found");
       return;
     }
-    console.log("AnimatedLogo: onMount started, container found.");
 
+    // Main logo line drawing animation (unchanged)
     const mainLinesSelector = ".logo-line";
     const mainLinesExist = container?.querySelector(mainLinesSelector);
-
     if (mainLinesExist) {
-      console.log("AnimatedLogo: Animating main lines.");
       animate(svg.createDrawable(mainLinesSelector), {
-        draw: ["0 0", "0 1"], // Simple draw animation
-        duration: 4000, // Duration in ms
-        delay: stagger(50), // Delay between each path animation
+        draw: ["0 0", "0 1"],
+        duration: 4000,
+        delay: stagger(50),
         easing: "easeInOutSine",
         loop: false,
       });
-    } else {
-      console.warn(
-        "AnimatedLogo: Main lines (.logo-line) not found for animation."
-      );
     }
 
     // Arrowhead fade-in using CSS transition
@@ -35,61 +28,27 @@
     const arrowheadElement = container?.querySelector(
       arrowheadSelector
     ) as HTMLElement;
-    console.log(
-      "AnimatedLogo: Arrowhead selector:",
-      arrowheadSelector,
-      "Element found:",
-      arrowheadElement
-    );
     if (arrowheadElement) {
       setTimeout(() => {
-        console.log(
-          "AnimatedLogo: Attempting to make arrowhead visible. Current classes:",
-          arrowheadElement.classList.toString()
-        );
-        // Force browser to apply initial styles before adding 'visible' class
         void arrowheadElement.offsetHeight;
         arrowheadElement.classList.add("visible");
-        console.log(
-          "AnimatedLogo: Arrowhead classes after adding 'visible':",
-          arrowheadElement.classList.toString()
-        );
-      }, 2800); // Start after main lines are mostly drawn
-    } else {
-      console.warn("AnimatedLogo: Arrowhead element not found.");
+      }, 2800);
     }
 
     // Tagline "Physics & Mechanics" fade-in using CSS transition with stagger
     const taglineSelector = "g#Tagline path.logo-fill";
     const taglineElements = container?.querySelectorAll(taglineSelector);
-    console.log(
-      "AnimatedLogo: Tagline selector:",
-      taglineSelector,
-      "Elements found count:",
-      taglineElements?.length
-    );
     if (taglineElements && taglineElements.length > 0) {
       taglineElements.forEach((element, index) => {
         const el = element as HTMLElement;
         setTimeout(
           () => {
-            console.log(
-              `AnimatedLogo: Attempting to make tagline element ${index} visible. Current classes:`,
-              el.classList.toString()
-            );
-            // Force reflow for each element
             void el.offsetHeight;
             el.classList.add("visible");
-            console.log(
-              `AnimatedLogo: Tagline element ${index} classes after adding 'visible':`,
-              el.classList.toString()
-            );
           },
           3000 + index * 70
-        ); // Staggered fade-in, starts as main lines near completion
+        );
       });
-    } else {
-      console.warn("AnimatedLogo: Tagline elements not found.");
     }
   });
 </script>

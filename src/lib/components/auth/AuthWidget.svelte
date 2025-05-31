@@ -3,6 +3,7 @@
   import { supabase } from "$lib/supabaseClient";
   import { User as UserIcon } from "lucide-svelte";
   import { openModal } from "$lib/stores/authModalStore.svelte.ts";
+  import { page } from "$app/stores";
   // import { goto } from '$app/navigation'; // Uncomment if you want to redirect after logout
 
   async function handleLogout() {
@@ -22,6 +23,7 @@
     openModal({
       defaultView: "login",
       reasonMessage: "Sign in to access your account.",
+      redirectTo: $page.url.pathname,
     });
   }
 
@@ -29,6 +31,7 @@
     openModal({
       defaultView: "signup",
       reasonMessage: "Create an account to continue.",
+      redirectTo: $page.url.pathname,
     });
   }
 </script>

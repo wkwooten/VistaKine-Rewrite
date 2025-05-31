@@ -10,9 +10,10 @@ This document provides a focused overview of the next major development prioriti
 
 2.  **Finalize Authentication Flow:**
 
-    - [ ] Resolve Google Sign-In console errors.
+    - [x] Resolve Google Sign-In console errors.  [completion:: 2025-05-31]
     - [x] Design and implement a static header auth widget. [completion:: 2025-05-30]
     - [ ] Thoroughly test all authentication paths.
+    - [ ] Add Sign in through Apple
 
 3.  **Implement Subscription Model & Core Pricing:**
 
