@@ -15,7 +15,11 @@
 </script>
 
 <section id="advanced-vector-operations" data-section={sectionNumber}>
-  <ContentCard blockType="section-header-block">
+  <ContentCard
+    blockType="section-header-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_intro"
+  >
     <h2
       class="content-card-title"
       id="section-introduction-advanced-products"
@@ -51,7 +55,11 @@
     <p>This sets the stage for more complex vector manipulations.</p>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_dot-product"
+  >
     <h2
       class="content-card-title"
       id="dot-product"
@@ -135,6 +143,8 @@
   <ContentCard
     blockType="visualization-block"
     class="visualization-card -placeholder"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_visualizing-dot-product"
   >
     <h2
       class="content-card-title"
@@ -152,7 +162,11 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_cross-product"
+  >
     <h2
       class="content-card-title"
       id="cross-product"
@@ -240,6 +254,8 @@
   <ContentCard
     blockType="visualization-block"
     class="visualization-card -placeholder"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_visualizing-cross-product"
   >
     <h2
       class="content-card-title"
@@ -257,7 +273,11 @@
     </p>
   </ContentCard>
 
-  <ContentCard blockType="conclusion-block">
+  <ContentCard
+    blockType="conclusion-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_advanced-vector-operations_conclusion"
+  >
     <h2
       class="content-card-title"
       id="advanced-products-conclusion"

@@ -30,7 +30,11 @@
 <section id="basic-vector-operations" data-section={sectionNumber}>
   <div class="section-line" aria-hidden="true"></div>
   <!-- <div class="readable-content"> wrapper removed -->
-  <ContentCard blockType="section-header-block">
+  <ContentCard
+    blockType="section-header-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_intro"
+  >
     <h2
       class="content-card-title"
       id="section-introduction-basic-ops"
@@ -65,7 +69,11 @@
     </Scenario>
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_vector-addition"
+  >
     <h2
       class="content-card-title"
       id="vector-addition"
@@ -111,6 +119,8 @@
   <ContentCard
     blockType="visualization-block"
     class="visualization-card -full-bleed"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_vector-addition-exercise"
   >
     <h2
       class="content-card-title"
@@ -123,7 +133,11 @@
     <VectorPrinterExercise />
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_vector-subtraction"
+  >
     <h2
       class="content-card-title"
       id="vector-subtraction"
@@ -178,6 +192,8 @@
   <ContentCard
     blockType="visualization-block"
     class="visualization-card -full-bleed"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_vector-subtraction-exercise"
   >
     <h2
       class="content-card-title"
@@ -190,7 +206,11 @@
     <VectorPrinterExercise />
   </ContentCard>
 
-  <ContentCard blockType="concept-block">
+  <ContentCard
+    blockType="concept-block"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_scalar-multiplication"
+  >
     <h2
       class="content-card-title"
       id="scalar-multiplication"
@@ -261,7 +281,12 @@
     </ul>
   </ContentCard>
 
-  <ContentCard blockType="activity-block" class="-review">
+  <ContentCard
+    blockType="activity-block"
+    class="-review"
+    showBookmarkFeature={true}
+    contentId="understanding-3d-space_basic-vector-operations_review"
+  >
     <h2
       class="content-card-title"
       id="basic-ops-review"

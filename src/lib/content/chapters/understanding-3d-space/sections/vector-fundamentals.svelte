@@ -56,8 +56,12 @@
       Section Introduction
     </h2>
     <p>
-      _Placeholder: Describe what this section will cover and the introductory
-      scenario._
+      To be able to study motion, forces, and velocities, one must develop an
+      understanding of quantities with both size and direction. This is where
+      vectors come in. In this section, we'll define what a vector is,
+      distinguish it from a scalar, explore how we represent vectors using
+      components in 1D, 2D, and 3D space, and learn how to calculate a vector's
+      magnitude (length).
     </p>
     <Scenario>
       <p data-speaker="Surya">

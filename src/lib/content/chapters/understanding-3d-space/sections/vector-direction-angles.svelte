@@ -27,9 +27,11 @@
       Section Introduction: Vector Direction and Angles
     </h2>
     <p>
-      _Placeholder: Introduce the importance of defining vector direction beyond
-      just components, using angles and trigonometry. Explain what this section
-      will cover._
+      While components tell us how far a vector extends along each axis, often
+      we need to describe its precise orientation in space using angles. In this
+      section, we'll explore how to define a vector's direction using angles,
+      introduce the concept of direction cosines in 3D, and look at unit vector
+      notation as another way to represent vector direction.
     </p>
     <Scenario>
       <p data-speaker="Surya">
@@ -72,19 +74,19 @@
     </p>
     <FormulaAccordion summary="2D Components from Magnitude & Angle">
       <p>
-        {@html katex.renderToString("V_x = \\|\\vec{V}\\| \\cos \\theta", {
+        {@html katex.renderToString("V_x = |\\vec{V}| \\cos \\theta", {
           displayMode: true,
         })}
       </p>
       <p>
-        {@html katex.renderToString("V_y = \\|\\vec{V}\\| \\sin \\theta", {
+        {@html katex.renderToString("V_y = |\\vec{V}| \\sin \\theta", {
           displayMode: true,
         })}
       </p>
     </FormulaAccordion>
     <FormulaAccordion summary="2D Magnitude & Angle from Components">
       <p>
-        {@html katex.renderToString("\\|\\vec{V}\\| = \\sqrt{V_x^2 + V_y^2}", {
+        {@html katex.renderToString("|\\vec{V}| = \\sqrt{V_x^2 + V_y^2}", {
           displayMode: true,
         })}
       </p>
@@ -117,22 +119,19 @@
     </p>
     <FormulaAccordion summary="Direction Cosines">
       <p>
-        {@html katex.renderToString(
-          "\\cos \\alpha = \\frac{V_x}{\\|\\vec{V}\\|}",
-          { displayMode: true }
-        )}
+        {@html katex.renderToString("\\cos \\alpha = \\frac{V_x}{|\\vec{V}|}", {
+          displayMode: true,
+        })}
       </p>
       <p>
-        {@html katex.renderToString(
-          "\\cos \\beta = \\frac{V_y}{\\|\\vec{V}\\|}",
-          { displayMode: true }
-        )}
+        {@html katex.renderToString("\\cos \\beta = \\frac{V_y}{|\\vec{V}|}", {
+          displayMode: true,
+        })}
       </p>
       <p>
-        {@html katex.renderToString(
-          "\\cos \\gamma = \\frac{V_z}{\\|\\vec{V}\\|}",
-          { displayMode: true }
-        )}
+        {@html katex.renderToString("\\cos \\gamma = \\frac{V_z}{|\\vec{V}|}", {
+          displayMode: true,
+        })}
       </p>
       <p>
         And the property: {@html katex.renderToString(
@@ -148,7 +147,11 @@
     showBookmarkFeature={true}
     contentId="understanding-3d-space_vector-direction-angles_unit-vector-notation"
   >
-    <h2 id="unit-vector-notation" data-nav-target="true">
+    <h2
+      id="unit-vector-notation"
+      data-nav-target="true"
+      class="content-card-title"
+    >
       An Alternative Language: Unit Vector Notation
     </h2>
     <p>
@@ -222,7 +225,11 @@
     showBookmarkFeature={true}
     contentId="understanding-3d-space_vector-direction-angles_comparing-vector-notations"
   >
-    <h2 id="comparing-vector-notations" data-nav-target="true">
+    <h2
+      id="comparing-vector-notations"
+      data-nav-target="true"
+      class="content-card-title"
+    >
       Comparing Vector Notations
     </h2>
     <p>
@@ -323,7 +330,7 @@
     </p>
     <EquationDisplay>
       {@html katex.renderToString(
-        "\\hat{\\mathbf{v}} = \\frac{\\vec{V}}{\\|\\vec{V}\\|} = \\langle \\cos \\alpha, \\cos \\beta, \\cos \\gamma \\rangle",
+        "\\hat{\\mathbf{v}} = \\frac{\\vec{V}}{|\\vec{V}|} = \\langle \\cos \\alpha, \\cos \\beta, \\cos \\gamma \\rangle",
         { displayMode: true }
       )}
     </EquationDisplay>
