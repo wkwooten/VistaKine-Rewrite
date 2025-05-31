@@ -195,7 +195,6 @@
     &:not(.not-authenticated):hover:not(:disabled),
     &:not(.not-authenticated):focus-visible:not(:disabled) {
       color: var(--color-accent-hover);
-      background-color: var(--color-accent-hover-bg);
       transform: translateY(-2px);
       box-shadow: var(
         --shadow-lg,

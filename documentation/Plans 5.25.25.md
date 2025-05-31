@@ -2,16 +2,16 @@ This document provides a focused overview of the next major development prioriti
 
 1.  **Streamline Interactive Exercise Architecture:**
 
-    - [x] Audit and refactor `InteractiveExercise.svelte` and existing interactions (`PrinterCalibration`, `VectorBuilder`, `FullCoordinateExplorer`, `DisplacementVelocity`).  [completion:: 2025-05-26]
-    - [x] Improve prop passing and state management (Svelte stores, context API).  [completion:: 2025-05-26]
-    - [x] Resolve iOS fullscreen issues for visualizations.  [completion:: 2025-05-28]
-        - Mostly done just need to resolve a few issues
-    - [x] Document new architecture guidelines.  [completion:: 2025-05-28]
+    - [x] Audit and refactor `InteractiveExercise.svelte` and existing interactions (`PrinterCalibration`, `VectorBuilder`, `FullCoordinateExplorer`, `DisplacementVelocity`). [completion:: 2025-05-26]
+    - [x] Improve prop passing and state management (Svelte stores, context API). [completion:: 2025-05-26]
+    - [x] Resolve iOS fullscreen issues for visualizations. [completion:: 2025-05-28]
+      - Mostly done just need to resolve a few issues
+    - [x] Document new architecture guidelines. [completion:: 2025-05-28]
 
 2.  **Finalize Authentication Flow:**
 
     - [ ] Resolve Google Sign-In console errors.
-    - [x] Design and implement a static header auth widget.  [completion:: 2025-05-30]
+    - [x] Design and implement a static header auth widget. [completion:: 2025-05-30]
     - [ ] Thoroughly test all authentication paths.
 
 3.  **Implement Subscription Model & Core Pricing:**
@@ -37,5 +37,6 @@ This document provides a focused overview of the next major development prioriti
     - [ ] Evaluate and potentially update/replace 2D exercises.
     - [ ] Plan for controlled beta testing and feedback collection.
     - [ ] Prioritize security best practices.
+    - [ ] Investigate and fix CSS 'border' parsing error in 'coordinate-systems.scss'.
 
 _This plan will be revisited and updated as development progresses._
