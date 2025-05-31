@@ -3,6 +3,7 @@
   import Button from "./Button.svelte";
   import GoogleIcon from "../icons/GoogleIcon.svelte";
   import AppleIcon from "../icons/AppleIcon.svelte";
+  import { getRedirectTo } from "$lib/stores/authModalStore.svelte.ts";
 
   type Props = {
     mode: "login" | "signup";
@@ -13,12 +14,15 @@
   const buttonText = mode === "login" ? "Sign In" : "Sign Up";
 
   async function signInWithProvider(provider: "google" | "apple") {
-    const options =
-      mode === "signup"
-        ? {
-            redirectTo: `${window.location.origin}/auth/callback`,
-          }
-        : {};
+    const originalRedirectPath = getRedirectTo();
+    const supabaseCallbackUrl = `${window.location.origin}/auth/callback`;
+
+    const options: { redirectTo?: string } = {};
+    if (originalRedirectPath) {
+      options.redirectTo = `${supabaseCallbackUrl}?redirectTo=${encodeURIComponent(originalRedirectPath)}`;
+    } else {
+      options.redirectTo = supabaseCallbackUrl; // Fallback if no specific path
+    }
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
