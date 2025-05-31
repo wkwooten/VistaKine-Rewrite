@@ -101,6 +101,10 @@
     position: relative;
     height: calc(100vh - vars.$navbar-height);
     align-items: center;
+
+    @media (max-width: 768px) {
+      height: auto;
+    }
   }
 
   .hero-content-card {
@@ -130,7 +134,7 @@
   }
 
   .tagline {
-    border-top: 1px solid var(--color-accent);
+    /* border-top: 1px solid var(--color-accent); */
     width: 100%;
     font-size: var(--step-1);
     padding: var(--space-s) 0;

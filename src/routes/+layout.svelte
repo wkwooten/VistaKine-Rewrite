@@ -370,10 +370,10 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    top: var(--space-m, 10px);
+    top: var(--space-s, 10px);
     left: var(--space-s, 10px);
     z-index: 1060;
-    background-color: var(--color-background, white);
+    background-color: var(--color-surface, white);
     border: 1px solid var(--color-border, #ccc);
     border-radius: var(--radius-sm, 4px);
     padding: var(--space-xs, 8px);

@@ -38,5 +38,6 @@ This document provides a focused overview of the next major development prioriti
     - [ ] Plan for controlled beta testing and feedback collection.
     - [ ] Prioritize security best practices.
     - [ ] Investigate and fix CSS 'border' parsing error in 'coordinate-systems.scss'.
+    - [ ] Debug and fix the AnimatedLogo.svelte opacity transition for tagline and arrowhead.
 
 _This plan will be revisited and updated as development progresses._

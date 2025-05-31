@@ -96,6 +96,7 @@
   .auth-widget-component {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 250px;
     border-left: 1px solid var(--color-border);
   }
