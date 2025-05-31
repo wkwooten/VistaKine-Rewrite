@@ -96,6 +96,8 @@
   .auth-widget-component {
     display: flex;
     align-items: center;
+    width: 250px;
+    border-left: 1px solid var(--color-border);
   }
 
   .auth-buttons {
@@ -117,7 +119,6 @@
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease;
-
     &:hover {
       background-color: var(--color-surface-hover);
       border-color: var(--color-border-hover);
@@ -130,7 +131,6 @@
     gap: var(--space-s);
     padding: var(--space-xs) var(--space-s);
     /* border-radius: var(--radius-md); */
-    border-left: 1px solid var(--color-border);
   }
 
   .avatar-container {

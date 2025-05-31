@@ -139,7 +139,7 @@
       {#if isHovering}
         <BookmarkMinus size={32} />
       {:else}
-        <BookmarkCheck fill="currentColor" size={32} />
+        <BookmarkCheck size={32} />
       {/if}
     {:else if isHovering}
       <BookmarkPlus size={32} />
