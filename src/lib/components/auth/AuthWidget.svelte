@@ -128,10 +128,9 @@
     display: flex;
     align-items: center;
     gap: var(--space-s);
-    background-color: var(--color-surface);
     padding: var(--space-xs) var(--space-s);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
+    /* border-radius: var(--radius-md); */
+    border-left: 1px solid var(--color-border);
   }
 
   .avatar-container {
