@@ -1,7 +1,12 @@
 <script lang="ts">
   import { authState } from "$lib/stores/auth";
   import { supabase } from "$lib/supabaseClient";
-  import { Bookmark, BookmarkPlus, BookmarkMinus } from "lucide-svelte";
+  import {
+    Bookmark,
+    BookmarkPlus,
+    BookmarkMinus,
+    BookmarkCheck,
+  } from "lucide-svelte";
   import { openModal } from "$lib/stores/authModalStore.svelte.ts";
 
   let {
@@ -134,7 +139,7 @@
       {#if isHovering}
         <BookmarkMinus size={32} />
       {:else}
-        <Bookmark fill="currentColor" size={32} />
+        <BookmarkCheck fill="currentColor" size={32} />
       {/if}
     {:else if isHovering}
       <BookmarkPlus size={32} />
@@ -215,9 +220,9 @@
     &.not-authenticated {
     }
 
-    &.is-bookmarked {
+    /* &.is-bookmarked {
       background-color: var(--color-accent);
       color: var(--color-background);
-    }
+    } */
   }
 </style>
